@@ -1,0 +1,24 @@
+Carrowmont Automated QA Framework v1.3
+
+Why this update exists
+----------------------
+The final v1.2 run produced 130 PASS / 3 FAIL. All three failures were the same SIP smoke assertion on Chrome, Edge and mobile: the test still expected "SIP Calculator" while the live non-India experience correctly displayed "Monthly Investment Calculator".
+
+What changed
+------------
+- Added a reusable United States/USD locale helper.
+- Updated the existing SIP smoke test to verify both localized states:
+  - India/INR: SIP Calculator, Generate SIP Report, POPULAR IN INDIA visible.
+  - United States/USD: Monthly Investment Calculator, Generate Investment Report, POPULAR IN INDIA hidden.
+- No live Carrowmont website files are changed by this package.
+
+Files changed from v1.2
+-----------------------
+- helpers/fixtures.js
+- tests/01-smoke.spec.js
+- package.json
+- README.md
+- UPGRADE-FROM-V1.2.txt (new)
+
+After committing, run Actions > Carrowmont Automated QA > Run workflow again.
+Expected automated result: 133 PASS / 0 FAIL, assuming the live site remains unchanged.

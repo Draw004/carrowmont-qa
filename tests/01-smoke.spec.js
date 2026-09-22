@@ -1,16 +1,32 @@
 import { test, expect } from '@playwright/test';
 import { tools, mainSitePages } from '../qa.config.js';
 import { gotoClean, monitorPageErrors } from '../helpers/common.js';
-import { chooseIndiaLocale } from '../helpers/fixtures.js';
+import { chooseIndiaLocale, chooseUnitedStatesLocale } from '../helpers/fixtures.js';
 
 test.describe('Carrowmont smoke and content contracts', () => {
   for (const tool of tools) {
     test(`[AUTO] ${tool.name}: loads without JavaScript errors and required controls exist`, async ({ page }) => {
       const errors = monitorPageErrors(page);
       await gotoClean(page, tool.path);
-      await expect(page.locator('body')).toContainText(tool.requiredText[0]);
+      if (tool.key === 'sip-calculator') {
+        // The same calculator is intentionally localized by country/currency:
+        // India/INR uses SIP terminology; international views use Monthly Investment terminology.
+        await chooseUnitedStatesLocale(page);
+        await expect(page.getByText('Monthly Investment Calculator', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('Generate Investment Report', { exact: true }).first()).toBeVisible();
+        const indiaBadgeInternational = page.getByText('POPULAR IN INDIA', { exact: true }).first();
+        if (await indiaBadgeInternational.count()) await expect(indiaBadgeInternational).toBeHidden();
+
+        await chooseIndiaLocale(page);
+        await expect(page.getByText('SIP Calculator', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('Generate SIP Report', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('POPULAR IN INDIA', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('Copy Summary', { exact: true }).first()).toBeVisible();
+      } else {
+        await expect(page.locator('body')).toContainText(tool.requiredText[0]);
+        for (const text of tool.requiredText.slice(1)) await expect(page.getByText(text, { exact: true })).toBeVisible();
+      }
       await expect(page.getByText('Back to all Carrowmont tools', { exact: false })).toBeVisible();
-      for (const text of tool.requiredText.slice(1)) await expect(page.getByText(text, { exact: true })).toBeVisible();
       for (const selector of tool.keyInputs) await expect(page.locator(selector), `${tool.name}: ${selector}`).toBeVisible();
       expect(errors, `${tool.name} browser errors:\n${errors.join('\n')}`).toEqual([]);
     });

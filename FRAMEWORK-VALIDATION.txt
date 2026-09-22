@@ -1,4 +1,4 @@
-CARROWMONT AUTOMATED QA FRAMEWORK - BUILD VALIDATION
+CARROWMONT AUTOMATED QA FRAMEWORK v1.3 - BUILD VALIDATION
 Date: 22 September 2026
 
 Framework JavaScript syntax validation: PASS
@@ -19,3 +19,9 @@ Validated source contracts include:
 - Retirement report-button shrink-safe layout
 
 The full Playwright browser suite itself requires Playwright dependencies plus Chrome/Edge and access to the live Carrowmont website. This build environment does not have external package/network access, so the live browser run was not executed here. The included GitHub Actions workflow and Windows runner are configured to execute that suite in the intended environment.
+
+
+v1.3 additional validation:
+- JavaScript syntax checked for localization-aware smoke changes.
+- SIP smoke contract now explicitly verifies India/INR and United States/USD visible terminology states.
+- Live Playwright execution remains delegated to GitHub Actions.

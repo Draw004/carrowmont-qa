@@ -1,4 +1,4 @@
-# Carrowmont Automated QA Framework v1.2
+# Carrowmont Automated QA Framework v1.3
 
 This package gives Carrowmont a repeatable QA process for the five live tools plus the key main-site pages. It is designed for a non-developer workflow: run it locally with one file, or put it in a small GitHub repository and use GitHub Actions.
 
@@ -123,3 +123,8 @@ The CI suite now prepares deterministic valid calculator fixtures before chart/r
 ## v1.2 locale-aware homepage update
 
 The India SIP homepage check now explicitly selects India/INR before asserting the India-only "Want to build ₹1 Crore?" spotlight. This prevents GitHub-hosted runners outside India from reporting the intentionally hidden regional section as a website defect.
+
+
+## v1.3 localization update
+
+The SIP smoke contract now verifies both supported naming states of the same calculator: India/INR must show **SIP Calculator**, **Generate SIP Report**, and the visible **POPULAR IN INDIA** badge; United States/USD must show **Monthly Investment Calculator** and **Generate Investment Report**, with the India-only badge hidden. This prevents the intentional international terminology from being reported as a smoke-test failure.
