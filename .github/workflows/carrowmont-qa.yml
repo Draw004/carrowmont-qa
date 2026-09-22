@@ -1,0 +1,46 @@
+name: Carrowmont Automated QA
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 2 * * *'
+
+jobs:
+  qa:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    env:
+      BASE_URL: https://carrowmont.com
+
+    steps:
+      - name: Checkout QA repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Run automated QA
+        run: npm run qa
+
+      - name: Upload QA reports and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: carrowmont-qa-results
+          path: |
+            qa-summary.md
+            qa-results.json
+            playwright-report/
+            test-results/
+            qa-artifacts/
+          if-no-files-found: warn
+          retention-days: 30
