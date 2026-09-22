@@ -1,0 +1,30 @@
+CARROWMONT AUTOMATED QA - ONE-TIME GITHUB SETUP
+
+1. Create one new GitHub repository, for example:
+   carrowmont-qa
+
+2. Upload everything inside this QA framework folder to the ROOT of that repository.
+   Do not upload the outer folder as a nested folder.
+
+3. Commit the files.
+
+4. Open the repository's Actions tab.
+
+5. Select:
+   Carrowmont Automated QA
+
+6. Click:
+   Run workflow
+
+7. When the run finishes, open the run and download the artifact named:
+   carrowmont-qa-results
+
+8. Open qa-summary.md first.
+   PASS = automated check passed.
+   FAIL = needs correction.
+   VISUAL REVIEW REQUIRED = open the generated screenshot and do the short human review.
+
+The workflow also runs once per day automatically against https://carrowmont.com.
+
+You do NOT need to place this framework inside all five calculator repositories.
+Keep it as one separate QA repository that tests the live Carrowmont site.

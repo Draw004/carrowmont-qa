@@ -1,0 +1,21 @@
+CARROWMONT AUTOMATED QA FRAMEWORK - BUILD VALIDATION
+Date: 22 September 2026
+
+Framework JavaScript syntax validation: PASS
+
+Static source contract validation performed against the current staged Carrowmont source (standardization package plus final corrections):
+26 PASS / 0 FAIL
+
+Validated source contracts include:
+- Back to all Carrowmont tools on all five tools
+- Correct Generate ... Report labels
+- Copy Summary capitalization
+- Standardized "Report has been downloaded." message
+- Financial Independence SVG/chart coordinate heights match (330 vs 330)
+- Financial Independence static chart values
+- Inflation permanent chart values
+- Goal report cross-tool page
+- Retirement report cross-tool page
+- Retirement report-button shrink-safe layout
+
+The full Playwright browser suite itself requires Playwright dependencies plus Chrome/Edge and access to the live Carrowmont website. This build environment does not have external package/network access, so the live browser run was not executed here. The included GitHub Actions workflow and Windows runner are configured to execute that suite in the intended environment.

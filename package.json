@@ -1,0 +1,22 @@
+{
+  "name": "carrowmont-automated-qa",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Automated browser, calculation, chart, report and layout QA for the Carrowmont financial tools suite.",
+  "scripts": {
+    "qa": "playwright test",
+    "qa:chrome": "playwright test --project=chrome-desktop",
+    "qa:edge": "playwright test --project=edge-desktop",
+    "qa:mobile": "playwright test --project=mobile-chromium",
+    "qa:reports": "playwright test tests/05-reports.spec.js --project=chrome-desktop",
+    "qa:headed": "playwright test --project=chrome-desktop --headed",
+    "qa:ui": "playwright test --ui",
+    "show-report": "playwright show-report",
+    "source-check": "node scripts/source-contract.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "pdf-lib": "^1.17.1"
+  }
+}
