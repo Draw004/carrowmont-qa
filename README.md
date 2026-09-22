@@ -1,4 +1,4 @@
-# Carrowmont Automated QA Framework v1.3
+# Carrowmont Automated QA Framework v1.4
 
 This package gives Carrowmont a repeatable QA process for the five live tools plus the key main-site pages. It is designed for a non-developer workflow: run it locally with one file, or put it in a small GitHub repository and use GitHub Actions.
 
@@ -128,3 +128,8 @@ The India SIP homepage check now explicitly selects India/INR before asserting t
 ## v1.3 localization update
 
 The SIP smoke contract now verifies both supported naming states of the same calculator: India/INR must show **SIP Calculator**, **Generate SIP Report**, and the visible **POPULAR IN INDIA** badge; United States/USD must show **Monthly Investment Calculator** and **Generate Investment Report**, with the India-only badge hidden. This prevents the intentional international terminology from being reported as a smoke-test failure.
+
+
+## v1.4 mobile localization assertion update
+
+The localized SIP smoke contract now verifies the visible hero heading rather than the desktop product label. The product label is intentionally hidden in the mobile header, so checking it with `toBeVisible()` caused a false failure on `mobile-chromium`. Desktop and mobile now verify the same user-visible localized experience without depending on responsive header visibility.

@@ -12,13 +12,13 @@ test.describe('Carrowmont smoke and content contracts', () => {
         // The same calculator is intentionally localized by country/currency:
         // India/INR uses SIP terminology; international views use Monthly Investment terminology.
         await chooseUnitedStatesLocale(page);
-        await expect(page.getByText('Monthly Investment Calculator', { exact: true }).first()).toBeVisible();
+        await expect(page.getByRole('heading', { name: /See how monthly investments may grow/i }).first()).toBeVisible();
         await expect(page.getByText('Generate Investment Report', { exact: true }).first()).toBeVisible();
         const indiaBadgeInternational = page.getByText('POPULAR IN INDIA', { exact: true }).first();
         if (await indiaBadgeInternational.count()) await expect(indiaBadgeInternational).toBeHidden();
 
         await chooseIndiaLocale(page);
-        await expect(page.getByText('SIP Calculator', { exact: true }).first()).toBeVisible();
+        await expect(page.getByRole('heading', { name: /See how a monthly SIP may grow/i }).first()).toBeVisible();
         await expect(page.getByText('Generate SIP Report', { exact: true }).first()).toBeVisible();
         await expect(page.getByText('POPULAR IN INDIA', { exact: true }).first()).toBeVisible();
         await expect(page.getByText('Copy Summary', { exact: true }).first()).toBeVisible();

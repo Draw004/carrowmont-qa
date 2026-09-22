@@ -1,0 +1,21 @@
+Carrowmont Automated QA Framework v1.4
+
+Why this update exists
+----------------------
+The v1.3 run produced 132 PASS / 1 FAIL. The only failure was mobile-chromium SIP smoke testing. The live page was correct: the mobile header intentionally hides the product-label span, but the QA test required that desktop header label to be visible.
+
+What changed
+------------
+Only the SIP localization smoke assertion was made responsive-safe. It now validates the visible localized hero heading instead of the responsive header product label.
+
+International / non-India:
+- visible heading: "See how monthly investments may grow..."
+- Generate Investment Report visible
+- POPULAR IN INDIA hidden
+
+India / INR:
+- visible heading: "See how a monthly SIP may grow..."
+- Generate SIP Report visible
+- POPULAR IN INDIA visible
+
+No Carrowmont production-site files are included or changed.

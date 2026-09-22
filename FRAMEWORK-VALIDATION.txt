@@ -1,4 +1,4 @@
-CARROWMONT AUTOMATED QA FRAMEWORK v1.3 - BUILD VALIDATION
+CARROWMONT AUTOMATED QA FRAMEWORK v1.4 - BUILD VALIDATION
 Date: 22 September 2026
 
 Framework JavaScript syntax validation: PASS
@@ -25,3 +25,10 @@ v1.3 additional validation:
 - JavaScript syntax checked for localization-aware smoke changes.
 - SIP smoke contract now explicitly verifies India/INR and United States/USD visible terminology states.
 - Live Playwright execution remains delegated to GitHub Actions.
+
+
+v1.4 additional validation:
+- SIP localization smoke assertion no longer depends on desktop-only product-label visibility.
+- International view checks a visible "See how monthly investments may grow..." heading.
+- India view checks a visible "See how a monthly SIP may grow..." heading.
+- Existing report-button and Popular in India visibility checks remain unchanged.
