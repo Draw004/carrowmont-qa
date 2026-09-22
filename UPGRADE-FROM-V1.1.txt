@@ -1,0 +1,16 @@
+Carrowmont Automated QA Framework v1.2
+
+Why this update exists
+----------------------
+The v1.1 run produced 131 PASS / 2 FAIL. Both failures were the same homepage test in Chrome and Edge. The "Want to build ₹1 Crore?" block is intentionally India/INR-only, while GitHub runners usually execute outside India.
+
+Replace these files in carrowmont-qa:
+- helpers/fixtures.js
+- tests/01-smoke.spec.js
+- package.json
+- README.md (optional documentation)
+
+No live Carrowmont website files need to change for this QA fix.
+
+After committing, run Actions > Carrowmont Automated QA > Run workflow again.
+Expected automated result: 133 PASS / 0 FAIL, assuming the live site has not changed and the India/INR homepage section remains within the configured desktop viewport threshold.

@@ -1,4 +1,4 @@
-# Carrowmont Automated QA Framework v1.0
+# Carrowmont Automated QA Framework v1.2
 
 This package gives Carrowmont a repeatable QA process for the five live tools plus the key main-site pages. It is designed for a non-developer workflow: run it locally with one file, or put it in a small GitHub repository and use GitHub Actions.
 
@@ -118,3 +118,8 @@ This keeps manual QA short while preserving a human check for visual polish.
 ## v1.1 reliability update
 
 The CI suite now prepares deterministic valid calculator fixtures before chart/report checks, explicitly selects India/INR for print-value checks, uses a visible homepage heading locator, and collapses Playwright retries so a retried test is reported once. This prevents non-India zero-default startup states from being misreported as chart defects.
+
+
+## v1.2 locale-aware homepage update
+
+The India SIP homepage check now explicitly selects India/INR before asserting the India-only "Want to build ₹1 Crore?" spotlight. This prevents GitHub-hosted runners outside India from reporting the intentionally hidden regional section as a website defect.

@@ -1,22 +1,48 @@
 import { expect } from '@playwright/test';
 import { setInput } from './common.js';
 
-async function chooseIndiaLocale(page) {
-  const summary = page.locator('#localeSummary');
-  if (!(await summary.count())) return;
+export async function chooseIndiaLocale(page) {
+  const summary = page.locator('#localeSummary, #localeMenu > summary, summary.locale-summary').first();
+  const current = page.locator('#localeCurrent').first();
+  const country = page.locator('#localeCountryLabel').first();
+  const currencyLabel = page.locator('#localeCurrencyLabel').first();
 
-  const current = page.locator('#localeCurrent');
   const currentText = (await current.count()) ? (await current.innerText().catch(() => '')) : '';
-  if (/India\s*·\s*INR/i.test(currentText)) return;
+  const countryText = (await country.count()) ? (await country.innerText().catch(() => '')) : '';
+  const currencyText = (await currencyLabel.count()) ? (await currencyLabel.innerText().catch(() => '')) : '';
+  const indiaAlreadySelected = /India\s*·\s*INR/i.test(currentText) || (/^India$/i.test(countryText.trim()) && /^INR$/i.test(currencyText.trim()));
+  const indiaExperienceActive = await page.locator('body.india-inr').count().catch(() => 0);
+  if (indiaAlreadySelected && indiaExperienceActive) return;
 
-  await summary.click();
+  if (await summary.count()) {
+    const details = summary.locator('xpath=ancestor::details[1]');
+    const needsOpen = (await details.count()) && !(await details.getAttribute('open'));
+    if (needsOpen || !(await details.count())) await summary.click().catch(() => {});
+  }
+
   const region = page.locator('#regionSelect');
   const currency = page.locator('#currencySelect');
-  if (await region.count()) await region.selectOption('IN');
-  if (await currency.count()) await currency.selectOption('INR');
+  if (await region.count()) {
+    const options = await region.locator('option').evaluateAll(opts => opts.map(o => ({ value: o.value, text: (o.textContent || '').trim() })));
+    const india = options.find(o => o.value === 'IN') || options.find(o => /^India$/i.test(o.text));
+    if (india) await region.selectOption(india.value);
+  }
+  if (await currency.count()) {
+    const options = await currency.locator('option').evaluateAll(opts => opts.map(o => ({ value: o.value, text: (o.textContent || '').trim() })));
+    const inr = options.find(o => o.value === 'INR') || options.find(o => /INR/i.test(o.text));
+    if (inr) await currency.selectOption(inr.value);
+  }
 
   const done = page.locator('#localeDone, #localeDoneBtn').filter({ visible: true }).first();
-  if (await done.count()) await done.click();
+  if (await done.count()) await done.click().catch(() => {});
+
+  await page.waitForFunction(() => {
+    const bodyIndia = document.body.classList.contains('india-inr');
+    const c = document.querySelector('#localeCountryLabel')?.textContent?.trim();
+    const m = document.querySelector('#localeCurrencyLabel')?.textContent?.trim();
+    const current = document.querySelector('#localeCurrent')?.textContent || '';
+    return bodyIndia || (c === 'India' && m === 'INR') || /India\s*·\s*INR/i.test(current);
+  }, null, { timeout: 5000 }).catch(() => {});
   await page.waitForTimeout(200);
 }
 

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { tools, mainSitePages } from '../qa.config.js';
 import { gotoClean, monitorPageErrors } from '../helpers/common.js';
+import { chooseIndiaLocale } from '../helpers/fixtures.js';
 
 test.describe('Carrowmont smoke and content contracts', () => {
   for (const tool of tools) {
@@ -24,14 +25,15 @@ test.describe('Carrowmont smoke and content contracts', () => {
     });
   }
 
-  test('[AUTO] Homepage: Want to build section is present near the first viewport on desktop', async ({ page }, testInfo) => {
+  test('[AUTO] Homepage: India/INR Want to build section is present near the first viewport on desktop', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name === 'mobile-chromium', 'Desktop visibility check');
     await gotoClean(page, '/');
-    const target = page.locator('h1:visible, h2:visible, h3:visible').filter({ hasText: /Want to build/i }).filter({ hasText: /1\s*Crore/i }).first();
+    await chooseIndiaLocale(page);
+    const target = page.locator('.india-sip-spotlight h2').filter({ hasText: /Want to build/i }).filter({ hasText: /1\s*Crore/i }).first();
     await expect(target).toBeVisible();
     const box = await target.boundingBox();
     expect(box).not.toBeNull();
     const viewportHeight = await page.evaluate(() => window.innerHeight);
-    expect(box.y, 'The 1 Crore section should begin within roughly one viewport plus a small scroll cue').toBeLessThan(viewportHeight + 350);
+    expect(box.y, 'The India/INR 1 Crore section should begin within roughly one viewport plus a small scroll cue').toBeLessThan(viewportHeight + 350);
   });
 });
