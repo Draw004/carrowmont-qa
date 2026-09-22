@@ -113,3 +113,8 @@ For Carrowmont v1.x releases, use this simple gate:
 - Complete `VISUAL-REVIEW-CHECKLIST.md`.
 
 This keeps manual QA short while preserving a human check for visual polish.
+
+
+## v1.1 reliability update
+
+The CI suite now prepares deterministic valid calculator fixtures before chart/report checks, explicitly selects India/INR for print-value checks, uses a visible homepage heading locator, and collapses Playwright retries so a retried test is reported once. This prevents non-India zero-default startup states from being misreported as chart defects.

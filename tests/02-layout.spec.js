@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { tools } from '../qa.config.js';
 import { gotoClean, assertNoHorizontalOverflow, assertInsideParent, saveReferenceScreenshot } from '../helpers/common.js';
+import { prepareToolForQa } from '../helpers/fixtures.js';
 
 test.describe('Layout and responsive guardrails', () => {
   for (const tool of tools) {
@@ -17,6 +18,7 @@ test.describe('Layout and responsive guardrails', () => {
 
     test(`[VISUAL] ${tool.name}: capture full-page reference screenshot`, async ({ page }, testInfo) => {
       await gotoClean(page, tool.path);
+      await prepareToolForQa(page, tool.key);
       await saveReferenceScreenshot(page, testInfo.project.name, tool.key, testInfo.project.name.includes('mobile') ? 'mobile' : 'desktop');
       expect(true).toBeTruthy();
     });

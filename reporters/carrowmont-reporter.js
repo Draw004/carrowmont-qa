@@ -2,7 +2,7 @@ import fs from 'node:fs';
 
 export default class CarrowmontReporter {
   constructor() {
-    this.rows = [];
+    this.rows = new Map();
     this.started = new Date().toISOString();
   }
 
@@ -14,7 +14,7 @@ export default class CarrowmontReporter {
     else if (result.status === 'passed') status = 'PASS';
     else if (result.status === 'skipped') status = 'SKIPPED';
     else status = 'FAIL';
-    this.rows.push({
+    this.rows.set(title, {
       title,
       status,
       durationMs: result.duration,
@@ -23,10 +23,11 @@ export default class CarrowmontReporter {
   }
 
   onEnd(result) {
-    const automated = this.rows.filter(r => r.status !== 'VISUAL REVIEW REQUIRED' && r.status !== 'SKIPPED');
+    const rows = [...this.rows.values()];
+    const automated = rows.filter(r => r.status !== 'VISUAL REVIEW REQUIRED' && r.status !== 'SKIPPED');
     const passed = automated.filter(r => r.status === 'PASS').length;
     const failed = automated.filter(r => r.status === 'FAIL').length;
-    const visual = this.rows.filter(r => r.status === 'VISUAL REVIEW REQUIRED').length;
+    const visual = rows.filter(r => r.status === 'VISUAL REVIEW REQUIRED').length;
     const lines = [
       '# Carrowmont Automated QA Summary',
       '',
@@ -38,12 +39,12 @@ export default class CarrowmontReporter {
       '',
       '| Status | Test |',
       '|---|---|',
-      ...this.rows.map(r => `| ${r.status} | ${String(r.title).replace(/\|/g, '\\|')} |`),
+      ...rows.map(r => `| ${r.status} | ${String(r.title).replace(/\|/g, '\\|')} |`),
       '',
       failed ? '## Failures' : '## Failures\n\nNone.',
-      ...this.rows.filter(r => r.status === 'FAIL').flatMap(r => ['', `### ${r.title}`, '', '```', r.error || 'Unknown failure', '```'])
+      ...rows.filter(r => r.status === 'FAIL').flatMap(r => ['', `### ${r.title}`, '', '```', r.error || 'Unknown failure', '```'])
     ];
     fs.writeFileSync('qa-summary.md', lines.join('\n'));
-    fs.writeFileSync('qa-results.json', JSON.stringify({ started: this.started, ended: new Date().toISOString(), rows: this.rows }, null, 2));
+    fs.writeFileSync('qa-results.json', JSON.stringify({ started: this.started, ended: new Date().toISOString(), rows }, null, 2));
   }
 }

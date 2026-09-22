@@ -1,0 +1,23 @@
+CARROWMONT QA v1.1 - UPDATE FROM v1.0
+
+Replace/upload these items in the carrowmont-qa repository:
+
+1. helpers/fixtures.js                  (NEW)
+2. tests/01-smoke.spec.js               (REPLACE)
+3. tests/02-layout.spec.js              (REPLACE)
+4. tests/03-charts.spec.js              (REPLACE)
+5. tests/05-reports.spec.js             (REPLACE)
+6. reporters/carrowmont-reporter.js     (REPLACE)
+7. package.json                          (REPLACE)
+8. README.md                             (optional documentation update)
+
+Do NOT change the live Carrowmont calculator repositories for this QA-framework correction.
+
+After committing these QA files, open Actions > Carrowmont Automated QA > Run workflow.
+
+Why v1.1:
+- GitHub runners may resolve Carrowmont to a non-India locale, where demo monetary fields intentionally start at zero.
+- v1.0 checked FI/Retirement charts before entering a valid scenario, so the tests interpreted intentional empty-state charts as failures.
+- v1.0 attempted the Retirement PDF while the report button was intentionally disabled before a valid plan existed.
+- v1.0's homepage locator could select a hidden duplicate rather than the visible heading.
+- v1.0 counted the initial failure and its CI retry as separate failures.

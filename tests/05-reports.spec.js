@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { tools, standardDownloadMessage } from '../qa.config.js';
 import { gotoClean, installCanvasTextProbe, getCanvasText, validatePdfDownload } from '../helpers/common.js';
+import { prepareToolForQa } from '../helpers/fixtures.js';
 
 test.describe('PDF report generation and download standard', () => {
   for (const tool of tools) {
@@ -8,6 +9,7 @@ test.describe('PDF report generation and download standard', () => {
       test.skip(testInfo.project.name !== 'chrome-desktop', 'Generate PDFs once in Chrome to keep the full suite fast');
       test.setTimeout(120000);
       await gotoClean(page, tool.path);
+      await prepareToolForQa(page, tool.key);
       await installCanvasTextProbe(page);
       const button = page.locator(tool.reportButton);
       await expect(button).toBeVisible();
