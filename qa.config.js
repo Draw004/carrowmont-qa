@@ -68,6 +68,6 @@ export const tools = [
 export const mainSitePages = [
   { key: 'home', path: '/', text: 'Want to build' },
   { key: 'about', path: '/about.html', text: 'SIP Calculator' },
-  { key: 'learn', path: '/learn.html', text: 'Five live tools to try' },
+  { key: 'learn', path: '/learn.html', text: 'PLANNING TOPICS' },
   { key: 'methodology', path: '/methodology.html', text: 'Methodology' }
 ];
