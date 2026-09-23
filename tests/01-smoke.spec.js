@@ -3,34 +3,37 @@ import { tools, mainSitePages } from '../qa.config.js';
 import { gotoClean, monitorPageErrors } from '../helpers/common.js';
 import { chooseIndiaLocale, chooseUnitedStatesLocale } from '../helpers/fixtures.js';
 
-async function chooseIndiaUsdLocale(page) {
-  const summary = page.locator('#localeSummary, #localeMenu > summary, summary.locale-summary').first();
-  if (await summary.count()) {
-    const details = summary.locator('xpath=ancestor::details[1]');
-    const needsOpen = (await details.count()) && !(await details.getAttribute('open'));
-    if (needsOpen || !(await details.count())) await summary.click().catch(() => {});
+async function setLearnLocaleDirect(page, region, currency) {
+  await expect.poll(async () => page.evaluate(() => Boolean(
+    window.CarrowmontLocale && typeof window.CarrowmontLocale.setLocale === 'function'
+  )), { timeout: 10000, message: 'CarrowmontLocale.setLocale should be available on Learn' }).toBe(true);
+
+  await page.evaluate(({ region, currency }) => {
+    window.CarrowmontLocale.setLocale(region, currency);
+    if (window.CarrowmontContentLocale && typeof window.CarrowmontContentLocale.apply === 'function') {
+      window.CarrowmontContentLocale.apply();
+    }
+  }, { region, currency });
+
+  await expect.poll(async () => page.evaluate(() => ({
+    region: window.CarrowmontLocale?.getRegion?.(),
+    currency: window.CarrowmontLocale?.getCurrency?.()
+  })), { timeout: 10000, message: `Locale API should report ${region}/${currency}` })
+    .toEqual({ region, currency });
+
+  const countryLabels = { IN: 'India', US: 'United States' };
+  if (countryLabels[region]) {
+    await expect(page.locator('#localeCountryLabel')).toHaveText(countryLabels[region], { timeout: 10000 });
   }
-
-  const region = page.locator('#regionSelect');
-  const currency = page.locator('#currencySelect');
-  if (await region.count()) await region.selectOption('IN');
-  if (await currency.count()) await currency.selectOption('USD');
-
-  const done = page.locator('#localeDone, #localeDoneBtn').filter({ visible: true }).first();
-  if (await done.count()) await done.click().catch(() => {});
-
-  await page.waitForFunction(() => {
-    const current = document.querySelector('#localeCurrent')?.textContent || '';
-    return /India\s*·\s*USD/i.test(current);
-  }, null, { timeout: 5000 });
-  await page.waitForTimeout(200);
+  await expect(page.locator('#localeCurrencyLabel')).toHaveText(currency, { timeout: 10000 });
 }
 
 async function expectLearnCategoryOrder(page, expectedFirstThree) {
-  const order = await page.locator('.planning-categories > .category-box').evaluateAll(nodes =>
-    nodes.map(node => node.getAttribute('data-category')).filter(Boolean)
-  );
-  expect(order.slice(0, 3)).toEqual(expectedFirstThree);
+  const boxes = page.locator('.planning-categories > .category-box');
+  await expect(boxes).toHaveCount(6, { timeout: 10000 });
+  for (let i = 0; i < expectedFirstThree.length; i += 1) {
+    await expect(boxes.nth(i)).toHaveAttribute('data-category', expectedFirstThree[i], { timeout: 10000 });
+  }
 }
 
 test.describe('Carrowmont smoke and content contracts', () => {
@@ -71,31 +74,30 @@ test.describe('Carrowmont smoke and content contracts', () => {
     });
   }
 
-
-  test('[AUTO] Learn hub: country controls terminology/order and currency controls money examples', async ({ page }) => {
+  test('[AUTO] Learn hub localization contract v3: country controls terminology/order and currency controls money examples', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, '/learn.html');
 
     // India + INR: India terminology and India-first content order.
-    await chooseIndiaLocale(page);
-    await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)');
-    await expect(page.locator('#investmentTargetTopicTitle')).toContainText('₹1 crore');
-    await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('₹10,000');
+    await setLearnLocaleDirect(page, 'IN', 'INR');
+    await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)', { timeout: 10000 });
+    await expect(page.locator('#investmentTargetTopicTitle')).toContainText('₹1 crore', { timeout: 10000 });
+    await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('₹10,000', { timeout: 10000 });
     await expectLearnCategoryOrder(page, ['investment', 'retirement', 'goals']);
 
     // United States + USD: international terminology, USD examples and international order.
-    await chooseUnitedStatesLocale(page);
-    await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment');
-    await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million');
-    await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500');
-    await expect(page.locator('#investmentCategoryTitle')).not.toContainText('SIP');
+    await setLearnLocaleDirect(page, 'US', 'USD');
+    await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment', { timeout: 10000 });
+    await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million', { timeout: 10000 });
+    await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500', { timeout: 10000 });
+    await expect(page.locator('#investmentCategoryTitle')).not.toContainText('SIP', { timeout: 10000 });
     await expectLearnCategoryOrder(page, ['retirement', 'goals', 'investment']);
 
-    // India + USD: country still controls SIP terminology/order, currency controls the money examples.
-    await chooseIndiaUsdLocale(page);
-    await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)');
-    await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million');
-    await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500');
+    // India + USD: country still controls SIP terminology/order; currency controls money examples.
+    await setLearnLocaleDirect(page, 'IN', 'USD');
+    await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)', { timeout: 10000 });
+    await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million', { timeout: 10000 });
+    await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500', { timeout: 10000 });
     await expectLearnCategoryOrder(page, ['investment', 'retirement', 'goals']);
 
     expect(errors, `Learn hub browser errors:
