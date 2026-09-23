@@ -33,6 +33,42 @@ for (const [dir, htmlFile, jsFile, buttonText] of tools) {
   add(`${dir}: standardized report message`, js.includes('Report has been downloaded.'));
 }
 
+const sipHtml = read('sip-calculator/index.html');
+const sipCore = read('sip-calculator/core.js');
+const sipApp = read('sip-calculator/app.js');
+const sipLocale = read('sip-calculator/locale.js');
+add('sip: contribution-frequency selector', sipHtml.includes('id="contributionFrequency"'));
+add('sip: standardized frequency periods',
+  /weekly\s*:\s*52/.test(sipCore) &&
+  /biweekly\s*:\s*26/.test(sipCore) &&
+  /semimonthly\s*:\s*24/.test(sipCore) &&
+  /fourweekly\s*:\s*13/.test(sipCore) &&
+  /monthly\s*:\s*12/.test(sipCore)
+);
+add('sip: country change reapplies suggested frequency while currency-only changes can preserve user choice',
+  sipApp.includes('frequencyUserOverride=false;Locale.setRegion') &&
+  sipApp.includes('defaultFrequencyForRegion') &&
+  sipApp.includes("$('contributionFrequency').addEventListener('change',()=>{frequencyUserOverride=true")
+);
+add('sip: country selector is alphabetized with Other / International last', sipApp.includes("a.label.localeCompare(b.label,'en'") && sipApp.includes("if(codeA==='OTHER') return 1"));
+const expandedRegionCodes = ['AT','BD','BE','CL','DK','FI','IE','NL','NO','OM','PL','PT','QA','SE'];
+add('sip: expanded country profiles are present', expandedRegionCodes.every(code => new RegExp(`\\b${code}:\\s*\\{`).test(sipLocale)));
+add('sip: expanded currencies and symbols are present',
+  /BDT:\s*\{[^}]*symbol:\s*"৳"/.test(sipLocale) &&
+  /CLP:\s*\{[^}]*symbol:\s*"\$"/.test(sipLocale) &&
+  /DKK:\s*\{[^}]*symbol:\s*"kr"/.test(sipLocale) &&
+  /NOK:\s*\{[^}]*symbol:\s*"kr"/.test(sipLocale) &&
+  /OMR:\s*\{[^}]*symbol:\s*"OMR"/.test(sipLocale) &&
+  /PLN:\s*\{[^}]*symbol:\s*"zł"/.test(sipLocale) &&
+  /QAR:\s*\{[^}]*symbol:\s*"QAR"/.test(sipLocale) &&
+  /SEK:\s*\{[^}]*symbol:\s*"kr"/.test(sipLocale)
+);
+add('sip: country profiles carry contribution-frequency terminology metadata',
+  /IE:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"fortnightly"/.test(sipLocale) &&
+  /US:\s*\{[^}]*contributionFrequency:\s*"biweekly"[^}]*twoWeekLabel:\s*"biweekly"/.test(sipLocale) &&
+  /BD:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(sipLocale)
+);
+
 const fiHtml = read('financial-independence/index.html');
 const fiJs = read('financial-independence/app.js');
 const fiViewBoxHeight = Number((fiHtml.match(/id="pathChart"[^>]*viewBox="0 0 800 (\d+)"/) || [])[1]);

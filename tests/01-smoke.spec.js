@@ -45,12 +45,16 @@ test.describe('Carrowmont smoke and content contracts', () => {
         // The same calculator is intentionally localized by country/currency:
         // India/INR uses SIP terminology; international views use Monthly Investment terminology.
         await chooseUnitedStatesLocale(page);
-        await expect(page.getByRole('heading', { name: /See how monthly investments may grow/i }).first()).toBeVisible();
+        await expect(page.locator('#contributionFrequency')).toHaveValue('biweekly');
+        await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Biweekly (Every 2 Weeks)');
+        await expect(page.getByRole('heading', { name: /See how biweekly investments may grow/i }).first()).toBeVisible();
         await expect(page.getByText('Generate Investment Report', { exact: true }).first()).toBeVisible();
         const indiaBadgeInternational = page.getByText('POPULAR IN INDIA', { exact: true }).first();
         if (await indiaBadgeInternational.count()) await expect(indiaBadgeInternational).toBeHidden();
 
         await chooseIndiaLocale(page);
+        await expect(page.locator('#contributionFrequency')).toHaveValue('monthly');
+        await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Fortnightly (Every 2 Weeks)');
         await expect(page.getByRole('heading', { name: /See how a monthly SIP may grow/i }).first()).toBeVisible();
         await expect(page.getByText('Generate SIP Report', { exact: true }).first()).toBeVisible();
         await expect(page.getByText('POPULAR IN INDIA', { exact: true }).first()).toBeVisible();
@@ -64,6 +68,93 @@ test.describe('Carrowmont smoke and content contracts', () => {
       expect(errors, `${tool.name} browser errors:\n${errors.join('\n')}`).toEqual([]);
     });
   }
+
+  test('[AUTO] SIP: changing country reapplies the new country frequency suggestion after a manual override', async ({ page }) => {
+    await gotoClean(page, '/sip-calculator/');
+    await chooseUnitedStatesLocale(page);
+    await expect(page.locator('#contributionFrequency')).toHaveValue('biweekly');
+
+    await page.locator('#contributionFrequency').selectOption('weekly');
+    await expect(page.locator('#contributionFrequency')).toHaveValue('weekly');
+
+    await page.locator('#regionSelect').evaluate(el => {
+      el.value = 'IN';
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await expect(page.locator('#localeCurrent')).toHaveText(/India\s*·\s*INR/, { timeout: 10000 });
+    await expect(page.locator('#contributionFrequency')).toHaveValue('monthly');
+    await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Fortnightly (Every 2 Weeks)');
+
+    await page.locator('#regionSelect').evaluate(el => {
+      el.value = 'AU';
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await expect(page.locator('#localeCurrent')).toHaveText(/Australia\s*·\s*AUD/, { timeout: 10000 });
+    await expect(page.locator('#contributionFrequency')).toHaveValue('biweekly');
+    await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Fortnightly (Every 2 Weeks)');
+  });
+
+  test('[AUTO] SIP: changing currency alone preserves a manual contribution-frequency choice', async ({ page }) => {
+    await gotoClean(page, '/sip-calculator/');
+    await chooseUnitedStatesLocale(page);
+    await page.locator('#contributionFrequency').selectOption('weekly');
+    await page.locator('#currencySelect').evaluate(el => {
+      el.value = 'EUR';
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await expect(page.locator('#contributionFrequency')).toHaveValue('weekly');
+  });
+
+  test('[AUTO] SIP: country list is alphabetical, expanded locale profiles are configured, and international terminology stays correct', async ({ page }) => {
+    await gotoClean(page, '/sip-calculator/');
+
+    const labels = await page.locator('#regionSelect option').allTextContents();
+    expect(labels.at(-1)).toBe('Other / International');
+    const countryLabels = labels.slice(0, -1);
+    const sortedLabels = [...countryLabels].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
+    expect(countryLabels).toEqual(sortedLabels);
+
+    for (const country of ['Austria','Bangladesh','Belgium','Chile','Denmark','Finland','Ireland','Netherlands','Norway','Oman','Poland','Portugal','Qatar','Sweden']) {
+      expect(countryLabels).toContain(country);
+    }
+
+    const profiles = await page.evaluate(() => {
+      const codes = ['AT','BD','BE','CL','DK','FI','IE','NL','NO','OM','PL','PT','QA','SE'];
+      return Object.fromEntries(codes.map(code => [code, window.CarrowmontLocale.regions[code]]));
+    });
+    expect(profiles).toEqual({
+      AT: { label:'Austria', locale:'de-AT', currency:'EUR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      BD: { label:'Bangladesh', locale:'en-BD', currency:'BDT', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      BE: { label:'Belgium', locale:'nl-BE', currency:'EUR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      CL: { label:'Chile', locale:'es-CL', currency:'CLP', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      DK: { label:'Denmark', locale:'da-DK', currency:'DKK', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      FI: { label:'Finland', locale:'fi-FI', currency:'EUR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      IE: { label:'Ireland', locale:'en-IE', currency:'EUR', contributionFrequency:'monthly', twoWeekLabel:'fortnightly' },
+      NL: { label:'Netherlands', locale:'nl-NL', currency:'EUR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      NO: { label:'Norway', locale:'nb-NO', currency:'NOK', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      OM: { label:'Oman', locale:'en-OM', currency:'OMR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      PL: { label:'Poland', locale:'pl-PL', currency:'PLN', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      PT: { label:'Portugal', locale:'pt-PT', currency:'EUR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      QA: { label:'Qatar', locale:'en-QA', currency:'QAR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      SE: { label:'Sweden', locale:'sv-SE', currency:'SEK', contributionFrequency:'monthly', twoWeekLabel:'neutral' }
+    });
+
+    await page.locator('#regionSelect').evaluate(el => {
+      el.value = 'BD';
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await expect(page.locator('#localeCurrent')).toHaveText(/Bangladesh\s*·\s*BDT/, { timeout: 10000 });
+    await expect(page.locator('.product-label')).toHaveText('Recurring Investment Calculator');
+    await expect(page.locator('#sipAmountLabel')).toHaveText('Current monthly investment');
+    await expect(page.locator('.currency-prefix').first()).toHaveText('৳');
+    await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Every 2 Weeks');
+
+    await page.locator('#regionSelect').evaluate(el => {
+      el.value = 'IE';
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Fortnightly (Every 2 Weeks)');
+  });
 
   for (const p of mainSitePages) {
     test(`[AUTO] Main site ${p.key}: loads and contains expected content`, async ({ page }) => {

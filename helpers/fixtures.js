@@ -149,6 +149,8 @@ export async function prepareToolForQa(page, toolKey) {
   if (toolKey === 'sip-calculator') {
     const growth = page.locator('#growthTab');
     if (await growth.count()) await growth.click();
+    const frequency = page.locator('#contributionFrequency');
+    if (await frequency.count()) await frequency.selectOption('monthly');
     await setInput(page, '#currentSavings', 100000);
     await setInput(page, '#monthlySIP', 10000);
     await setInput(page, '#years', 15);
