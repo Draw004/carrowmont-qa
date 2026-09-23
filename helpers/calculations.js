@@ -1,12 +1,21 @@
-export function sipFutureValue({ currentSavings, monthlySIP, years, annualReturnPct, annualStepUpPct = 0 }) {
+export const sipFrequencyPeriods = Object.freeze({
+  weekly: 52,
+  biweekly: 26,
+  semimonthly: 24,
+  fourweekly: 13,
+  monthly: 12
+});
+
+export function sipFutureValue({ currentSavings, monthlySIP, years, annualReturnPct, annualStepUpPct = 0, contributionFrequency = 'monthly' }) {
   const annualReturn = annualReturnPct / 100;
   const step = annualStepUpPct / 100;
-  const rm = annualReturn === 0 ? 0 : Math.pow(1 + annualReturn, 1 / 12) - 1;
-  const months = Math.round(years * 12);
+  const periodsPerYear = sipFrequencyPeriods[contributionFrequency] || 12;
+  const periodicRate = annualReturn === 0 ? 0 : Math.pow(1 + annualReturn, 1 / periodsPerYear) - 1;
+  const periods = Math.round(years * periodsPerYear);
   let portfolio = currentSavings;
-  for (let m = 1; m <= months; m++) {
-    portfolio *= 1 + rm;
-    const yearIndex = Math.floor(Math.max(0, m - 1) / 12);
+  for (let p = 1; p <= periods; p++) {
+    portfolio *= 1 + periodicRate;
+    const yearIndex = Math.floor(Math.max(0, p - 1) / periodsPerYear);
     portfolio += monthlySIP * Math.pow(1 + step, yearIndex);
   }
   return portfolio;

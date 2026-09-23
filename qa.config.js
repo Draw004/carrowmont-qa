@@ -60,7 +60,7 @@ export const tools = [
     reportMinPages: 2,
     charts: ['#chart1', '#chart2'],
     requiredText: ['SIP Calculator', 'Copy Summary', 'Generate SIP Report'],
-    keyInputs: ['#currentSavings', '#monthlySIP', '#years', '#annualReturn', '#annualStepUp'],
+    keyInputs: ['#currentSavings', '#monthlySIP', '#contributionFrequency', '#years', '#annualReturn', '#annualStepUp'],
     layoutParent: '.snapshot-actions'
   }
 ];

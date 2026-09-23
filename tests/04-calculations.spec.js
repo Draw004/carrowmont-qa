@@ -1,20 +1,63 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, setInput, parseMoney, parsePercent, relativeError } from '../helpers/common.js';
-import { sipFutureValue, inflationFutureValue, goalFutureCost, fiToday, fiAtAge } from '../helpers/calculations.js';
+import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, fiToday, fiAtAge } from '../helpers/calculations.js';
 
 test.describe('Calculation regression and independent formula checks', () => {
   test('[AUTO] SIP: future value matches an independent monthly compounding calculation', async ({ page }) => {
     await gotoClean(page, '/sip-calculator/');
     await page.locator('#growthTab').click();
+    await page.locator('#contributionFrequency').selectOption('monthly');
     await setInput(page, '#currentSavings', 100000);
     await setInput(page, '#monthlySIP', 10000);
     await setInput(page, '#years', 15);
     await setInput(page, '#annualReturn', 12);
     await setInput(page, '#annualStepUp', 0);
     const actual = parseMoney(await page.locator('#heroValue').innerText());
-    const expected = sipFutureValue({ currentSavings: 100000, monthlySIP: 10000, years: 15, annualReturnPct: 12, annualStepUpPct: 0 });
+    const expected = sipFutureValue({ currentSavings: 100000, monthlySIP: 10000, years: 15, annualReturnPct: 12, annualStepUpPct: 0, contributionFrequency: 'monthly' });
     expect(Number.isFinite(actual)).toBeTruthy();
     expect(relativeError(actual, expected), `SIP actual ${actual} expected ${expected}`).toBeLessThan(0.012);
+  });
+
+  test('[AUTO] SIP: contribution-frequency constants stay standardized', async () => {
+    expect(sipFrequencyPeriods).toEqual({
+      weekly: 52,
+      biweekly: 26,
+      semimonthly: 24,
+      fourweekly: 13,
+      monthly: 12
+    });
+    expect(sipFrequencyPeriods.biweekly).not.toBe(sipFrequencyPeriods.semimonthly);
+  });
+
+  for (const contributionFrequency of ['weekly', 'biweekly', 'semimonthly', 'fourweekly']) {
+    test(`[AUTO] SIP: ${contributionFrequency} future value matches an independent periodic-compounding calculation`, async ({ page }) => {
+      await gotoClean(page, '/sip-calculator/');
+      await page.locator('#growthTab').click();
+      await page.locator('#contributionFrequency').selectOption(contributionFrequency);
+      await setInput(page, '#currentSavings', 100000);
+      await setInput(page, '#monthlySIP', 10000);
+      await setInput(page, '#years', 15);
+      await setInput(page, '#annualReturn', 12);
+      await setInput(page, '#annualStepUp', 0);
+      const actual = parseMoney(await page.locator('#heroValue').innerText());
+      const expected = sipFutureValue({ currentSavings: 100000, monthlySIP: 10000, years: 15, annualReturnPct: 12, annualStepUpPct: 0, contributionFrequency });
+      expect(Number.isFinite(actual)).toBeTruthy();
+      expect(relativeError(actual, expected), `SIP ${contributionFrequency} actual ${actual} expected ${expected}`).toBeLessThan(0.012);
+    });
+  }
+
+  test('[AUTO] SIP: annual step-up remains annual for weekly contributions', async ({ page }) => {
+    await gotoClean(page, '/sip-calculator/');
+    await page.locator('#growthTab').click();
+    await page.locator('#contributionFrequency').selectOption('weekly');
+    await setInput(page, '#currentSavings', 0);
+    await setInput(page, '#monthlySIP', 1000);
+    await setInput(page, '#years', 2);
+    await setInput(page, '#annualReturn', 0);
+    await setInput(page, '#annualStepUp', 10);
+    const actual = parseMoney(await page.locator('#totalInvested').innerText());
+    const expected = 52 * 1000 + 52 * 1100;
+    expect(relativeError(actual, expected), `Weekly step-up invested ${actual} expected ${expected}`).toBeLessThan(0.006);
   });
 
   test('[AUTO] Inflation: future value matches compound inflation formula', async ({ page }) => {

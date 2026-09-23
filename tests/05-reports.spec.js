@@ -19,9 +19,14 @@ test.describe('PDF report generation and download standard', () => {
       const info = await validatePdfDownload(download, tool.reportMinPages);
       await expect(page.locator(tool.reportStatus)).toHaveText(standardDownloadMessage, { timeout: 15000 });
       expect(info.pages).toBeGreaterThanOrEqual(tool.reportMinPages);
+      const canvasText = await getCanvasText(page);
+
+      if (tool.key === 'sip-calculator') {
+        expect(canvasText).toContain('Contribution frequency');
+        expect(canvasText).toContain('Monthly');
+      }
 
       if (tool.requiresToolsReportPage) {
-        const canvasText = await getCanvasText(page);
         expect(canvasText).toContain('Continue planning with Carrowmont');
         const expectedOtherTools = tool.key === 'goal-planner'
           ? ['Retirement Planner', 'SIP Calculator', 'Financial Independence', 'Inflation Calculator']
