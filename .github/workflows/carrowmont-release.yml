@@ -1,0 +1,215 @@
+name: Carrowmont Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (example: v1.1.1)"
+        required: true
+        type: string
+      repositories:
+        description: "Comma-separated target repositories (owner/repo)"
+        required: true
+        default: "Draw004/draw004.github.io"
+        type: string
+      release_title:
+        description: "Optional title. Leave blank for: Carrowmont <version>"
+        required: false
+        type: string
+      notes:
+        description: "Optional release notes. Leave blank for GitHub-generated notes."
+        required: false
+        type: string
+      prerelease:
+        description: "Mark as a pre-release"
+        required: true
+        default: false
+        type: boolean
+      confirm:
+        description: "Type RELEASE to confirm"
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: carrowmont-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create GitHub release(s)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate release request
+        shell: bash
+        env:
+          VERSION: ${{ inputs.version }}
+          REPOSITORIES: ${{ inputs.repositories }}
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$CONFIRM" != "RELEASE" ]]; then
+            echo "Confirmation must be exactly RELEASE."
+            exit 1
+          fi
+
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Version must look like v1.1.1 (or a SemVer prerelease such as v1.2.0-rc.1)."
+            exit 1
+          fi
+
+          if [[ -z "${REPOSITORIES//[[:space:],]/}" ]]; then
+            echo "At least one repository is required."
+            exit 1
+          fi
+
+      - name: Verify latest Carrowmont QA passed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          QA_JSON="$(gh run list \
+            --repo "$GITHUB_REPOSITORY" \
+            --workflow carrowmont-qa.yml \
+            --limit 1 \
+            --json status,conclusion,databaseId,url,createdAt)"
+
+          QA_COUNT="$(printf '%s' "$QA_JSON" | jq 'length')"
+          if [[ "$QA_COUNT" -lt 1 ]]; then
+            echo "No Carrowmont Automated QA run was found."
+            exit 1
+          fi
+
+          QA_STATUS="$(printf '%s' "$QA_JSON" | jq -r '.[0].status')"
+          QA_CONCLUSION="$(printf '%s' "$QA_JSON" | jq -r '.[0].conclusion')"
+          QA_URL="$(printf '%s' "$QA_JSON" | jq -r '.[0].url')"
+          QA_ID="$(printf '%s' "$QA_JSON" | jq -r '.[0].databaseId')"
+
+          echo "Latest QA run: #$QA_ID"
+          echo "Status: $QA_STATUS"
+          echo "Conclusion: $QA_CONCLUSION"
+          echo "URL: $QA_URL"
+
+          if [[ "$QA_STATUS" != "completed" || "$QA_CONCLUSION" != "success" ]]; then
+            echo "Latest Carrowmont Automated QA run has not passed. Release stopped."
+            exit 1
+          fi
+
+          echo "QA_URL=$QA_URL" >> "$GITHUB_ENV"
+          echo "QA_ID=$QA_ID" >> "$GITHUB_ENV"
+
+      - name: Preflight target repositories
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.CARROWMONT_RELEASE_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          REPOSITORIES: ${{ inputs.repositories }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${GH_TOKEN:-}" ]]; then
+            echo "Missing repository secret CARROWMONT_RELEASE_TOKEN."
+            exit 1
+          fi
+
+          IFS=',' read -ra RAW_REPOS <<< "$REPOSITORIES"
+          : > /tmp/carrowmont-release-targets.txt
+
+          for raw in "${RAW_REPOS[@]}"; do
+            repo="$(printf '%s' "$raw" | xargs)"
+            [[ -z "$repo" ]] && continue
+
+            if [[ ! "$repo" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
+              echo "Invalid repository name: $repo"
+              exit 1
+            fi
+
+            echo "Checking $repo ..."
+            branch="$(gh api "repos/$repo" --jq '.default_branch')"
+            sha="$(gh api "repos/$repo/commits/$branch" --jq '.sha')"
+
+            if gh api "repos/$repo/git/ref/tags/$VERSION" >/dev/null 2>&1; then
+              echo "Tag $VERSION already exists in $repo. Nothing was released."
+              exit 1
+            fi
+
+            if gh release view "$VERSION" --repo "$repo" >/dev/null 2>&1; then
+              echo "Release $VERSION already exists in $repo. Nothing was released."
+              exit 1
+            fi
+
+            printf '%s|%s|%s\n' "$repo" "$branch" "$sha" >> /tmp/carrowmont-release-targets.txt
+          done
+
+          if [[ ! -s /tmp/carrowmont-release-targets.txt ]]; then
+            echo "No valid target repositories were supplied."
+            exit 1
+          fi
+
+          echo "Preflight passed for:"
+          cat /tmp/carrowmont-release-targets.txt
+
+      - name: Create release(s)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.CARROWMONT_RELEASE_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          RELEASE_TITLE: ${{ inputs.release_title }}
+          RELEASE_NOTES: ${{ inputs.notes }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        run: |
+          set -euo pipefail
+
+          title="$RELEASE_TITLE"
+          if [[ -z "${title// }" ]]; then
+            title="Carrowmont $VERSION"
+          fi
+
+          while IFS='|' read -r repo branch sha; do
+            echo "Creating $VERSION in $repo at $sha ..."
+
+            args=(
+              release create "$VERSION"
+              --repo "$repo"
+              --target "$sha"
+              --title "$title"
+            )
+
+            if [[ "$PRERELEASE" == "true" ]]; then
+              args+=(--prerelease)
+            fi
+
+            if [[ -n "${RELEASE_NOTES// }" ]]; then
+              body="$RELEASE_NOTES"
+              body+=$'\n\n---\n'
+              body+="QA gate: Carrowmont Automated QA #$QA_ID passed."
+              body+=$'\n'
+              body+="QA run: $QA_URL"
+              args+=(--notes "$body")
+            else
+              qa_note="QA gate: Carrowmont Automated QA #$QA_ID passed."
+              qa_note+=$'\n'
+              qa_note+="QA run: $QA_URL"
+              args+=(--generate-notes --notes "$qa_note")
+            fi
+
+            # gh release create creates the tag at --target when the tag does not yet exist.
+            gh "${args[@]}"
+
+            release_url="$(gh release view "$VERSION" --repo "$repo" --json url --jq '.url')"
+            {
+              echo "### $repo"
+              echo "- Version: $VERSION"
+              echo "- Source commit: \`$sha\`"
+              echo "- QA gate: [run #$QA_ID]($QA_URL)"
+              echo "- Release: $release_url"
+              echo
+            } >> "$GITHUB_STEP_SUMMARY"
+          done < /tmp/carrowmont-release-targets.txt
