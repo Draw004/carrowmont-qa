@@ -68,6 +68,10 @@ add('sip: country profiles carry contribution-frequency terminology metadata',
   /US:\s*\{[^}]*contributionFrequency:\s*"biweekly"[^}]*twoWeekLabel:\s*"biweekly"/.test(sipLocale) &&
   /BD:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(sipLocale)
 );
+const sipTerminology = read('sip-calculator/terminology.js');
+add('sip: international hero uses recurring-investment terminology',
+  sipTerminology.includes('See how recurring investments may grow or what recurring investment may be required for a goal.')
+);
 
 const fiHtml = read('financial-independence/index.html');
 const fiJs = read('financial-independence/app.js');
@@ -79,13 +83,63 @@ add('financial-independence: static chart values', fiJs.includes('fi-static-valu
 const inflJs = read('inflation-calculator/app.js');
 add('inflation: permanent static chart values', inflJs.includes('chart-static-value') && inflJs.includes('Your assumption'));
 
-const goalPdf = read('goal-planner/goal-pdf-renderer.js');
+const reportTools = [
+  ['sip-calculator', 'index.html', 'sip-pdf-renderer.js'],
+  ['goal-planner', 'index.html', 'goal-pdf-renderer.js'],
+  ['financial-independence', 'index.html', 'fi-pdf-renderer.js'],
+  ['inflation-calculator', 'index.html', 'inflation-pdf-renderer.js'],
+  ['retirement-calculator', 'planner.html', 'retirement-pdf-renderer.js']
+];
+const standards = reportTools.map(([dir]) => read(`${dir}/report-standard.js`));
+add('reports: shared report standard exists in all tools', standards.every(Boolean));
+add('reports: shared report standard is identical across all tools', standards.every(x => x === standards[0]));
+add('reports: standard includes country-aware SIP / Recurring Investment identity',
+  standards[0]?.includes("toolName:'SIP Calculator'") &&
+  standards[0]?.includes("toolName:'Recurring Investment Calculator'") &&
+  standards[0]?.includes("reportTitle:'SIP Planning Report'") &&
+  standards[0]?.includes("reportTitle:'Recurring Investment Planning Report'")
+);
+add('reports: standard defines separate guide and tools pages',
+  standards[0]?.includes('Report Guide & Methodology') &&
+  standards[0]?.includes('Continue planning with Carrowmont') &&
+  standards[0]?.includes('Terminology used in this report') &&
+  standards[0]?.includes('Important assumptions & disclaimer')
+);
+for (const [dir,htmlFile,rendererFile] of reportTools) {
+  const html=read(`${dir}/${htmlFile}`), renderer=read(`${dir}/${rendererFile}`);
+  const standardPos=html.indexOf('report-standard.js'), rendererPos=html.indexOf(rendererFile);
+  add(`${dir}: report standard loads before PDF renderer`, standardPos >= 0 && rendererPos > standardPos);
+  add(`${dir}: PDF renderer uses standardized guide page`, renderer.includes('.guidePage('));
+  add(`${dir}: PDF renderer uses standardized Continue Planning page`, renderer.includes('.continuePlanningPage('));
+}
+
+const fiPdf = read('financial-independence/fi-pdf-renderer.js');
+add('financial-independence report: permanent selected-age chart value callouts',
+  fiPdf.includes('drawSelectedAgeValues') && fiPdf.includes('Printed value labels mark the selected age')
+);
+
 const retirementPdf = read('retirement-calculator/retirement-pdf-renderer.js');
-add('goal report: Carrowmont tools page', goalPdf.includes('Continue planning with Carrowmont'));
-add('retirement report: Carrowmont tools page', retirementPdf.includes('Continue planning with Carrowmont'));
+add('retirement report: variable-height key-value rows prevent wrapped-label overlap',
+  retirementPdf.includes('textLineCount') && retirementPdf.includes('Math.max(minRowH') && retirementPdf.includes('wrappedText(ctx,value') && retirementPdf.includes('maxLines:3')
+);
+add('retirement report: detailed expense rows use safer pagination and row height',
+  retirementPdf.includes('i+=14') && retirementPdf.includes('y+48')
+);
 
 const retirementCss = read('retirement-calculator/styles.css');
 add('retirement: report buttons use shrink-safe grid', /grid-template-columns:\s*minmax\(0/.test(retirementCss) && /\.result-actions \.share-button\{[^}]*min-width:0/.test(retirementCss));
+
+// Main-site checks run when SOURCE_ROOT also contains draw004.github.io (for example, a full source snapshot).
+const mainHome = read('draw004.github.io/index.html');
+const mainSiteJs = read('draw004.github.io/site.js');
+if (mainHome || mainSiteJs) {
+  add('main site: Monthly Investment Calculator retired as product identity',
+    !mainHome.includes('Monthly Investment Calculator') && !mainSiteJs.includes('Monthly Investment Calculator')
+  );
+  add('main site: international investment product uses Recurring Investment Calculator',
+    mainHome.includes('Recurring Investment Calculator') && mainSiteJs.includes('Recurring Investment Calculator')
+  );
+}
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
