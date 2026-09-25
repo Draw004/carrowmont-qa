@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { tools } from '../qa.config.js';
-import { gotoClean, chartHasGeometry, svgText } from '../helpers/common.js';
+import { gotoClean, chartHasGeometry, svgText, setInput } from '../helpers/common.js';
 import { prepareToolForQa } from '../helpers/fixtures.js';
 
 test.describe('Chart population and print-readability contracts', () => {
@@ -80,5 +80,17 @@ test.describe('Chart population and print-readability contracts', () => {
       expect(text).toMatch(/Year\s+\d+|Today/i);
       expect(text.replace(/\s/g, '').length).toBeGreaterThan(20);
     }
+  });
+
+  test('[AUTO] SIP growth charts print projected and comparison values at the final year', async ({ page }) => {
+    await gotoClean(page, '/sip-calculator/');
+    await prepareToolForQa(page, 'sip-calculator');
+    await setInput(page, '#annualStepUp', 10);
+    const left = await svgText(page, '#chart1');
+    const right = await svgText(page, '#chart2');
+    expect(left).toMatch(/Year\s+15\s+projected/i);
+    expect(left).toMatch(/Year\s+15\s+invested/i);
+    expect(right).toMatch(/Step-up\s*-\s*year\s+15\s+projected/i);
+    expect(right).toMatch(/Year\s+15\s+fixed/i);
   });
 });
