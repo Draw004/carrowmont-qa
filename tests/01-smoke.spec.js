@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { tools, mainSitePages } from '../qa.config.js';
-import { gotoClean, monitorPageErrors } from '../helpers/common.js';
+import { gotoClean, monitorPageErrors, setInput } from '../helpers/common.js';
 import { chooseIndiaLocale, chooseUnitedStatesLocale } from '../helpers/fixtures.js';
 
 async function setLearnLocaleDirect(page, region, currency) {
@@ -156,6 +156,51 @@ test.describe('Carrowmont smoke and content contracts', () => {
       el.dispatchEvent(new Event('change', { bubbles: true }));
     });
     await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Fortnightly (Every 2 Weeks)');
+  });
+
+  test('[AUTO] Goal Planner: frequency inputs are independent, linkable, and country-aware', async ({ page }) => {
+    await gotoClean(page, '/goal-planner/');
+    const pay = page.locator('#payFrequency');
+    const contribution = page.locator('#contributionFrequency');
+
+    // Browser locale can legitimately initialize Goal Planner to the US (biweekly).
+    // Set India explicitly before validating the Monthly country default so this
+    // test is deterministic in CI and still verifies the country-aware behavior.
+    await chooseIndiaLocale(page);
+    await expect(pay).toHaveValue('monthly');
+    await expect(contribution).toHaveValue('monthly');
+
+    await chooseUnitedStatesLocale(page);
+    await expect(pay).toHaveValue('biweekly');
+    await expect(contribution).toHaveValue('biweekly');
+    await expect(contribution.locator('option[value="biweekly"]')).toHaveText('Biweekly (Every 2 Weeks)');
+
+    await contribution.selectOption('weekly');
+    await expect(pay).toHaveValue('biweekly');
+    await expect(contribution).toHaveValue('weekly');
+
+    await page.locator('#sameAsPayCycle').check();
+    await expect(contribution).toBeDisabled();
+    await expect(contribution).toHaveValue('biweekly');
+    await pay.selectOption('semimonthly');
+    await expect(contribution).toHaveValue('semimonthly');
+
+    await page.locator('#sameAsPayCycle').uncheck();
+    await expect(contribution).toBeEnabled();
+    await contribution.selectOption('weekly');
+    await expect(pay).toHaveValue('semimonthly');
+    await expect(contribution).toHaveValue('weekly');
+  });
+
+  test('[AUTO] Goal Planner: one-time investment timing appears only when an amount is entered', async ({ page }) => {
+    await gotoClean(page, '/goal-planner/');
+    await expect(page.locator('#futureLumpTimingField')).toBeHidden();
+    await setInput(page, '#futureLump', 50000);
+    await expect(page.locator('#futureLumpTimingField')).toBeVisible();
+    await expect(page.locator('#futureLumpYear')).toBeEnabled();
+    await setInput(page, '#futureLump', 0);
+    await expect(page.locator('#futureLumpTimingField')).toBeHidden();
+    await expect(page.locator('#futureLumpYear')).toBeDisabled();
   });
 
   test('[AUTO] Other calculators: country catalogue matches SIP expansion and is alphabetical', async ({ page }) => {

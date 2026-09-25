@@ -24,7 +24,7 @@ export const tools = [
     reportMinPages: 5,
     charts: ['#costChart', '#savingsChart'],
     requiredText: ['Goal Planner', 'Copy Summary', 'Generate Goal Report'],
-    keyInputs: ['#years', '#amountToday', '#inflationRate', '#existingSavings', '#monthlyContribution'],
+    keyInputs: ['#years', '#amountToday', '#inflationRate', '#existingSavings', '#monthlyContribution', '#payFrequency', '#contributionFrequency'],
     layoutParent: '.snapshot-actions',
     requiresGuideReportPage: true,
     requiresToolsReportPage: true

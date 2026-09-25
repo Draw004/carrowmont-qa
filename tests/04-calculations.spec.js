@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, setInput, parseMoney, parsePercent, relativeError } from '../helpers/common.js';
-import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, fiToday, fiAtAge } from '../helpers/calculations.js';
+import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge } from '../helpers/calculations.js';
 
 test.describe('Calculation regression and independent formula checks', () => {
   test('[AUTO] SIP: future value matches an independent monthly compounding calculation', async ({ page }) => {
@@ -78,6 +78,7 @@ test.describe('Calculation regression and independent formula checks', () => {
     await setInput(page, '#years', 12);
     await setInput(page, '#inflationRate', 7);
     await setInput(page, '#existingSavings', 500000);
+    await page.locator('#contributionFrequency').selectOption('monthly');
     await setInput(page, '#monthlyContribution', 8000);
     await setInput(page, '#returnRate', 10);
     await setInput(page, '#futureLump', 0);
@@ -90,6 +91,25 @@ test.describe('Calculation regression and independent formula checks', () => {
     expect(relativeError(projected, 3714577)).toBeLessThan(0.015);
     expect(relativeError(monthly, 15144)).toBeLessThan(0.02);
     expect(Math.abs(funding - 66)).toBeLessThanOrEqual(1);
+  });
+
+  test('[AUTO] Goal Planner: weekly contribution timing changes the projection using 52 periods/year', async ({ page }) => {
+    await gotoClean(page, '/goal-planner/');
+    const education = page.locator('[data-goal="education"]');
+    if (await education.count()) await education.click();
+    await setInput(page, '#amountToday', 0);
+    await setInput(page, '#years', 2);
+    await setInput(page, '#inflationRate', 0);
+    await setInput(page, '#existingSavings', 0);
+    await page.locator('#contributionFrequency').selectOption('weekly');
+    await setInput(page, '#monthlyContribution', 1000);
+    await setInput(page, '#returnRate', 0);
+    await setInput(page, '#futureLump', 0);
+    const actual = parseMoney(await page.locator('#projectedPlan').innerText());
+    const expected = goalRecurringFutureValue({ contribution: 1000, years: 2, annualReturnPct: 0, contributionFrequency: 'weekly' });
+    expect(relativeError(actual, expected), `Goal weekly projected ${actual} expected ${expected}`).toBeLessThan(0.006);
+    await expect(page.locator('#currentContributionLabel')).toHaveText('Current weekly contribution');
+    await expect(page.locator('#totalContributionLabel')).toHaveText('Total weekly contribution required');
   });
 
   test('[AUTO] Financial Independence: FI today and target-age values match independent formulas', async ({ page }) => {
