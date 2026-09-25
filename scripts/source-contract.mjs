@@ -105,6 +105,10 @@ add('reports: standard defines separate guide and tools pages',
   standards[0]?.includes('Terminology used in this report') &&
   standards[0]?.includes('Important assumptions & disclaimer')
 );
+add('reports: How to read card uses content-aware compact height and stronger guidance text',
+  standards[0]?.includes('howH=Math.max(52,22+howLines*14)') &&
+  standards[0]?.includes('size:10.1,lineHeight:14,weight:650')
+);
 for (const [dir,htmlFile,rendererFile] of reportTools) {
   const html=read(`${dir}/${htmlFile}`), renderer=read(`${dir}/${rendererFile}`);
   const standardPos=html.indexOf('report-standard.js'), rendererPos=html.indexOf(rendererFile);
@@ -116,6 +120,19 @@ for (const [dir,htmlFile,rendererFile] of reportTools) {
 const fiPdf = read('financial-independence/fi-pdf-renderer.js');
 add('financial-independence report: permanent selected-age chart value callouts',
   fiPdf.includes('drawSelectedAgeValues') && fiPdf.includes('Printed value labels mark the selected age')
+);
+add('financial-independence report: projected portfolio callout is above money-added callout',
+  fiPdf.includes("chartValueLabel(ctx,b,`Portfolio ${compact(r.target.portfolio)}`,'#0e8b80',-38)") &&
+  fiPdf.includes("chartValueLabel(ctx,a,`Money added ${compact(moneyAdded)}`,'#8799aa',12)")
+);
+
+add('sip report visuals: midpoint and final callouts pair projected/step-up values above invested/fixed values',
+  sipApp.includes('Year ${years} projected') &&
+  sipApp.includes('Year ${years} invested') &&
+  sipApp.includes('Step-up - year ${years} projected') &&
+  sipApp.includes('Year ${years} fixed') &&
+  sipApp.includes("anchor:'center',dy:-12") &&
+  sipApp.includes("anchor:'center',dy:60")
 );
 
 const retirementPdf = read('retirement-calculator/retirement-pdf-renderer.js');

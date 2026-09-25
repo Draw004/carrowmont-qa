@@ -37,3 +37,10 @@ Automated tests catch calculation regressions, JavaScript errors, chart populati
 - Download confirmation reads exactly: "Report has been downloaded."
 
 A release is ready when automated QA is green and this checklist has no material visual defects.
+
+## Final report polish checks - September 2026
+- SIP / Recurring Investment growth visuals: final year prints both projected and invested values; annual-increase comparison prints both projected step-up and fixed-contribution values.
+- SIP / Recurring Investment callouts: projected / step-up labels sit above their series and invested / fixed labels sit below their series at the midpoint and final year.
+- Financial Independence money-added chart: projected portfolio callout is above the portfolio series and money-added callout is below the assets + contributions series.
+- Report Guide & Methodology: How to read card uses compact content-aware height and stronger guidance text without changing the disclaimer layout.
+- Retirement: previously fixed wrapping/pagination remains visually clean; no regression.
