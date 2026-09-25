@@ -43,8 +43,9 @@ test.describe('Carrowmont smoke and content contracts', () => {
       await gotoClean(page, tool.path);
       if (tool.key === 'sip-calculator') {
         // The same calculator is intentionally localized by country/currency:
-        // India/INR uses SIP terminology; international views use Monthly Investment terminology.
+        // India/INR uses SIP terminology; international views use Recurring Investment terminology.
         await chooseUnitedStatesLocale(page);
+        await expect(page.locator('.product-label')).toHaveText('Recurring Investment Calculator');
         await expect(page.locator('#contributionFrequency')).toHaveValue('biweekly');
         await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Biweekly (Every 2 Weeks)');
         await expect(page.getByRole('heading', { name: /See how biweekly investments may grow/i }).first()).toBeVisible();
@@ -53,6 +54,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
         if (await indiaBadgeInternational.count()) await expect(indiaBadgeInternational).toBeHidden();
 
         await chooseIndiaLocale(page);
+        await expect(page.locator('.product-label')).toHaveText('SIP Calculator');
         await expect(page.locator('#contributionFrequency')).toHaveValue('monthly');
         await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Fortnightly (Every 2 Weeks)');
         await expect(page.getByRole('heading', { name: /See how a monthly SIP may grow/i }).first()).toBeVisible();
