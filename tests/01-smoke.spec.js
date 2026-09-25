@@ -158,6 +158,21 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Fortnightly (Every 2 Weeks)');
   });
 
+  test('[AUTO] Other calculators: country catalogue matches SIP expansion and is alphabetical', async ({ page }) => {
+    const localeTools = tools.filter(tool => tool.key !== 'sip-calculator');
+    const expectedAdded = ['Austria','Bangladesh','Belgium','Chile','Denmark','Finland','Ireland','Netherlands','Norway','Oman','Poland','Portugal','Qatar','Sweden'];
+    for (const tool of localeTools) {
+      await gotoClean(page, tool.path);
+      const labels = await page.locator('#regionSelect option').allTextContents();
+      expect(labels).toHaveLength(44);
+      expect(labels.at(-1)).toBe('Other / International');
+      const countryLabels = labels.slice(0, -1);
+      const sortedLabels = [...countryLabels].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
+      expect(countryLabels, `${tool.name}: country list should be alphabetical`).toEqual(sortedLabels);
+      for (const country of expectedAdded) expect(countryLabels, `${tool.name}: missing ${country}`).toContain(country);
+    }
+  });
+
   for (const p of mainSitePages) {
     test(`[AUTO] Main site ${p.key}: loads and contains expected content`, async ({ page }) => {
       const errors = monitorPageErrors(page);

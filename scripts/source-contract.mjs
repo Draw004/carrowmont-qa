@@ -68,6 +68,26 @@ add('sip: country profiles carry contribution-frequency terminology metadata',
   /US:\s*\{[^}]*contributionFrequency:\s*"biweekly"[^}]*twoWeekLabel:\s*"biweekly"/.test(sipLocale) &&
   /BD:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(sipLocale)
 );
+
+const localeParityTools = [
+  ['goal-planner', 'app.js'],
+  ['financial-independence', 'app.js'],
+  ['inflation-calculator', 'app.js'],
+  ['retirement-calculator', 'locale-ui.js']
+];
+for (const [dir, selectorFile] of localeParityTools) {
+  const locale = read(`${dir}/locale.js`);
+  const selectorJs = read(`${dir}/${selectorFile}`);
+  add(`${dir}: expanded country profiles match SIP catalogue`,
+    expandedRegionCodes.every(code => new RegExp(`\\b${code}:\\s*\\{`).test(locale))
+  );
+  add(`${dir}: expanded currencies match SIP catalogue`,
+    ['BDT','CLP','DKK','NOK','OMR','PLN','QAR','SEK'].every(code => new RegExp(`\\b${code}:\\s*\\{`).test(locale))
+  );
+  add(`${dir}: country selector is alphabetized with Other / International last`,
+    selectorJs.includes('localeCompare') && selectorJs.includes('OTHER') && selectorJs.includes('return 1')
+  );
+}
 const sipTerminology = read('sip-calculator/terminology.js');
 add('sip: international hero uses recurring-investment terminology',
   sipTerminology.includes('See how recurring investments may grow or what recurring investment may be required for a goal.')
