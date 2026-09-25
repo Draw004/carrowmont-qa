@@ -64,9 +64,54 @@ add('sip: expanded currencies and symbols are present',
   /SEK:\s*\{[^}]*symbol:\s*"kr"/.test(sipLocale)
 );
 add('sip: country profiles carry contribution-frequency terminology metadata',
+  /IN:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(sipLocale) &&
   /IE:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"fortnightly"/.test(sipLocale) &&
   /US:\s*\{[^}]*contributionFrequency:\s*"biweekly"[^}]*twoWeekLabel:\s*"biweekly"/.test(sipLocale) &&
   /BD:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(sipLocale)
+);
+
+const goalHtml = read('goal-planner/index.html');
+const goalApp = read('goal-planner/app.js');
+const goalLocale = read('goal-planner/locale.js');
+const goalPdf = read('goal-planner/goal-pdf-renderer.js');
+add('goal: separate pay and savings/contribution frequency inputs',
+  goalHtml.includes('id="payFrequency"') &&
+  goalHtml.includes('id="contributionFrequency"') &&
+  goalHtml.includes('id="sameAsPayCycle"')
+);
+add('goal: standardized frequency periods and periodic-return calculation',
+  /weekly\s*:\s*52/.test(goalApp) &&
+  /biweekly\s*:\s*26/.test(goalApp) &&
+  /semimonthly\s*:\s*24/.test(goalApp) &&
+  /fourweekly\s*:\s*13/.test(goalApp) &&
+  /monthly\s*:\s*12/.test(goalApp) &&
+  goalApp.includes('periodicRate') && goalApp.includes('annuityFactor(s.ret,s.years,s.contributionFrequency)')
+);
+add('goal: pay frequency stays independent unless Same as my pay cycle is selected',
+  goalApp.includes("els.sameAsPayCycle?.addEventListener('change'") &&
+  goalApp.includes('els.contributionFrequency.disabled=els.sameAsPayCycle.checked') &&
+  goalApp.includes('els.contributionFrequency.value=els.payFrequency.value')
+);
+add('goal: country change reapplies suggested frequency while currency-only changes preserve choice',
+  goalApp.includes('if(regionChanged){payFrequencyUserOverride=false;contributionFrequencyUserOverride=false;}') &&
+  goalApp.includes('defaultFrequencyForRegion')
+);
+add('goal: country profiles carry shared frequency terminology metadata',
+  /IN:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(goalLocale) &&
+  /IE:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"fortnightly"/.test(goalLocale) &&
+  /US:\s*\{[^}]*contributionFrequency:\s*"biweekly"[^}]*twoWeekLabel:\s*"biweekly"/.test(goalLocale) &&
+  /BD:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(goalLocale)
+);
+add('goal: one-time investment wording and conditional timing field',
+  goalHtml.includes('Optional future one-time investment') &&
+  goalHtml.includes('When will this investment be made?') &&
+  goalHtml.includes('id="futureLumpTimingField"') &&
+  goalApp.includes('updateFutureLumpTiming')
+);
+add('goal: report and copy summary include selected frequencies',
+  goalApp.includes('Pay frequency: ${frequencyLabel(s.payFrequency)}') &&
+  goalApp.includes('Savings / contribution frequency: ${frequencyLabel(s.contributionFrequency)}') &&
+  goalPdf.includes('selected savings / contribution frequency')
 );
 
 const localeParityTools = [
