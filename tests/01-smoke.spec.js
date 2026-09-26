@@ -274,6 +274,37 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(investment).toHaveValue('weekly');
   });
 
+  test('[AUTO] Financial Independence: Plan Until Age is a distinct planning mode with clear controls', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    await expect(page.locator('#planningModeSustainable')).toBeChecked();
+    await expect(page.locator('#withdrawalRateField')).toBeVisible();
+    await expect(page.locator('#planUntilField')).toBeHidden();
+
+    await page.locator('#planningModeUntilAge').check();
+    await expect(page.locator('#planUntilField')).toBeVisible();
+    await expect(page.locator('#withdrawalRateField')).toBeHidden();
+    await expect(page.locator('#fiHeroLabel')).toHaveText('Required portfolio if FI started today');
+
+    // Locale-neutral QA starts some tools with zeroed money inputs. Enter explicit
+    // plan data before asserting that longevity outputs are rendered.
+    await setInput(page, '#monthlySpending', 100000);
+    await setInput(page, '#currentAssets', 1500000);
+    await setInput(page, '#monthlyContribution', 30000);
+    await expect(page.locator('#longevityBox')).toBeVisible();
+
+    await setInput(page, '#targetAge', 60);
+    await setInput(page, '#planUntilAge', 55);
+    await page.locator('#planUntilAge').blur();
+    await expect(page.locator('#planUntilAge')).toHaveValue('61');
+    await expect(page.locator('#targetPill')).toContainText('Plan until 61');
+
+    await page.locator('#planningModeSustainable').check();
+    await expect(page.locator('#withdrawalRateField')).toBeVisible();
+    await expect(page.locator('#planUntilField')).toBeHidden();
+    await expect(page.locator('#longevityBox')).toBeHidden();
+    await expect(page.locator('#fiHeroLabel')).toHaveText('Estimated FI number in today’s money');
+  });
+
   test('[AUTO] Retirement Planner: frequency inputs are first, independent, linkable, and country-aware', async ({ page }) => {
     await gotoClean(page, '/retirement-calculator/planner.html');
     const pay = page.locator('#payFrequency');

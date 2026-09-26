@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, setInput, parseMoney, parsePercent, relativeError } from '../helpers/common.js';
-import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge, retirementContributionFutureValue } from '../helpers/calculations.js';
+import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge, fiPlanUntilRequiredPortfolio, fiPlanUntilProjection, retirementContributionFutureValue } from '../helpers/calculations.js';
 
 test.describe('Calculation regression and independent formula checks', () => {
   test('[AUTO] SIP: future value matches an independent monthly compounding calculation', async ({ page }) => {
@@ -179,6 +179,70 @@ test.describe('Calculation regression and independent formula checks', () => {
     expect(relativeError(await rawValue(5), 300000)).toBeLessThan(0.006);
     expect(await rawValue(6)).toBeCloseTo(2, 6);
     await expect(page.locator('#journeyBody tr.target-row')).toContainText('Target Age');
+  });
+
+  test('[AUTO] Financial Independence: Plan Until Age exact zero-return fixture funds 60 months and exposes longevity', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    await page.locator('#planningModeUntilAge').check();
+    await page.locator('#investmentFrequency').selectOption('monthly');
+    await setInput(page, '#currentAge', 40);
+    await setInput(page, '#targetAge', 50);
+    await setInput(page, '#planUntilAge', 55);
+    await setInput(page, '#monthlySpending', 1000);
+    await setInput(page, '#spendingPct', 100);
+    await setInput(page, '#monthlyIncome', 0);
+    await setInput(page, '#inflation', 0);
+    await setInput(page, '#currentAssets', 0);
+    await setInput(page, '#monthlyContribution', 500);
+    await setInput(page, '#annualReturn', 0);
+    await setInput(page, '#annualStepUp', 0);
+
+    const required = parseMoney(await page.locator('#fiTargetAge').innerText());
+    const projected = parseMoney(await page.locator('#portfolioTargetAge').innerText());
+    const firstWithdrawal = parseMoney(await page.locator('#longevityFirstWithdrawal').innerText());
+    const finalBalance = parseMoney(await page.locator('#longevityBalance').innerText());
+    expect(relativeError(required, 60000)).toBeLessThan(0.006);
+    expect(relativeError(projected, 60000)).toBeLessThan(0.006);
+    expect(relativeError(firstWithdrawal, 1000)).toBeLessThan(0.006);
+    expect(Math.abs(finalBalance)).toBeLessThan(1);
+    await expect(page.locator('#fundingPct')).toHaveText('100%');
+    await expect(page.locator('#longevityStatus')).toHaveText('Lasts through age 55');
+  });
+
+  test('[AUTO] Financial Independence: Plan Until Age target and depletion match independent monthly withdrawal model', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    await page.locator('#planningModeUntilAge').check();
+    await page.locator('#investmentFrequency').selectOption('monthly');
+    await setInput(page, '#currentAge', 40);
+    await setInput(page, '#targetAge', 50);
+    await setInput(page, '#planUntilAge', 60);
+    await setInput(page, '#monthlySpending', 2000);
+    await setInput(page, '#spendingPct', 100);
+    await setInput(page, '#monthlyIncome', 500);
+    await setInput(page, '#inflation', 3);
+    await setInput(page, '#currentAssets', 0);
+    await setInput(page, '#monthlyContribution', 500);
+    await setInput(page, '#annualReturn', 6);
+    await setInput(page, '#annualStepUp', 0);
+
+    const monthlyNeedToday = 1500;
+    const expectedRequired = fiPlanUntilRequiredPortfolio({ monthlyPortfolioNeedToday: monthlyNeedToday, currentAge: 40, startAge: 50, planUntilAge: 60, inflationPct: 3, annualReturnPct: 6 });
+    const actualRequired = parseMoney(await page.locator('#fiTargetAge').innerText());
+    const projectedAtTarget = parseMoney(await page.locator('#portfolioTargetAge').innerText());
+    expect(relativeError(actualRequired, expectedRequired), `Plan Until required ${actualRequired} expected ${expectedRequired}`).toBeLessThan(0.012);
+
+    const independent = fiPlanUntilProjection({ startingBalance: projectedAtTarget, monthlyPortfolioNeedToday: monthlyNeedToday, currentAge: 40, startAge: 50, planUntilAge: 60, inflationPct: 3, annualReturnPct: 6 });
+    const status = await page.locator('#longevityStatus').innerText();
+    if (independent.lasts) {
+      expect(status).toContain('Lasts through age 60');
+      const actualFinal = parseMoney(await page.locator('#longevityBalance').innerText());
+      expect(relativeError(actualFinal, independent.finalBalance)).toBeLessThan(0.02);
+    } else {
+      expect(status).toContain('Projected to deplete');
+      const totalMonths = Math.round(independent.depletionAge * 12);
+      const years = Math.floor(totalMonths / 12), months = totalMonths % 12;
+      expect(status).toContain(`Age ${years} years ${months} month${months === 1 ? '' : 's'}`);
+    }
   });
 
   test('[AUTO] Retirement Planner: approved quick-mode fixture remains consistent', async ({ page }) => {
