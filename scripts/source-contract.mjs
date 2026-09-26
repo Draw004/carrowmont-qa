@@ -177,12 +177,33 @@ add('financial-independence: country profiles carry shared frequency terminology
 add('financial-independence: report and copy summary include selected frequencies',
   fiJs.includes('Income / pay frequency: ${frequencyLabel(s.payFrequency)}') &&
   fiJs.includes('Investment frequency: ${frequencyLabel(s.investmentFrequency)}') &&
-  fiPdf.includes('selected ${frequencyLabel(r.state.investmentFrequency)} frequency')
+  fiPdf.includes('selected ${frequencyLabel(r.state.investmentFrequency)} investment frequency')
 );
 const fiViewBoxHeight = Number((fiHtml.match(/id="pathChart"[^>]*viewBox="0 0 800 (\d+)"/) || [])[1]);
 const fiChartHeight = Number((fiJs.match(/function chartBase\([^)]*\)\{const W=800,H=(\d+)/) || [])[1]);
 add('financial-independence: SVG and chart coordinate heights match', fiViewBoxHeight > 0 && fiViewBoxHeight === fiChartHeight, `${fiViewBoxHeight} vs ${fiChartHeight}`);
 add('financial-independence: static chart values', fiJs.includes('fi-static-value'));
+add('financial-independence: Target Age and actual FI crossing are explicit chart milestones',
+  fiJs.includes('target-age-marker') &&
+  fiJs.includes('fi-crossing-marker') &&
+  fiJs.includes('Target Age ${Math.round(s.targetAge)}') &&
+  fiJs.includes('Target +5 · Age') &&
+  fiJs.includes('Projected Portfolio Value') &&
+  fiJs.includes('Current Portfolio Value')
+);
+add('financial-independence: FI Journey exists in the web tool and uses annual summaries of the frequency model',
+  fiHtml.includes('id="fiJourney"') &&
+  fiHtml.includes('id="journeyDetails"') &&
+  fiHtml.includes('View full yearly breakdown') &&
+  fiHtml.includes('Investment that year') &&
+  fiHtml.includes('Modelled investment growth') &&
+  fiCore.includes('function annualJourney') &&
+  fiJs.includes('renderJourney')
+);
+add('financial-independence: precise FI timing is expressed in years and months',
+  fiJs.includes('years ${months} month') &&
+  fiJs.includes('FI target not reached within the modelled period.')
+);
 
 const inflJs = read('inflation-calculator/app.js');
 add('inflation: permanent static chart values', inflJs.includes('chart-static-value') && inflJs.includes('Your assumption'));
@@ -221,12 +242,21 @@ for (const [dir,htmlFile,rendererFile] of reportTools) {
   add(`${dir}: PDF renderer uses standardized Continue Planning page`, renderer.includes('.continuePlanningPage('));
 }
 
-add('financial-independence report: permanent selected-age chart value callouts',
-  fiPdf.includes('drawSelectedAgeValues') && fiPdf.includes('Printed value labels mark the selected age')
+add('financial-independence report: permanent Target Age chart value callouts',
+  fiPdf.includes('drawTargetAgeValues') &&
+  fiPdf.includes('Target Age ${Math.round(r.state.targetAge)} is highlighted') &&
+  fiPdf.includes('Projected Portfolio Value')
 );
 add('financial-independence report: projected portfolio callout is above money-added callout',
-  fiPdf.includes("chartValueLabel(ctx,b,`Portfolio ${compact(r.target.portfolio)}`,'#0e8b80',-38)") &&
-  fiPdf.includes("chartValueLabel(ctx,a,`Money added ${compact(moneyAdded)}`,'#8799aa',12)")
+  fiPdf.includes("chartValueLabel(ctx,b,`Projected Portfolio Value ${compact(r.target.portfolio)}`,'#0e8b80',-38") &&
+  fiPdf.includes("chartValueLabel(ctx,a,`Money Added ${compact(moneyAdded)}`,'#8799aa',12")
+);
+add('financial-independence report: FI Journey is printed with funding and milestone context',
+  fiPdf.includes('Financial Independence Journey') &&
+  fiPdf.includes('INVESTMENT THAT YEAR') &&
+  fiPdf.includes('FUNDING %') &&
+  fiPdf.includes('Target Age +5') &&
+  fiPdf.includes('FI target not reached within the modelled period.')
 );
 
 add('sip report visuals: midpoint and final callouts pair projected/step-up values above invested/fixed values',
