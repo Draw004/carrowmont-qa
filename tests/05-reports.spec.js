@@ -78,7 +78,7 @@ test.describe('PDF report generation and download standard', () => {
       }
 
       if (tool.key === 'financial-independence') {
-        expect(canvasText).toContain('Printed value labels mark the selected age');
+        expect(canvasText).toContain('Permanent printed callouts');
         expect(canvasText).toContain('Target ');
         expect(canvasText).toContain('Portfolio ');
       }
@@ -111,10 +111,15 @@ test.describe('PDF report generation and download standard', () => {
     await page.locator('#reportBtn').click();
     await downloadPromise;
     const canvasText = await getCanvasText(page);
-    expect(canvasText).toContain('Target ');
-    expect(canvasText).toContain('Portfolio ');
-    expect(canvasText).toContain('Money added ');
-    expect(canvasText).toContain('Printed value labels mark the selected age');
+    expect(canvasText).toContain('FI Target');
+    expect(canvasText).toContain('Projected Portfolio Value');
+    expect(canvasText).toContain('Money Added');
+    expect(canvasText).toContain('Target Age 50');
+    expect(canvasText).toContain('Financial Independence Journey');
+    const normalizedCanvasText = canvasText.replace(/\s+/g, ' ');
+    expect(normalizedCanvasText).toContain('INVESTMENT THAT YEAR');
+    expect(normalizedCanvasText).toContain('FUNDING %');
+    expect(canvasText).toContain('Permanent printed callouts');
   });
 
 });

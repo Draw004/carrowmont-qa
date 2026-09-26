@@ -151,6 +151,36 @@ test.describe('Calculation regression and independent formula checks', () => {
     await expect(page.locator('#requiredInvestmentLabel')).toHaveText('Total weekly investment required');
   });
 
+  test('[AUTO] Financial Independence: precise FI timing and annual journey stay calculation-consistent', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    await page.locator('#investmentFrequency').selectOption('monthly');
+    await setInput(page, '#currentAge', 35);
+    await setInput(page, '#targetAge', 40);
+    await setInput(page, '#monthlySpending', 1000);
+    await setInput(page, '#spendingPct', 100);
+    await setInput(page, '#monthlyIncome', 0);
+    await setInput(page, '#withdrawalRate', 4);
+    await setInput(page, '#inflation', 0);
+    await setInput(page, '#currentAssets', 0);
+    await setInput(page, '#monthlyContribution', 50000);
+    await setInput(page, '#annualReturn', 0);
+    await setInput(page, '#annualStepUp', 0);
+
+    await expect(page.locator('#modelledAge')).toHaveText('Age 35 years 6 months');
+    await expect(page.locator('#journeyMilestones')).toContainText('FI reached');
+    await expect(page.locator('#journeyMilestones')).toContainText('Age 35 years 6 months');
+    const firstRow = page.locator('#journeyBody tr').first();
+    await expect(firstRow).toContainText('Age 36');
+    const rawValue = async (index) => Number(await firstRow.locator('td').nth(index).getAttribute('data-value'));
+    expect(relativeError(await rawValue(1), 600000)).toBeLessThan(0.006);
+    expect(relativeError(await rawValue(2), 600000)).toBeLessThan(0.006);
+    expect(relativeError(await rawValue(3), 0)).toBeLessThan(0.006);
+    expect(relativeError(await rawValue(4), 600000)).toBeLessThan(0.006);
+    expect(relativeError(await rawValue(5), 300000)).toBeLessThan(0.006);
+    expect(await rawValue(6)).toBeCloseTo(2, 6);
+    await expect(page.locator('#journeyBody tr.target-row')).toContainText('Target Age');
+  });
+
   test('[AUTO] Retirement Planner: approved quick-mode fixture remains consistent', async ({ page }) => {
     await gotoClean(page, '/retirement-calculator/planner.html');
     await page.locator('#quickModeBtn').click();

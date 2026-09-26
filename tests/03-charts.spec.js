@@ -40,6 +40,21 @@ test.describe('Chart population and print-readability contracts', () => {
     }
   });
 
+  test('[AUTO] Financial Independence: Target Age, Target +5 and actual FI crossing are self-explanatory', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    await prepareToolForQa(page, 'financial-independence');
+    for (const selector of ['#pathChart', '#growthChart']) {
+      const text = await svgText(page, selector);
+      expect(text).toContain('Target Age 50');
+      expect(text).toContain('Target +5 · Age 55');
+      expect(text).toContain('Projected Portfolio Value');
+      expect(text).toContain('Current Portfolio Value');
+      expect(await page.locator(`${selector} .target-age-marker`).count()).toBe(1);
+      expect(await page.locator(`${selector} .fi-crossing-marker`).count()).toBe(1);
+      expect(text).toContain('FI reached');
+    }
+  });
+
   test('[AUTO] Inflation: chart contains permanent lower/base/higher values and X-axis labels', async ({ page }) => {
     await gotoClean(page, '/inflation-calculator/');
     await prepareToolForQa(page, 'inflation-calculator');
