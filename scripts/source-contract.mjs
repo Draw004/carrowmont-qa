@@ -177,7 +177,31 @@ add('financial-independence: country profiles carry shared frequency terminology
 add('financial-independence: report and copy summary include selected frequencies',
   fiJs.includes('Income / pay frequency: ${frequencyLabel(s.payFrequency)}') &&
   fiJs.includes('Investment frequency: ${frequencyLabel(s.investmentFrequency)}') &&
-  fiPdf.includes('selected ${frequencyLabel(r.state.investmentFrequency)} investment frequency')
+  fiPdf.includes('selected ${frequencyLabel(s.investmentFrequency)} investment frequency')
+);
+add('financial-independence: Plan Until Age is a separate planning approach with a bounded horizon',
+  fiHtml.includes('id="planningModeSustainable"') &&
+  fiHtml.includes('id="planningModeUntilAge"') &&
+  fiHtml.includes('id="planUntilAge"') &&
+  fiHtml.includes('planning horizon, not a prediction of lifespan') &&
+  fiCore.includes("planningMode=raw.planningMode==='until_age'?'until_age':'sustainable'") &&
+  fiCore.includes('Math.max(targetAge+1,Math.min(120')
+);
+add('financial-independence: Plan Until Age models inflation-adjusted withdrawals and continued portfolio growth',
+  fiCore.includes('requiredPortfolioForWindow') &&
+  fiCore.includes('simulatePostFI') &&
+  fiCore.includes('withdrawal+needed/(1+rm)') &&
+  fiCore.includes('balance-=withdrawal') &&
+  fiCore.includes('const growth=balance*rm') &&
+  fiCore.includes('futurePortfolioMonthlyNeed')
+);
+add('financial-independence: Plan Until Age longevity outputs are exposed in web, summary and report',
+  fiHtml.includes('id="longevityBox"') &&
+  fiHtml.includes('Projected balance at Plan Until Age') &&
+  fiJs.includes('Portfolio longevity:') &&
+  fiJs.includes('Projected to deplete at') &&
+  fiPdf.includes('Projected balance at Plan Until Age') &&
+  fiPdf.includes('Plan Until Age is a planning horizon')
 );
 const fiViewBoxHeight = Number((fiHtml.match(/id="pathChart"[^>]*viewBox="0 0 800 (\d+)"/) || [])[1]);
 const fiChartHeight = Number((fiJs.match(/function chartBase\([^)]*\)\{const W=800,H=(\d+)/) || [])[1]);

@@ -60,3 +60,53 @@ export function fiToday(monthlySpending, spendingPct, monthlyIncome, withdrawalR
 export function fiAtAge(todayTarget, inflationPct, years) {
   return todayTarget * Math.pow(1 + inflationPct / 100, years);
 }
+
+export function fiPlanUntilRequiredPortfolio({
+  monthlyPortfolioNeedToday,
+  currentAge,
+  startAge,
+  planUntilAge,
+  inflationPct,
+  annualReturnPct
+}) {
+  const months = Math.max(0, Math.round((planUntilAge - startAge) * 12));
+  if (months === 0 || monthlyPortfolioNeedToday <= 0) return 0;
+  const annualReturn = annualReturnPct / 100;
+  const inflation = inflationPct / 100;
+  const monthlyReturn = annualReturn === 0 ? 0 : Math.pow(1 + annualReturn, 1 / 12) - 1;
+  const monthlyInflation = inflation === 0 ? 0 : Math.pow(1 + inflation, 1 / 12) - 1;
+  const firstWithdrawal = monthlyPortfolioNeedToday * Math.pow(1 + inflation, startAge - currentAge);
+  let needed = 0;
+  for (let m = months - 1; m >= 0; m--) {
+    const withdrawal = firstWithdrawal * Math.pow(1 + monthlyInflation, m);
+    needed = withdrawal + needed / (1 + monthlyReturn);
+  }
+  return needed;
+}
+
+export function fiPlanUntilProjection({
+  startingBalance,
+  monthlyPortfolioNeedToday,
+  currentAge,
+  startAge,
+  planUntilAge,
+  inflationPct,
+  annualReturnPct
+}) {
+  const months = Math.max(0, Math.round((planUntilAge - startAge) * 12));
+  const annualReturn = annualReturnPct / 100;
+  const inflation = inflationPct / 100;
+  const monthlyReturn = annualReturn === 0 ? 0 : Math.pow(1 + annualReturn, 1 / 12) - 1;
+  const monthlyInflation = inflation === 0 ? 0 : Math.pow(1 + inflation, 1 / 12) - 1;
+  const firstWithdrawal = monthlyPortfolioNeedToday * Math.pow(1 + inflation, startAge - currentAge);
+  let balance = Math.max(0, startingBalance);
+  for (let m = 0; m < months; m++) {
+    const withdrawal = firstWithdrawal * Math.pow(1 + monthlyInflation, m);
+    if (balance + 1e-9 < withdrawal) {
+      return { lasts: false, depletionAge: startAge + m / 12, finalBalance: 0 };
+    }
+    balance -= withdrawal;
+    balance *= 1 + monthlyReturn;
+  }
+  return { lasts: true, depletionAge: null, finalBalance: balance };
+}

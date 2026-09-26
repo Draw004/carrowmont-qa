@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { test, expect } from '@playwright/test';
 import { tools, standardDownloadMessage } from '../qa.config.js';
-import { gotoClean, installCanvasTextProbe, getCanvasText, validatePdfDownload } from '../helpers/common.js';
+import { gotoClean, setInput, installCanvasTextProbe, getCanvasText, validatePdfDownload } from '../helpers/common.js';
 import { prepareToolForQa, chooseUnitedStatesLocale } from '../helpers/fixtures.js';
 
 function savePdfArtifact(info, name) {
@@ -120,6 +120,35 @@ test.describe('PDF report generation and download standard', () => {
     expect(normalizedCanvasText).toContain('INVESTMENT THAT YEAR');
     expect(normalizedCanvasText).toContain('FUNDING %');
     expect(canvasText).toContain('Permanent printed callouts');
+  });
+
+  test('[AUTO] Financial Independence Plan Until Age PDF states the planning horizon and longevity outputs', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chrome-desktop', 'Generate this report once in Chrome');
+    test.setTimeout(120000);
+    await gotoClean(page, '/financial-independence/');
+    await page.locator('#planningModeUntilAge').check();
+    await setInput(page, '#currentAge', 40);
+    await setInput(page, '#targetAge', 50);
+    await setInput(page, '#planUntilAge', 60);
+    await setInput(page, '#monthlySpending', 2000);
+    await setInput(page, '#spendingPct', 100);
+    await setInput(page, '#monthlyIncome', 500);
+    await setInput(page, '#inflation', 3);
+    await setInput(page, '#currentAssets', 100000);
+    await setInput(page, '#monthlyContribution', 1000);
+    await setInput(page, '#annualReturn', 6);
+    await setInput(page, '#annualStepUp', 0);
+    await installCanvasTextProbe(page);
+    const downloadPromise = page.waitForEvent('download', { timeout: 90000 });
+    await page.locator('#reportBtn').click();
+    await downloadPromise;
+    const canvasText = await getCanvasText(page);
+    expect(canvasText).toContain('Planning approach');
+    expect(canvasText).toContain('Plan Until Age');
+    expect(canvasText).toContain('Required Portfolio');
+    expect(canvasText).toContain('Projected balance at Plan Until Age');
+    expect(canvasText).toContain('Portfolio longevity');
+    expect(canvasText).toContain('planning horizon, not a prediction of lifespan');
   });
 
 });
