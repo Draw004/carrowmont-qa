@@ -228,17 +228,26 @@ test.describe('Carrowmont smoke and content contracts', () => {
     const fieldOrder = await page.evaluate(() => {
       const top = id => document.getElementById(id).closest('.field').getBoundingClientRect().top;
       const investmentField = document.getElementById('investmentFrequency').closest('.field');
+      const fieldsGrid = document.getElementById('payFrequency').closest('.fields');
+      const gridColumns = getComputedStyle(fieldsGrid).gridTemplateColumns.split(/\s+/).filter(Boolean);
       return {
         payTop: top('payFrequency'),
         investmentTop: top('investmentFrequency'),
         assetsTop: top('currentAssets'),
         amountTop: top('monthlyContribution'),
+        singleColumn: gridColumns.length === 1,
         linkInsideInvestmentField: investmentField.contains(document.getElementById('sameAsPayCycle'))
       };
     });
     expect(fieldOrder.payTop).toBeLessThan(fieldOrder.assetsTop);
     expect(fieldOrder.investmentTop).toBeLessThan(fieldOrder.amountTop);
-    expect(Math.abs(fieldOrder.payTop - fieldOrder.investmentTop)).toBeLessThan(8);
+    if (fieldOrder.singleColumn) {
+      expect(fieldOrder.payTop).toBeLessThan(fieldOrder.investmentTop);
+      expect(fieldOrder.investmentTop).toBeLessThan(fieldOrder.assetsTop);
+      expect(fieldOrder.assetsTop).toBeLessThan(fieldOrder.amountTop);
+    } else {
+      expect(Math.abs(fieldOrder.payTop - fieldOrder.investmentTop)).toBeLessThan(8);
+    }
     expect(fieldOrder.linkInsideInvestmentField).toBe(true);
 
     await chooseUnitedStatesLocale(page);
