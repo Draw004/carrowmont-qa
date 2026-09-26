@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, setInput, parseMoney, parsePercent, relativeError } from '../helpers/common.js';
-import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge } from '../helpers/calculations.js';
+import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge, retirementContributionFutureValue } from '../helpers/calculations.js';
 
 test.describe('Calculation regression and independent formula checks', () => {
   test('[AUTO] SIP: future value matches an independent monthly compounding calculation', async ({ page }) => {
@@ -158,6 +158,7 @@ test.describe('Calculation regression and independent formula checks', () => {
     await setInput(page, '#retirementAge', 60);
     await setInput(page, '#planningAge', 90);
     await setInput(page, '#currentSavings', 1000000);
+    await page.locator('#contributionFrequency').selectOption('monthly');
     await setInput(page, '#currentMonthlyInvestment', 20000);
     await setInput(page, '#preReturn', 10);
     await setInput(page, '#postReturn', 7.5);
@@ -174,4 +175,26 @@ test.describe('Calculation regression and independent formula checks', () => {
     expect(relativeError(monthly, 36884), `Monthly investment ${monthly}`).toBeLessThan(0.025);
     expect(Math.abs(funded - 63)).toBeLessThanOrEqual(1);
   });
+
+  for (const contributionFrequency of ['weekly', 'biweekly', 'semimonthly', 'fourweekly']) {
+    test(`[AUTO] Retirement Planner: ${contributionFrequency} contribution timing matches independent periodic compounding`, async ({ page }) => {
+      await gotoClean(page, '/retirement-calculator/planner.html');
+      await page.locator('#quickModeBtn').click();
+      await setInput(page, '#currentAge', 35);
+      await setInput(page, '#retirementAge', 37);
+      await setInput(page, '#planningAge', 67);
+      await setInput(page, '#currentSavings', 0);
+      await page.locator('#contributionFrequency').selectOption(contributionFrequency);
+      await setInput(page, '#currentMonthlyInvestment', 1000);
+      await setInput(page, '#preReturn', 8);
+      await setInput(page, '#postReturn', 7.5);
+      await setInput(page, '#bufferRate', 10);
+      await setInput(page, '#quickMonthlyExpense', 1000);
+      await setInput(page, '#quickRetirementPct', 65);
+      await setInput(page, '#quickInflation', 5);
+      const projected = parseMoney(await page.locator('#projectedCorpus').innerText());
+      const expected = retirementContributionFutureValue({ contribution: 1000, years: 2, annualReturnPct: 8, contributionFrequency });
+      expect(relativeError(projected, expected), `Retirement ${contributionFrequency} projected ${projected} expected ${expected}`).toBeLessThan(0.008);
+    });
+  }
 });

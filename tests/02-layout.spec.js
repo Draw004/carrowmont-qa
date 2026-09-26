@@ -4,6 +4,24 @@ import { gotoClean, assertNoHorizontalOverflow, assertInsideParent, saveReferenc
 import { prepareToolForQa } from '../helpers/fixtures.js';
 
 test.describe('Layout and responsive guardrails', () => {
+  test('[AUTO] Retirement and Inflation headers align with the SIP header standard', async ({ page }) => {
+    const metric = async path => {
+      await gotoClean(page, path);
+      return page.locator('.site-header .container').evaluate(el => {
+        const r = el.getBoundingClientRect();
+        return { left: r.left, right: r.right, width: r.width };
+      });
+    };
+    const sip = await metric('/sip-calculator/');
+    const retirement = await metric('/retirement-calculator/planner.html');
+    const inflation = await metric('/inflation-calculator/');
+    for (const [name, current] of [['Retirement', retirement], ['Inflation', inflation]]) {
+      expect(Math.abs(current.left - sip.left), `${name} header left edge`).toBeLessThan(2);
+      expect(Math.abs(current.right - sip.right), `${name} header right edge`).toBeLessThan(2);
+      expect(Math.abs(current.width - sip.width), `${name} header width`).toBeLessThan(2);
+    }
+  });
+
   for (const tool of tools) {
     test(`[AUTO] ${tool.name}: no page-level horizontal overflow`, async ({ page }) => {
       await gotoClean(page, tool.path);

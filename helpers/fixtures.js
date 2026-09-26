@@ -140,6 +140,8 @@ export async function prepareToolForQa(page, toolKey) {
     await setInput(page, '#retirementAge', 60);
     await setInput(page, '#planningAge', 90);
     await setInput(page, '#currentSavings', 1000000);
+    const retirementContributionFrequency = page.locator('#contributionFrequency');
+    if (await retirementContributionFrequency.count()) await retirementContributionFrequency.selectOption('monthly');
     await setInput(page, '#currentMonthlyInvestment', 20000);
     await setInput(page, '#preReturn', 10);
     await setInput(page, '#postReturn', 7.5);

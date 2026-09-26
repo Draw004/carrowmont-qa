@@ -274,6 +274,68 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(investment).toHaveValue('weekly');
   });
 
+  test('[AUTO] Retirement Planner: frequency inputs are first, independent, linkable, and country-aware', async ({ page }) => {
+    await gotoClean(page, '/retirement-calculator/planner.html');
+    const pay = page.locator('#payFrequency');
+    const contribution = page.locator('#contributionFrequency');
+
+    await chooseIndiaLocale(page);
+    await expect(pay).toHaveValue('monthly');
+    await expect(contribution).toHaveValue('monthly');
+    await expect(pay.locator('option[value="biweekly"]')).toHaveText('Every 2 Weeks');
+    await expect(contribution.locator('option[value="biweekly"]')).toHaveText('Every 2 Weeks');
+    await expect(page.locator('#currentContributionLabel')).toHaveText('Current monthly retirement contribution');
+    await expect(page.locator('#currentContributionHelp')).toHaveText('Enter how much you currently contribute per month toward retirement.');
+
+    const fieldOrder = await page.evaluate(() => {
+      const top = id => document.getElementById(id).closest('.field-card').getBoundingClientRect().top;
+      const contributionField = document.getElementById('contributionFrequency').closest('.field-card');
+      const formGrid = document.getElementById('payFrequency').closest('.form-grid');
+      const gridColumns = getComputedStyle(formGrid).gridTemplateColumns.split(/\s+/).filter(Boolean);
+      return {
+        payTop: top('payFrequency'),
+        contributionTop: top('contributionFrequency'),
+        savingsTop: top('currentSavings'),
+        amountTop: top('currentMonthlyInvestment'),
+        singleColumn: gridColumns.length === 1,
+        linkInsideContributionField: contributionField.contains(document.getElementById('sameAsPayCycle'))
+      };
+    });
+    expect(fieldOrder.payTop).toBeLessThan(fieldOrder.savingsTop);
+    expect(fieldOrder.contributionTop).toBeLessThan(fieldOrder.amountTop);
+    if (fieldOrder.singleColumn) {
+      expect(fieldOrder.payTop).toBeLessThan(fieldOrder.contributionTop);
+      expect(fieldOrder.contributionTop).toBeLessThan(fieldOrder.savingsTop);
+      expect(fieldOrder.savingsTop).toBeLessThan(fieldOrder.amountTop);
+    } else {
+      expect(Math.abs(fieldOrder.payTop - fieldOrder.contributionTop)).toBeLessThan(8);
+    }
+    expect(fieldOrder.linkInsideContributionField).toBe(true);
+
+    await chooseUnitedStatesLocale(page);
+    await expect(pay).toHaveValue('biweekly');
+    await expect(contribution).toHaveValue('biweekly');
+    await expect(contribution.locator('option[value="biweekly"]')).toHaveText('Biweekly (Every 2 Weeks)');
+
+    await contribution.selectOption('weekly');
+    await expect(pay).toHaveValue('biweekly');
+    await expect(contribution).toHaveValue('weekly');
+    await expect(page.locator('#currentContributionLabel')).toHaveText('Current weekly retirement contribution');
+
+    await page.locator('#sameAsPayCycle').check();
+    await expect(contribution).toBeDisabled();
+    await expect(contribution).toHaveValue('biweekly');
+    await pay.selectOption('semimonthly');
+    await expect(contribution).toHaveValue('semimonthly');
+
+    await page.locator('#sameAsPayCycle').uncheck();
+    await expect(contribution).toBeEnabled();
+    await contribution.selectOption('fourweekly');
+    await expect(pay).toHaveValue('semimonthly');
+    await expect(contribution).toHaveValue('fourweekly');
+    await expect(page.locator('#currentContributionLabel')).toHaveText('Current retirement contribution every 4 weeks');
+  });
+
   test('[AUTO] Goal Planner: one-time investment timing appears only when an amount is entered', async ({ page }) => {
     await gotoClean(page, '/goal-planner/');
     await expect(page.locator('#futureLumpTimingField')).toBeHidden();

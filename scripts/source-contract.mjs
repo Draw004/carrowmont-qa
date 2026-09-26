@@ -238,6 +238,54 @@ add('sip report visuals: midpoint and final callouts pair projected/step-up valu
   sipApp.includes("anchor:'center',dy:60")
 );
 
+const retirementHtml = read('retirement-calculator/planner.html');
+const retirementApp = read('retirement-calculator/app.js');
+const retirementLocale = read('retirement-calculator/locale.js');
+const retirementMethodology = read('retirement-calculator/methodology.html');
+const retirementCss = read('retirement-calculator/styles.css');
+const inflationCss = read('inflation-calculator/styles.css');
+add('retirement: separate pay and contribution frequency inputs',
+  retirementHtml.includes('id="payFrequency"') &&
+  retirementHtml.includes('id="contributionFrequency"') &&
+  retirementHtml.includes('id="sameAsPayCycle"')
+);
+add('retirement: frequency controls precede savings and contribution inputs',
+  retirementHtml.indexOf('id="payFrequency"') < retirementHtml.indexOf('id="currentSavings"') &&
+  retirementHtml.indexOf('id="contributionFrequency"') < retirementHtml.indexOf('id="currentMonthlyInvestment"')
+);
+add('retirement: standardized frequency periods drive pre-retirement contributions',
+  /weekly\s*:\s*52/.test(retirementApp) &&
+  /biweekly\s*:\s*26/.test(retirementApp) &&
+  /semimonthly\s*:\s*24/.test(retirementApp) &&
+  /fourweekly\s*:\s*13/.test(retirementApp) &&
+  /monthly\s*:\s*12/.test(retirementApp) &&
+  retirementApp.includes('contributionSchedule') && retirementApp.includes('s.contributionFrequency')
+);
+add('retirement: pay frequency stays independent unless Same as my pay cycle is selected',
+  retirementApp.includes("$('sameAsPayCycle')?.addEventListener('change'") &&
+  retirementApp.includes("$('contributionFrequency').disabled = $('sameAsPayCycle').checked") &&
+  retirementApp.includes("$('contributionFrequency').value = $('payFrequency').value")
+);
+add('retirement: country profiles carry shared frequency terminology metadata',
+  /IN:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(retirementLocale) &&
+  /US:\s*\{[^}]*contributionFrequency:\s*"biweekly"[^}]*twoWeekLabel:\s*"biweekly"/.test(retirementLocale) &&
+  /AU:\s*\{[^}]*contributionFrequency:\s*"biweekly"[^}]*twoWeekLabel:\s*"fortnightly"/.test(retirementLocale) &&
+  /PH:\s*\{[^}]*contributionFrequency:\s*"semimonthly"/.test(retirementLocale)
+);
+add('retirement: report and copy summary include selected frequencies',
+  retirementApp.includes('Pay frequency: ${frequencyLabel(r.s.payFrequency)}') &&
+  retirementApp.includes('Retirement contribution frequency: ${frequencyLabel(r.s.contributionFrequency)}') &&
+  retirementApp.includes('Retirement contribution frequency')
+);
+add('retirement: methodology documents selected contribution frequency',
+  retirementMethodology.includes('selected Retirement contribution frequency') &&
+  retirementMethodology.includes('Pay frequency is informational')
+);
+add('retirement and inflation: headers use SIP-aligned 1480px container contract',
+  retirementCss.includes('.site-header .container{width:min(1480px,calc(100% - 64px))') &&
+  inflationCss.includes('.site-header .container{width:min(1480px,calc(100% - 64px))')
+);
+
 const retirementPdf = read('retirement-calculator/retirement-pdf-renderer.js');
 add('retirement report: variable-height key-value rows prevent wrapped-label overlap',
   retirementPdf.includes('textLineCount') && retirementPdf.includes('Math.max(minRowH') && retirementPdf.includes('wrappedText(ctx,value') && retirementPdf.includes('maxLines:3')
@@ -246,7 +294,6 @@ add('retirement report: detailed expense rows use safer pagination and row heigh
   retirementPdf.includes('i+=14') && retirementPdf.includes('y+48')
 );
 
-const retirementCss = read('retirement-calculator/styles.css');
 add('retirement: report buttons use shrink-safe grid', /grid-template-columns:\s*minmax\(0/.test(retirementCss) && /\.result-actions \.share-button\{[^}]*min-width:0/.test(retirementCss));
 
 // Main-site checks run when SOURCE_ROOT also contains draw004.github.io (for example, a full source snapshot).
