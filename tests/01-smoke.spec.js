@@ -274,6 +274,73 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(investment).toHaveValue('weekly');
   });
 
+  test('[AUTO] Financial Independence: Plan Until Age is a distinct planning mode with clear controls', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    await expect(page.locator('#planningModeSustainable')).toBeChecked();
+    await expect(page.locator('#withdrawalRateField')).toBeVisible();
+    await expect(page.locator('#planUntilField')).toBeHidden();
+
+    await page.locator('#planningModeUntilAge').check();
+    await expect(page.locator('#planUntilField')).toBeVisible();
+    await expect(page.locator('#withdrawalRateField')).toBeHidden();
+    await expect(page.locator('#fiHeroLabel')).toHaveText('Required portfolio if FI started today');
+
+    // Locale-neutral QA starts some tools with zeroed money inputs. Enter explicit
+    // plan data before asserting that longevity outputs are rendered.
+    await setInput(page, '#monthlySpending', 100000);
+    await setInput(page, '#currentAssets', 1500000);
+    await setInput(page, '#monthlyContribution', 30000);
+    await expect(page.locator('#longevityBox')).toBeVisible();
+
+    await setInput(page, '#targetAge', 60);
+    await setInput(page, '#planUntilAge', 55);
+    await page.locator('#planUntilAge').blur();
+    await expect(page.locator('#planUntilAge')).toHaveValue('55');
+    await expect(page.locator('#planUntilAge')).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.locator('#planUntilAgeError')).toBeVisible();
+    await expect(page.locator('#planUntilAgeError')).toHaveText('Plan Until Age must be greater than your Target Financial Independence Age.');
+    await expect(page.locator('#targetPill')).toContainText('Plan until —');
+    await expect(page.locator('#copyBtn')).toBeDisabled();
+    await expect(page.locator('#reportBtn')).toBeDisabled();
+
+    // Correcting the value should clear the validation state and restore the plan.
+    await setInput(page, '#planUntilAge', 61);
+    await page.locator('#planUntilAge').blur();
+    await expect(page.locator('#planUntilAge')).toHaveValue('61');
+    await expect(page.locator('#planUntilAge')).toHaveAttribute('aria-invalid', 'false');
+    await expect(page.locator('#planUntilAgeError')).toBeHidden();
+    await expect(page.locator('#targetPill')).toContainText('Plan until 61');
+    await expect(page.locator('#copyBtn')).toBeEnabled();
+    await expect(page.locator('#reportBtn')).toBeEnabled();
+
+    // Manual keyboard entry must not be overwritten after the first digit by
+    // the calculator's live-render cycle.
+    const planUntil = page.locator('#planUntilAge');
+    await planUntil.click();
+    await planUntil.press('Control+A');
+    await planUntil.pressSequentially('100');
+    await expect(planUntil).toHaveValue('100');
+    await planUntil.blur();
+    await expect(planUntil).toHaveValue('100');
+    await expect(page.locator('#targetPill')).toContainText('Plan until 100');
+
+    // Raising Target FI Age above an existing Plan Until Age must surface the
+    // same validation error without silently rewriting the user's horizon.
+    await setInput(page, '#planUntilAge', 65);
+    await page.locator('#planUntilAge').blur();
+    await setInput(page, '#targetAge', 70);
+    await page.locator('#targetAge').blur();
+    await expect(page.locator('#planUntilAge')).toHaveValue('65');
+    await expect(page.locator('#planUntilAgeError')).toBeVisible();
+    await expect(page.locator('#planUntilAgeError')).toHaveText('Plan Until Age must be greater than your Target Financial Independence Age.');
+
+    await page.locator('#planningModeSustainable').check();
+    await expect(page.locator('#withdrawalRateField')).toBeVisible();
+    await expect(page.locator('#planUntilField')).toBeHidden();
+    await expect(page.locator('#longevityBox')).toBeHidden();
+    await expect(page.locator('#fiHeroLabel')).toHaveText('Estimated FI number in today’s money');
+  });
+
   test('[AUTO] Retirement Planner: frequency inputs are first, independent, linkable, and country-aware', async ({ page }) => {
     await gotoClean(page, '/retirement-calculator/planner.html');
     const pay = page.locator('#payFrequency');
