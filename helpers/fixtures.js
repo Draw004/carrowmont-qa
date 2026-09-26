@@ -104,6 +104,8 @@ export async function prepareToolForQa(page, toolKey) {
     await setInput(page, '#withdrawalRate', 4);
     await setInput(page, '#inflation', 5);
     await setInput(page, '#currentAssets', 1500000);
+    const fiInvestmentFrequency = page.locator('#investmentFrequency');
+    if (await fiInvestmentFrequency.count()) await fiInvestmentFrequency.selectOption('monthly');
     await setInput(page, '#monthlyContribution', 30000);
     await setInput(page, '#annualReturn', 10);
     await setInput(page, '#annualStepUp', 5);

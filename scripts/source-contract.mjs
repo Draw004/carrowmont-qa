@@ -140,6 +140,45 @@ add('sip: international hero uses recurring-investment terminology',
 
 const fiHtml = read('financial-independence/index.html');
 const fiJs = read('financial-independence/app.js');
+const fiCore = read('financial-independence/core.js');
+const fiLocale = read('financial-independence/locale.js');
+const fiPdf = read('financial-independence/fi-pdf-renderer.js');
+add('financial-independence: separate pay and investment frequency inputs',
+  fiHtml.includes('id="payFrequency"') &&
+  fiHtml.includes('id="investmentFrequency"') &&
+  fiHtml.includes('id="sameAsPayCycle"')
+);
+add('financial-independence: frequency controls precede money inputs',
+  fiHtml.indexOf('id="payFrequency"') < fiHtml.indexOf('id="currentAssets"') &&
+  fiHtml.indexOf('id="investmentFrequency"') < fiHtml.indexOf('id="monthlyContribution"')
+);
+add('financial-independence: standardized frequency periods drive the investment calculation',
+  /weekly\s*:\s*52/.test(fiCore) &&
+  /biweekly\s*:\s*26/.test(fiCore) &&
+  /semimonthly\s*:\s*24/.test(fiCore) &&
+  /fourweekly\s*:\s*13/.test(fiCore) &&
+  /monthly\s*:\s*12/.test(fiCore) &&
+  fiCore.includes('periodicRate') && fiCore.includes('s.investmentFrequency') && fiCore.includes('requiredContribution')
+);
+add('financial-independence: pay frequency stays independent unless Same as my pay cycle is selected',
+  fiJs.includes("els.sameAsPayCycle?.addEventListener('change'") &&
+  fiJs.includes('els.investmentFrequency.disabled=els.sameAsPayCycle.checked') &&
+  fiJs.includes('els.investmentFrequency.value=els.payFrequency.value')
+);
+add('financial-independence: country change reapplies suggested frequency while currency-only changes preserve choice',
+  fiJs.includes('if(regionChanged){payFrequencyUserOverride=false;investmentFrequencyUserOverride=false;}') &&
+  fiJs.includes('defaultFrequencyForRegion')
+);
+add('financial-independence: country profiles carry shared frequency terminology metadata',
+  /IN:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(fiLocale) &&
+  /IE:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"fortnightly"/.test(fiLocale) &&
+  /US:\s*\{[^}]*contributionFrequency:\s*"biweekly"[^}]*twoWeekLabel:\s*"biweekly"/.test(fiLocale)
+);
+add('financial-independence: report and copy summary include selected frequencies',
+  fiJs.includes('Income / pay frequency: ${frequencyLabel(s.payFrequency)}') &&
+  fiJs.includes('Investment frequency: ${frequencyLabel(s.investmentFrequency)}') &&
+  fiPdf.includes('selected ${frequencyLabel(r.state.investmentFrequency)} frequency')
+);
 const fiViewBoxHeight = Number((fiHtml.match(/id="pathChart"[^>]*viewBox="0 0 800 (\d+)"/) || [])[1]);
 const fiChartHeight = Number((fiJs.match(/function chartBase\([^)]*\)\{const W=800,H=(\d+)/) || [])[1]);
 add('financial-independence: SVG and chart coordinate heights match', fiViewBoxHeight > 0 && fiViewBoxHeight === fiChartHeight, `${fiViewBoxHeight} vs ${fiChartHeight}`);
@@ -182,7 +221,6 @@ for (const [dir,htmlFile,rendererFile] of reportTools) {
   add(`${dir}: PDF renderer uses standardized Continue Planning page`, renderer.includes('.continuePlanningPage('));
 }
 
-const fiPdf = read('financial-independence/fi-pdf-renderer.js');
 add('financial-independence report: permanent selected-age chart value callouts',
   fiPdf.includes('drawSelectedAgeValues') && fiPdf.includes('Printed value labels mark the selected age')
 );

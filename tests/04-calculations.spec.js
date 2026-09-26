@@ -114,6 +114,7 @@ test.describe('Calculation regression and independent formula checks', () => {
 
   test('[AUTO] Financial Independence: FI today and target-age values match independent formulas', async ({ page }) => {
     await gotoClean(page, '/financial-independence/');
+    await page.locator('#investmentFrequency').selectOption('monthly');
     await setInput(page, '#currentAge', 35);
     await setInput(page, '#targetAge', 50);
     await setInput(page, '#monthlySpending', 100000);
@@ -127,6 +128,27 @@ test.describe('Calculation regression and independent formula checks', () => {
     const expectedTarget = fiAtAge(expectedToday, 5, 15);
     expect(relativeError(actualToday, expectedToday)).toBeLessThan(0.012);
     expect(relativeError(actualTarget, expectedTarget)).toBeLessThan(0.012);
+  });
+
+  test('[AUTO] Financial Independence: weekly investment frequency uses 52 contribution periods per year', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    await setInput(page, '#currentAge', 35);
+    await setInput(page, '#targetAge', 37);
+    await setInput(page, '#monthlySpending', 10000);
+    await setInput(page, '#spendingPct', 100);
+    await setInput(page, '#monthlyIncome', 0);
+    await setInput(page, '#withdrawalRate', 4);
+    await setInput(page, '#inflation', 0);
+    await setInput(page, '#currentAssets', 0);
+    await page.locator('#investmentFrequency').selectOption('weekly');
+    await setInput(page, '#monthlyContribution', 1000);
+    await setInput(page, '#annualReturn', 0);
+    await setInput(page, '#annualStepUp', 0);
+    const projected = parseMoney(await page.locator('#portfolioTargetAge').innerText());
+    const expected = 1000 * 52 * 2;
+    expect(relativeError(projected, expected), `FI weekly projected ${projected} expected ${expected}`).toBeLessThan(0.006);
+    await expect(page.locator('#currentInvestmentLabel')).toHaveText('Current weekly investment');
+    await expect(page.locator('#requiredInvestmentLabel')).toHaveText('Total weekly investment required');
   });
 
   test('[AUTO] Retirement Planner: approved quick-mode fixture remains consistent', async ({ page }) => {
