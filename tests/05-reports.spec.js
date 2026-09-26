@@ -37,6 +37,13 @@ test.describe('PDF report generation and download standard', () => {
         expect(canvasText).toContain('Monthly');
       }
 
+      if (tool.key === 'goal-planner') {
+        expect(canvasText).toContain('Pay frequency');
+        expect(canvasText).toContain('Savings / contribution frequency');
+        expect(canvasText).toContain('Alternative one-time investment');
+        expect(canvasText).toContain('Monthly');
+      }
+
       if (tool.requiresGuideReportPage) {
         expect(canvasText, `${tool.name} report missing Report Guide & Methodology page`).toContain('Report Guide & Methodology');
         expect(canvasText, `${tool.name} report missing How to read section`).toContain('How to read this report');
