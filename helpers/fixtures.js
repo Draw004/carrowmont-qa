@@ -117,6 +117,8 @@ export async function prepareToolForQa(page, toolKey) {
     await setInput(page, '#years', 12);
     await setInput(page, '#inflationRate', 7);
     await setInput(page, '#existingSavings', 500000);
+    const goalContributionFrequency = page.locator('#contributionFrequency');
+    if (await goalContributionFrequency.count()) await goalContributionFrequency.selectOption('monthly');
     await setInput(page, '#monthlyContribution', 8000);
     await setInput(page, '#returnRate', 10);
     const futureLump = page.locator('#futureLump');
