@@ -44,6 +44,12 @@ test.describe('PDF report generation and download standard', () => {
         expect(canvasText).toContain('Monthly');
       }
 
+      if (tool.key === 'financial-independence') {
+        expect(canvasText).toContain('Income / pay frequency');
+        expect(canvasText).toContain('Investment frequency');
+        expect(canvasText).toContain('Monthly');
+      }
+
       if (tool.requiresGuideReportPage) {
         expect(canvasText, `${tool.name} report missing Report Guide & Methodology page`).toContain('Report Guide & Methodology');
         expect(canvasText, `${tool.name} report missing How to read section`).toContain('How to read this report');

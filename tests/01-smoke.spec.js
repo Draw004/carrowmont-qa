@@ -213,6 +213,58 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(contribution).toHaveValue('weekly');
   });
 
+  test('[AUTO] Financial Independence: frequency inputs are first, independent, linkable, and country-aware', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    const pay = page.locator('#payFrequency');
+    const investment = page.locator('#investmentFrequency');
+
+    await chooseIndiaLocale(page);
+    await expect(pay).toHaveValue('monthly');
+    await expect(investment).toHaveValue('monthly');
+    await expect(pay.locator('option[value="biweekly"]')).toHaveText('Every 2 Weeks');
+    await expect(investment.locator('option[value="biweekly"]')).toHaveText('Every 2 Weeks');
+    await expect(page.locator('#currentInvestmentLabel')).toHaveText('Current monthly investment');
+
+    const fieldOrder = await page.evaluate(() => {
+      const top = id => document.getElementById(id).closest('.field').getBoundingClientRect().top;
+      const investmentField = document.getElementById('investmentFrequency').closest('.field');
+      return {
+        payTop: top('payFrequency'),
+        investmentTop: top('investmentFrequency'),
+        assetsTop: top('currentAssets'),
+        amountTop: top('monthlyContribution'),
+        linkInsideInvestmentField: investmentField.contains(document.getElementById('sameAsPayCycle'))
+      };
+    });
+    expect(fieldOrder.payTop).toBeLessThan(fieldOrder.assetsTop);
+    expect(fieldOrder.investmentTop).toBeLessThan(fieldOrder.amountTop);
+    expect(Math.abs(fieldOrder.payTop - fieldOrder.investmentTop)).toBeLessThan(8);
+    expect(fieldOrder.linkInsideInvestmentField).toBe(true);
+
+    await chooseUnitedStatesLocale(page);
+    await expect(pay).toHaveValue('biweekly');
+    await expect(investment).toHaveValue('biweekly');
+    await expect(investment.locator('option[value="biweekly"]')).toHaveText('Biweekly (Every 2 Weeks)');
+
+    await investment.selectOption('weekly');
+    await expect(pay).toHaveValue('biweekly');
+    await expect(investment).toHaveValue('weekly');
+    await expect(page.locator('#currentInvestmentLabel')).toHaveText('Current weekly investment');
+    await expect(page.locator('#currentInvestmentHelp')).toHaveText('Enter how much you currently invest per week toward Financial Independence.');
+
+    await page.locator('#sameAsPayCycle').check();
+    await expect(investment).toBeDisabled();
+    await expect(investment).toHaveValue('biweekly');
+    await pay.selectOption('semimonthly');
+    await expect(investment).toHaveValue('semimonthly');
+
+    await page.locator('#sameAsPayCycle').uncheck();
+    await expect(investment).toBeEnabled();
+    await investment.selectOption('weekly');
+    await expect(pay).toHaveValue('semimonthly');
+    await expect(investment).toHaveValue('weekly');
+  });
+
   test('[AUTO] Goal Planner: one-time investment timing appears only when an amount is entered', async ({ page }) => {
     await gotoClean(page, '/goal-planner/');
     await expect(page.locator('#futureLumpTimingField')).toBeHidden();
