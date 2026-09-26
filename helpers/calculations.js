@@ -40,6 +40,17 @@ export function goalRecurringFutureValue({ contribution, years, annualReturnPct,
   return contribution * ((Math.pow(1 + periodicRate, periods) - 1) / periodicRate);
 }
 
+export const retirementFrequencyPeriods = sipFrequencyPeriods;
+
+export function retirementContributionFutureValue({ contribution, years, annualReturnPct, contributionFrequency = 'monthly' }) {
+  const periodsPerYear = retirementFrequencyPeriods[contributionFrequency] || 12;
+  const annualReturn = annualReturnPct / 100;
+  const periodicRate = annualReturn === 0 ? 0 : Math.pow(1 + annualReturn, 1 / periodsPerYear) - 1;
+  const periods = Math.round(years * periodsPerYear);
+  if (periodicRate === 0) return contribution * periods;
+  return contribution * ((Math.pow(1 + periodicRate, periods) - 1) / periodicRate);
+}
+
 
 export function fiToday(monthlySpending, spendingPct, monthlyIncome, withdrawalRatePct) {
   const need = Math.max(0, monthlySpending * (spendingPct / 100) - monthlyIncome);

@@ -50,6 +50,13 @@ test.describe('PDF report generation and download standard', () => {
         expect(canvasText).toContain('Monthly');
       }
 
+      if (tool.key === 'retirement-planner') {
+        expect(canvasText).toContain('Pay frequency');
+        expect(canvasText).toContain('Retirement contribution frequency');
+        expect(canvasText).toContain('Monthly');
+        expect(canvasText).toContain('retirement contribution required');
+      }
+
       if (tool.requiresGuideReportPage) {
         expect(canvasText, `${tool.name} report missing Report Guide & Methodology page`).toContain('Report Guide & Methodology');
         expect(canvasText, `${tool.name} report missing How to read section`).toContain('How to read this report');
