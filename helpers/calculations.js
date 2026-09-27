@@ -110,3 +110,64 @@ export function fiPlanUntilProjection({
   }
   return { lasts: true, depletionAge: null, finalBalance: balance };
 }
+
+
+export function fiPlanUntilAnnualJourney({
+  startingBalance,
+  monthlyPortfolioNeedToday,
+  currentAge,
+  startAge,
+  planUntilAge,
+  inflationPct,
+  annualReturnPct
+}) {
+  const months = Math.max(0, Math.round((planUntilAge - startAge) * 12));
+  const annualReturn = annualReturnPct / 100;
+  const inflation = inflationPct / 100;
+  const monthlyReturn = annualReturn === 0 ? 0 : Math.pow(1 + annualReturn, 1 / 12) - 1;
+  const monthlyInflation = inflation === 0 ? 0 : Math.pow(1 + inflation, 1 / 12) - 1;
+  const firstWithdrawal = monthlyPortfolioNeedToday * Math.pow(1 + inflation, startAge - currentAge);
+  let balance = Math.max(0, startingBalance);
+  let depletionAge = null;
+  let totalWithdrawals = 0;
+  let totalRequiredWithdrawals = 0;
+  let totalGrowth = 0;
+  const rows = [];
+  let yearWithdrawals = 0, yearRequired = 0, yearGrowth = 0;
+  for (let m = 0; m < months; m++) {
+    const withdrawal = firstWithdrawal * Math.pow(1 + monthlyInflation, m);
+    totalRequiredWithdrawals += withdrawal;
+    yearRequired += withdrawal;
+    if (depletionAge === null && withdrawal > 0) {
+      if (balance + 1e-9 < withdrawal) {
+        depletionAge = startAge + m / 12;
+        balance = 0;
+      } else {
+        balance -= withdrawal;
+        totalWithdrawals += withdrawal;
+        yearWithdrawals += withdrawal;
+        const growth = balance * monthlyReturn;
+        balance += growth;
+        totalGrowth += growth;
+        yearGrowth += growth;
+      }
+    } else if (depletionAge === null) {
+      const growth = balance * monthlyReturn;
+      balance += growth;
+      totalGrowth += growth;
+      yearGrowth += growth;
+    }
+    const atYearEnd = ((m + 1) % 12 === 0) || (m === months - 1);
+    if (atYearEnd) {
+      rows.push({
+        age: startAge + (m + 1) / 12,
+        withdrawal: yearWithdrawals,
+        requiredSpending: yearRequired,
+        growth: yearGrowth,
+        endBalance: balance
+      });
+      yearWithdrawals = 0; yearRequired = 0; yearGrowth = 0;
+    }
+  }
+  return { rows, lasts: depletionAge === null, depletionAge, finalBalance: balance, totalWithdrawals, totalRequiredWithdrawals, totalGrowth };
+}

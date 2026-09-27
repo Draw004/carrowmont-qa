@@ -196,20 +196,49 @@ add('financial-independence: Plan Until Age models inflation-adjusted withdrawal
   fiCore.includes('const growth=balance*rm') &&
   fiCore.includes('futurePortfolioMonthlyNeed')
 );
-add('financial-independence: Plan Until Age FI timing can extend beyond age 90 while accumulation visuals stop at Target Age',
+add('financial-independence: Plan Until Age FI timing can extend beyond age 90 and the comparison chart can expose a later crossing',
   fiCore.includes("s.planningMode==='until_age'?s.planUntilAge:90") &&
   fiCore.includes("s.planUntilAge-1/ppy") &&
-  fiCore.includes("maxAge=s.targetAge") &&
-  fiCore.includes("s.planningMode==='until_age'?Math.min(s.targetAge,requested)") &&
-  fiJs.includes("if(s.planningMode==='until_age')return s.targetAge;") &&
-  fiPdf.includes("if(s.planningMode==='until_age')return s.targetAge")
+  fiCore.includes("s.planningMode==='until_age'?Math.min(s.planUntilAge-1/ppy,requested)") &&
+  fiJs.includes('Math.ceil(r.modelledFI.age+1)') &&
+  fiJs.includes("'Projected portfolio if contributions continue'") &&
+  fiPdf.includes('Math.ceil(r.modelledFI.age+1)')
 );
 add('financial-independence: Plan Until Age checkpoints omit Target Age +5 while Sustainable FI keeps it',
   fiJs.includes("scenarioHead.textContent=isUntil?'Today and your Target Age':'Today, your Target Age and Target Age +5'") &&
   fiJs.includes("els.scenarioGrid.classList.toggle('plan-until-grid',isUntil)") &&
-  fiJs.includes('Post-FI longevity through age ${Math.round(s.planUntilAge)} is shown separately in Plan Longevity.') &&
+  fiJs.includes('The full FI Journey and Plan Longevity chart then show withdrawals and portfolio balance through age ${Math.round(s.planUntilAge)}.') &&
   fiStyles.includes('.scenario-grid.plan-until-grid{grid-template-columns:repeat(2,minmax(0,1fr))}') &&
   fiStyles.includes('@media(max-width:720px){.scenario-grid.plan-until-grid{grid-template-columns:1fr}}')
+);
+add('financial-independence: Plan Until Age has a distinct accumulation-to-drawdown annual journey',
+  fiHtml.includes('id="journeyHeadRow"') &&
+  fiCore.includes('function planUntilPostFIPath') &&
+  fiCore.includes('function planUntilJourney') &&
+  fiCore.includes("phase:'Drawdown'") &&
+  fiCore.includes('withdrawalThatYear') &&
+  fiCore.includes('growthThatYear') &&
+  fiCore.includes('isPlanUntilAge') &&
+  fiJs.includes('Portfolio-funded spending') &&
+  fiJs.includes('End portfolio value') &&
+  fiJs.includes('contributions stop at Target Age') &&
+  fiStyles.includes('.drawdown-row') &&
+  fiStyles.includes('.journey-phase.drawdown')
+);
+add('financial-independence: Plan Until Age uses a dedicated Plan Longevity chart with horizon and depletion markers',
+  fiCore.includes('function planUntilDrawdownSeries') &&
+  fiJs.includes("textContent='PLAN LONGEVITY'") &&
+  fiJs.includes("textContent='Portfolio balance through Plan Until Age'") &&
+  fiJs.includes('addPlanUntilAgeMarker') &&
+  fiJs.includes('addDepletionMarker') &&
+  fiPdf.includes('Plan Longevity · portfolio balance through Plan Until Age')
+);
+add('financial-independence: inflation treatment is explicit and distinguishes spending inflation from nominal portfolio values',
+  fiJs.includes('Inflation treatment: Portfolio-funded spending increases with') &&
+  fiJs.includes('future nominal ${L.getCurrency()}') &&
+  fiPdf.includes('inflation-adjusted spending model') &&
+  fiPdf.includes('Inflation treatment: Portfolio-funded spending increases with') &&
+  fiPdf.includes('future nominal ${L().getCurrency()}')
 );
 add('financial-independence: Plan Until Age supports uninterrupted manual keyboard entry',
   fiJs.includes('document.activeElement!==els.planUntilAge') &&
@@ -296,18 +325,22 @@ for (const [dir,htmlFile,rendererFile] of reportTools) {
 
 add('financial-independence report: permanent Target Age chart value callouts',
   fiPdf.includes('drawTargetAgeValues') &&
-  fiPdf.includes('Target Age ${Math.round(r.state.targetAge)} is highlighted') &&
+  fiPdf.includes('Target Age ${Math.round(s.targetAge)} is highlighted') &&
   fiPdf.includes('Projected Portfolio Value')
 );
 add('financial-independence report: projected portfolio callout is above money-added callout',
   fiPdf.includes("chartValueLabel(ctx,b,`Projected Portfolio Value ${compact(r.target.portfolio)}`,'#0e8b80',-38") &&
   fiPdf.includes("chartValueLabel(ctx,a,`Money Added ${compact(moneyAdded)}`,'#8799aa',12")
 );
-add('financial-independence report: FI Journey is printed with funding and milestone context',
+add('financial-independence report: FI Journey is printed with sustainable and Plan Until Age phase context',
   fiPdf.includes('Financial Independence Journey') &&
   fiPdf.includes('INVESTMENT THAT YEAR') &&
+  fiPdf.includes('PORTFOLIO-FUNDED SPENDING') &&
+  fiPdf.includes('END PORTFOLIO VALUE') &&
   fiPdf.includes('FUNDING %') &&
   fiPdf.includes('Target Age +5') &&
+  fiPdf.includes('Drawdown phase') &&
+  fiPdf.includes('future nominal currency') &&
   fiPdf.includes('FI target not reached within the modelled period.')
 );
 

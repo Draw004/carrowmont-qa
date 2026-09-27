@@ -296,6 +296,12 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#scenarioGrid .scenario')).toHaveCount(2);
     await expect(page.locator('#scenarioGrid')).toHaveClass(/plan-until-grid/);
     await expect(page.locator('#scenarioGrid')).not.toContainText('Target Age +5');
+    await expect(page.locator('#pathChartTitle')).toHaveText('Required portfolio vs accumulation path');
+    await expect(page.locator('#growthChartTitle')).toHaveText('Portfolio balance through Plan Until Age');
+    await expect(page.locator('#growthChartNote')).toContainText('spending rises with inflation');
+    await expect(page.locator('#fiJourney .section-head h2')).toHaveText('See the full path from investing to portfolio drawdown');
+    await expect(page.locator('#journeyHeadRow')).toContainText('Portfolio-funded spending');
+    await expect(page.locator('#journeyHeadRow')).toContainText('End portfolio value');
 
     await setInput(page, '#targetAge', 60);
     await setInput(page, '#planUntilAge', 55);
@@ -348,6 +354,10 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#scenarioGrid .scenario')).toHaveCount(3);
     await expect(page.locator('#scenarioGrid')).not.toHaveClass(/plan-until-grid/);
     await expect(page.locator('#scenarioGrid')).toContainText('Target Age +5');
+    await expect(page.locator('#pathChartTitle')).toHaveText('FI target vs projected portfolio value');
+    await expect(page.locator('#growthChartTitle')).toHaveText('Money added vs projected portfolio value');
+    await expect(page.locator('#journeyHeadRow')).toContainText('Total money added');
+    await expect(page.locator('#journeyHeadRow')).not.toContainText('Portfolio-funded spending');
   });
 
   test('[AUTO] Retirement Planner: frequency inputs are first, independent, linkable, and country-aware', async ({ page }) => {
