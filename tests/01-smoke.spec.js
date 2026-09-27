@@ -28,11 +28,11 @@ async function setLearnLocaleDirect(page, region, currency) {
   await expect(page.locator('#localeCurrencyLabel')).toHaveText(currency, { timeout: 10000 });
 }
 
-async function expectLearnCategoryOrder(page, expectedFirstThree) {
+async function expectLearnCategoryOrder(page, expectedCategories) {
   const boxes = page.locator('.planning-categories > .category-box');
-  await expect(boxes).toHaveCount(6, { timeout: 10000 });
-  for (let i = 0; i < expectedFirstThree.length; i += 1) {
-    await expect(boxes.nth(i)).toHaveAttribute('data-category', expectedFirstThree[i], { timeout: 10000 });
+  await expect(boxes).toHaveCount(expectedCategories.length, { timeout: 10000 });
+  for (let i = 0; i < expectedCategories.length; i += 1) {
+    await expect(boxes.nth(i)).toHaveAttribute('data-category', expectedCategories[i], { timeout: 10000 });
   }
 }
 
@@ -466,7 +466,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)', { timeout: 10000 });
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('₹1 crore', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('₹10,000', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['investment', 'retirement', 'goals']);
+    await expectLearnCategoryOrder(page, ['investment', 'assets', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
 
     // United States + USD: international terminology, USD examples and international order.
     await setLearnLocaleDirect(page, 'US', 'USD');
@@ -474,14 +474,14 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500', { timeout: 10000 });
     await expect(page.locator('#investmentCategoryTitle')).not.toContainText('SIP', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['retirement', 'goals', 'investment']);
+    await expectLearnCategoryOrder(page, ['retirement', 'assets', 'budget', 'goals', 'investment', 'fi', 'inflation', 'foundation']);
 
     // India + USD: country still controls SIP terminology/order; currency controls money examples.
     await setLearnLocaleDirect(page, 'IN', 'USD');
     await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)', { timeout: 10000 });
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['investment', 'retirement', 'goals']);
+    await expectLearnCategoryOrder(page, ['investment', 'assets', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
 
     expect(errors, `Learn hub browser errors:
 ${errors.join('\n')}`).toEqual([]);
@@ -514,4 +514,61 @@ ${errors.join('\n')}`).toEqual([]);
     const viewportHeight = await page.evaluate(() => window.innerHeight);
     expect(box.y, 'The India/INR 1 Crore section should begin within roughly one viewport plus a small scroll cue').toBeLessThan(viewportHeight + 350);
   });
+
+  test('[AUTO] Learn expansion: 14 new guides load with indexable article metadata', async ({ page }) => {
+    const guides = [
+      '/50-30-20-budget-rule.html','/zero-based-budgeting.html','/pay-yourself-first-budgeting.html','/sinking-fund-vs-emergency-fund.html',
+      '/budgeting-with-irregular-income.html','/cash-flow-vs-income.html','/lifestyle-inflation.html','/how-much-should-i-save-each-month.html',
+      '/budgeting-by-pay-frequency.html','/sequence-of-returns-risk.html','/4-percent-rule-retirement.html','/longevity-risk-retirement.html',
+      '/coast-fire-explained.html','/sip-during-market-fall.html'
+    ];
+    for (const url of guides) {
+      const errors = [];
+      const onError = err => errors.push(err.message);
+      page.on('pageerror', onError);
+      await gotoClean(page, url);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /index,follow/);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com' + url);
+      const schema = await page.locator('script[type="application/ld+json"]').first().textContent();
+      expect(schema || '').toContain('Article');
+      expect(schema || '').toContain('Carrowmont');
+      expect(errors, `${url} browser errors:\n${errors.join('\n')}`).toEqual([]);
+      page.off('pageerror', onError);
+    }
+  });
+
+
+  test('[AUTO] Assets & Investing expansion: 12 new global guides load with indexable metadata', async ({ page }) => {
+    const guides = [
+      '/gold-as-an-investment.html',
+      '/physical-gold-vs-gold-etf.html',
+      '/gold-vs-stocks.html',
+      '/gold-and-inflation.html',
+      '/rent-vs-buy-home.html',
+      '/rental-yield-explained.html',
+      '/real-estate-vs-stocks.html',
+      '/what-is-a-reit.html',
+      '/reit-vs-direct-property.html',
+      '/asset-allocation-explained.html',
+      '/stocks-vs-bonds.html',
+      '/diversification-across-asset-classes.html',
+    ];
+    for (const url of guides) {
+      const errors = [];
+      const onError = err => errors.push(err.message);
+      page.on('pageerror', onError);
+      await gotoClean(page, url);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /index,follow/);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com' + url);
+      const schema = await page.locator('script[type="application/ld+json"]').first().textContent();
+      expect(schema || '').toContain('Article');
+      expect(schema || '').toContain('Carrowmont');
+      await expect(page.locator('.reference-note')).toHaveCount(1);
+      expect(errors, `${url} browser errors:\n${errors.join('\n')}`).toEqual([]);
+      page.off('pageerror', onError);
+    }
+  });
+
 });
