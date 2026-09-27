@@ -458,6 +458,69 @@ if (mainHome || mainSiteJs) {
 }
 
 
+// Learn expansion contract - 2026-09-27. Protects the 40-article library, sitemap and new money-management pillar.
+const learnHub = read('draw004.github.io/learn.html');
+const learnExpansion = read('draw004.github.io/learn-expansion.js');
+const learnSitemap = read('draw004.github.io/sitemap.xml');
+const newLearnPages = [
+  '50-30-20-budget-rule.html','zero-based-budgeting.html','pay-yourself-first-budgeting.html','sinking-fund-vs-emergency-fund.html',
+  'budgeting-with-irregular-income.html','cash-flow-vs-income.html','lifestyle-inflation.html','how-much-should-i-save-each-month.html',
+  'budgeting-by-pay-frequency.html','sequence-of-returns-risk.html','4-percent-rule-retirement.html','longevity-risk-retirement.html',
+  'coast-fire-explained.html','sip-during-market-fall.html'
+];
+add('main site: Learn expansion adds Budget & Cash Flow pillar and popular-question discovery',
+  learnHub.includes('data-category="budget"') && learnHub.includes('POPULAR PLANNING QUESTIONS') && learnHub.includes('learn-expansion.js?v=20260927-learn1')
+);
+add('main site: all 14 new Learn pages exist and are linked from Learn hub',
+  newLearnPages.every(file => fs.existsSync(path.join(root,'draw004.github.io',file)) && learnHub.includes('href="/'+file+'"'))
+);
+add('main site: all 14 new Learn pages are indexable Article pages with canonical URLs and editorial identity',
+  newLearnPages.every(file => {
+    const page=read('draw004.github.io/'+file);
+    return page.includes('name="robots"') && page.includes('index,follow') && page.includes('rel="canonical"') &&
+      page.includes('"@type":"Article"') && page.includes('name="author"') && page.includes('content="Carrowmont"') && page.includes('dateModified":"2026-09-27"');
+  })
+);
+add('main site: sitemap contains 70 URLs including all 14 first-wave Learn-expansion pages',
+  (learnSitemap.match(/<loc>/g)||[]).length===70 && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
+);
+add('main site: Learn expansion preserves country-aware investment wording and market ordering',
+  learnExpansion.includes("['investment','assets','retirement','budget','goals','fi','inflation','foundation']") &&
+  learnExpansion.includes("['retirement','assets','budget','goals','investment','fi','inflation','foundation']") &&
+  learnExpansion.includes('What happens to a SIP when markets fall?') &&
+  learnExpansion.includes('What happens to recurring investments when markets fall?')
+);
+
+
+// Assets & Investing expansion contract - 2026-09-27. Protects 12 global asset-class guides and the 52-article Learn library.
+const assetLearnPages = [
+  'gold-as-an-investment.html',
+  'physical-gold-vs-gold-etf.html',
+  'gold-vs-stocks.html',
+  'gold-and-inflation.html',
+  'rent-vs-buy-home.html',
+  'rental-yield-explained.html',
+  'real-estate-vs-stocks.html',
+  'what-is-a-reit.html',
+  'reit-vs-direct-property.html',
+  'asset-allocation-explained.html',
+  'stocks-vs-bonds.html',
+  'diversification-across-asset-classes.html',
+];
+add('main site: Learn hub adds global Assets & Investing pillar and asset discovery cards',
+  learnHub.includes('data-category="assets"') && learnHub.includes('Gold as an investment') && learnHub.includes('Rent or buy a home?') && learnHub.includes('What is a REIT')
+);
+add('main site: all 12 asset-class Learn pages exist and are linked from Learn hub',
+  assetLearnPages.every(file => fs.existsSync(path.join(root,'draw004.github.io',file)) && learnHub.includes('href="/'+file+'"'))
+);
+add('main site: all 12 asset-class pages are indexable Article pages with canonical URLs and source notes',
+  assetLearnPages.every(file => { const page=read('draw004.github.io/'+file); return page.includes('name="robots"') && page.includes('index,follow') && page.includes('rel="canonical"') && page.includes('"@type":"Article"') && page.includes('Carrowmont') && page.includes('Sources and how this guide was prepared'); })
+);
+add('main site: final Learn sitemap contains 70 unique URLs and all 12 asset-class guides',
+  (learnSitemap.match(/<loc>/g)||[]).length===70 && new Set([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1])).size===70 && assetLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
+);
+
+
 const standardizedFooterDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator'];
 for (const dir of standardizedFooterDirs) {
   const html = read(`${dir}/index.html`);
