@@ -445,9 +445,9 @@ if (mainHome || mainSiteJs) {
     mainHome.includes('footer-investment-link')
   );
   add('main site: responsive homepage hero image assets are wired without copy changes',
-    mainHome.includes('carrowmont-hero-mobile.webp?v=20260927-hero-asset2') &&
-    mainHome.includes('carrowmont-hero-laptop.webp?v=20260927-hero-asset2') &&
-    mainHome.includes('carrowmont-hero.webp?v=20260927-hero-asset2') &&
+    mainHome.includes('carrowmont-hero-mobile.webp?v=20260927-hero-asset3') &&
+    mainHome.includes('carrowmont-hero-laptop.webp?v=20260927-hero-asset3') &&
+    mainHome.includes('carrowmont-hero.webp?v=20260927-hero-asset3') &&
     mainCss.includes('Homepage hero responsive image asset fix - 2026-09-27') &&
     mainCss.includes('object-position:80% center!important') &&
     mainCss.includes('object-position:right center!important') &&
