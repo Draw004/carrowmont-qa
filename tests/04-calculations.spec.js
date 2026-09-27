@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, setInput, parseMoney, parsePercent, relativeError } from '../helpers/common.js';
-import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge, fiPlanUntilRequiredPortfolio, fiPlanUntilProjection, retirementContributionFutureValue } from '../helpers/calculations.js';
+import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge, fiPlanUntilRequiredPortfolio, fiPlanUntilProjection, fiPlanUntilAnnualJourney, retirementContributionFutureValue } from '../helpers/calculations.js';
 
 test.describe('Calculation regression and independent formula checks', () => {
   test('[AUTO] SIP: future value matches an independent monthly compounding calculation', async ({ page }) => {
@@ -207,6 +207,22 @@ test.describe('Calculation regression and independent formula checks', () => {
     expect(Math.abs(finalBalance)).toBeLessThan(1);
     await expect(page.locator('#fundingPct')).toHaveText('100%');
     await expect(page.locator('#longevityStatus')).toHaveText('Lasts through age 55');
+
+    const targetRow = page.locator('#journeyBody tr.target-row');
+    await expect(targetRow).toContainText('Transition');
+    const firstDrawdown = page.locator('#journeyBody tr[data-phase="drawdown"]').first();
+    const finalDrawdown = page.locator('#journeyBody tr[data-phase="drawdown"]').last();
+    await expect(firstDrawdown).toContainText('Age 51');
+    const numeric = async (row, index) => Number(await row.locator('td').nth(index).getAttribute('data-value'));
+    expect(await numeric(firstDrawdown, 2)).toBeCloseTo(0, 6);
+    expect(relativeError(await numeric(firstDrawdown, 3), 12000)).toBeLessThan(0.006);
+    expect(await numeric(firstDrawdown, 4)).toBeCloseTo(0, 6);
+    expect(relativeError(await numeric(firstDrawdown, 5), 48000)).toBeLessThan(0.006);
+    expect(relativeError(await numeric(firstDrawdown, 6), 48000)).toBeLessThan(0.006);
+    expect(await numeric(firstDrawdown, 7)).toBeCloseTo(1, 6);
+    await expect(finalDrawdown).toContainText('Age 55');
+    await expect(finalDrawdown).toContainText('Plan Until Age');
+    expect(Math.abs(await numeric(finalDrawdown, 5))).toBeLessThan(1);
   });
 
   test('[AUTO] Financial Independence: Plan Until Age target and depletion match independent monthly withdrawal model', async ({ page }) => {
@@ -243,9 +259,16 @@ test.describe('Calculation regression and independent formula checks', () => {
       const years = Math.floor(totalMonths / 12), months = totalMonths % 12;
       expect(status).toContain(`Age ${years} years ${months} month${months === 1 ? '' : 's'}`);
     }
+
+    const independentJourney = fiPlanUntilAnnualJourney({ startingBalance: projectedAtTarget, monthlyPortfolioNeedToday: monthlyNeedToday, currentAge: 40, startAge: 50, planUntilAge: 60, inflationPct: 3, annualReturnPct: 6 });
+    const firstDrawdown = page.locator('#journeyBody tr[data-phase="drawdown"]').first();
+    const numeric = async (index) => Number(await firstDrawdown.locator('td').nth(index).getAttribute('data-value'));
+    expect(relativeError(await numeric(3), independentJourney.rows[0].withdrawal)).toBeLessThan(0.02);
+    expect(relativeError(await numeric(4), independentJourney.rows[0].growth)).toBeLessThan(0.02);
+    expect(relativeError(await numeric(5), independentJourney.rows[0].endBalance)).toBeLessThan(0.02);
   });
 
-  test('[AUTO] Financial Independence: Plan Until Age searches beyond age 90 while accumulation visuals stop at Target Age', async ({ page }) => {
+  test('[AUTO] Financial Independence: Plan Until Age searches beyond age 90 and exposes the full accumulation-to-drawdown path', async ({ page }) => {
     await gotoClean(page, '/financial-independence/');
     await page.locator('#planningModeUntilAge').check();
     await page.locator('#investmentFrequency').selectOption('monthly');
@@ -264,11 +287,16 @@ test.describe('Calculation regression and independent formula checks', () => {
     await expect(page.locator('#modelledAge')).toHaveText('Age 93 years 4 months');
     await expect(page.locator('#scenarioGrid .scenario')).toHaveCount(2);
     await expect(page.locator('#scenarioGrid')).not.toContainText('Target Age +5');
-    await expect(page.locator('#journeyBody tr').last()).toContainText('Age 85');
-    await expect(page.locator('#journeyBody')).not.toContainText('Age 86');
-    const xLabels = await page.locator('#pathChart text.axis').allTextContents();
-    expect(xLabels).toContain('Age 85');
-    expect(xLabels).not.toContain('Age 90');
+    await expect(page.locator('#journeyBody tr').last()).toContainText('Age 100');
+    await expect(page.locator('#journeyBody tr').last()).toContainText('Plan Until Age');
+    await expect(page.locator('#journeyBody tr[data-phase="drawdown"]')).toHaveCount(15);
+    await expect(page.locator('#pathChart .fi-crossing-marker')).toContainText('Age 93y 4m');
+    const pathLabels = await page.locator('#pathChart text.axis').allTextContents();
+    expect(pathLabels.some(t => /^Age 9[0-9]$/.test(t))).toBeTruthy();
+    const longevityLabels = await page.locator('#growthChart text.axis').allTextContents();
+    expect(longevityLabels).toContain('Age 85');
+    expect(longevityLabels).toContain('Age 100');
+    await expect(page.locator('#growthChartTitle')).toHaveText('Portfolio balance through Plan Until Age');
   });
 
   test('[AUTO] Retirement Planner: approved quick-mode fixture remains consistent', async ({ page }) => {

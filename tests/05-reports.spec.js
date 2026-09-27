@@ -149,6 +149,15 @@ test.describe('PDF report generation and download standard', () => {
     expect(canvasText).toContain('Projected balance at Plan Until Age');
     expect(canvasText).toContain('Portfolio longevity');
     expect(canvasText).toContain('planning horizon, not a prediction of lifespan');
+    expect(canvasText).toContain('inflation-adjusted spending model');
+    expect(canvasText).toContain('Inflation treatment');
+    expect(canvasText).toContain('future nominal');
+    expect(canvasText).toContain('Plan Longevity');
+    expect(canvasText).toContain('Financial Independence Journey');
+    const normalizedCanvasText = canvasText.replace(/\s+/g, ' ');
+    expect(normalizedCanvasText).toContain('PORTFOLIO-FUNDED SPENDING');
+    expect(normalizedCanvasText).toContain('END PORTFOLIO VALUE');
+    expect(canvasText).toContain('Drawdown');
   });
 
 });
