@@ -571,4 +571,60 @@ ${errors.join('\n')}`).toEqual([]);
     }
   });
 
+
+  test('[AUTO] Learn article standard: compact hero, top tool action, bottom tool return, sources and disclaimer', async ({ page }, testInfo) => {
+    const guides = [
+      '/50-30-20-budget-rule.html',
+      '/how-much-money-do-i-need-to-retire.html',
+      '/compounding-and-time.html',
+    ];
+    for (const url of guides) {
+      const errors = [];
+      const onError = err => errors.push(err.message);
+      page.on('pageerror', onError);
+      await gotoClean(page, url);
+      await expect(page.locator('body')).toHaveAttribute('data-cm-learn-article', '1');
+      const h1 = page.locator('.learn-page-hero h1');
+      await expect(h1).toHaveCount(1);
+      const heroFontSize = await h1.evaluate(el => parseFloat(getComputedStyle(el).fontSize));
+      if (testInfo.project.name === 'mobile-chromium') expect(heroFontSize).toBeLessThanOrEqual(40.5);
+      else expect(heroFontSize).toBeLessThanOrEqual(56.5);
+      const topAction = page.locator('.guide-action-first a[href]').first();
+      await expect(topAction).toBeVisible();
+      const topHref = await topAction.getAttribute('href');
+      const bottomAction = page.locator('.learn-tool-return a[href]').first();
+      await expect(bottomAction).toBeVisible();
+      await expect(bottomAction).toHaveAttribute('href', topHref || '');
+      await expect(page.locator('details.reference-note')).toHaveCount(1);
+      await expect(page.locator('.learn-disclaimer')).toHaveCount(1);
+      await expect(page.locator('.learn-more-row a[href="/learn.html"]')).toHaveCount(1);
+      expect(errors, `${url} browser errors:\n${errors.join('\n')}`).toEqual([]);
+      page.off('pageerror', onError);
+    }
+  });
+
+
+  test('[AUTO] Learn v2 depth: representative pillar guides include rich answer, analysis, FAQ and sources', async ({ page }) => {
+    const guides = [
+      '/asset-allocation-explained.html',
+      '/gold-as-an-investment.html',
+      '/rent-vs-buy-home.html',
+      '/4-percent-rule-retirement.html',
+      '/sequence-of-returns-risk.html',
+      '/financial-independence-number.html',
+      '/inflation-value-of-money-over-time.html',
+    ];
+    for (const url of guides) {
+      await gotoClean(page, url);
+      await expect(page.locator('[data-cm-rich="1"]')).toHaveCount(1);
+      await expect(page.locator('[data-cm-depth="1"]')).toHaveCount(1);
+      await expect(page.locator('.guide-answer')).toHaveCount(1);
+      expect(await page.locator('.guide-section h2').count(), `${url} should have substantive section depth`).toBeGreaterThanOrEqual(8);
+      expect(await page.locator('details.reference-note a[href]').count(), `${url} should cite authoritative sources`).toBeGreaterThanOrEqual(3);
+      await expect(page.getByRole('heading', { name: 'Frequently asked questions', exact: true })).toHaveCount(1);
+      const guideText = (await page.locator('.guide-section').innerText()).trim();
+      expect(guideText.split(/\s+/).length, `${url} should not regress to a thin guide`).toBeGreaterThanOrEqual(850);
+    }
+  });
+
 });
