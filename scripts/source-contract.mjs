@@ -444,6 +444,17 @@ if (mainHome || mainSiteJs) {
     mainHome.includes('footer-brand-block') &&
     mainHome.includes('footer-investment-link')
   );
+  add('main site: responsive homepage hero image assets are wired without copy changes',
+    mainHome.includes('carrowmont-hero-mobile.webp?v=20260927-hero-asset2') &&
+    mainHome.includes('carrowmont-hero-laptop.webp?v=20260927-hero-asset2') &&
+    mainHome.includes('carrowmont-hero.webp?v=20260927-hero-asset2') &&
+    mainCss.includes('Homepage hero responsive image asset fix - 2026-09-27') &&
+    mainCss.includes('object-position:80% center!important') &&
+    mainCss.includes('object-position:right center!important') &&
+    fs.existsSync(path.join(root, 'draw004.github.io/carrowmont-hero.webp')) &&
+    fs.existsSync(path.join(root, 'draw004.github.io/carrowmont-hero-laptop.webp')) &&
+    fs.existsSync(path.join(root, 'draw004.github.io/carrowmont-hero-mobile.webp'))
+  );
 }
 
 
