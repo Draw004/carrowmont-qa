@@ -478,7 +478,7 @@ add('main site: all 14 new Learn pages are indexable Article pages with canonica
   newLearnPages.every(file => {
     const page=read('draw004.github.io/'+file);
     return page.includes('name="robots"') && page.includes('index,follow') && page.includes('rel="canonical"') &&
-      page.includes('"@type":"Article"') && page.includes('name="author"') && page.includes('content="Carrowmont"') && page.includes('dateModified":"2026-09-27"');
+      page.includes('"@type":"Article"') && page.includes('name="author"') && page.includes('content="Carrowmont"') && page.includes('dateModified":"2026-09-28"');
   })
 );
 add('main site: sitemap contains 70 URLs including all 14 first-wave Learn-expansion pages',
@@ -518,6 +518,89 @@ add('main site: all 12 asset-class pages are indexable Article pages with canoni
 );
 add('main site: final Learn sitemap contains 70 unique URLs and all 12 asset-class guides',
   (learnSitemap.match(/<loc>/g)||[]).length===70 && new Set([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1])).size===70 && assetLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
+);
+
+
+// Shared Learn article standard - 2026-09-28.
+// Any current or future indexable Article page must inherit the same reusable structure.
+const learnArticleCss = read('draw004.github.io/learn-article.css');
+const learnArticleJs = read('draw004.github.io/learn-article.js');
+const learnArticleStandardDoc = read('draw004.github.io/.github/LEARN-ARTICLE-STANDARD.md');
+const learnArticleDir = path.join(root, 'draw004.github.io');
+const standardizedLearnFiles = fs.existsSync(learnArticleDir)
+  ? fs.readdirSync(learnArticleDir).filter(file => {
+      if (!file.endsWith('.html')) return false;
+      return read('draw004.github.io/' + file).includes('"@type":"Article"');
+    }).sort()
+  : [];
+const standardizedLearnPages = standardizedLearnFiles.map(file => ({ file, page: read('draw004.github.io/' + file) }));
+const standardLearnTitles = standardizedLearnPages.map(({page}) => (page.match(/<title>([^<]+)<\/title>/i)||[])[1] || '');
+const standardLearnDescriptions = standardizedLearnPages.map(({page}) => ((page.match(/<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/i)||page.match(/<meta[^>]*content="([^"]*)"[^>]*name="description"[^>]*>/i)||[])[1] || ''));
+
+add('main site: shared Learn article CSS/JS standard exists',
+  learnArticleCss.includes('Carrowmont Learn article standard v2 - 2026-09-28') &&
+  learnArticleCss.includes('font-size:clamp(42px,3.25vw,56px)') &&
+  learnArticleCss.includes('.learn-tool-return') &&
+  learnArticleJs.includes('Carrowmont Learn article standard v2 - 2026-09-28') &&
+  learnArticleJs.includes("data-cm-generated', 'tool-return") &&
+  learnArticleStandardDoc.includes('required structure and editorial-depth standard for every indexable Carrowmont Learn article')
+);
+add('main site: all Learn Article pages inherit the reusable article standard',
+  standardizedLearnPages.length >= 52 && standardizedLearnPages.every(({page}) =>
+    page.includes('data-cm-learn-article="1"') &&
+    page.includes('learn-article.css?v=20260928-standard2') &&
+    page.includes('learn-article.js?v=20260928-standard2') &&
+    page.includes('class="article-meta"') &&
+    page.includes('class="guide-action-first"') &&
+    page.includes('class="reference-note"') &&
+    page.includes('class="learn-disclaimer"') &&
+    page.includes('class="learn-more-row"') &&
+    page.includes('class="guide-index"') &&
+    page.includes('name="author"') && page.includes('content="Carrowmont"') &&
+    page.includes('"@type":"BreadcrumbList"') &&
+    (page.match(/<h1\b/gi)||[]).length === 1
+  )
+);
+add('main site: every Learn Article remains discoverable from Learn hub and sitemap',
+  standardizedLearnPages.length >= 52 && standardizedLearnFiles.every(file =>
+    learnHub.includes('href="/' + file + '"') &&
+    learnSitemap.includes('https://carrowmont.com/' + file) &&
+    /<link[^>]*rel="canonical"[^>]*href="https:\/\/carrowmont\.com\/[^"]+"[^>]*>/i.test(read('draw004.github.io/' + file)) ||
+    /<link[^>]*href="https:\/\/carrowmont\.com\/[^"]+"[^>]*rel="canonical"[^>]*>/i.test(read('draw004.github.io/' + file))
+  )
+);
+add('main site: Learn titles/descriptions are unique and kept within the editorial search standard',
+  standardizedLearnPages.length >= 52 &&
+  new Set(standardLearnTitles).size === standardLearnTitles.length &&
+  new Set(standardLearnDescriptions).size === standardLearnDescriptions.length &&
+  standardLearnTitles.every(title => title.length >= 25 && title.length <= 70) &&
+  standardLearnDescriptions.every(description => description.length >= 100 && description.length <= 170)
+);
+
+add('main site: all Learn Article pages meet the v2 content-depth contract',
+  standardizedLearnPages.length >= 52 && standardizedLearnPages.every(({page}) => {
+    const guideMatch = page.match(/<section[^>]*class="[^"]*guide-section[^"]*"[\s\S]*?<\/section>/i);
+    const guide = guideMatch ? guideMatch[0] : page;
+    const text = guide.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[a-z0-9#]+;/gi,' ').replace(/\s+/g,' ').trim();
+    const words = text ? text.split(' ').filter(Boolean).length : 0;
+    const h2Count = (guide.match(/<h2\b/gi)||[]).length;
+    const sourceLinks = ((guide.match(/<details[^>]*class="reference-note"[\s\S]*?<\/details>/i)||[])[0]||'').match(/<a\b[^>]*href=/gi)||[];
+    return page.includes('data-cm-rich="1"') &&
+      page.includes('data-cm-depth="1"') &&
+      page.includes('class="guide-answer"') &&
+      page.includes('Frequently asked questions') &&
+      h2Count >= 8 &&
+      sourceLinks.length >= 3 &&
+      words >= 1000;
+  })
+);
+add('main site: Learn v2 standard documents depth, evidence and calculation-consistency rules',
+  learnArticleStandardDoc.includes('Content-depth standard') &&
+  learnArticleStandardDoc.includes('Evidence and sourcing standard') &&
+  learnArticleStandardDoc.includes('Calculation consistency') &&
+  learnArticleStandardDoc.includes('must not publish thin pages') &&
+  learnArticleCss.includes('.guide-answer') &&
+  learnArticleCss.includes('.guide-depth-module')
 );
 
 
