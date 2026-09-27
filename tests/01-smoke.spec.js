@@ -487,6 +487,22 @@ test.describe('Carrowmont smoke and content contracts', () => {
 ${errors.join('\n')}`).toEqual([]);
   });
 
+
+  test('[AUTO] Homepage: expanded country catalogue is alphabetical and Home is not duplicated in navigation', async ({ page }) => {
+    await gotoClean(page, '/');
+    const labels = await page.locator('#regionSelect option').allTextContents();
+    expect(labels.at(-1)).toBe('Other / International');
+    const countryLabels = labels.slice(0, -1);
+    const sortedLabels = [...countryLabels].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
+    expect(countryLabels).toEqual(sortedLabels);
+    for (const country of ['Austria','Bangladesh','Belgium','Chile','Denmark','Finland','Ireland','Netherlands','Norway','Oman','Poland','Portugal','Qatar','Sweden']) {
+      expect(countryLabels).toContain(country);
+    }
+    await expect(page.locator('.desktop-nav a', { hasText: /^Home$/ })).toHaveCount(0);
+    await expect(page.locator('.hero-points .hero-point-icon')).toHaveCount(3);
+    await expect(page.locator('.site-footer')).toHaveCSS('background-color', 'rgb(16, 41, 69)');
+  });
+
   test('[AUTO] Homepage: India/INR Want to build section is present near the first viewport on desktop', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name === 'mobile-chromium', 'Desktop visibility check');
     await gotoClean(page, '/');

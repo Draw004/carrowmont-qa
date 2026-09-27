@@ -421,7 +421,49 @@ if (mainHome || mainSiteJs) {
   add('main site: international investment product uses Recurring Investment Calculator',
     mainHome.includes('Recurring Investment Calculator') && mainSiteJs.includes('Recurring Investment Calculator')
   );
+
+  const mainLocale = read('draw004.github.io/locale.js');
+  const mainCss = read('draw004.github.io/carrowmont.css');
+  add('main site: homepage country catalogue matches expanded tool list',
+    expandedRegionCodes.every(code => new RegExp(`\\b${code}:\\s*\\{`).test(mainLocale))
+  );
+  add('main site: homepage country selector is alphabetized with Other / International last',
+    mainSiteJs.includes('a.label.localeCompare') && mainSiteJs.includes('codeA === "OTHER"') && mainSiteJs.includes('return 1')
+  );
+  add('main site: redundant Home navigation removed from homepage',
+    !/<nav class="desktop-nav"[\s\S]*?<a href="\/">Home<\/a>/.test(mainHome) &&
+    !/<div class="mobile-nav-panel"[\s\S]*?<a href="\/">Home<\/a>/.test(mainHome)
+  );
+  add('main site: homepage keeps practical-tools wording and refined trust-point icons',
+    mainHome.includes('Carrowmont gives you practical tools, clear explanations and scenario analysis') &&
+    mainHome.includes('hero-point-icon') &&
+    !mainHome.includes('Carrowmont gives you practical calculators')
+  );
+  add('main site: shared footer standard is active',
+    mainCss.includes('Carrowmont shared footer standard - 2026-09-27') &&
+    mainHome.includes('footer-brand-block') &&
+    mainHome.includes('footer-investment-link')
+  );
 }
+
+
+const standardizedFooterDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator'];
+for (const dir of standardizedFooterDirs) {
+  const html = read(`${dir}/index.html`);
+  const css = read(`${dir}/styles.css`);
+  add(`${dir}: standardized shared footer structure and color`,
+    html.includes('footer-brand-block') &&
+    html.includes('footer-investment-link') &&
+    html.includes('Financial Independence') &&
+    html.includes('Illustrative estimates, not financial advice.') &&
+    css.includes('Carrowmont shared footer standard - 2026-09-27') &&
+    css.includes('background:#102945!important')
+  );
+}
+add('retirement: calculator page also uses standardized shared footer',
+  read('retirement-calculator/planner.html').includes('footer-investment-link') &&
+  read('retirement-calculator/planner.html').includes('Illustrative estimates, not financial advice.')
+);
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
