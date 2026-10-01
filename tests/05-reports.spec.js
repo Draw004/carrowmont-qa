@@ -69,16 +69,18 @@ test.describe('PDF report generation and download standard', () => {
       }
 
       if (tool.key === 'budget-cash-flow-planner') {
-        expect(canvasText).toContain('Budget & Cash Flow Report');
-        expect(canvasText).toContain('Monthly cash-flow summary');
-        expect(canvasText.toLowerCase()).toContain('emergency reserve');
-        expect(canvasText).toContain('Irregular-bill reserves');
-        expect(canvasText).toContain('Saved history and comparison notes');
-        expect(canvasText).toContain('HOW THIS REPORT INTERPRETS YOUR ENTRIES');
-        expect(canvasText).toContain('Different frequencies');
-        expect(canvasText).toContain('Irregular / monthly average');
-        expect(canvasText).toContain('Quarterly & annual bills');
-        expect(canvasText).toContain('Exceptional months or categories');
+        const budgetText = canvasText.replace(/\s+/g, ' ').trim();
+        expect(budgetText).toContain('Budget & Cash Flow Report');
+        expect(budgetText).toContain('Monthly cash-flow summary');
+        expect(budgetText.toLowerCase()).toContain('emergency reserve');
+        expect(budgetText).toContain('Irregular-bill reserves');
+        expect(budgetText).toContain('Saved history and comparison notes');
+        expect(budgetText).toContain('HOW THIS REPORT INTERPRETS YOUR ENTRIES');
+        expect(budgetText).toContain('Different frequencies');
+        expect(budgetText).toContain('Irregular / monthly average');
+        expect(budgetText).toContain('Quarterly & annual bills');
+        expect(budgetText).toContain('Exceptional entries');
+        expect(budgetText).toContain('left out of the normal comparison baseline');
       }
 
       if (tool.requiresGuideReportPage) {
