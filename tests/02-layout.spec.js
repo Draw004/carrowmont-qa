@@ -22,6 +22,53 @@ test.describe('Layout and responsive guardrails', () => {
     }
   });
 
+  test('[AUTO] Shared locale pill geometry is identical across all six tools', async ({ page }, testInfo) => {
+    const metric = async path => {
+      await gotoClean(page, path);
+      return page.evaluate(() => {
+        const header = document.querySelector('.site-header .container');
+        const summary = document.querySelector('#localeSummary');
+        const popover = document.querySelector('.locale-popover');
+        const brand = document.querySelector('.site-header .brand');
+        const r = header.getBoundingClientRect();
+        const sr = summary.getBoundingClientRect();
+        const ss = getComputedStyle(summary);
+        const bs = getComputedStyle(brand);
+        const ps = getComputedStyle(popover);
+        return {
+          left:r.left,right:r.right,width:r.width,
+          summaryHeight:sr.height,summaryRadius:ss.borderRadius,summaryBoxSizing:ss.boxSizing,
+          brandSize:bs.fontSize,brandColor:bs.color,
+          popoverWidth:parseFloat(ps.width),popoverPadding:ps.padding,popoverRadius:ps.borderRadius
+        };
+      });
+    };
+    const paths = {
+      SIP:'/sip-calculator/', Goal:'/goal-planner/', FI:'/financial-independence/', Inflation:'/inflation-calculator/',
+      Retirement:'/retirement-calculator/planner.html', Budget:'/budget-cash-flow-planner/'
+    };
+    const values = {};
+    for (const [name,path] of Object.entries(paths)) values[name] = await metric(path);
+    const expectedHeight = testInfo.project.name.includes('mobile') ? 38 : 44;
+    for (const [name,current] of Object.entries(values)) {
+      expect(Math.abs(current.summaryHeight - expectedHeight), `${name} locale pill height (${current.summaryHeight}px; expected ${expectedHeight}px)`).toBeLessThan(1);
+      expect(current.summaryRadius, `${name} locale control should be a pill`).toBe('999px');
+      expect(current.summaryBoxSizing, `${name} locale pill should use border-box sizing`).toBe('border-box');
+    }
+    const sip = values.SIP, budget = values.Budget;
+    expect(Math.abs(budget.left - sip.left), 'Budget header left edge').toBeLessThan(2);
+    expect(Math.abs(budget.right - sip.right), 'Budget header right edge').toBeLessThan(2);
+    expect(Math.abs(budget.width - sip.width), 'Budget header width').toBeLessThan(2);
+    expect(budget.brandSize, 'Budget shared wordmark size').toBe(sip.brandSize);
+    expect(budget.brandColor, 'Budget shared wordmark color').toBe(sip.brandColor);
+    if (testInfo.project.name.includes('desktop')) {
+      expect(Math.abs(budget.popoverWidth - sip.popoverWidth), 'Budget locale popover width').toBeLessThan(2);
+      expect(budget.popoverPadding, 'Budget locale popover padding').toBe(sip.popoverPadding);
+      expect(budget.popoverRadius, 'Budget locale popover radius').toBe(sip.popoverRadius);
+    }
+  });
+
+
   for (const tool of tools) {
     test(`[AUTO] ${tool.name}: no page-level horizontal overflow`, async ({ page }) => {
       await gotoClean(page, tool.path);

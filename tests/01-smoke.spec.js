@@ -433,6 +433,27 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#futureLumpYear')).toBeDisabled();
   });
 
+  test('[AUTO] Shared UI: all tool footers expose the six-tool registry with no navigation arrows', async ({ page }) => {
+    const expectedHrefs = ['/sip-calculator/','/retirement-calculator/','/inflation-calculator/','/goal-planner/','/financial-independence/','/budget-cash-flow-planner/','/#tools'];
+    for (const tool of tools) {
+      await gotoClean(page, tool.path);
+      const footer = page.locator('.site-footer .footer-col').filter({ has: page.locator('strong', { hasText: 'Tools' }) }).first();
+      await expect(footer, `${tool.name}: Tools footer column`).toBeVisible();
+      const hrefs = await footer.locator('a').evaluateAll(links => links.map(a => a.getAttribute('href')));
+      for (const href of expectedHrefs) expect(hrefs, `${tool.name}: missing footer link ${href}`).toContain(href);
+      expect(await footer.innerText(), `${tool.name}: footer navigation must not contain arrows`).not.toContain('→');
+    }
+  });
+
+  test('[AUTO] Shared UI: currency options use CODE dot Currency Name across all tools', async ({ page }) => {
+    for (const tool of tools) {
+      await gotoClean(page, tool.path);
+      const labels = await page.locator('#currencySelect option').allTextContents();
+      expect(labels.length, `${tool.name}: currency list should not be empty`).toBeGreaterThan(5);
+      for (const label of labels) expect(label, `${tool.name}: currency label ${label}`).toMatch(/^[A-Z]{3} · .+/);
+    }
+  });
+
   test('[AUTO] Other calculators: country catalogue matches SIP expansion and is alphabetical', async ({ page }) => {
     const localeTools = tools.filter(tool => tool.key !== 'sip-calculator');
     const expectedAdded = ['Austria','Bangladesh','Belgium','Chile','Denmark','Finland','Ireland','Netherlands','Norway','Oman','Poland','Portugal','Qatar','Sweden'];
