@@ -73,6 +73,12 @@ test.describe('PDF report generation and download standard', () => {
         expect(canvasText).toContain('Monthly cash-flow summary');
         expect(canvasText.toLowerCase()).toContain('emergency reserve');
         expect(canvasText).toContain('Irregular-bill reserves');
+        expect(canvasText).toContain('Saved history and comparison notes');
+        expect(canvasText).toContain('HOW THIS REPORT INTERPRETS YOUR ENTRIES');
+        expect(canvasText).toContain('Different frequencies');
+        expect(canvasText).toContain('Irregular / monthly average');
+        expect(canvasText).toContain('Quarterly & annual bills');
+        expect(canvasText).toContain('Exceptional months or categories');
       }
 
       if (tool.requiresGuideReportPage) {

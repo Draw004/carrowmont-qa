@@ -20,6 +20,16 @@ Automated tests catch calculation regressions, JavaScript errors, chart populati
 - Charts remain legible rather than compressed into unreadable labels.
 - Navigation and locale selector do not overlap.
 
+## Shared UI shell
+
+- Budget header matches the established Carrowmont tool header width, navy wordmark, product-label hierarchy, navigation scale and spacing.
+- Country/currency control uses the same rounded pill treatment across tools.
+- Budget open locale popover matches the canonical tool width, spacing, styled selects, note treatment and Done button.
+- Mobile locale popover remains fully inside the viewport with no horizontal overflow.
+- All active tool footers expose the same six-tool registry plus All tools.
+- Footer navigation contains no directional arrows; dedicated CTA cards may retain intentional arrows.
+- Currency options use the shared `CODE · Currency Name` format.
+
 ## PDFs - shared Carrowmont report standard
 
 - All pages have consistent margins, typography and visual hierarchy.
@@ -44,3 +54,9 @@ A release is ready when automated QA is green and this checklist has no material
 - Financial Independence money-added chart: projected portfolio callout is above the portfolio series and money-added callout is below the assets + contributions series.
 - Report Guide & Methodology: How to read card uses compact content-aware height and stronger guidance text without changing the disclaimer layout.
 - Retirement: previously fixed wrapping/pagination remains visually clean; no regression.
+
+## Shared UI / Budget report additions - 2026-10-02
+- Verify the closed country/currency pill is the same height across all six tools (44px desktop; 38px mobile) and remains a true pill.
+- Verify the Budget & Cash Flow Planner country/currency popover visually matches the established tool shell.
+- In the Budget & Cash Flow Report, inspect page 3: the "How this report interprets your entries" rows must wrap cleanly with no label/body overlap or clipped wording.
+

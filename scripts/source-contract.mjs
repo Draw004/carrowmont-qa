@@ -443,7 +443,26 @@ add('budget: privacy-first local history uses IndexedDB plus localStorage prefer
 add('budget: history supports 3/6/12 month views and exceptional records', budgetHtml.includes('Last 3 months') && budgetHtml.includes('Last 6 months') && budgetHtml.includes('Last 12 months') && budgetApp.includes('monthExceptional'));
 add('budget: deterministic insights and protected categories are present', budgetHtml.includes('BUDGET INTELLIGENCE') && budgetApp.includes('protected') && budgetApp.includes('function insights'));
 add('budget: report uses shared guide and Continue Planning pages', budgetPdf.includes('.guidePage(') && budgetPdf.includes('.continuePlanningPage(') && budgetPdf.includes("currentTool:'budget'"));
+add('budget: report page 3 uses plain-language wrapped comparison notes',
+  budgetPdf.includes('HOW THIS REPORT INTERPRETS YOUR ENTRIES') &&
+  budgetPdf.includes("label:'Different frequencies'") &&
+  budgetPdf.includes("label:'Irregular / monthly average'") &&
+  budgetPdf.includes('function noteTable') &&
+  budgetPdf.includes('P().wrappedText(ctx,body,bodyX')
+);
 add('budget: shared footer standard is applied', budgetHtml.includes('footer-brand-block') && budgetHtml.includes('footer-investment-link') && budgetCss.includes('Carrowmont shared footer standard - 2026-09-27'));
+add('budget: shared tool header and locale shell use the approved UI standard',
+  budgetCss.includes('Carrowmont shared tool-header standard - 2026-10-01') &&
+  budgetCss.includes('border-radius:999px!important') &&
+  budgetCss.includes('width:360px!important') &&
+  budgetCss.includes('.site-header .container{width:min(1480px,calc(100% - 64px))!important') &&
+  budgetHtml.includes('It does not convert entered amounts using an exchange rate.')
+);
+add('budget: currency labels use CODE dot Currency Name and CTA arrows do not leak into footer navigation',
+  budgetApp.includes('>${k} · ${escapeHtml(v.label)}</option>') &&
+  !budgetApp.includes(".investment-tool-link,.footer-investment-link") &&
+  budgetApp.includes("document.querySelectorAll('.footer-investment-link').forEach(a=>a.textContent=investmentName)")
+);
 
 // Main-site checks run when SOURCE_ROOT also contains draw004.github.io (for example, a full source snapshot).
 const mainHome = read('draw004.github.io/index.html');
@@ -644,22 +663,66 @@ add('main site: Learn v2 standard documents depth, evidence and calculation-cons
 
 
 const standardizedFooterDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner'];
+const sharedFooterToolHrefs = ['/sip-calculator/','/retirement-calculator/','/inflation-calculator/','/goal-planner/','/financial-independence/','/budget-cash-flow-planner/','/#tools'];
+function footerToolsBlock(html) {
+  const m = html.match(/<div class="footer-col"><strong>Tools<\/strong>([\s\S]*?)<\/div>/i);
+  return m ? m[1] : '';
+}
 for (const dir of standardizedFooterDirs) {
   const html = read(`${dir}/index.html`);
   const css = read(`${dir}/styles.css`);
-  add(`${dir}: standardized shared footer structure and color`,
+  const toolsBlock = footerToolsBlock(html);
+  add(`${dir}: standardized shared footer structure, six-tool registry and no navigation arrows`,
     html.includes('footer-brand-block') &&
     html.includes('footer-investment-link') &&
-    html.includes('Financial Independence') &&
+    sharedFooterToolHrefs.every(href => toolsBlock.includes(`href="${href}"`)) &&
+    !toolsBlock.includes('→') &&
     html.includes('Illustrative estimates, not financial advice.') &&
     css.includes('Carrowmont shared footer standard - 2026-09-27') &&
     css.includes('background:#102945!important')
   );
 }
-add('retirement: calculator page also uses standardized shared footer',
-  read('retirement-calculator/planner.html').includes('footer-investment-link') &&
-  read('retirement-calculator/planner.html').includes('Illustrative estimates, not financial advice.')
+const retirementPlannerHtml = read('retirement-calculator/planner.html');
+const retirementPlannerTools = footerToolsBlock(retirementPlannerHtml);
+add('retirement: calculator page also uses the six-tool shared footer',
+  retirementPlannerHtml.includes('footer-investment-link') &&
+  sharedFooterToolHrefs.every(href => retirementPlannerTools.includes(`href="${href}"`)) &&
+  !retirementPlannerTools.includes('→') &&
+  retirementPlannerHtml.includes('Illustrative estimates, not financial advice.')
 );
+
+const currencyFormatSources = [
+  read('sip-calculator/app.js'),
+  read('goal-planner/app.js'),
+  read('financial-independence/app.js'),
+  read('inflation-calculator/app.js'),
+  read('retirement-calculator/locale-ui.js'),
+  read('budget-cash-flow-planner/app.js')
+];
+add('shared UI: all six tools render currency options as CODE dot Currency Name',
+  currencyFormatSources.every(src => /\$\{(?:code|c|k)\} · \$\{/.test(src))
+);
+
+const sharedLocaleCssDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner'];
+for (const dir of sharedLocaleCssDirs) {
+  const css = read(`${dir}/styles.css`);
+  add(`${dir}: shared locale pill geometry is locked to 44px desktop and 38px mobile`,
+    css.includes('Carrowmont shared locale pill geometry lock - 2026-10-02') &&
+    css.includes('height:44px!important') &&
+    css.includes('height:38px!important')
+  );
+}
+
+const uiStandard = read('draw004.github.io/docs/CARROWMONT_SHARED_UI_STANDARD.md');
+if (uiStandard) {
+  add('main site: shared UI standard documents the six-tool registry and no-arrow footer rule',
+    uiStandard.includes('Version:** 1.0') &&
+    uiStandard.includes('Budget & Cash Flow Planner') &&
+    uiStandard.includes('No arrows in footer navigation') &&
+    uiStandard.includes('UI Standardization Batch 1') &&
+    uiStandard.includes('44px on desktop') && uiStandard.includes('38px on mobile')
+  );
+}
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
