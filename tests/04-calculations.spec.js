@@ -1,8 +1,32 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, setInput, parseMoney, parsePercent, relativeError } from '../helpers/common.js';
-import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge, fiPlanUntilRequiredPortfolio, fiPlanUntilProjection, fiPlanUntilAnnualJourney, retirementContributionFutureValue } from '../helpers/calculations.js';
+import { sipFutureValue, sipFrequencyPeriods, inflationFutureValue, goalFutureCost, goalRecurringFutureValue, fiToday, fiAtAge, fiPlanUntilRequiredPortfolio, fiPlanUntilProjection, fiPlanUntilAnnualJourney, retirementContributionFutureValue, budgetSummary } from '../helpers/calculations.js';
 
 test.describe('Calculation regression and independent formula checks', () => {
+  test('[AUTO] Budget & Cash Flow: default example matches independent monthly-equivalent cash-flow math', async ({ page }) => {
+    await gotoClean(page, '/budget-cash-flow-planner/');
+    await page.locator('#loadDefaultsBtn').click();
+    const expected = budgetSummary({
+      incomes:[{amount:120000,frequency:'monthly'}],
+      essential:[{amount:30000,frequency:'monthly'},{amount:6000,frequency:'monthly'},{amount:36000,frequency:'annual'},{amount:6500,frequency:'monthly'}],
+      flexible:[{amount:15000,frequency:'monthly'},{amount:8500,frequency:'monthly'},{amount:5000,frequency:'monthly'}],
+      savings:[{amount:10000,frequency:'monthly'},{amount:5000,frequency:'monthly'}]
+    });
+    const actualRemaining = parseMoney(await page.locator('#moneyRemaining').innerText());
+    const actualIncome = parseMoney(await page.locator('#monthlyIncome').innerText());
+    const actualEssential = parseMoney(await page.locator('#essentialTotal').innerText());
+    const actualFlexible = parseMoney(await page.locator('#flexibleTotal').innerText());
+    const actualSaving = parseMoney(await page.locator('#savingTotal').innerText());
+    const actualRate = parsePercent(await page.locator('#savingsRate').innerText());
+    expect(relativeError(actualIncome, expected.income)).toBeLessThan(0.006);
+    expect(relativeError(actualEssential, expected.essential)).toBeLessThan(0.006);
+    expect(relativeError(actualFlexible, expected.flexible)).toBeLessThan(0.006);
+    expect(relativeError(actualSaving, expected.saving)).toBeLessThan(0.006);
+    expect(relativeError(actualRemaining, expected.remaining)).toBeLessThan(0.006);
+    expect(Math.abs(actualRate - expected.savingsRate)).toBeLessThan(0.11);
+    await expect(page.locator('#reserveTotal')).toContainText(/3,000|3K|3 k|₹3/);
+  });
+
   test('[AUTO] SIP: future value matches an independent monthly compounding calculation', async ({ page }) => {
     await gotoClean(page, '/sip-calculator/');
     await page.locator('#growthTab').click();
