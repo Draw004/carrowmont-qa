@@ -15,7 +15,7 @@ This package gives Carrowmont a repeatable QA process for the six live tools plu
 - Goal, Retirement and SIP charts contain visible axis/value text.
 - Independent formula checks for SIP, Inflation, Goal cost and Financial Independence.
 - Approved regression fixtures for Goal Planner and Retirement Planner.
-- Budget Smart Suggestions history sufficiency, protected/exceptional guardrails, 3/6/12-month trend logic, scenario math, priority linkage and local-only behavior are checked.
+- Budget Smart Suggestions SS2 history sufficiency, Current/Emerging/Established evidence labels, 6/12-month consistency, ranking/deduplication, recurring/reserve handling, scenario breakdown math, priority linkage and local-only behavior are checked.
 - Every report downloads as a real PDF.
 - Every report uses the exact success text: "Report has been downloaded."
 - Goal and Retirement PDFs include the "Continue planning with Carrowmont" page.
@@ -139,3 +139,8 @@ The localized SIP smoke contract now verifies the visible hero heading rather th
 ## v1.5 Smart Suggestions coverage update
 
 The Budget & Cash Flow Planner suite now validates deterministic Smart Suggestions V1A. The source contract executes the pure suggestion engine against fixed fixtures, while Playwright verifies the live UI, local-history gating, protected and exceptional-category guardrails, scenario selection, planning-priority links, report consistency and the absence of Smart Suggestions fetch/XHR activity.
+
+
+## v1.6 Smart Suggestions SS2 coverage update
+
+The Budget & Cash Flow Planner suite now validates Smart Suggestions engine 2.0.0. Source-contract fixtures cover materiality plus repeated-observation consistency, no-filler thresholding, deterministic scoring/order, recurring-cost step-ups, reserve-style exclusions, deduplication, protected/essential guardrails and exact scenario-breakdown sums. Playwright verifies Current/Emerging evidence labels, expandable evidence, no-strong-trend states, transparent Low/Balanced/Aggressive category breakdowns, priority linkage, PDF parity, responsive layout and the continued absence of Smart Suggestions fetch/XHR activity.

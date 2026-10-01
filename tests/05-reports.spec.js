@@ -22,6 +22,35 @@ function savePdfArtifact(info, name) {
   fs.copyFileSync(info.filePath, path.join(dir, `${safe}.pdf`));
 }
 
+async function seedBudgetSs2History(page) {
+  const months = ['2026-07','2026-08','2026-09'].map(month => ({
+    month,
+    monthExceptional: false,
+    flexible: [
+      { id:`groceries-${month}`, name:'Groceries', amount:15000, frequency:'monthly', protected:true, exceptional:false, dueDate:'' },
+      { id:`dining-${month}`, name:'Dining & entertainment', amount:5000, frequency:'monthly', protected:false, exceptional:false, dueDate:'' },
+      { id:`shopping-${month}`, name:'Shopping / personal care', amount:5000, frequency:'monthly', protected:false, exceptional:false, dueDate:'' }
+    ],
+    essential: [
+      { id:`rent-${month}`, name:'Rent / mortgage', amount:30000, frequency:'monthly', protected:true, exceptional:false, dueDate:'' },
+      { id:`utilities-${month}`, name:'Utilities', amount:6000, frequency:'monthly', protected:true, exceptional:false, dueDate:'' },
+      { id:`insurance-${month}`, name:'Insurance', amount:36000, frequency:'annual', protected:true, exceptional:false, dueDate:'' },
+      { id:`transport-${month}`, name:'Transport commitment', amount:6500, frequency:'monthly', protected:false, exceptional:false, dueDate:'' }
+    ],
+    savings: [
+      { id:`investment-${month}`, name:'Recurring investment', amount:10000, frequency:'monthly' },
+      { id:`emergency-${month}`, name:'Emergency savings', amount:5000, frequency:'monthly' }
+    ],
+    incomes: [{ id:`income-${month}`, name:'Salary / wages', amount:120000, frequency:'monthly' }],
+    summary: { income:120000, essential:45500, flexible:25000, saving:15000, reserves:3000, remaining:34500, savingsRate:12.5, coverage:180000/45500 }
+  }));
+  await page.evaluate(async records => {
+    for (const record of records) await window.CarrowmontBudgetStorage.saveMonth(record);
+  }, months);
+  await page.locator('#refreshHistoryBtn').click();
+  await expect(page.locator('#smartScenarioPanel')).toBeVisible();
+}
+
 test.describe('PDF report generation and download standard', () => {
   for (const tool of tools) {
     test(`[AUTO] ${tool.name}: PDF downloads and uses standardized success message`, async ({ page }, testInfo) => {
@@ -30,6 +59,7 @@ test.describe('PDF report generation and download standard', () => {
       await gotoClean(page, tool.path);
       await dismissAnalyticsConsent(page);
       await prepareToolForQa(page, tool.key);
+      if (tool.key === 'budget-cash-flow-planner') await seedBudgetSs2History(page);
       await installCanvasTextProbe(page);
       const button = page.locator(tool.reportButton);
       await expect(button).toBeVisible();
@@ -71,9 +101,14 @@ test.describe('PDF report generation and download standard', () => {
       if (tool.key === 'budget-cash-flow-planner') {
         const budgetText = canvasText.replace(/\s+/g, ' ').trim();
         const webSuggestionTitles = await page.locator('#insightGrid .insight-card h3').allInnerTexts();
+        const webEvidenceLabels = await page.locator('#insightGrid .smart-evidence-badge').allInnerTexts();
         expect(budgetText).toContain('Budget & Cash Flow Report');
         expect(budgetText).toContain('SMART SUGGESTIONS');
         for (const title of webSuggestionTitles.slice(0, 3)) expect(budgetText).toContain(title.replace(/\s+/g, ' ').trim());
+        for (const label of webEvidenceLabels.slice(0, 3)) expect(budgetText.toUpperCase()).toContain(label.trim().toUpperCase());
+        expect(budgetText).toContain('SELECTED SCENARIO');
+        expect(budgetText).toContain('Scenario breakdown');
+        expect(budgetText).toContain('/ 12 months');
         expect(budgetText).toContain('Monthly cash-flow summary');
         expect(budgetText.toLowerCase()).toContain('emergency reserve');
         expect(budgetText).toContain('Irregular-bill reserves');
