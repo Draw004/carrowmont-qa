@@ -447,6 +447,8 @@ add('budget: report page 3 uses plain-language wrapped comparison notes',
   budgetPdf.includes('HOW THIS REPORT INTERPRETS YOUR ENTRIES') &&
   budgetPdf.includes("label:'Different frequencies'") &&
   budgetPdf.includes("label:'Irregular / monthly average'") &&
+  budgetPdf.includes("label:'Exceptional entries'") &&
+  budgetPdf.includes('left out of the normal comparison baseline') &&
   budgetPdf.includes('function noteTable') &&
   budgetPdf.includes('P().wrappedText(ctx,body,bodyX')
 );
