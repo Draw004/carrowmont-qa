@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -435,14 +436,113 @@ const budgetApp = read('budget-cash-flow-planner/app.js');
 const budgetStorage = read('budget-cash-flow-planner/storage.js');
 const budgetPdf = read('budget-cash-flow-planner/budget-pdf-renderer.js');
 const budgetCss = read('budget-cash-flow-planner/styles.css');
+const budgetSmart = read('budget-cash-flow-planner/smart-suggestions.js');
+const budgetReadme = read('budget-cash-flow-planner/README.md');
 add('budget: monthly and pay-cycle views are both present', budgetHtml.includes('Monthly View') && budgetHtml.includes('Pay Cycle View') && budgetHtml.includes('id="primaryPayFrequency"'));
 add('budget: frequency model covers weekly through annual and irregular averages', /weekly:\{[^}]*perMonth:52\/12/.test(budgetApp) && /biweekly:\{[^}]*perMonth:26\/12/.test(budgetApp) && /semimonthly:\{[^}]*perMonth:2/.test(budgetApp) && /fourweekly:\{[^}]*perMonth:13\/12/.test(budgetApp) && /quarterly:\{[^}]*perMonth:1\/3/.test(budgetApp) && /annual:\{[^}]*perMonth:1\/12/.test(budgetApp) && budgetApp.includes("irregular:{label:'Irregular / Monthly Average'"));
 add('budget: irregular bills are translated into monthly reserves without double subtraction', budgetApp.includes('function irregularReserve') && budgetApp.includes('const remaining=income-essential-flexible-saving') && budgetHtml.includes('Irregular-bill reserves'));
 add('budget: emergency reserve target is user-selected', budgetHtml.includes('id="emergencyTargetMonths"') && budgetHtml.includes('Carrowmont does not assume one universal number of months'));
 add('budget: privacy-first local history uses IndexedDB plus localStorage preferences', budgetStorage.includes("indexedDB.open(DB_NAME") && budgetStorage.includes('localStorage.setItem') && budgetStorage.includes('exportAll') && budgetStorage.includes('importAll'));
 add('budget: history supports 3/6/12 month views and exceptional records', budgetHtml.includes('Last 3 months') && budgetHtml.includes('Last 6 months') && budgetHtml.includes('Last 12 months') && budgetApp.includes('monthExceptional'));
-add('budget: deterministic insights and protected categories are present', budgetHtml.includes('BUDGET INTELLIGENCE') && budgetApp.includes('protected') && budgetApp.includes('function insights'));
-add('budget: report uses shared guide and Continue Planning pages', budgetPdf.includes('.guidePage(') && budgetPdf.includes('.continuePlanningPage(') && budgetPdf.includes("currentTool:'budget'"));
+add('budget: Smart Suggestions V1A UI and local engine are wired',
+  budgetHtml.includes('SMART SUGGESTIONS') &&
+  budgetHtml.includes('id="smartScenarioPanel"') &&
+  budgetHtml.includes('data-smart-scenario="low"') &&
+  budgetHtml.includes('data-smart-scenario="balanced"') &&
+  budgetHtml.includes('data-smart-scenario="aggressive"') &&
+  budgetHtml.indexOf('smart-suggestions.js') < budgetHtml.indexOf('app.js') &&
+  budgetApp.includes('CarrowmontSmartSuggestions') &&
+  budgetApp.includes('function smartAnalysis') &&
+  budgetReadme.includes('Smart Suggestions V1A runs entirely in the browser')
+);
+add('budget: Smart Suggestions engine has no budget-data network primitive',
+  budgetSmart.includes("generatedFrom: 'deterministic-local-engine'") &&
+  !/\bfetch\s*\(/.test(budgetSmart) &&
+  !/XMLHttpRequest/.test(budgetSmart) &&
+  !/sendBeacon/.test(budgetSmart) &&
+  !/WebSocket/.test(budgetSmart)
+);
+
+let smartEngine = null;
+let smartEngineError = '';
+try {
+  const module = { exports: {} };
+  const context = vm.createContext({ module, exports: module.exports, console });
+  vm.runInContext(budgetSmart, context, { filename: 'smart-suggestions.js' });
+  smartEngine = module.exports;
+} catch (error) {
+  smartEngineError = error && error.message ? error.message : String(error);
+}
+add('budget: Smart Suggestions engine loads as a pure deterministic module', !!smartEngine && typeof smartEngine.analyze === 'function' && typeof smartEngine.present === 'function', smartEngineError);
+
+if (smartEngine) {
+  const row = (id, name, amount, extra={}) => ({ id, name, amount, frequency: 'monthly', protected: false, exceptional: false, ...extra });
+  const month = (monthId, flexibleAmount=5000, options={}) => ({
+    month: monthId,
+    monthExceptional: !!options.monthExceptional,
+    flexible: [row('hist-dining', 'Dining & entertainment', flexibleAmount, { exceptional: !!options.rowExceptional })],
+    essential: [row('hist-rent', 'Rent', options.rentAmount || 30000, { protected: true })],
+    savings: [{ id: 'hist-save', name: 'Saving', amount: options.savingAmount ?? 10000, frequency: 'monthly' }],
+    summary: { income: 120000, flexible: flexibleAmount, essential: options.rentAmount || 30000, saving: options.savingAmount ?? 10000, remaining: 120000 - flexibleAmount - (options.rentAmount || 30000) - (options.savingAmount ?? 10000) }
+  });
+  const current = (overrides={}) => ({
+    month: '2026-10', priority: 'goal', smartScenario: 'balanced', emergencyTargetMonths: 6,
+    flexible: [row('current-dining', 'Dining & entertainment', 8500)],
+    essential: [row('current-rent', 'Rent', 30000, { protected: true })], savings: [], ...overrides
+  });
+  const summary = (overrides={}) => ({ income: 120000, essential: 30000, flexible: 8500, saving: 10000, reserves: 0, remaining: 71500, coverage: 3, emergencyGap: 90000, ...overrides });
+  const three = ['2026-07','2026-08','2026-09'].map(id => month(id, 5000));
+
+  const noHistory = smartEngine.analyze({ state: current(), history: [], summary: summary() });
+  const twoHistory = smartEngine.analyze({ state: current(), history: three.slice(0,2), summary: summary() });
+  const threeHistory = smartEngine.analyze({ state: current(), history: three, summary: summary() });
+  add('budget smart: history sufficiency gates trend claims at three normal months',
+    noHistory.context.normalHistoryMonths === 0 &&
+    !noHistory.signals.some(s => /trend|category_change/.test(s.kind)) &&
+    twoHistory.context.normalHistoryMonths === 2 &&
+    !twoHistory.signals.some(s => /trend|category_change/.test(s.kind)) &&
+    threeHistory.context.normalHistoryMonths === 3 &&
+    threeHistory.reductionCandidates.length === 1
+  );
+
+  const protectedState = current({ flexible: [row('current-dining', 'Dining & entertainment', 8500, { protected: true })] });
+  const protectedAnalysis = smartEngine.analyze({ state: protectedState, history: three, summary: summary() });
+  const exceptionalState = current({ flexible: [row('current-dining', 'Dining & entertainment', 8500, { exceptional: true })] });
+  const exceptionalAnalysis = smartEngine.analyze({ state: exceptionalState, history: three, summary: summary() });
+  add('budget smart: protected and exceptional flexible categories never become reduction candidates', protectedAnalysis.reductionCandidates.length === 0 && exceptionalAnalysis.reductionCandidates.length === 0);
+
+  const exceptionalMonthHistory = [month('2026-07',5000), month('2026-08',5000), month('2026-09',15000,{monthExceptional:true})];
+  const exceptionalMonthAnalysis = smartEngine.analyze({ state: current(), history: exceptionalMonthHistory, summary: summary() });
+  add('budget smart: exceptional months remain excluded from normal history baseline', exceptionalMonthAnalysis.context.normalHistoryMonths === 2 && exceptionalMonthAnalysis.context.excludedExceptionalMonths === 1 && exceptionalMonthAnalysis.reductionCandidates.length === 0);
+
+  const scenario = threeHistory.scenarios.totals;
+  add('budget smart: scenario mathematics use evidenced excess plus category caps', Math.abs(scenario.low - 850) < 0.001 && Math.abs(scenario.balanced - 1700) < 0.001 && Math.abs(scenario.aggressive - 2550) < 0.001);
+
+  const essentialState = current({ essential: [row('current-rent', 'Rent', 36000, { protected: false })], flexible: [] });
+  const essentialHistory = ['2026-07','2026-08','2026-09'].map(id => month(id, 0, { rentAmount: 30000 }));
+  const essentialAnalysis = smartEngine.analyze({ state: essentialState, history: essentialHistory, summary: summary({ essential: 36000, flexible: 0 }) });
+  const essentialSignal = essentialAnalysis.signals.find(s => s.kind === 'essential_cost_change');
+  add('budget smart: essential increases are informational only and never reduction sources', !!essentialSignal && !essentialSignal.eligibleForReduction && essentialAnalysis.reductionCandidates.length === 0);
+
+  const sixTrend = [5000,5000,5000,6000,6000,6000].map((v,i)=>month(`2026-${String(i+1).padStart(2,'0')}`,v));
+  const sixAnalysis = smartEngine.analyze({ state: current({ month:'2026-07', flexible:[row('current-dining','Dining & entertainment',6000)] }), history: sixTrend, summary: summary({ flexible:6000 }) });
+  add('budget smart: six-month latest-3 versus previous-3 trend is deterministic', sixAnalysis.signals.some(s => s.kind === 'persistent_flexible_trend' && s.historyMonthsUsed === 6));
+
+  const twelveTrend = [5000,5000,5000,5000,5000,5000,6000,6000,6000,6000,6000,6000].map((v,i)=>month(`2025-${String(i+1).padStart(2,'0')}`,v));
+  const twelveAnalysis = smartEngine.analyze({ state: current({ month:'2026-01', flexible:[row('current-dining','Dining & entertainment',6000)] }), history: twelveTrend, summary: summary({ flexible:6000 }) });
+  add('budget smart: twelve-month persistence check is deterministic', twelveAnalysis.signals.some(s => s.kind === 'persistent_flexible_trend' && s.historyMonthsUsed === 12));
+
+  const negativeAnalysis = smartEngine.analyze({ state: current(), history: three, summary: summary({ remaining: -5000 }) });
+  add('budget smart: negative free cash flow ranks first', negativeAnalysis.primary[0]?.kind === 'cashflow_pressure');
+
+  const zeroIncomeAnalysis = smartEngine.analyze({ state: current(), history: three, summary: summary({ income: 0, remaining: -48500 }) });
+  add('budget smart: zero income is safe and does not create percentage-of-income reduction candidates', zeroIncomeAnalysis.reductionCandidates.length === 0 && zeroIncomeAnalysis.primary[0]?.kind === 'cashflow_pressure');
+
+  const goalView = smartEngine.present(threeHistory, { scenario: 'balanced', money: v => String(Math.round(v)) });
+  add('budget smart: selected priority links scenario capacity to the correct destination tool', goalView.scenario?.relatedTool?.href === '/goal-planner/' && goalView.scenario?.amount === 1700);
+}
+
+add('budget: report uses shared Smart Suggestions plus guide and Continue Planning pages', budgetPdf.includes('function smartView') && budgetPdf.includes('SMART SUGGESTIONS') && budgetPdf.includes('SELECTED SCENARIO') && budgetPdf.includes('.guidePage(') && budgetPdf.includes('.continuePlanningPage(') && budgetPdf.includes("currentTool:'budget'"));
 add('budget: report page 3 uses plain-language wrapped comparison notes',
   budgetPdf.includes('HOW THIS REPORT INTERPRETS YOUR ENTRIES') &&
   budgetPdf.includes("label:'Different frequencies'") &&
@@ -712,6 +812,16 @@ for (const dir of sharedLocaleCssDirs) {
     css.includes('Carrowmont shared locale pill geometry lock - 2026-10-02') &&
     css.includes('height:44px!important') &&
     css.includes('height:38px!important')
+  );
+}
+
+const smartSpec = read('draw004.github.io/docs/CARROWMONT_SMART_SUGGESTIONS_V1_SPEC.md');
+if (smartSpec) {
+  add('main site: Smart Suggestions specification is pinned to Snapshot 17 and V1A local-first architecture',
+    smartSpec.includes('Version:** 1.1') &&
+    smartSpec.includes('carrowmont-source-snapshot (17).zip') &&
+    smartSpec.includes('V1A - Deterministic Smart Suggestions') &&
+    smartSpec.includes('zero new budget-data network transmission')
   );
 }
 

@@ -1,10 +1,10 @@
-# Carrowmont Automated QA Framework v1.4
+# Carrowmont Automated QA Framework v1.5
 
-This package gives Carrowmont a repeatable QA process for the five live tools plus the key main-site pages. It is designed for a non-developer workflow: run it locally with one file, or put it in a small GitHub repository and use GitHub Actions.
+This package gives Carrowmont a repeatable QA process for the six live tools plus the key main-site pages. It is designed for a non-developer workflow: run it locally with one file, or put it in a small GitHub repository and use GitHub Actions.
 
 ## What it checks automatically
 
-- All five calculator pages load successfully.
+- All six calculator/tool pages load successfully.
 - Browser JavaScript and console errors are captured.
 - Required labels/buttons/navigation are present.
 - "Back to all Carrowmont tools" is present on every tool.
@@ -15,6 +15,7 @@ This package gives Carrowmont a repeatable QA process for the five live tools pl
 - Goal, Retirement and SIP charts contain visible axis/value text.
 - Independent formula checks for SIP, Inflation, Goal cost and Financial Independence.
 - Approved regression fixtures for Goal Planner and Retirement Planner.
+- Budget Smart Suggestions history sufficiency, protected/exceptional guardrails, 3/6/12-month trend logic, scenario math, priority linkage and local-only behavior are checked.
 - Every report downloads as a real PDF.
 - Every report uses the exact success text: "Report has been downloaded."
 - Goal and Retirement PDFs include the "Continue planning with Carrowmont" page.
@@ -80,7 +81,7 @@ BASE_URL=https://example.com npm run qa
 
 ## Optional source-code contract check
 
-If you have one local folder containing the five tool source folders (`financial-independence`, `goal-planner`, `inflation-calculator`, `retirement-calculator`, `sip-calculator`), run:
+If you have one local folder containing the six tool source folders (`financial-independence`, `goal-planner`, `inflation-calculator`, `retirement-calculator`, `sip-calculator`, `budget-cash-flow-planner`), run:
 
 Windows PowerShell:
 
@@ -133,3 +134,8 @@ The SIP smoke contract now verifies both supported naming states of the same cal
 ## v1.4 mobile localization assertion update
 
 The localized SIP smoke contract now verifies the visible hero heading rather than the desktop product label. The product label is intentionally hidden in the mobile header, so checking it with `toBeVisible()` caused a false failure on `mobile-chromium`. Desktop and mobile now verify the same user-visible localized experience without depending on responsive header visibility.
+
+
+## v1.5 Smart Suggestions coverage update
+
+The Budget & Cash Flow Planner suite now validates deterministic Smart Suggestions V1A. The source contract executes the pure suggestion engine against fixed fixtures, while Playwright verifies the live UI, local-history gating, protected and exceptional-category guardrails, scenario selection, planning-priority links, report consistency and the absence of Smart Suggestions fetch/XHR activity.

@@ -70,7 +70,10 @@ test.describe('PDF report generation and download standard', () => {
 
       if (tool.key === 'budget-cash-flow-planner') {
         const budgetText = canvasText.replace(/\s+/g, ' ').trim();
+        const webSuggestionTitles = await page.locator('#insightGrid .insight-card h3').allInnerTexts();
         expect(budgetText).toContain('Budget & Cash Flow Report');
+        expect(budgetText).toContain('SMART SUGGESTIONS');
+        for (const title of webSuggestionTitles.slice(0, 3)) expect(budgetText).toContain(title.replace(/\s+/g, ' ').trim());
         expect(budgetText).toContain('Monthly cash-flow summary');
         expect(budgetText.toLowerCase()).toContain('emergency reserve');
         expect(budgetText).toContain('Irregular-bill reserves');
