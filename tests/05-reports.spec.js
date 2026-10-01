@@ -5,6 +5,16 @@ import { tools, standardDownloadMessage } from '../qa.config.js';
 import { gotoClean, setInput, installCanvasTextProbe, getCanvasText, validatePdfDownload } from '../helpers/common.js';
 import { prepareToolForQa, chooseUnitedStatesLocale } from '../helpers/fixtures.js';
 
+
+async function dismissAnalyticsConsent(page) {
+  const banner = page.locator('#carrowmontAnalyticsConsent');
+  if (!(await banner.count())) return;
+  if (!(await banner.isVisible().catch(() => false))) return;
+  const decline = banner.locator('[data-analytics-choice="denied"]');
+  if (await decline.count()) await decline.click();
+  await banner.waitFor({ state: 'detached', timeout: 3000 }).catch(() => {});
+}
+
 function savePdfArtifact(info, name) {
   const dir = path.resolve('qa-artifacts', 'pdfs');
   fs.mkdirSync(dir, { recursive: true });
@@ -18,6 +28,7 @@ test.describe('PDF report generation and download standard', () => {
       test.skip(testInfo.project.name !== 'chrome-desktop', 'Generate PDFs once in Chrome to keep the full suite fast');
       test.setTimeout(120000);
       await gotoClean(page, tool.path);
+      await dismissAnalyticsConsent(page);
       await prepareToolForQa(page, tool.key);
       await installCanvasTextProbe(page);
       const button = page.locator(tool.reportButton);
@@ -57,6 +68,13 @@ test.describe('PDF report generation and download standard', () => {
         expect(canvasText).toContain('retirement contribution required');
       }
 
+      if (tool.key === 'budget-cash-flow-planner') {
+        expect(canvasText).toContain('Budget & Cash Flow Report');
+        expect(canvasText).toContain('Monthly cash-flow summary');
+        expect(canvasText.toLowerCase()).toContain('emergency reserve');
+        expect(canvasText).toContain('Irregular-bill reserves');
+      }
+
       if (tool.requiresGuideReportPage) {
         expect(canvasText, `${tool.name} report missing Report Guide & Methodology page`).toContain('Report Guide & Methodology');
         expect(canvasText, `${tool.name} report missing How to read section`).toContain('How to read this report');
@@ -68,11 +86,12 @@ test.describe('PDF report generation and download standard', () => {
       if (tool.requiresToolsReportPage) {
         expect(canvasText).toContain('Continue planning with Carrowmont');
         const expectedOtherTools = {
-          'financial-independence': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Inflation Calculator'],
-          'goal-planner': ['SIP Calculator', 'Retirement Planner', 'Financial Independence', 'Inflation Calculator'],
-          'inflation-calculator': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence'],
-          'retirement-planner': ['SIP Calculator', 'Goal Planner', 'Financial Independence', 'Inflation Calculator'],
-          'sip-calculator': ['Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator']
+          'financial-independence': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
+          'goal-planner': ['SIP Calculator', 'Retirement Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
+          'inflation-calculator': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Budget & Cash Flow Planner'],
+          'retirement-planner': ['SIP Calculator', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
+          'sip-calculator': ['Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
+          'budget-cash-flow-planner': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator']
         }[tool.key] || [];
         for (const title of expectedOtherTools) expect(canvasText, `${tool.name} report missing ${title}`).toContain(title);
       }
@@ -89,6 +108,7 @@ test.describe('PDF report generation and download standard', () => {
     test.skip(testInfo.project.name !== 'chrome-desktop', 'Generate this report once in Chrome');
     test.setTimeout(120000);
     await gotoClean(page, '/goal-planner/');
+    await dismissAnalyticsConsent(page);
     await chooseUnitedStatesLocale(page);
     await installCanvasTextProbe(page);
     const downloadPromise = page.waitForEvent('download', { timeout: 90000 });
@@ -105,6 +125,7 @@ test.describe('PDF report generation and download standard', () => {
     test.skip(testInfo.project.name !== 'chrome-desktop', 'Generate this report once in Chrome');
     test.setTimeout(120000);
     await gotoClean(page, '/financial-independence/');
+    await dismissAnalyticsConsent(page);
     await prepareToolForQa(page, 'financial-independence');
     await installCanvasTextProbe(page);
     const downloadPromise = page.waitForEvent('download', { timeout: 90000 });
@@ -126,6 +147,7 @@ test.describe('PDF report generation and download standard', () => {
     test.skip(testInfo.project.name !== 'chrome-desktop', 'Generate this report once in Chrome');
     test.setTimeout(120000);
     await gotoClean(page, '/financial-independence/');
+    await dismissAnalyticsConsent(page);
     await page.locator('#planningModeUntilAge').check();
     await setInput(page, '#currentAge', 40);
     await setInput(page, '#targetAge', 50);

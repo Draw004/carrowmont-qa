@@ -152,6 +152,12 @@ export async function prepareToolForQa(page, toolKey) {
     await expect(page.locator('#printBtn')).toBeEnabled({ timeout: 10000 });
   }
 
+  if (toolKey === 'budget-cash-flow-planner') {
+    const loadExample = page.locator('#loadDefaultsBtn');
+    if (await loadExample.count()) await loadExample.click();
+    await expect(page.locator('#moneyRemaining')).toContainText(/31,000|31K|31 k|₹31/);
+  }
+
   if (toolKey === 'sip-calculator') {
     const growth = page.locator('#growthTab');
     if (await growth.count()) await growth.click();

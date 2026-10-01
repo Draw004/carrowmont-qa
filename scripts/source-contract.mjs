@@ -21,7 +21,8 @@ const tools = [
   ['goal-planner', 'index.html', 'app.js', 'Generate Goal Report'],
   ['inflation-calculator', 'index.html', 'app.js', 'Generate Inflation Report'],
   ['retirement-calculator', 'planner.html', 'app.js', 'Generate Retirement Report'],
-  ['sip-calculator', 'index.html', 'app.js', 'Generate SIP Report']
+  ['sip-calculator', 'index.html', 'app.js', 'Generate SIP Report'],
+  ['budget-cash-flow-planner', 'index.html', 'app.js', 'Generate Budget &amp; Cash Flow Report']
 ];
 
 for (const [dir, htmlFile, jsFile, buttonText] of tools) {
@@ -294,7 +295,8 @@ const reportTools = [
   ['goal-planner', 'index.html', 'goal-pdf-renderer.js'],
   ['financial-independence', 'index.html', 'fi-pdf-renderer.js'],
   ['inflation-calculator', 'index.html', 'inflation-pdf-renderer.js'],
-  ['retirement-calculator', 'planner.html', 'retirement-pdf-renderer.js']
+  ['retirement-calculator', 'planner.html', 'retirement-pdf-renderer.js'],
+  ['budget-cash-flow-planner', 'index.html', 'budget-pdf-renderer.js']
 ];
 const standards = reportTools.map(([dir]) => read(`${dir}/report-standard.js`));
 add('reports: shared report standard exists in all tools', standards.every(Boolean));
@@ -310,6 +312,22 @@ add('reports: standard defines separate guide and tools pages',
   standards[0]?.includes('Continue planning with Carrowmont') &&
   standards[0]?.includes('Terminology used in this report') &&
   standards[0]?.includes('Important assumptions & disclaimer')
+);
+add('reports: shared tool registry includes all six active calculators',
+  standards[0]?.includes("key:'investment'") &&
+  standards[0]?.includes("key:'retirement'") &&
+  standards[0]?.includes("key:'goal'") &&
+  standards[0]?.includes("key:'fi'") &&
+  standards[0]?.includes("key:'inflation'") &&
+  standards[0]?.includes("key:'budget'") &&
+  standards[0]?.includes("title:'Budget & Cash Flow Planner'") &&
+  standards[0]?.includes("url:'carrowmont.com/budget-cash-flow-planner/'")
+);
+add('reports: Continue Planning renders every other active tool without four-card truncation',
+  standards[0]?.includes("filter(t=>t.key!==currentTool);") &&
+  !standards[0]?.includes('.slice(0,4)') &&
+  standards[0]?.includes('const rows=Math.ceil(tools.length/2);') &&
+  standards[0]?.includes('tools.length%2===1')
 );
 add('reports: How to read card uses content-aware compact height and stronger guidance text',
   standards[0]?.includes('howH=Math.max(52,22+howLines*14)') &&
@@ -411,10 +429,31 @@ add('retirement report: detailed expense rows use safer pagination and row heigh
 
 add('retirement: report buttons use shrink-safe grid', /grid-template-columns:\s*minmax\(0/.test(retirementCss) && /\.result-actions \.share-button\{[^}]*min-width:0/.test(retirementCss));
 
+
+const budgetHtml = read('budget-cash-flow-planner/index.html');
+const budgetApp = read('budget-cash-flow-planner/app.js');
+const budgetStorage = read('budget-cash-flow-planner/storage.js');
+const budgetPdf = read('budget-cash-flow-planner/budget-pdf-renderer.js');
+const budgetCss = read('budget-cash-flow-planner/styles.css');
+add('budget: monthly and pay-cycle views are both present', budgetHtml.includes('Monthly View') && budgetHtml.includes('Pay Cycle View') && budgetHtml.includes('id="primaryPayFrequency"'));
+add('budget: frequency model covers weekly through annual and irregular averages', /weekly:\{[^}]*perMonth:52\/12/.test(budgetApp) && /biweekly:\{[^}]*perMonth:26\/12/.test(budgetApp) && /semimonthly:\{[^}]*perMonth:2/.test(budgetApp) && /fourweekly:\{[^}]*perMonth:13\/12/.test(budgetApp) && /quarterly:\{[^}]*perMonth:1\/3/.test(budgetApp) && /annual:\{[^}]*perMonth:1\/12/.test(budgetApp) && budgetApp.includes("irregular:{label:'Irregular / Monthly Average'"));
+add('budget: irregular bills are translated into monthly reserves without double subtraction', budgetApp.includes('function irregularReserve') && budgetApp.includes('const remaining=income-essential-flexible-saving') && budgetHtml.includes('Irregular-bill reserves'));
+add('budget: emergency reserve target is user-selected', budgetHtml.includes('id="emergencyTargetMonths"') && budgetHtml.includes('Carrowmont does not assume one universal number of months'));
+add('budget: privacy-first local history uses IndexedDB plus localStorage preferences', budgetStorage.includes("indexedDB.open(DB_NAME") && budgetStorage.includes('localStorage.setItem') && budgetStorage.includes('exportAll') && budgetStorage.includes('importAll'));
+add('budget: history supports 3/6/12 month views and exceptional records', budgetHtml.includes('Last 3 months') && budgetHtml.includes('Last 6 months') && budgetHtml.includes('Last 12 months') && budgetApp.includes('monthExceptional'));
+add('budget: deterministic insights and protected categories are present', budgetHtml.includes('BUDGET INTELLIGENCE') && budgetApp.includes('protected') && budgetApp.includes('function insights'));
+add('budget: report uses shared guide and Continue Planning pages', budgetPdf.includes('.guidePage(') && budgetPdf.includes('.continuePlanningPage(') && budgetPdf.includes("currentTool:'budget'"));
+add('budget: shared footer standard is applied', budgetHtml.includes('footer-brand-block') && budgetHtml.includes('footer-investment-link') && budgetCss.includes('Carrowmont shared footer standard - 2026-09-27'));
+
 // Main-site checks run when SOURCE_ROOT also contains draw004.github.io (for example, a full source snapshot).
 const mainHome = read('draw004.github.io/index.html');
 const mainSiteJs = read('draw004.github.io/site.js');
 if (mainHome || mainSiteJs) {
+  add('main site: Budget & Cash Flow Planner is live and discoverable',
+    mainHome.includes('class="tool-card budget-card"') &&
+    mainHome.includes('href="/budget-cash-flow-planner/"') &&
+    read('draw004.github.io/sitemap.xml').includes('https://carrowmont.com/budget-cash-flow-planner/')
+  );
   add('main site: Monthly Investment Calculator retired as product identity',
     !mainHome.includes('Monthly Investment Calculator') && !mainSiteJs.includes('Monthly Investment Calculator')
   );
@@ -481,8 +520,8 @@ add('main site: all 14 new Learn pages are indexable Article pages with canonica
       page.includes('"@type":"Article"') && page.includes('name="author"') && page.includes('content="Carrowmont"') && page.includes('dateModified":"2026-09-28"');
   })
 );
-add('main site: sitemap contains 70 URLs including all 14 first-wave Learn-expansion pages',
-  (learnSitemap.match(/<loc>/g)||[]).length===70 && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
+add('main site: sitemap contains 71 URLs including all 14 first-wave Learn-expansion pages and the Budget Planner',
+  (learnSitemap.match(/<loc>/g)||[]).length===71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 add('main site: Learn expansion preserves country-aware investment wording and market ordering',
   learnExpansion.includes("['investment','assets','retirement','budget','goals','fi','inflation','foundation']") &&
@@ -516,8 +555,8 @@ add('main site: all 12 asset-class Learn pages exist and are linked from Learn h
 add('main site: all 12 asset-class pages are indexable Article pages with canonical URLs and source notes',
   assetLearnPages.every(file => { const page=read('draw004.github.io/'+file); return page.includes('name="robots"') && page.includes('index,follow') && page.includes('rel="canonical"') && page.includes('"@type":"Article"') && page.includes('Carrowmont') && page.includes('Sources and how this guide was prepared'); })
 );
-add('main site: final Learn sitemap contains 70 unique URLs and all 12 asset-class guides',
-  (learnSitemap.match(/<loc>/g)||[]).length===70 && new Set([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1])).size===70 && assetLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
+add('main site: final Learn sitemap contains 71 unique URLs, the Budget Planner and all 12 asset-class guides',
+  (learnSitemap.match(/<loc>/g)||[]).length===71 && new Set([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1])).size===71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && assetLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 
 
@@ -604,7 +643,7 @@ add('main site: Learn v2 standard documents depth, evidence and calculation-cons
 );
 
 
-const standardizedFooterDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator'];
+const standardizedFooterDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner'];
 for (const dir of standardizedFooterDirs) {
   const html = read(`${dir}/index.html`);
   const css = read(`${dir}/styles.css`);

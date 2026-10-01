@@ -58,6 +58,20 @@ export const tools = [
     requiresToolsReportPage: true
   },
   {
+    key: 'budget-cash-flow-planner',
+    name: 'Budget & Cash Flow Planner',
+    path: '/budget-cash-flow-planner/',
+    reportButton: '#reportBtn',
+    reportStatus: '#reportDownloadStatus',
+    reportMinPages: 5,
+    charts: [],
+    requiredText: ['Budget & Cash Flow Planner', 'Copy Summary', 'Generate Budget & Cash Flow Report'],
+    keyInputs: ['#budgetMonth', '#primaryPayFrequency', '#emergencyCurrent', '#emergencyTargetMonths'],
+    layoutParent: '.report-actions-card',
+    requiresGuideReportPage: true,
+    requiresToolsReportPage: true
+  },
+  {
     key: 'sip-calculator',
     name: 'SIP Calculator',
     path: '/sip-calculator/',

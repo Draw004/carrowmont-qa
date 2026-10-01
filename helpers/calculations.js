@@ -171,3 +171,26 @@ export function fiPlanUntilAnnualJourney({
   }
   return { rows, lasts: depletionAge === null, depletionAge, finalBalance: balance, totalWithdrawals, totalRequiredWithdrawals, totalGrowth };
 }
+
+
+export const budgetFrequencyPerMonth = {
+  weekly: 52/12,
+  biweekly: 26/12,
+  semimonthly: 2,
+  fourweekly: 13/12,
+  monthly: 1,
+  quarterly: 1/3,
+  annual: 1/12,
+  irregular: 1
+};
+
+export function budgetMonthlyEquivalent(amount, frequency='monthly') {
+  return Math.max(0, Number(amount)||0) * (budgetFrequencyPerMonth[frequency] ?? 1);
+}
+
+export function budgetSummary({ incomes=[], essential=[], flexible=[], savings=[] }) {
+  const total = rows => rows.reduce((sum,row)=>sum+budgetMonthlyEquivalent(row.amount,row.frequency),0);
+  const income=total(incomes), essentialTotal=total(essential), flexibleTotal=total(flexible), saving=total(savings);
+  const remaining=income-essentialTotal-flexibleTotal-saving;
+  return { income, essential:essentialTotal, flexible:flexibleTotal, saving, remaining, savingsRate:income>0?saving/income*100:0 };
+}

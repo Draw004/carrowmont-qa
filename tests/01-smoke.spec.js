@@ -628,3 +628,24 @@ ${errors.join('\n')}`).toEqual([]);
   });
 
 });
+
+
+test.describe('Budget & Cash Flow Planner contracts', () => {
+  test('[AUTO] Budget: monthly and pay-cycle views, local save and deterministic insights work', async ({ page }) => {
+    const errors = monitorPageErrors(page);
+    await gotoClean(page, '/budget-cash-flow-planner/');
+    await page.locator('#loadDefaultsBtn').click();
+    await expect(page.locator('#moneyRemaining')).toContainText(/31,000|31K|31 k|₹31/);
+    await expect(page.locator('#savingsRate')).toHaveText('12.5%');
+    await page.getByRole('button', { name: 'Pay Cycle View' }).click();
+    await expect(page.locator('.paycycle-card')).toBeVisible();
+    await page.locator('#primaryPayFrequency').selectOption('biweekly');
+    await expect(page.locator('#cycleIncome')).not.toHaveText('₹0');
+    await page.locator('#saveMonthBtn').click();
+    await expect(page.locator('#saveStatus')).toContainText('Saved');
+    await expect(page.locator('#historyTableBody tr')).toHaveCount(1);
+    await expect(page.locator('#insightGrid .insight-card').first()).toBeVisible();
+    expect(errors, `Budget browser errors:
+${errors.join('\n')}`).toEqual([]);
+  });
+});
