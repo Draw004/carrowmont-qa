@@ -444,16 +444,19 @@ add('budget: irregular bills are translated into monthly reserves without double
 add('budget: emergency reserve target is user-selected', budgetHtml.includes('id="emergencyTargetMonths"') && budgetHtml.includes('Carrowmont does not assume one universal number of months'));
 add('budget: privacy-first local history uses IndexedDB plus localStorage preferences', budgetStorage.includes("indexedDB.open(DB_NAME") && budgetStorage.includes('localStorage.setItem') && budgetStorage.includes('exportAll') && budgetStorage.includes('importAll'));
 add('budget: history supports 3/6/12 month views and exceptional records', budgetHtml.includes('Last 3 months') && budgetHtml.includes('Last 6 months') && budgetHtml.includes('Last 12 months') && budgetApp.includes('monthExceptional'));
-add('budget: Smart Suggestions V1A UI and local engine are wired',
+add('budget: Smart Suggestions SS2 UI and local engine are wired',
   budgetHtml.includes('SMART SUGGESTIONS') &&
   budgetHtml.includes('id="smartScenarioPanel"') &&
+  budgetHtml.includes('id="smartScenarioBreakdown"') &&
   budgetHtml.includes('data-smart-scenario="low"') &&
   budgetHtml.includes('data-smart-scenario="balanced"') &&
   budgetHtml.includes('data-smart-scenario="aggressive"') &&
   budgetHtml.indexOf('smart-suggestions.js') < budgetHtml.indexOf('app.js') &&
   budgetApp.includes('CarrowmontSmartSuggestions') &&
   budgetApp.includes('function smartAnalysis') &&
-  budgetReadme.includes('Smart Suggestions V1A runs entirely in the browser')
+  budgetApp.includes('Why am I seeing this?') &&
+  budgetApp.includes('smartScenarioBreakdownBody') &&
+  budgetReadme.includes('Smart Suggestions SS2 runs entirely in the browser')
 );
 add('budget: Smart Suggestions engine has no budget-data network primitive',
   budgetSmart.includes("generatedFrom: 'deterministic-local-engine'") &&
@@ -540,9 +543,59 @@ if (smartEngine) {
 
   const goalView = smartEngine.present(threeHistory, { scenario: 'balanced', money: v => String(Math.round(v)) });
   add('budget smart: selected priority links scenario capacity to the correct destination tool', goalView.scenario?.relatedTool?.href === '/goal-planner/' && goalView.scenario?.amount === 1700);
+
+  add('budget smart SS2: engine version and structured evidence contract are active',
+    smartEngine.VERSION === '2.0.0' &&
+    threeHistory.signals.every(s => 'score' in s && 'confidenceLabel' in s && 'comparisonWindow' in s && 'reasonCodes' in s && 'scenarioEligible' in s && 'frequencyClass' in s)
+  );
+  add('budget smart SS2: no-history state does not pad primary cards with low-value filler',
+    noHistory.primary.length === 0 && noHistory.noAction?.reason === 'insufficient-history'
+  );
+  const emerging = threeHistory.signals.find(s => s.kind === 'flexible_category_change');
+  add('budget smart SS2: three normal months create Emerging category evidence',
+    emerging?.confidenceLabel === 'Emerging' && emerging?.comparisonWindow === 'current-vs-3' && emerging?.historyMonthsUsed === 3
+  );
+  add('budget smart SS2: primary cards are thresholded rather than padded',
+    threeHistory.primary.length === 1 && threeHistory.primary[0]?.kind === 'flexible_category_change' && threeHistory.primary[0]?.score >= 35
+  );
+  add('budget smart SS2: six-month Established trend requires repeated consistency',
+    sixAnalysis.signals.some(s => s.kind === 'persistent_flexible_trend' && s.confidenceLabel === 'Established' && s.consistencyCount >= 2 && s.consistencyRequired === 2)
+  );
+  const sixSpike = [5000,5000,5000,5000,5000,9000].map((v,i)=>month(`2026-${String(i+1).padStart(2,'0')}`,v));
+  const sixSpikeAnalysis = smartEngine.analyze({ state: current({ month:'2026-07', flexible:[row('current-dining','Dining & entertainment',9000)] }), history: sixSpike, summary: summary({ flexible:9000 }) });
+  add('budget smart SS2: a single six-month spike does not become Established',
+    !sixSpikeAnalysis.signals.some(s => s.kind === 'persistent_flexible_trend' && s.confidenceLabel === 'Established')
+  );
+  const twelveSpike = [5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,12000].map((v,i)=>month(`2025-${String(i+1).padStart(2,'0')}`,v));
+  const twelveSpikeAnalysis = smartEngine.analyze({ state: current({ month:'2026-01', flexible:[row('current-dining','Dining & entertainment',12000)] }), history: twelveSpike, summary: summary({ flexible:12000 }) });
+  add('budget smart SS2: a single twelve-month spike does not become Established',
+    !twelveSpikeAnalysis.signals.some(s => s.kind === 'persistent_flexible_trend' && s.confidenceLabel === 'Established')
+  );
+  const recurringHistory = [5000,5000,5000,6500,6500].map((v,i)=>month(`2026-${String(i+1).padStart(2,'0')}`,v));
+  const recurringAnalysis = smartEngine.analyze({ state: current({ month:'2026-06', flexible:[row('current-dining','Dining & entertainment',7000)] }), history: recurringHistory, summary: summary({ flexible:7000 }) });
+  const recurringSignal = recurringAnalysis.signals.find(s => s.kind === 'recurring_cost_step_up');
+  add('budget smart SS2: stable recurring step-up is identified and generic duplicate is suppressed',
+    !!recurringSignal && recurringAnalysis.signals.some(s => s.kind === 'flexible_category_change' && s.suppressedBy === recurringSignal.id)
+  );
+  const annualState = current({ month:'2026-10', flexible:[row('annual-trip','Annual travel reserve',24000,{frequency:'annual'})] });
+  const annualHistory = ['2026-07','2026-08','2026-09'].map(id => ({...month(id,0), flexible:[row('annual-trip','Annual travel reserve',12000,{frequency:'annual'})], summary:{...month(id,0).summary, flexible:1000}}));
+  const annualAnalysis = smartEngine.analyze({ state: annualState, history: annualHistory, summary: summary({ flexible:2000, reserves:2000 }) });
+  add('budget smart SS2: annual reserve changes stay informational and out of scenarios',
+    annualAnalysis.signals.some(s => s.kind === 'reserve_style_change' && s.frequencyClass === 'reserve-style' && !s.scenarioEligible) && annualAnalysis.reductionCandidates.length === 0
+  );
+  const genericTotal = threeHistory.signals.find(s => s.kind === 'flexible_total_change');
+  add('budget smart SS2: category evidence deterministically suppresses redundant total-level evidence',
+    !!genericTotal?.suppressedBy && genericTotal.suppressedBy === emerging?.id
+  );
+  const balancedBreakdown = threeHistory.scenarios.breakdown.balanced || [];
+  add('budget smart SS2: scenario breakdown sums exactly to scenario total',
+    Math.abs(balancedBreakdown.reduce((sum,x)=>sum+x.adjustmentValue,0) - threeHistory.scenarios.totals.balanced) < 0.001 &&
+    balancedBreakdown.every(x => x.adjustmentValue <= x.excessValue + 1e-9)
+  );
 }
 
 add('budget: report uses shared Smart Suggestions plus guide and Continue Planning pages', budgetPdf.includes('function smartView') && budgetPdf.includes('SMART SUGGESTIONS') && budgetPdf.includes('SELECTED SCENARIO') && budgetPdf.includes('.guidePage(') && budgetPdf.includes('.continuePlanningPage(') && budgetPdf.includes("currentTool:'budget'"));
+add('budget: SS2 report prints evidence labels and scenario breakdown from shared presentation', budgetPdf.includes('confidenceLabel') && budgetPdf.includes('Scenario breakdown') && budgetPdf.includes('smart.emptyState') && budgetPdf.includes('/ 12 months'));
 add('budget: report page 3 uses plain-language wrapped comparison notes',
   budgetPdf.includes('HOW THIS REPORT INTERPRETS YOUR ENTRIES') &&
   budgetPdf.includes("label:'Different frequencies'") &&
@@ -822,6 +875,17 @@ if (smartSpec) {
     smartSpec.includes('carrowmont-source-snapshot (17).zip') &&
     smartSpec.includes('V1A - Deterministic Smart Suggestions') &&
     smartSpec.includes('zero new budget-data network transmission')
+  );
+}
+
+const smartSs2Spec = read('draw004.github.io/docs/CARROWMONT_SMART_SUGGESTIONS_SS2_SPEC.md');
+if (smartSs2Spec) {
+  add('main site: SS2 specification is pinned to Snapshot 18 and deterministic intelligence enhancement',
+    smartSs2Spec.includes('Version:** 1.1') &&
+    smartSs2Spec.includes('carrowmont-source-snapshot (18).zip') &&
+    smartSs2Spec.includes('SS2 - Deterministic intelligence enhancement') &&
+    smartSs2Spec.includes('Smart Suggestions engine version 2.0.0') &&
+    smartSs2Spec.includes('no external AI service')
   );
 }
 
