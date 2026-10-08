@@ -900,6 +900,54 @@ if (uiStandard) {
   );
 }
 
+
+// BING-SEO1 technical indexing foundation - 2026-10-08.
+const indexNowKey = 'd7088229f885cb74d3cd2a3b696b5708';
+const indexNowKeyFile = read(`draw004.github.io/${indexNowKey}.txt`).trim();
+const indexNowWorkflow = read('draw004.github.io/.github/workflows/carrowmont-indexnow.yml');
+const indexNowScript = read('draw004.github.io/scripts/indexnow-submit.mjs');
+const indexNowDoc = read('draw004.github.io/docs/CARROWMONT_INDEXNOW_IMPLEMENTATION.md');
+add('main site: IndexNow verification key is hosted at the public site root',
+  indexNowKeyFile === indexNowKey &&
+  indexNowDoc.includes(`${indexNowKey}.txt`) &&
+  indexNowDoc.includes('The IndexNow key is intentionally public')
+);
+add('main site: IndexNow automation uses the global endpoint, read-only workflow permissions and recent-change filtering',
+  indexNowWorkflow.includes('name: Carrowmont IndexNow') &&
+  indexNowWorkflow.includes('permissions:\n  contents: read') &&
+  indexNowWorkflow.includes('https://carrowmont.com/${INDEXNOW_KEY}.txt') &&
+  indexNowWorkflow.includes('node scripts/indexnow-submit.mjs') &&
+  indexNowScript.includes("https://api.indexnow.org/indexnow") &&
+  indexNowScript.includes('INDEXNOW_LOOKBACK_DAYS') &&
+  indexNowScript.includes('keyLocation: KEY_LOCATION') &&
+  indexNowScript.includes('urls.length > 10000')
+);
+
+const sitemapLastmods = new Map([...learnSitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>\s*<\/url>/g)].map(m => [m[1], m[2]]));
+add('main site: every Learn Article sitemap lastmod matches JSON-LD dateModified',
+  standardizedLearnPages.length >= 52 && standardizedLearnPages.every(({page}) => {
+    const canonical = ((page.match(/<link[^>]*rel="canonical"[^>]*href="([^"]+)"/i) || page.match(/<link[^>]*href="([^"]+)"[^>]*rel="canonical"/i) || [])[1] || '');
+    const dateModified = ((page.match(/"dateModified":"(\d{4}-\d{2}-\d{2})"/) || [])[1] || '');
+    return canonical && dateModified && sitemapLastmods.get(canonical) === dateModified;
+  })
+);
+add('main site: Learn hub has descriptive search metadata and one HTML doctype',
+  learnHub.includes('<title>Financial Planning Guides &amp; Calculators | Carrowmont</title>') &&
+  learnHub.includes('Explore practical guides on retirement, investing, budgeting, inflation, financial independence, gold, real estate and more, with related Carrowmont calculators.') &&
+  (learnHub.match(/<!DOCTYPE html>/gi) || []).length === 1
+);
+add('goal and retirement planner documents expose one page-level H1 while report titles remain subordinate headings',
+  (goalHtml.match(/<h1\b/gi) || []).length === 1 &&
+  goalHtml.includes('<h2 class="report-document-title">Goal Planning Report</h2>') &&
+  (retirementPlannerHtml.match(/<h1\b/gi) || []).length === 1 &&
+  retirementPlannerHtml.includes('<h2 class="report-document-title">Retirement Planning Report</h2>')
+);
+add('main site: BING-SEO1 sitemap freshness keeps the changed hub and planner URLs at or beyond the release baseline',
+  (sitemapLastmods.get('https://carrowmont.com/learn.html') || '') >= '2026-10-08' &&
+  (sitemapLastmods.get('https://carrowmont.com/goal-planner/') || '') >= '2026-10-08' &&
+  (sitemapLastmods.get('https://carrowmont.com/retirement-calculator/planner.html') || '') >= '2026-10-08'
+);
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);

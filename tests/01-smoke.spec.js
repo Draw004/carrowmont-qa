@@ -478,6 +478,20 @@ test.describe('Carrowmont smoke and content contracts', () => {
     });
   }
 
+  test('[AUTO] BING-SEO1: Learn metadata and planner heading hierarchy stay search-clean', async ({ page }) => {
+    await gotoClean(page, '/learn.html');
+    await expect(page).toHaveTitle('Financial Planning Guides & Calculators | Carrowmont');
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /Explore practical guides on retirement, investing, budgeting, inflation/);
+
+    await gotoClean(page, '/goal-planner/');
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h2.report-document-title')).toHaveText('Goal Planning Report');
+
+    await gotoClean(page, '/retirement-calculator/planner.html');
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h2.report-document-title')).toHaveText('Retirement Planning Report');
+  });
+
   test('[AUTO] Learn hub localization contract v3: country controls terminology/order and currency controls money examples', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, '/learn.html');
