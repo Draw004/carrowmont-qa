@@ -695,7 +695,7 @@ add('main site: all 14 new Learn pages are indexable Article pages with canonica
       page.includes('"@type":"Article"') && page.includes('name="author"') && page.includes('content="Carrowmont"') && modified >= '2026-09-28';
   })
 );
-add('main site: sitemap contains 71 URLs including all 14 first-wave Learn-expansion pages and the Budget Planner',
+add('main site: sitemap contains at least 71 URLs including all 14 first-wave Learn-expansion pages and the Budget Planner',
   (learnSitemap.match(/<loc>/g)||[]).length>=71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 add('main site: Learn expansion preserves country-aware investment wording and market ordering',
@@ -730,7 +730,7 @@ add('main site: all 12 asset-class Learn pages exist and are linked from Learn h
 add('main site: all 12 asset-class pages are indexable Article pages with canonical URLs and source notes',
   assetLearnPages.every(file => { const page=read('draw004.github.io/'+file); return page.includes('name="robots"') && page.includes('index,follow') && page.includes('rel="canonical"') && page.includes('"@type":"Article"') && page.includes('Carrowmont') && page.includes('Sources and how this guide was prepared'); })
 );
-add('main site: final Learn sitemap contains 71 unique URLs, the Budget Planner and all 12 asset-class guides',
+add('main site: Learn sitemap URLs remain unique and include the Budget Planner and all 12 asset-class guides',
   (learnSitemap.match(/<loc>/g)||[]).length>=71 && new Set([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1])).size===(learnSitemap.match(/<loc>/g)||[]).length && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && assetLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 
@@ -1156,6 +1156,150 @@ if (stressCoreApi) {
     fixture.sequenceComparison.weakFirst.endingBalanceNominal < fixture.sequenceComparison.strongFirst.endingBalanceNominal &&
     fixture.rateComparison.map(row => row.rate).join(',') === '0.03,0.035,0.04,0.05' &&
     fixture.base.annualRows.every(row => row.closingBalance >= 0)
+  );
+}
+
+
+// SEO3B Financial Independence Number by Spending authority asset - 2026-10-09.
+const fiSpendHtml = read('draw004.github.io/financial-independence-number-by-spending.html');
+const fiSpendCss = read('draw004.github.io/financial-independence-number-by-spending.css');
+const fiSpendCore = read('draw004.github.io/financial-independence-number-by-spending-core.js');
+const fiSpendApp = read('draw004.github.io/financial-independence-number-by-spending.js');
+const fiSpendPdf = read('draw004.github.io/financial-independence-number-by-spending-pdf-renderer.js');
+const fiSpendPdfExport = read('draw004.github.io/financial-independence-number-by-spending-pdf-export.js');
+const fiSpendReportStandard = read('draw004.github.io/financial-independence-number-by-spending-report-standard.js');
+const fiSpendSpec = read('draw004.github.io/docs/CARROWMONT_SEO3B_FI_NUMBER_BY_SPENDING_SPEC.md');
+const fiSpendImplementation = read('draw004.github.io/docs/CARROWMONT_SEO3B_IMPLEMENTATION.md');
+const fiNumberGuide = read('draw004.github.io/financial-independence-number.html');
+const fiTimingGuide = read('draw004.github.io/when-can-i-reach-financial-independence.html');
+
+add('main site: SEO3B FI-number-by-spending product files and implementation record exist',
+  [fiSpendHtml, fiSpendCss, fiSpendCore, fiSpendApp, fiSpendPdf, fiSpendPdfExport, fiSpendReportStandard, fiSpendSpec, fiSpendImplementation].every(Boolean)
+);
+add('main site: FI Number by Spending has approved indexable metadata and exactly one H1',
+  fiSpendHtml.includes('<title>Financial Independence Number by Spending | Carrowmont</title>') &&
+  fiSpendHtml.includes('<meta name="robots" content="index,follow">') &&
+  fiSpendHtml.includes('<link rel="canonical" href="https://carrowmont.com/financial-independence-number-by-spending.html">') &&
+  (fiSpendHtml.match(/<h1\b/gi) || []).length === 1 &&
+  fiSpendHtml.includes('See how spending changes your financial independence number')
+);
+add('main site: FI Number by Spending exposes free WebApplication, Breadcrumb and FAQ structured data',
+  fiSpendHtml.includes('"@type": "WebApplication"') &&
+  fiSpendHtml.includes('"@type": "BreadcrumbList"') &&
+  fiSpendHtml.includes('"@type": "FAQPage"') &&
+  fiSpendHtml.includes('"isAccessibleForFree": true') &&
+  fiSpendHtml.includes('"dateModified": "2026-10-09"')
+);
+add('main site: FI Number by Spending input, result and export contract is complete',
+  ['portfolioSpending','withdrawalRate','yearsUntilFi','inflationRate','summaryCards','annualSpendingValue','fiTodayValue','multipleValue','fiFutureValue','rateComparisonBody','sensitivityChart','spendingSensitivityBody','copySummaryBtn','downloadCsvBtn','generateReportBtn','fullPlannerCta']
+    .every(id => fiSpendHtml.includes(`id="${id}"`)) &&
+  fiSpendHtml.includes('name="spendingView"') &&
+  fiSpendHtml.includes('No login') && fiSpendHtml.includes('Local calculations') && fiSpendHtml.includes('Standard report')
+);
+add('main site: FI Number by Spending uses shared locale formatting without automatic FX conversion',
+  fiSpendHtml.includes('id="localeMenu"') && fiSpendHtml.includes('id="regionSelect"') && fiSpendHtml.includes('id="currencySelect"') &&
+  fiSpendApp.includes('Locale.formatCompactMoney') && fiSpendApp.includes('Locale.formatMoney') &&
+  fiSpendHtml.includes('changing currency changes the unit and number format. It does not convert entered amounts using an exchange rate')
+);
+add('main site: FI Number by Spending deterministic engine implements the approved formula and comparisons',
+  fiSpendCore.includes("const METHODOLOGY_VERSION = 'fi-number-by-spending-v1.0'") &&
+  fiSpendCore.includes('const STANDARD_RATES = [0.03, 0.035, 0.04, 0.05]') &&
+  fiSpendCore.includes('const SENSITIVITY_FACTORS = [0.8, 0.9, 1, 1.1, 1.2]') &&
+  fiSpendCore.includes("inputs && inputs.view === 'annual' ? s : s * 12") &&
+  fiSpendCore.includes('return annualSpendingValue / withdrawalRate') &&
+  fiSpendCore.includes('Math.pow(1 + inflation, years)')
+);
+add('main site: FI Number by Spending UI, CSV and PDF consume the same deterministic result object',
+  fiSpendApp.includes('latestResult = Core.calculate(raw)') &&
+  fiSpendApp.includes('summaryText(latestResult)') &&
+  fiSpendApp.includes('latestResult.rateComparison.forEach') &&
+  fiSpendApp.includes('latestResult.spendingSensitivity.forEach') &&
+  fiSpendApp.includes('window.CarrowmontFINumberBySpendingPdf.generate(latestResult') &&
+  fiSpendPdf.includes('async function generate(result,options={})')
+);
+add('main site: FI Number by Spending chart follows hardened Carrowmont typography and callout geometry',
+  fiSpendCss.includes('font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif') &&
+  fiSpendCss.includes('fill:#385b78;font-size:13px;font-weight:700;stroke:none!important;stroke-width:0!important') &&
+  fiSpendCss.includes('.fiq-chart .chart-label-text{fill:#173d5c;font-size:12px;font-weight:850;stroke:none!important;stroke-width:0!important}') &&
+  fiSpendCss.includes('.fiq-chart .series-path{fill:none;stroke:var(--fiq-teal);stroke-width:4;') &&
+  fiSpendApp.includes('svg.dataset.plotLeft = String(margin.left)') &&
+  fiSpendApp.includes('getComputedTextLength') &&
+  fiSpendApp.includes('coversAnchor(box, px, py') &&
+  fiSpendApp.includes('labelBoxes.some(other => overlaps(box, other))')
+);
+add('main site: FI Number by Spending baseline marker is distinguishable without color alone',
+  fiSpendApp.includes("class: 'chart-point-baseline', 'data-baseline': 'true'") &&
+  fiSpendApp.includes("class: 'chart-point-baseline-core'") &&
+  fiSpendCss.includes('.fiq-chart .chart-point-baseline{fill:#fff;stroke:var(--fiq-teal);stroke-width:4}')
+);
+add('main site: FI Number by Spending report uses standardized four-page structure and no login wall',
+  fiSpendHtml.indexOf('financial-independence-number-by-spending-report-standard.js') < fiSpendHtml.indexOf('financial-independence-number-by-spending-pdf-renderer.js') &&
+  fiSpendPdf.includes('S().guidePage({') && fiSpendPdf.includes('S().continuePlanningPage({') &&
+  fiSpendPdf.includes("filename:'carrowmont-fi-number-by-spending-report.pdf'") &&
+  fiSpendPdf.includes('standard report is available without an account') &&
+  fiSpendReportStandard.includes('Continue planning with Carrowmont')
+);
+add('main site: FI Number by Spending privacy contract has no backend, API-key or AI dependency',
+  fiSpendHtml.includes('All calculations run in this browser. Carrowmont does not transmit or store the financial values entered here.') &&
+  !/\bfetch\s*\(/.test(fiSpendApp + fiSpendCore) && !/XMLHttpRequest/.test(fiSpendApp + fiSpendCore) &&
+  !/api[_-]?key|openai|anthropic/i.test(fiSpendApp + fiSpendCore)
+);
+add('main site: FI Number by Spending is discoverable across the approved FI authority cluster',
+  learnHub.includes('href="/financial-independence-number-by-spending.html"') &&
+  fiNumberGuide.includes('href="/financial-independence-number-by-spending.html"') &&
+  fiTimingGuide.includes('href="/financial-independence-number-by-spending.html"') &&
+  fourPercentGuide.includes('href="/financial-independence-number-by-spending.html"') &&
+  stressHtml.includes('href="/financial-independence-number-by-spending.html"') &&
+  fiHtml.includes('href="/financial-independence-number-by-spending.html"')
+);
+add('main site: FI Number by Spending route and refreshed FI guides are in sitemap with SEO3B lastmod',
+  sitemapLastmods.get('https://carrowmont.com/financial-independence-number-by-spending.html') === '2026-10-09' &&
+  sitemapLastmods.get('https://carrowmont.com/financial-independence-number.html') === '2026-10-09' &&
+  sitemapLastmods.get('https://carrowmont.com/when-can-i-reach-financial-independence.html') === '2026-10-09' &&
+  sitemapLastmods.get('https://carrowmont.com/financial-independence/') === '2026-10-09'
+);
+add('financial-independence: SEO3B handoff is explicit, validated and keeps the approved FI core separate',
+  fiHtml.includes('id="seo3bHandoffNotice"') &&
+  fiJs.includes("params.get('cm_handoff')!=='fi_spending_v1'") &&
+  fiJs.includes("els.spendingPct.value='100'") && fiJs.includes("els.monthlyIncome.value='0'") &&
+  fiJs.includes('applySeo3bHandoff()') &&
+  !fiCore.includes('fi_spending_v1')
+);
+add('main site: SEO3B specification and implementation preserve no-login access, full-planner progression and engine separation',
+  fiSpendSpec.includes('Financial Independence Number by Spending') &&
+  fiSpendSpec.includes('usable without login') &&
+  fiSpendSpec.includes('`financial-independence/core.js`') &&
+  fiSpendImplementation.includes('Carrowmont Source Snapshot 28') &&
+  fiSpendImplementation.includes('existing `financial-independence/core.js` is not modified') &&
+  fiSpendImplementation.includes('No SIP, Goal, Inflation, Retirement or Budget calculation engine is changed')
+);
+add('main site: FI Number by Spending responsive CSS contains mobile, chart and print safeguards',
+  fiSpendCss.includes('@media(max-width:700px)') && fiSpendCss.includes('@media(max-width:420px)') &&
+  fiSpendCss.includes('.fiq-chart{display:block;width:100%;height:auto;') &&
+  fiSpendCss.includes('.fiq-table-wrap{overflow:auto;') && fiSpendCss.includes('@media print')
+);
+
+let fiSpendCoreApi = null;
+try {
+  const sandbox = { module: { exports: {} }, exports: {}, console, Date };
+  vm.runInNewContext(fiSpendCore, sandbox, { filename: 'financial-independence-number-by-spending-core.js' });
+  fiSpendCoreApi = sandbox.module.exports;
+} catch (_) {}
+add('main site: FI Number by Spending core executes as an isolated pure calculation module',
+  !!fiSpendCoreApi && typeof fiSpendCoreApi.calculate === 'function' && typeof fiSpendCoreApi.fiNumber === 'function'
+);
+if (fiSpendCoreApi) {
+  const annual = fiSpendCoreApi.calculate({ view:'annual', spending:1200000, withdrawalRate:4, yearsUntilFi:0, inflationRate:5 });
+  const monthly = fiSpendCoreApi.calculate({ view:'monthly', spending:100000, withdrawalRate:4, yearsUntilFi:0, inflationRate:5 });
+  const threeFive = fiSpendCoreApi.calculate({ view:'annual', spending:1200000, withdrawalRate:3.5, yearsUntilFi:0, inflationRate:5 });
+  const inflation = fiSpendCoreApi.calculate({ view:'annual', spending:1200000, withdrawalRate:4, yearsUntilFi:10, inflationRate:5 });
+  const zero = fiSpendCoreApi.calculate({ view:'monthly', spending:0, withdrawalRate:4, yearsUntilFi:10, inflationRate:5 });
+  add('main site: FI Number by Spending approved calculation fixtures pass independently',
+    annual.fiToday === 30000000 && monthly.fiToday === 30000000 &&
+    Math.abs(threeFive.fiToday - 34285714.28571428) < 0.01 &&
+    Math.abs(inflation.futureAnnualSpending - (1200000 * Math.pow(1.05,10))) < 0.01 &&
+    inflation.spendingSensitivity.map(row => row.percentage).join(',') === '80,90,100,110,120' &&
+    zero.fiToday === 0 && zero.fiFuture === 0
   );
 }
 
