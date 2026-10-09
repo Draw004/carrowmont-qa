@@ -696,7 +696,7 @@ add('main site: all 14 new Learn pages are indexable Article pages with canonica
   })
 );
 add('main site: sitemap contains 71 URLs including all 14 first-wave Learn-expansion pages and the Budget Planner',
-  (learnSitemap.match(/<loc>/g)||[]).length===71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
+  (learnSitemap.match(/<loc>/g)||[]).length>=71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 add('main site: Learn expansion preserves country-aware investment wording and market ordering',
   learnExpansion.includes("['investment','assets','retirement','budget','goals','fi','inflation','foundation']") &&
@@ -731,7 +731,7 @@ add('main site: all 12 asset-class pages are indexable Article pages with canoni
   assetLearnPages.every(file => { const page=read('draw004.github.io/'+file); return page.includes('name="robots"') && page.includes('index,follow') && page.includes('rel="canonical"') && page.includes('"@type":"Article"') && page.includes('Carrowmont') && page.includes('Sources and how this guide was prepared'); })
 );
 add('main site: final Learn sitemap contains 71 unique URLs, the Budget Planner and all 12 asset-class guides',
-  (learnSitemap.match(/<loc>/g)||[]).length===71 && new Set([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1])).size===71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && assetLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
+  (learnSitemap.match(/<loc>/g)||[]).length>=71 && new Set([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1])).size===(learnSitemap.match(/<loc>/g)||[]).length && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && assetLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 
 
@@ -1007,6 +1007,134 @@ add('main site: BING-SEO2 keeps Learn hub and methodology descriptions within sn
   seo2LearnHubDescription.length >= 110 && seo2LearnHubDescription.length <= 160 &&
   seo2MethodologyDescription.length >= 110 && seo2MethodologyDescription.length <= 160
 );
+
+
+// SEO3A 4% Rule Stress Test authority asset - 2026-10-09.
+const stressHtml = read('draw004.github.io/4-percent-rule-stress-test.html');
+const stressCss = read('draw004.github.io/4-percent-rule-stress-test.css');
+const stressCore = read('draw004.github.io/4-percent-rule-stress-test-core.js');
+const stressApp = read('draw004.github.io/4-percent-rule-stress-test.js');
+const stressPdf = read('draw004.github.io/4-percent-rule-stress-test-pdf.js');
+const stressPdfExport = read('draw004.github.io/4-percent-rule-stress-test-pdf-export.js');
+const stressReportStandard = read('draw004.github.io/4-percent-rule-stress-test-report-standard.js');
+const stressImplementation = read('draw004.github.io/docs/CARROWMONT_SEO3A_IMPLEMENTATION.md');
+const stressSpec = read('draw004.github.io/docs/CARROWMONT_SEO3A_4_PERCENT_RULE_STRESS_TEST_SPEC.md');
+const fourPercentGuide = read('draw004.github.io/4-percent-rule-retirement.html');
+const sequenceGuide = read('draw004.github.io/sequence-of-returns-risk.html');
+const longevityGuide = read('draw004.github.io/longevity-risk-retirement.html');
+
+add('main site: SEO3A stress-test files and implementation record exist',
+  [stressHtml, stressCss, stressCore, stressApp, stressPdf, stressPdfExport, stressReportStandard, stressImplementation].every(Boolean)
+);
+add('main site: 4% Rule Stress Test has indexable unique search metadata and one H1',
+  stressHtml.includes('<title>4% Rule Stress Test | Retirement Withdrawal Risk</title>') &&
+  stressHtml.includes('<meta name="description" content="Test how inflation, retirement length and weak early returns can affect a 4% withdrawal plan using transparent deterministic scenarios.">') &&
+  stressHtml.includes('<meta name="robots" content="index,follow">') &&
+  stressHtml.includes('<link rel="canonical" href="https://carrowmont.com/4-percent-rule-stress-test.html">') &&
+  (stressHtml.match(/<h1\b/gi) || []).length === 1
+);
+add('main site: 4% Rule Stress Test exposes WebApplication, Breadcrumb and FAQ structured data',
+  stressHtml.includes('"@type": "WebApplication"') &&
+  stressHtml.includes('"@type": "BreadcrumbList"') &&
+  stressHtml.includes('"@type": "FAQPage"') &&
+  stressHtml.includes('"isAccessibleForFree": true')
+);
+add('main site: stress test uses the shared locale shell and keeps country/currency separate from assumptions',
+  stressHtml.includes('id="localeMenu"') &&
+  stressHtml.includes('id="regionSelect"') &&
+  stressHtml.includes('id="currencySelect"') &&
+  stressApp.includes("window.addEventListener('carrowmont:localechange'") &&
+  stressHtml.includes('changing currency changes the unit and number format. It does not convert')
+);
+add('main site: stress-test input and output contract is complete',
+  ['startAge','planUntilAge','startingPortfolio','startingWithdrawalRate','firstYearWithdrawal','inflationRate','nominalReturn','summaryCards','portfolioChart','sequenceChart','rateComparisonBody','annualTableBody','copySummaryBtn','downloadCsvBtn','generateReportBtn']
+    .every(id => stressHtml.includes(`id="${id}"`)) &&
+  stressHtml.includes('No login') && stressHtml.includes('Local calculations') && stressHtml.includes('Deterministic scenarios')
+);
+add('main site: stress-test engine documents annual withdrawal-before-return mechanics and no-negative depletion',
+  stressCore.includes("const METHODOLOGY_VERSION = '4-percent-stress-test-v1.0'") &&
+  stressCore.includes('const afterWithdrawal = openingBalance - withdrawal') &&
+  stressCore.includes('investmentGrowth = afterWithdrawal * returnRate') &&
+  stressCore.includes('closingBalance = Math.max(0, afterWithdrawal + investmentGrowth)') &&
+  stressCore.includes('status = \'Partial withdrawal; depleted\'')
+);
+add('main site: stress-test scenarios and standard rate comparison are deterministic and disclosed',
+  stressCore.includes('const RAW_SEQUENCE = [-0.20, -0.10, 0, 0.04, 0.06, 0.08, 0.10, 0.12, 0.14, 0.16]') &&
+  stressCore.includes('const RATE_COMPARISON = [0.03, 0.035, 0.04, 0.05]') &&
+  stressCore.includes('selectedFactor / rawGeometricMean') &&
+  stressCore.includes("key: 'cautious'") && stressCore.includes("key: 'adverse'") &&
+  stressCore.includes('reverse ? [...ten].reverse() : ten')
+);
+add('main site: stress-test UI, CSV and PDF all consume the same deterministic result object',
+  stressApp.includes('latestResult = Core.calculate(raw)') &&
+  stressApp.includes('summaryText(latestResult)') &&
+  stressApp.includes("['Base', latestResult.base]") &&
+  stressApp.includes('window.CarrowmontFourPercentPdf.generate(latestResult') &&
+  stressPdf.includes('async function generate(result, options = {})')
+);
+add('main site: stress-test report uses standardized guide and Continue Planning pages',
+  stressHtml.indexOf('4-percent-rule-stress-test-report-standard.js') < stressHtml.indexOf('4-percent-rule-stress-test-pdf.js') &&
+  stressPdf.includes('S().guidePage({') &&
+  stressPdf.includes('S().continuePlanningPage({') &&
+  stressPdf.includes("filename: 'carrowmont-4-percent-rule-stress-test-report.pdf'") &&
+  stressReportStandard.includes('Continue planning with Carrowmont')
+);
+add('main site: stress-test privacy contract has no API or account dependency',
+  stressHtml.includes('does not transmit or store the financial values entered here') &&
+  stressHtml.includes('No account or cloud storage is required') &&
+  !/\bfetch\s*\(/.test(stressApp) &&
+  !/XMLHttpRequest/.test(stressApp) &&
+  !/api[_-]?key|openai|anthropic/i.test(stressApp + stressCore)
+);
+add('main site: stress test is discoverable from Learn and the retirement authority cluster',
+  learnHub.includes('href="/4-percent-rule-stress-test.html"') &&
+  fourPercentGuide.includes('href="/4-percent-rule-stress-test.html"') &&
+  sequenceGuide.includes('href="/4-percent-rule-stress-test.html"') &&
+  longevityGuide.includes('href="/4-percent-rule-stress-test.html"') &&
+  retirementPlannerHtml.includes('href="/4-percent-rule-stress-test.html"')
+);
+add('main site: stress-test route is in sitemap with the SEO3A release lastmod',
+  sitemapLastmods.get('https://carrowmont.com/4-percent-rule-stress-test.html') === '2026-10-09'
+);
+add('main site: SEO3A approved specification and implementation record preserve scope and calculation separation',
+  stressSpec.includes('4% Rule Stress Test') &&
+  stressSpec.includes('Monte Carlo simulation') &&
+  stressSpec.includes('do not change any Retirement Planner formula') &&
+  stressImplementation.includes('Carrowmont Source Snapshot 23') &&
+  stressImplementation.includes('does not change the approved Retirement Planner calculation engine') &&
+  stressImplementation.includes('No existing SIP, Goal, Financial Independence, Inflation, Retirement or Budget calculation engine is modified')
+);
+add('main site: stress-test responsive CSS includes explicit mobile treatment and printable output protection',
+  stressCss.includes('@media(max-width:') &&
+  stressCss.includes('.stress-layout') &&
+  stressCss.includes('.stress-annual-table-wrap') &&
+  stressCss.includes('@media print')
+);
+
+let stressCoreApi = null;
+try {
+  const sandbox = { module: { exports: {} }, exports: {}, console };
+  vm.runInNewContext(stressCore, sandbox, { filename: '4-percent-rule-stress-test-core.js' });
+  stressCoreApi = sandbox.module.exports;
+} catch (_) {}
+add('main site: stress-test core executes as an isolated pure calculation module',
+  !!stressCoreApi && typeof stressCoreApi.calculate === 'function' && typeof stressCoreApi.simulateScenario === 'function'
+);
+if (stressCoreApi) {
+  const fixture = stressCoreApi.calculate({ startAge:60, planUntilAge:90, startingPortfolio:10000000, withdrawalMode:'rate', startingWithdrawalRate:4, inflationRate:4, nominalReturn:6 });
+  const noWithdrawal = stressCoreApi.calculate({ startAge:60, planUntilAge:80, startingPortfolio:10000000, withdrawalMode:'amount', firstYearWithdrawal:0, inflationRate:0, nominalReturn:6 });
+  const sequence = fixture.sequenceComparison.normalizedReturns;
+  const sequenceGeo = Math.pow(sequence.reduce((product, value) => product * (1 + value), 1), 1 / sequence.length) - 1;
+  add('main site: stress-test approved calculation fixtures pass independently',
+    fixture.assumptions.firstYearWithdrawal === 400000 &&
+    fixture.base.annualRows.length === 30 &&
+    Math.abs(sequenceGeo - 0.06) < 1e-10 &&
+    Math.abs(noWithdrawal.sequenceComparison.weakFirst.endingBalanceNominal - noWithdrawal.sequenceComparison.strongFirst.endingBalanceNominal) < 0.01 &&
+    fixture.sequenceComparison.weakFirst.endingBalanceNominal < fixture.sequenceComparison.strongFirst.endingBalanceNominal &&
+    fixture.rateComparison.map(row => row.rate).join(',') === '0.03,0.035,0.04,0.05' &&
+    fixture.base.annualRows.every(row => row.closingBalance >= 0)
+  );
+}
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);

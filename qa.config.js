@@ -91,5 +91,6 @@ export const mainSitePages = [
   { key: 'home', path: '/', text: 'Want to build' },
   { key: 'about', path: '/about.html', text: 'SIP Calculator' },
   { key: 'learn', path: '/learn.html', text: 'PLANNING TOPICS' },
-  { key: 'methodology', path: '/methodology.html', text: 'Methodology' }
+  { key: 'methodology', path: '/methodology.html', text: 'Methodology' },
+  { key: 'four-percent-rule-stress-test', path: '/4-percent-rule-stress-test.html', text: '4% Rule Stress Test' }
 ];
