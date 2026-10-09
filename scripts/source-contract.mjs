@@ -690,8 +690,9 @@ add('main site: all 14 new Learn pages exist and are linked from Learn hub',
 add('main site: all 14 new Learn pages are indexable Article pages with canonical URLs and editorial identity',
   newLearnPages.every(file => {
     const page=read('draw004.github.io/'+file);
+    const modified=((page.match(/"dateModified":"(\d{4}-\d{2}-\d{2})"/)||[])[1]||'');
     return page.includes('name="robots"') && page.includes('index,follow') && page.includes('rel="canonical"') &&
-      page.includes('"@type":"Article"') && page.includes('name="author"') && page.includes('content="Carrowmont"') && page.includes('dateModified":"2026-09-28"');
+      page.includes('"@type":"Article"') && page.includes('name="author"') && page.includes('content="Carrowmont"') && modified >= '2026-09-28';
   })
 );
 add('main site: sitemap contains 71 URLs including all 14 first-wave Learn-expansion pages and the Budget Planner',
@@ -946,6 +947,65 @@ add('main site: BING-SEO1 sitemap freshness keeps the changed hub and planner UR
   (sitemapLastmods.get('https://carrowmont.com/learn.html') || '') >= '2026-10-08' &&
   (sitemapLastmods.get('https://carrowmont.com/goal-planner/') || '') >= '2026-10-08' &&
   (sitemapLastmods.get('https://carrowmont.com/retirement-calculator/planner.html') || '') >= '2026-10-08'
+);
+
+
+// BING-SEO2 internal authority and search-presentation contract - 2026-10-08.
+add('main site: BING-SEO2 Learn titles and descriptions stay concise for search presentation',
+  standardizedLearnPages.length >= 52 &&
+  standardLearnTitles.every(title => title.length >= 25 && title.length <= 60) &&
+  standardLearnDescriptions.every(description => description.length >= 110 && description.length <= 160)
+);
+
+const seo2RootHtmlFiles = fs.existsSync(learnArticleDir)
+  ? fs.readdirSync(learnArticleDir).filter(file => file.endsWith('.html')).sort()
+  : [];
+const seo2InboundSources = new Map(standardizedLearnFiles.map(file => [file, new Set()]));
+for (const sourceFile of seo2RootHtmlFiles) {
+  const sourcePage = read('draw004.github.io/' + sourceFile);
+  for (const targetFile of standardizedLearnFiles) {
+    if (sourceFile === targetFile) continue;
+    if (sourcePage.includes(`href="/${targetFile}"`) || sourcePage.includes(`href='/${targetFile}'`)) {
+      seo2InboundSources.get(targetFile)?.add(sourceFile);
+    }
+  }
+}
+add('main site: BING-SEO2 gives every Learn Article at least three unique internal source pages',
+  standardizedLearnFiles.length >= 52 &&
+  standardizedLearnFiles.every(file => (seo2InboundSources.get(file)?.size || 0) >= 3)
+);
+
+const seo2ClusterPages = [
+  '10000-sip-returns.html',
+  '50-30-20-budget-rule.html',
+  'budgeting-with-irregular-income.html',
+  'cash-flow-vs-income.html',
+  'compound-interest-monthly-contributions.html',
+  'financial-independence-number.html',
+  'gold-as-an-investment.html',
+  'gold-vs-stocks.html',
+  'how-much-money-do-i-need-to-retire.html',
+  'how-much-should-i-invest-each-month.html',
+  'inflation-purchasing-power.html',
+  'real-estate-vs-stocks.html',
+  'savings-goal-planning.html',
+  'sinking-fund-vs-emergency-fund.html',
+  'when-can-i-reach-financial-independence.html'
+];
+add('main site: BING-SEO2 contextual related-guide modules are present across the topic clusters',
+  seo2ClusterPages.every(file => read('draw004.github.io/' + file).includes('class="guide-note seo-related-guides"')) &&
+  read('draw004.github.io/how-much-should-i-invest-each-month.html').includes('href="/planning-life-goals.html"') &&
+  read('draw004.github.io/compound-interest-monthly-contributions.html').includes('href="/sip-during-market-fall.html"') &&
+  read('draw004.github.io/financial-independence-number.html').includes('href="/coast-fire-explained.html"') &&
+  read('draw004.github.io/inflation-purchasing-power.html').includes('href="/future-cost-of-expenses.html"')
+);
+
+const seo2LearnHubDescription = ((learnHub.match(/<meta[^>]*content="([^"]*)"[^>]*name="description"[^>]*>/i) || learnHub.match(/<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/i) || [])[1] || '');
+const seo2MethodologyPage = read('draw004.github.io/methodology.html');
+const seo2MethodologyDescription = ((seo2MethodologyPage.match(/<meta[^>]*content="([^"]*)"[^>]*name="description"[^>]*>/i) || seo2MethodologyPage.match(/<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/i) || [])[1] || '');
+add('main site: BING-SEO2 keeps Learn hub and methodology descriptions within snippet-safe length',
+  seo2LearnHubDescription.length >= 110 && seo2LearnHubDescription.length <= 160 &&
+  seo2MethodologyDescription.length >= 110 && seo2MethodologyDescription.length <= 160
 );
 
 console.log('\nCarrowmont source contract check\n');
