@@ -3,32 +3,43 @@ import path from 'node:path';
 import { expect } from '@playwright/test';
 import { PDFDocument } from 'pdf-lib';
 
-const localQaAnalyticsStubbedPages = new WeakSet();
+const qaAnalyticsIsolatedPages = new WeakSet();
 
-async function stubThirdPartyAnalyticsForLocalQa(page) {
+async function isolateThirdPartyAnalyticsForQa(page) {
+  if (qaAnalyticsIsolatedPages.has(page)) return;
+  qaAnalyticsIsolatedPages.add(page);
+
   const baseUrl = process.env.BASE_URL || '';
   const isLocalQa = /^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?(?:\/|$)/i.test(baseUrl);
-  if (!isLocalQa || localQaAnalyticsStubbedPages.has(page)) return;
 
-  localQaAnalyticsStubbedPages.add(page);
-
-  // Carrowmont QA validates Carrowmont code, not Cloudflare's third-party beacon.
-  // In local staged QA the beacon posts to cloudflareinsights.com and is rejected
-  // because the local origin includes a port. Fulfil the beacon locally so this
-  // expected third-party CORS noise cannot hide genuine Carrowmont errors.
-  await page.route('https://static.cloudflareinsights.com/**', route => route.fulfill({
-    status: 200,
-    contentType: 'application/javascript; charset=utf-8',
-    body: '/* Cloudflare analytics disabled during local Carrowmont QA. */'
-  }));
+  // Automated QA must never be counted as Carrowmont visitor/RUM traffic.
+  // Cloudflare Web Analytics can report either to cloudflareinsights.com
+  // (manual beacon) or to the site's own /cdn-cgi/rum endpoint (automatic
+  // Cloudflare injection). Intercept both ingestion paths for every QA run,
+  // including live production QA, while leaving normal visitors untouched.
   await page.route('https://cloudflareinsights.com/**', route => route.fulfill({
     status: 204,
     body: ''
   }));
+  await page.route('**/cdn-cgi/rum**', route => route.fulfill({
+    status: 204,
+    body: ''
+  }));
+
+  // Local staged QA does not need to execute the third-party beacon at all.
+  // Stubbing the script avoids expected localhost-origin/CORS noise without
+  // changing production code or the behavior seen by real visitors.
+  if (isLocalQa) {
+    await page.route('https://static.cloudflareinsights.com/**', route => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript; charset=utf-8',
+      body: '/* Cloudflare analytics disabled during local Carrowmont QA. */'
+    }));
+  }
 }
 
 export async function gotoClean(page, targetPath) {
-  await stubThirdPartyAnalyticsForLocalQa(page);
+  await isolateThirdPartyAnalyticsForQa(page);
   await page.addInitScript(() => {
     try {
       localStorage.clear();

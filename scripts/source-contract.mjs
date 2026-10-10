@@ -17,6 +17,14 @@ const read = rel => {
   return fs.readFileSync(p, 'utf8');
 };
 
+const qaCommon = read('carrowmont-qa/helpers/common.js');
+add('central QA: Cloudflare RUM ingestion is isolated from automated QA traffic',
+  qaCommon.includes('async function isolateThirdPartyAnalyticsForQa(page)') &&
+  qaCommon.includes("page.route('https://cloudflareinsights.com/**'") &&
+  qaCommon.includes("page.route('**/cdn-cgi/rum**'") &&
+  qaCommon.includes('await isolateThirdPartyAnalyticsForQa(page);')
+);
+
 const tools = [
   ['financial-independence', 'index.html', 'app.js', 'Generate Financial Independence Report'],
   ['goal-planner', 'index.html', 'app.js', 'Generate Goal Report'],

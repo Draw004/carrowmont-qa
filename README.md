@@ -1,4 +1,4 @@
-# Carrowmont Automated QA Framework v1.5
+# Carrowmont Automated QA Framework v1.7
 
 This package gives Carrowmont a repeatable QA process for the six live tools plus the key main-site pages. It is designed for a non-developer workflow: run it locally with one file, or put it in a small GitHub repository and use GitHub Actions.
 
@@ -48,6 +48,8 @@ Chrome and Edge should be installed on the PC. The suite tests both desktop brow
 Create a small repository named something like `carrowmont-qa` and upload this package to its root. The included `.github/workflows/carrowmont-qa.yml` runs every day and can also be started manually from GitHub Actions > Carrowmont Automated QA > Run workflow.
 
 The workflow tests the live site at `https://carrowmont.com`. You do not need to copy the QA files into every calculator repository.
+
+Automated QA isolates Cloudflare Web Analytics RUM ingestion for both live and staged runs, so QA browser traffic is not counted as Carrowmont visitor/performance traffic. The website itself is not changed; normal visitors continue to send Web Analytics data.
 
 ## Run commands
 
@@ -144,3 +146,8 @@ The Budget & Cash Flow Planner suite now validates deterministic Smart Suggestio
 ## v1.6 Smart Suggestions SS2 coverage update
 
 The Budget & Cash Flow Planner suite now validates Smart Suggestions engine 2.0.0. Source-contract fixtures cover materiality plus repeated-observation consistency, no-filler thresholding, deterministic scoring/order, recurring-cost step-ups, reserve-style exclusions, deduplication, protected/essential guardrails and exact scenario-breakdown sums. Playwright verifies Current/Emerging evidence labels, expandable evidence, no-strong-trend states, transparent Low/Balanced/Aggressive category breakdowns, priority linkage, PDF parity, responsive layout and the continued absence of Smart Suggestions fetch/XHR activity.
+
+
+## v1.7 analytics-isolation update
+
+Automated QA now intercepts Cloudflare Web Analytics RUM ingestion during every Playwright navigation, including live `https://carrowmont.com` runs. Both manual-beacon traffic (`cloudflareinsights.com`) and Cloudflare-proxied `/cdn-cgi/rum` submissions are neutralized inside the QA browser context. Local staged QA continues to stub the beacon script itself to avoid irrelevant third-party/CORS noise. This keeps Cloudflare visitor and Core Web Vitals data cleaner without changing production analytics for real visitors.
