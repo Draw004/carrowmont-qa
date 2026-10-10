@@ -1311,6 +1311,134 @@ if (fiSpendCoreApi) {
   );
 }
 
+
+// SEO3C US Debt & Interest Cost Calculator authority asset - 2026-10-10.
+const usDebtHtml = read('draw004.github.io/us-debt-interest-cost-calculator.html');
+const usDebtCss = read('draw004.github.io/us-debt-interest-cost-calculator.css');
+const usDebtCore = read('draw004.github.io/us-debt-interest-cost-calculator-core.js');
+const usDebtApp = read('draw004.github.io/us-debt-interest-cost-calculator.js');
+const usDebtPdf = read('draw004.github.io/us-debt-interest-cost-calculator-pdf-renderer.js');
+const usDebtPdfExport = read('draw004.github.io/us-debt-interest-cost-calculator-pdf-export.js');
+const usDebtReportStandard = read('draw004.github.io/us-debt-interest-cost-calculator-report-standard.js');
+const usDebtReferenceRaw = read('draw004.github.io/data/us-debt-reference.json');
+const usDebtUpdater = read('draw004.github.io/scripts/update-us-debt-reference.mjs');
+const usDebtWorkflow = read('draw004.github.io/.github/workflows/update-us-debt-reference.yml');
+const usDebtSpec = read('draw004.github.io/docs/CARROWMONT_SEO3C_US_DEBT_INTEREST_COST_CALCULATOR_SPEC_FINAL.md');
+const usDebtImplementation = read('draw004.github.io/docs/CARROWMONT_SEO3C_IMPLEMENTATION.md');
+const stocksVsBonds = read('draw004.github.io/stocks-vs-bonds.html');
+const goldInflation = read('draw004.github.io/gold-and-inflation.html');
+const inflationRetirement = read('draw004.github.io/inflation-and-retirement-planning.html');
+
+add('main site: SEO3C product, reference-data, updater and implementation files exist',
+  !!usDebtHtml && !!usDebtCss && !!usDebtCore && !!usDebtApp && !!usDebtPdf && !!usDebtPdfExport && !!usDebtReportStandard &&
+  !!usDebtReferenceRaw && !!usDebtUpdater && !!usDebtWorkflow && !!usDebtSpec && !!usDebtImplementation
+);
+add('main site: SEO3C canonical metadata and one explicit WebApplication contract are present',
+  usDebtHtml.includes('<link rel="canonical" href="https://carrowmont.com/us-debt-interest-cost-calculator.html">') &&
+  usDebtHtml.includes('<title>US Debt Interest Cost Calculator | Carrowmont</title>') &&
+  usDebtHtml.includes('"@type":"WebApplication"') && usDebtHtml.includes('isAccessibleForFree') &&
+  (usDebtHtml.match(/<h1\b/g) || []).length === 1
+);
+add('main site: SEO3C Simple Mode preloads official debt and keeps Advanced Assumptions collapsed by default',
+  usDebtHtml.includes('id="officialReferenceCard"') && usDebtHtml.includes('id="refinancingRate"') && usDebtHtml.includes('id="projectionYears"') &&
+  usDebtHtml.includes('<details class="usdc-advanced" id="advancedAssumptions">') && !usDebtHtml.includes('id="advancedAssumptions" open') &&
+  usDebtHtml.includes('Annual primary deficit before interest') && usDebtHtml.includes('Reset Published Defaults')
+);
+add('main site: SEO3C keeps U.S. federal debt in fixed USD context without FX relabelling',
+  usDebtHtml.includes('United States') && usDebtHtml.includes('<strong>USD</strong>') &&
+  !usDebtHtml.includes('currencySelect') && !usDebtApp.includes('CarrowmontLocale')
+);
+let usDebtReference = null;
+try { usDebtReference = JSON.parse(usDebtReferenceRaw); } catch (_) {}
+add('main site: SEO3C release-time Treasury reference is dated, validated and matches the 2026-10-08 official snapshot',
+  !!usDebtReference && usDebtReference.schemaVersion === 1 && usDebtReference.asOfDate === '2026-10-08' &&
+  usDebtReference.debtHeldByPublic === 32454086117711.32 && usDebtReference.totalPublicDebtOutstanding === 40305316210829.72 &&
+  usDebtReference.totalPublicDebtOutstanding >= usDebtReference.debtHeldByPublic &&
+  /Debt to the Penny/.test(usDebtReference.sourceName || '') && /fiscaldata\.treasury\.gov/.test(usDebtReference.sourceUrl || '')
+);
+add('main site: SEO3C reference provenance is explicit and never marketed as live data',
+  usDebtHtml.includes('U.S. Treasury reference') && usDebtHtml.includes('validated U.S. Treasury reference snapshot') &&
+  !/\blive debt\b|\breal-time debt\b/i.test(usDebtHtml)
+);
+add('main site: SEO3C browser path uses bundled same-origin reference data, not Treasury API or client secrets',
+  usDebtApp.includes("fetch('data/us-debt-reference.json'") &&
+  !/api\.fiscaldata\.treasury\.gov/i.test(usDebtApp + usDebtHtml) &&
+  !/api[_-]?key|openai|anthropic/i.test(usDebtApp + usDebtCore + usDebtHtml)
+);
+add('main site: SEO3C source-of-truth core feeds web, chart, tables and exports',
+  usDebtApp.includes('Core().calculate(raw)') && usDebtApp.includes('renderChart(result)') && usDebtApp.includes('renderTables(result)') &&
+  usDebtApp.includes('buildSummary(result=lastResult)') && usDebtApp.includes('csvText(result=lastResult)') &&
+  usDebtPdf.includes('result.selected') && usDebtPdf.includes('result.sensitivity')
+);
+add('main site: SEO3C chart and responsive presentation follow Carrowmont visual safeguards',
+  usDebtCss.includes('.usdc-chart text{font-family:Inter') && usDebtCss.includes('stroke:none!important') &&
+  usDebtCss.includes('.usdc-table-wrap{overflow:auto;') && usDebtCss.includes('@media(max-width:700px)') && usDebtCss.includes('@media(max-width:420px)') &&
+  usDebtApp.includes('textWidth(') && usDebtApp.includes("class:`callout-bg")
+);
+add('main site: SEO3C comparison and detailed tables preserve the approved deterministic result fields',
+  usDebtHtml.includes('id="scenarioComparisonTable"') && usDebtHtml.includes('id="annualTable"') &&
+  usDebtHtml.includes('Legacy debt remaining') && usDebtHtml.includes('Original debt refinanced') && usDebtHtml.includes('Effective modeled rate') &&
+  usDebtHtml.includes('Show year-by-year debt and interest detail')
+);
+add('main site: SEO3C anonymous actions include Copy Summary, CSV and four-page PDF report',
+  usDebtHtml.includes('Copy Summary') && usDebtHtml.includes('Download CSV') && usDebtHtml.includes('Download US Debt Interest Cost Report') &&
+  usDebtPdf.includes("filename:'carrowmont-us-debt-interest-cost-report.pdf'") &&
+  usDebtPdf.includes("currentTool:'seo3c'") && usDebtPdf.includes('Scenario Snapshot') && usDebtPdf.includes('Rate Sensitivity') && usDebtPdf.includes('Debt Path') &&
+  usDebtReportStandard.includes('Continue planning with Carrowmont')
+);
+add('main site: SEO3C weekly updater is scheduled, dispatchable, protected-PR based and failure safe',
+  usDebtWorkflow.includes('cron: "23 6 * * 1"') && usDebtWorkflow.includes('workflow_dispatch:') &&
+  usDebtWorkflow.includes('CARROWMONT_REPO_TOKEN') && usDebtWorkflow.includes('gh pr create') && usDebtWorkflow.includes('git checkout -b') &&
+  usDebtUpdater.includes('validateTreasuryPayload') && usDebtUpdater.includes('validateStoredReference') &&
+  usDebtUpdater.includes("if (next.asOfDate <= stored.asOfDate)") && usDebtUpdater.includes('ANOMALY_THRESHOLD = 0.05') &&
+  usDebtUpdater.includes("process.exit(1)") && usDebtWorkflow.includes('git add data/us-debt-reference.json')
+);
+add('main site: SEO3C updater validates expected Treasury fields and debt relationships before proposing change',
+  usDebtUpdater.includes("labels.debt_held_public_amt !== 'Debt Held by the Public'") &&
+  usDebtUpdater.includes("labels.tot_pub_debt_out_amt !== 'Total Public Debt Outstanding'") &&
+  usDebtUpdater.includes('totalPublicDebtOutstanding < debtHeldByPublic') &&
+  usDebtUpdater.includes('Treasury response does not contain a data row')
+);
+add('main site: SEO3C is discoverable from the approved macro-relevant cluster',
+  learnHub.includes('href="/us-debt-interest-cost-calculator.html"') && stocksVsBonds.includes('href="/us-debt-interest-cost-calculator.html"') &&
+  goldInflation.includes('href="/us-debt-interest-cost-calculator.html"') && inflationRetirement.includes('href="/us-debt-interest-cost-calculator.html"')
+);
+add('main site: SEO3C canonical route and refreshed contextual pages are in sitemap with release lastmod',
+  sitemapLastmods.get('https://carrowmont.com/us-debt-interest-cost-calculator.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/stocks-vs-bonds.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/inflation-and-retirement-planning.html') === '2026-10-10'
+);
+add('main site: SEO3C specification and implementation record preserve approved no-login, Simple Mode and updater direction',
+  usDebtSpec.includes('Simple Mode') && usDebtSpec.includes('Advanced Assumptions') && usDebtSpec.includes('Weekly automatic Treasury check') &&
+  usDebtImplementation.includes('Source Snapshot generated 10 October 2026 at 05:34:08 UTC') &&
+  usDebtImplementation.includes('No existing SIP, Goal, Inflation, Retirement, Financial Independence, Budget, SEO3A or SEO3B calculation engine is modified')
+);
+let usDebtCoreApi = null;
+try {
+  const sandbox = { module: { exports: {} }, exports: {}, console, Date };
+  vm.runInNewContext(usDebtCore, sandbox, { filename: 'us-debt-interest-cost-calculator-core.js' });
+  usDebtCoreApi = sandbox.module.exports;
+} catch (_) {}
+add('main site: SEO3C core executes as an isolated pure calculation module',
+  !!usDebtCoreApi && typeof usDebtCoreApi.calculate === 'function' && typeof usDebtCoreApi.runDebtInterestScenario === 'function' && typeof usDebtCoreApi.runRateSensitivity === 'function' &&
+  !/document\.|window\.|fetch\(|XMLHttpRequest/.test(usDebtCore)
+);
+if (usDebtCoreApi) {
+  const full = usDebtCoreApi.calculate({ startingDebt:30e12, existingAverageRate:3, refinancingRate:5, primaryDeficit:0, refinancingWindow:1, projectionYears:1 });
+  const five = usDebtCoreApi.calculate({ startingDebt:30e12, existingAverageRate:3, refinancingRate:5, primaryDeficit:1e12, refinancingWindow:5, projectionYears:3 });
+  const parity = usDebtCoreApi.calculate({ startingDebt:30e12, existingAverageRate:3, refinancingRate:3, primaryDeficit:0, refinancingWindow:5, projectionYears:5 });
+  const floor = usDebtCoreApi.calculate({ startingDebt:30e12, existingAverageRate:3, refinancingRate:.5, primaryDeficit:0, refinancingWindow:5, projectionYears:1 });
+  const sum = five.selected.annualRows.reduce((a,r)=>a+r.modeledInterestCost,0);
+  add('main site: SEO3C approved deterministic calculation fixtures pass independently',
+    Math.abs(full.selected.openingAnnualizedInterest - .9e12) < .01 && Math.abs(full.selected.annualRows[0].modeledInterestCost - 1.5e12) < .01 && Math.abs(full.selected.finalDebt - 31.5e12) < .01 &&
+    Math.abs(five.selected.annualRows[0].modeledInterestCost - 1.02e12) < .01 && Math.abs(five.selected.annualRows[1].modeledInterestCost - 1.241e12) < .01 && Math.abs(five.selected.annualRows[2].modeledInterestCost - 1.47305e12) < .01 &&
+    Math.abs(five.selected.cumulativeInterest - sum) < .01 && parity.selected.annualRows[4].legacyStartingDebtRemaining === 0 && parity.selected.repricedShareOfStartingDebt === 1 &&
+    floor.sensitivity.find(row => row.key === 'lower').ratePercent === 0 && full.selected.fullStartingDebtOnePpSensitivity === 300e9
+  );
+}
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);

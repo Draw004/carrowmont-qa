@@ -93,5 +93,6 @@ export const mainSitePages = [
   { key: 'learn', path: '/learn.html', text: 'PLANNING TOPICS' },
   { key: 'methodology', path: '/methodology.html', text: 'Methodology' },
   { key: 'four-percent-rule-stress-test', path: '/4-percent-rule-stress-test.html', text: '4% Rule Stress Test' },
-  { key: 'fi-number-by-spending', path: '/financial-independence-number-by-spending.html', text: 'See how spending changes your financial independence number' }
+  { key: 'fi-number-by-spending', path: '/financial-independence-number-by-spending.html', text: 'See how spending changes your financial independence number' },
+  { key: 'us-debt-interest-cost', path: '/us-debt-interest-cost-calculator.html', text: 'See how debt and refinancing rates can change the U.S. interest burden' }
 ];
