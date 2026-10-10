@@ -1439,6 +1439,176 @@ if (usDebtCoreApi) {
   );
 }
 
+
+// --- SEO3D Gold Macro Stress Explorer ---
+const goldMacroHtml = read('draw004.github.io/gold-macro-stress-explorer.html');
+const goldMacroCss = read('draw004.github.io/gold-macro-stress-explorer.css');
+const goldMacroCore = read('draw004.github.io/gold-macro-stress-explorer-core.js');
+const goldMacroApp = read('draw004.github.io/gold-macro-stress-explorer.js');
+const goldMacroPdf = read('draw004.github.io/gold-macro-stress-explorer-pdf.js');
+const goldMacroReport = read('draw004.github.io/gold-macro-stress-explorer-report-standard.js');
+const goldMacroReferenceRaw = read('draw004.github.io/data/gold-macro-reference.json');
+const goldMacroUpdater = read('draw004.github.io/scripts/update-gold-macro-reference.mjs');
+const goldMacroWorkflow = read('draw004.github.io/.github/workflows/update-gold-macro-reference.yml');
+const goldMacroSpec = read('draw004.github.io/docs/CARROWMONT_SEO3D_GOLD_MACRO_STRESS_EXPLORER_SPEC_FINAL.md');
+const goldMacroImplementation = read('draw004.github.io/docs/CARROWMONT_SEO3D_GOLD_MACRO_STRESS_EXPLORER_IMPLEMENTATION.md');
+const goldAsInvestment = read('draw004.github.io/gold-as-an-investment.html');
+const goldVsStocks = read('draw004.github.io/gold-vs-stocks.html');
+const physicalGoldEtf = read('draw004.github.io/physical-gold-vs-gold-etf.html');
+const goldMacroQa = fs.readFileSync(new URL('../tests/11-gold-macro-stress-explorer.spec.js', import.meta.url), 'utf8');
+
+add('main site: SEO3D product, reference, updater, report and implementation files exist',
+  !!goldMacroHtml && !!goldMacroCss && !!goldMacroCore && !!goldMacroApp && !!goldMacroPdf && !!goldMacroReport &&
+  !!goldMacroReferenceRaw && !!goldMacroUpdater && !!goldMacroWorkflow && !!goldMacroSpec && !!goldMacroImplementation
+);
+add('main site: SEO3D canonical metadata, WebApplication schema and one H1 are present',
+  goldMacroHtml.includes('<link rel="canonical" href="https://carrowmont.com/gold-macro-stress-explorer.html">') &&
+  goldMacroHtml.includes('"@type":"WebApplication"') && goldMacroHtml.includes('isAccessibleForFree') &&
+  (goldMacroHtml.match(/<h1\b/g) || []).length === 1
+);
+add('main site: SEO3D exposes exactly six approved drivers and keeps reference/source detail collapsed by default',
+  ['realYield','dollar','inflation','centralBank','fiscal','stress'].every(key => goldMacroApp.includes(`${key}:`)) &&
+  goldMacroHtml.includes('id="referenceDataDetails"') && !goldMacroHtml.includes('id="referenceDataDetails" open') &&
+  goldMacroHtml.includes('View Reference Data &amp; Sources') && goldMacroHtml.includes('id="scenarioPresets"') && !goldMacroHtml.includes('id="scenarioPresets" open')
+);
+add('main site: SEO3D keeps qualitative educational wording and explicit no-price-forecast disclaimer',
+  goldMacroHtml.includes('This describes a macro environment, not a gold-price forecast or investment recommendation.') &&
+  goldMacroHtml.includes('No price forecast') && goldMacroHtml.includes('It is not a return scale') &&
+  !/\bprice target\b|\bbuy gold now\b|\bsell gold now\b/i.test(goldMacroApp + goldMacroCore)
+);
+let goldMacroReference = null;
+try { goldMacroReference = JSON.parse(goldMacroReferenceRaw); } catch (_) {}
+add('main site: SEO3D bundled reference is versioned, dated and preserves reviewed central-bank/fiscal fields',
+  !!goldMacroReference && goldMacroReference.schemaVersion === 1 && goldMacroReference.methodologyVersion === 'gold-macro-stress-v1.0' &&
+  /^2026-10-\d{2}$/.test(goldMacroReference.snapshotDate || '') &&
+  goldMacroReference.drivers?.centralBankDemand?.manualReviewed === true &&
+  goldMacroReference.drivers?.centralBankDemand?.classificationMethod === 'reviewed-threshold-v1' &&
+  goldMacroReference.drivers?.fiscalStress?.manualReviewed === true
+);
+add('main site: SEO3D browser reads only the bundled same-origin macro snapshot',
+  goldMacroApp.includes("fetch('data/gold-macro-reference.json'") &&
+  !/home\.treasury\.gov|federalreserve\.gov|bls\.gov|matteoiacoviello|financialresearch\.gov|gold\.org/i.test(goldMacroApp) &&
+  !/api[_-]?key|openai|anthropic/i.test(goldMacroApp + goldMacroCore + goldMacroHtml)
+);
+add('main site: SEO3D deterministic weights, normalization and qualitative thresholds match the approved spec',
+  goldMacroCore.includes("realYield:1.5, dollar:1.5, inflation:1, centralBank:1, fiscal:1, stress:1") &&
+  goldMacroCore.includes('const MAX_WEIGHTED_ABSOLUTE = 14') &&
+  goldMacroCore.includes("if(n<=-0.60) return 'Strong macro headwinds'") &&
+  goldMacroCore.includes("if(n< -0.15) return 'Macro headwinds'") &&
+  goldMacroCore.includes("if(n<=0.15) return 'Mixed macro environment'") &&
+  goldMacroCore.includes("if(n<0.60) return 'Supportive macro environment'") &&
+  goldMacroCore.includes("return 'Strongly supportive macro environment'")
+);
+add('main site: SEO3D chart follows Carrowmont typography, grid and no-stroke safeguards',
+  /font-family:Inter/.test(goldMacroCss) && goldMacroCss.includes('font-size:13px') &&
+  /font-weight:(?:700|800|900)/.test(goldMacroCss) && goldMacroCss.includes('#385b78') && goldMacroCss.includes('#dce7ec') &&
+  goldMacroCss.includes('stroke:none!important') && goldMacroHtml.includes('Accessible force map values')
+);
+add('main site: SEO3D actions share the same scenario result and include Copy, CSV and four-page PDF report',
+  goldMacroHtml.includes('Copy Summary') && goldMacroHtml.includes('Download CSV') && goldMacroHtml.includes('Generate Gold Macro Report') &&
+  goldMacroApp.includes('buildSummary(bundle=lastResult)') && goldMacroApp.includes('csvText(bundle=lastResult)') &&
+  goldMacroApp.includes('CarrowmontGoldMacroPdf.generate(lastResult') &&
+  goldMacroPdf.includes("filename:'carrowmont-gold-macro-stress-report.pdf'") &&
+  goldMacroPdf.includes('Gold Macro Snapshot') && goldMacroPdf.includes('Competing Forces') &&
+  goldMacroPdf.includes('Reference Data, Methodology & Sources') && goldMacroReport.includes('Continue Planning')
+);
+add('main site: SEO3D responsive safeguards cover 700px and 420px breakpoints and table overflow',
+  goldMacroCss.includes('@media(max-width:700px)') && goldMacroCss.includes('@media(max-width:420px)') &&
+  /\.gmse-table-wrap\{[^}]*overflow:auto/.test(goldMacroCss) && /\.gmse-chart-wrap\{[^}]*overflow/.test(goldMacroCss)
+);
+add('main site: SEO3D weekly updater is all-or-nothing, history-validated, anomaly guarded and preserves reviewed fields',
+  goldMacroUpdater.includes('Promise.all([fetchTreasury(),fetchDollar(),fetchCpi(),fetchGpr(),fetchOfr()])') &&
+  goldMacroUpdater.includes('insufficient five-year history') && goldMacroUpdater.includes('insufficient monthly history') &&
+  goldMacroUpdater.includes('source date moved backwards') && goldMacroUpdater.includes('Anomaly guard:') &&
+  goldMacroUpdater.includes('structuredClone(oldRef)') && goldMacroUpdater.includes('preservedReviewed') &&
+  !/drivers\.centralBankDemand\s*=|drivers\.fiscalStress\s*=/.test(goldMacroUpdater)
+);
+add('main site: SEO3D updater uses approved sources and only automated fields are refreshed',
+  goldMacroUpdater.includes('daily_treasury_real_yield_curve') && goldMacroUpdater.includes('DTWEXBGS') &&
+  goldMacroUpdater.includes('CUUR0000SA0') && goldMacroUpdater.includes('data_gpr_daily_recent.xls') &&
+  goldMacroUpdater.includes('ofr-fsi.csv') && goldMacroUpdater.includes('data/files/fsi.csv') &&
+  goldMacroUpdater.includes('Carrowmont-Gold-Macro-Reference/1.0') && goldMacroUpdater.includes('normalizeSourceDate') &&
+  goldMacroImplementation.includes('Federal Reserve H.10 Broad Dollar series as distributed through the FRED CSV endpoint')
+);
+add('main site: SEO3D update workflow is weekly, dispatchable, duplicate-aware and protected-data-PR based',
+  goldMacroWorkflow.includes('cron: "25 14 * * 1"') && goldMacroWorkflow.includes('workflow_dispatch:') &&
+  goldMacroWorkflow.includes('CARROWMONT_REPO_TOKEN') && goldMacroWorkflow.includes('automation/gold-macro-reference-') &&
+  goldMacroWorkflow.includes('git checkout -b "$branch"') && goldMacroWorkflow.includes('git add data/gold-macro-reference.json') &&
+  goldMacroWorkflow.includes('test "$(git diff --cached --name-only)" = "data/gold-macro-reference.json"') &&
+  goldMacroWorkflow.includes('gh pr create') && goldMacroWorkflow.includes('--base main') &&
+  goldMacroWorkflow.includes('permissions:\n  contents: read') && !goldMacroWorkflow.includes('contents: write')
+);
+add('main site: SEO3D updater workflow never stores permanent workflow-write privilege',
+  goldMacroImplementation.includes('temporary **Workflows: Read and write** permission') &&
+  goldMacroImplementation.includes('Revoke Workflows permission again **before merging**') &&
+  goldMacroWorkflow.includes('persist-credentials: false')
+);
+add('main site: SEO3D is discoverable from Learn, gold cluster and SEO3C',
+  learnHub.includes('href="/gold-macro-stress-explorer.html"') &&
+  goldAsInvestment.includes('href="/gold-macro-stress-explorer.html"') && goldInflation.includes('href="/gold-macro-stress-explorer.html"') &&
+  goldVsStocks.includes('href="/gold-macro-stress-explorer.html"') && physicalGoldEtf.includes('href="/gold-macro-stress-explorer.html"') &&
+  usDebtHtml.includes('href="/gold-macro-stress-explorer.html"')
+);
+add('main site: SEO3D canonical route and refreshed gold cluster are in sitemap with release lastmod',
+  sitemapLastmods.get('https://carrowmont.com/gold-macro-stress-explorer.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-as-an-investment.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-vs-stocks.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/physical-gold-vs-gold-etf.html') === '2026-10-10'
+);
+add('main site: SEO3D modified gold articles keep structured-data and article modified dates aligned',
+  [goldAsInvestment,goldInflation,goldVsStocks,physicalGoldEtf].every(html => html.includes('"dateModified":"2026-10-10"') && html.includes('content="2026-10-10" property="article:modified_time"'))
+);
+add('main site: SEO3D final spec and implementation lock Snapshot 34, deterministic model and red-prevention gate',
+  goldMacroSpec.includes('Gold Under Macro Stress Explorer') && goldMacroSpec.toLowerCase().includes('release-candidate red-prevention gate') &&
+  goldMacroImplementation.includes('Source Snapshot generated **10 October 2026 at 08:37:15 UTC**') &&
+  goldMacroImplementation.includes('a0e41cf3a753c1da6b0bff886cdf84639cada8a3') &&
+  goldMacroImplementation.includes('Expected generated release PR count: **2**')
+);
+add('central QA: SEO3D covers live-style RUM privacy, mobile widths, PDF and updater failure fixtures',
+  goldMacroQa.includes('isIsolatedCloudflareRum') && goldMacroQa.includes('360px and 390px') &&
+  goldMacroQa.includes('PDF is exactly four pages') && goldMacroQa.includes('malformed input') &&
+  goldMacroQa.includes('partial failure') && goldMacroQa.includes('anomaly rejection')
+);
+let goldMacroCoreApi = null;
+try {
+  const sandbox = { module: { exports: {} }, exports: {}, console, Date, globalThis: {} };
+  sandbox.globalThis = sandbox;
+  vm.runInNewContext(goldMacroCore, sandbox, { filename: 'gold-macro-stress-explorer-core.js' });
+  goldMacroCoreApi = sandbox.module.exports;
+} catch (_) {}
+add('main site: SEO3D core executes as an isolated pure deterministic module',
+  !!goldMacroCoreApi && typeof goldMacroCoreApi.calculateEnvironment === 'function' && typeof goldMacroCoreApi.buildScenario === 'function' &&
+  typeof goldMacroCoreApi.referenceScores === 'function' && !/document\.|window\.|fetch\(|XMLHttpRequest/.test(goldMacroCore)
+);
+if (goldMacroCoreApi) {
+  const make = v => Object.fromEntries(goldMacroCoreApi.DRIVER_ORDER.map(k => [k, v]));
+  const A = goldMacroCoreApi.calculateEnvironment(make(0));
+  const B = goldMacroCoreApi.calculateEnvironment(make(1));
+  const C = goldMacroCoreApi.calculateEnvironment(make(-1));
+  const D = goldMacroCoreApi.calculateEnvironment(make(2));
+  const E = goldMacroCoreApi.calculateEnvironment(make(-2));
+  const F = goldMacroCoreApi.calculateEnvironment({realYield:-2,dollar:-2,inflation:1,centralBank:1,fiscal:1,stress:1});
+  const G = goldMacroCoreApi.calculateEnvironment({realYield:-1,dollar:0,inflation:2,centralBank:2,fiscal:2,stress:2});
+  const H = goldMacroCoreApi.classifyRealYield({fiveYearPercentile:10,trend13WeekPp:-.6});
+  const I = goldMacroCoreApi.classifyDollar({fiveYearPercentile:75,trend13WeekPct:3.5});
+  let refScores = null;
+  try { refScores = goldMacroCoreApi.referenceScores(goldMacroReference); } catch (_) {}
+  add('main site: SEO3D approved deterministic fixtures A-K and release reference classifications pass independently',
+    A.weightedSum === 0 && A.label === 'Mixed macro environment' && !A.hasConflict &&
+    B.weightedSum === 7 && Math.abs(B.normalized-.5)<1e-12 && B.label === 'Supportive macro environment' &&
+    C.weightedSum === -7 && Math.abs(C.normalized+.5)<1e-12 && C.label === 'Macro headwinds' &&
+    D.weightedSum === 14 && D.normalized === 1 && D.label === 'Strongly supportive macro environment' &&
+    E.weightedSum === -14 && E.normalized === -1 && E.label === 'Strong macro headwinds' &&
+    F.weightedSum === -2 && Math.abs(F.normalized-(-2/14))<1e-12 && F.label === 'Mixed macro environment' && F.hasConflict &&
+    G.weightedSum === 6.5 && Math.abs(G.normalized-(6.5/14))<1e-12 && G.label === 'Supportive macro environment' && G.hasConflict &&
+    /Real yields/.test(goldMacroCoreApi.buildInterpretation(G)) && /headwind/i.test(goldMacroCoreApi.buildInterpretation(G)) &&
+    H.baseScore === 2 && H.trendModifier === 1 && H.score === 2 && I.baseScore === -1 && I.trendModifier === -1 && I.score === -2 &&
+    goldMacroCoreApi.combineStress(2,0) === 2 && goldMacroCoreApi.combineStress(-1,-1) === -1 &&
+    !!refScores && Object.entries({realYield:-2,dollar:-2,inflation:-2,centralBank:1,fiscal:2,stress:2}).every(([k,v]) => refScores[k] === v)
+  );
+}
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);
