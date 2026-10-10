@@ -878,7 +878,7 @@ add('main site: shared Learn article CSS/JS standard exists',
 add('main site: all Learn Article pages inherit the reusable article standard',
   standardizedLearnPages.length >= 52 && standardizedLearnPages.every(({page}) =>
     page.includes('data-cm-learn-article="1"') &&
-    page.includes('learn-article.css?v=20260928-standard2') &&
+    page.includes('learn-article.css?v=20261010-global1') &&
     page.includes('learn-article.js?v=20260928-standard2') &&
     page.includes('class="article-meta"') &&
     page.includes('class="guide-action-first"') &&
@@ -1368,10 +1368,10 @@ add('main site: FI Number by Spending is discoverable across the approved FI aut
   stressHtml.includes('href="/financial-independence-number-by-spending.html"') &&
   fiHtml.includes('href="/financial-independence-number-by-spending.html"')
 );
-add('main site: FI Number by Spending route and refreshed FI guides are in sitemap with SEO3B lastmod',
+add('main site: FI Number by Spending route and refreshed FI guides remain in sitemap with current content lastmods',
   sitemapLastmods.get('https://carrowmont.com/financial-independence-number-by-spending.html') === '2026-10-09' &&
-  sitemapLastmods.get('https://carrowmont.com/financial-independence-number.html') === '2026-10-09' &&
-  sitemapLastmods.get('https://carrowmont.com/when-can-i-reach-financial-independence.html') === '2026-10-09' &&
+  sitemapLastmods.get('https://carrowmont.com/financial-independence-number.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/when-can-i-reach-financial-independence.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/financial-independence/') === '2026-10-09'
 );
 add('financial-independence: SEO3B handoff is explicit, validated and keeps the approved FI core separate',
@@ -1716,6 +1716,111 @@ if (goldMacroCoreApi) {
     !!refScores && Object.entries({realYield:-2,dollar:-2,inflation:-2,centralBank:1,fiscal:2,stress:2}).every(([k,v]) => refScores[k] === v)
   );
 }
+
+
+// LEARN-LOCALE1 global Learn-content localization contract - 2026-10-10.
+const learnLocaleJs = read('draw004.github.io/learn-localization.js');
+const learnLocaleMain = read('draw004.github.io/locale.js');
+const learnLocaleQa = fs.readFileSync(new URL('../tests/13-learn-localization.spec.js', import.meta.url), 'utf8');
+const learnLocaleSpec = read('draw004.github.io/docs/CARROWMONT_LEARN_LOCALE1_GLOBAL_LEARN_CONTENT_LOCALIZATION_SPEC_FINAL_REV1.md');
+const learnLocaleImplementation = read('draw004.github.io/docs/CARROWMONT_LEARN_LOCALE1_IMPLEMENTATION.md');
+const learnLocaleSitemap = read('draw004.github.io/sitemap.xml');
+const learnRoot = path.join(root, 'draw004.github.io');
+const learnLocalePages = fs.existsSync(learnRoot) ? fs.readdirSync(learnRoot).filter(file => file.endsWith('.html') && read('draw004.github.io/'+file).includes('learn-localization.js')).sort() : [];
+const initialLearnLocaleAffected = [
+  '10000-sip-returns.html','4-percent-rule-retirement.html','budgeting-by-pay-frequency.html','coast-fire-explained.html',
+  'compound-interest-monthly-contributions.html','compounding-and-time.html','emergency-fund-how-much.html','financial-independence-number.html',
+  'future-cost-of-expenses.html','how-long-will-retirement-savings-last.html','how-much-money-do-i-need-to-retire.html',
+  'how-much-should-i-invest-each-month.html','how-much-should-i-save-each-month.html','inflation-and-retirement-planning.html',
+  'inflation-purchasing-power-savings.html','inflation-value-of-money-over-time.html','investment-time-to-target.html','learn.html',
+  'longevity-risk-retirement.html','lump-sum-vs-monthly-investing.html','planning-life-goals.html','real-estate-vs-stocks.html',
+  'rent-vs-buy-home.html','retirement-monthly-income-needed.html','savings-goal-planning.html','sequence-of-returns-risk.html',
+  'sip-during-market-fall.html','sip-for-1-crore.html','starting-investing-earlier.html','step-up-sip-vs-regular-sip.html',
+  'todays-money-vs-future-money.html','when-can-i-reach-financial-independence.html','zero-based-budgeting.html'
+];
+function learnMainVisibleText(html) {
+  const main = (html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i) || [,''])[1];
+  return main
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ')
+    .replace(/<[^>]+>/g,' ')
+    .replace(/&nbsp;/gi,' ')
+    .replace(/&amp;/gi,'&')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+const localeCurrencyBlock = (learnLocaleMain.match(/const currencies\s*=\s*\{([\s\S]*?)\n\s*\};/) || [,''])[1];
+const learnExampleBlock = (learnLocaleJs.match(/var currencyExamples\s*=\s*\{([\s\S]*?)\n\s*\};/) || [,''])[1];
+const localeCurrencyCodes = [...localeCurrencyBlock.matchAll(/\b([A-Z]{3}):\s*\{/g)].map(m => m[1]);
+const learnExampleCodes = [...learnExampleBlock.matchAll(/\b([A-Z]{3}):\s*\{/g)].map(m => m[1]);
+const learnMainTexts = Object.fromEntries(learnLocalePages.map(file => [file, learnMainVisibleText(read('draw004.github.io/'+file))]));
+const regionalLeakPattern = /₹|\brupees?\b|\blakhs?\b|\bcrores?\b|\bSIP(?:s)?\b/i;
+add('main site: LEARN-LOCALE1 audits exactly all 53 Learn/hub pages through the shared localization layer',
+  learnLocalePages.length === 53 && learnLocalePages.includes('learn.html') && learnLocalePages.includes('financial-independence-number.html')
+);
+add('main site: LEARN-LOCALE1 raw Learn main content is globally neutral with no hard-coded India monetary/SIP leakage',
+  learnLocalePages.every(file => !regionalLeakPattern.test(learnMainTexts[file]))
+);
+add('main site: LEARN-LOCALE1 all 33 initially affected pages remain under the permanent repository scanner',
+  initialLearnLocaleAffected.length === 33 && initialLearnLocaleAffected.every(file => learnLocalePages.includes(file) && !regionalLeakPattern.test(learnMainTexts[file]))
+);
+add('main site: LEARN-LOCALE1 defines an explicit example profile for all 34 supported currencies',
+  localeCurrencyCodes.length === 34 && new Set(localeCurrencyCodes).size === 34 &&
+  learnExampleCodes.length === 34 && new Set(learnExampleCodes).size === 34 &&
+  localeCurrencyCodes.every(code => learnExampleCodes.includes(code)) &&
+  ['BDT','CLP','DKK','NOK','OMR','PLN','QAR','SEK'].every(code => learnExampleCodes.includes(code))
+);
+add('main site: LEARN-LOCALE1 shared declarative bindings handle money, country terminology and local-only updates',
+  learnLocaleJs.includes("document.querySelectorAll('[data-cm-money-inr]')") &&
+  learnLocaleJs.includes("document.querySelectorAll('[data-cm-term]')") &&
+  learnLocaleJs.includes("basis==='monthly'") && learnLocaleJs.includes("basis==='unit'") &&
+  learnLocaleJs.includes("'sip-calculator':'SIP Calculator'") &&
+  learnLocaleJs.includes("'sip-calculator':'Recurring Investment Calculator'") &&
+  learnLocaleJs.includes("window.CarrowmontLearnLocalization=Object.freeze")
+);
+const allLearnBindingCount = learnLocalePages.reduce((sum,file) => sum + (read('draw004.github.io/'+file).match(/data-cm-money-inr=/g)||[]).length, 0);
+add('main site: LEARN-LOCALE1 migrated hard-coded Learn amounts to reusable declarative bindings with neutral no-JS fallbacks',
+  allLearnBindingCount >= 200 &&
+  initialLearnLocaleAffected.every(file => !read('draw004.github.io/'+file).includes('₹'))
+);
+const fiGuideLocale = read('draw004.github.io/financial-independence-number.html');
+add('main site: LEARN-LOCALE1 Financial Independence rich table preserves deterministic spending/withdrawal-rate relationships',
+  fiGuideLocale.includes('data-cm-money-inr="600000"') &&
+  fiGuideLocale.includes('data-cm-money-inr="15000000"') &&
+  fiGuideLocale.includes('data-cm-money-inr="17100000"') &&
+  fiGuideLocale.includes('data-cm-money-inr="20000000"') &&
+  Math.abs(600000/.04 - 15000000) < 1e-9 &&
+  Math.abs(600000/.035 - (600000/.035)) < 1e-9 &&
+  Math.abs(600000/.03 - 20000000) < 1e-9
+);
+add('main site: LEARN-LOCALE1 required previously-unidentified pages now have stable localization page identifiers',
+  read('draw004.github.io/compounding-and-time.html').includes('data-cm-page="compounding-time-guide"') &&
+  read('draw004.github.io/planning-life-goals.html').includes('data-cm-page="planning-life-goals-guide"') &&
+  read('draw004.github.io/todays-money-vs-future-money.html').includes('data-cm-page="today-vs-future-money-guide"')
+);
+add('main site: LEARN-LOCALE1 updates all content-changed Learn sitemap entries without creating duplicate country URLs',
+  initialLearnLocaleAffected.every(file => sitemapLastmods.get('https://carrowmont.com/' + file) === '2026-10-10') &&
+  !/\/in\/|\/us\/|\?country=/.test(learnLocaleSitemap)
+);
+add('main site: LEARN-LOCALE1 cache-busts the shared localization/CSS assets and keeps long related-guide links mobile-safe',
+  learnLocalePages.every(file => read('draw004.github.io/'+file).includes('learn-localization.js?v=20261010-global1')) &&
+  standardizedLearnPages.every(({page}) => page.includes('learn-article.css?v=20261010-global1')) &&
+  learnArticleCss.includes('.seo-related-guides .text-link') && learnArticleCss.includes('white-space:normal')
+);
+add('central QA: LEARN-LOCALE1 covers all-currency profiles, FI table, SIP terminology, homepage non-regression and mobile overflow',
+  learnLocaleQa.includes('all supported currencies have explicit finite Learn example profiles') &&
+  learnLocaleQa.includes('Financial Independence guide rich table follows country and selected currency') &&
+  learnLocaleQa.includes('legacy SIP guides keep India terminology') &&
+  learnLocaleQa.includes('does not change TOOLS-HUB homepage country ordering') &&
+  learnLocaleQa.includes('390px and 360px')
+);
+add('main site: LEARN-LOCALE1 implementation record locks Snapshot 37, controlling standards and two-PR no-workflow scope',
+  learnLocaleSpec.includes('CARROWMONT_SHARED_UI_STANDARD.md') && learnLocaleSpec.includes('CARROWMONT_ARCHITECTURE.md') &&
+  learnLocaleImplementation.includes('Snapshot 37') && learnLocaleImplementation.includes('94c4f37756eab94b01ca1cd0455700f34f463c66') &&
+  learnLocaleImplementation.includes('05a41d03d2aa3215284d5d8955b5ac77767a80c4') &&
+  learnLocaleImplementation.includes('Expected generated release PR count: **2**') &&
+  learnLocaleImplementation.includes('Workflows: Read and write is **not required**')
+);
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
