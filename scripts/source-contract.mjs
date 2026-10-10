@@ -689,7 +689,7 @@ if (mainHome || mainSiteJs) {
     '/budget-cash-flow-planner/','/sip-calculator/','/retirement-calculator/','/inflation-calculator/',
     '/goal-planner/','/financial-independence/','/4-percent-rule-stress-test.html',
     '/financial-independence-number-by-spending.html','/us-debt-interest-cost-calculator.html',
-    '/gold-macro-stress-explorer.html'
+    '/gold-macro-stress-explorer.html','/silver-supply-demand-macro-stress-explorer.html'
   ];
   const supportedCountryCodes = [
     'IN','US','CA','GB','AU','AT','BD','BE','NZ','CL','DK','CN','JP','KR','SG','AE','SA','OM','QA',
@@ -700,10 +700,10 @@ if (mainHome || mainSiteJs) {
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
     toolsDirectory.includes('"@type":"CollectionPage"') && toolsDirectory.includes('"@type":"ItemList"') &&
-    toolsDirectory.includes('"numberOfItems":10') &&
-    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 10
+    toolsDirectory.includes('"numberOfItems":11') &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 11
   );
-  add('main site: TOOLS-HUB1 directory groups six core tools, two stress tests and two macro explorers',
+  add('main site: TOOLS-HUB1 directory groups six core tools, two stress tests and three macro explorers',
     toolsDirectory.includes('id="core-planning-tools"') &&
     toolsDirectory.includes('id="planning-stress-tests"') &&
     toolsDirectory.includes('id="macro-market-explorers"') &&
@@ -1718,6 +1718,100 @@ if (goldMacroCoreApi) {
 }
 
 
+
+// --- SEO3D Silver Supply, Demand & Macro Stress Explorer ---
+const silverHtml = read('draw004.github.io/silver-supply-demand-macro-stress-explorer.html');
+const silverCss = read('draw004.github.io/silver-supply-demand-macro-stress-explorer.css');
+const silverCore = read('draw004.github.io/silver-supply-demand-macro-stress-explorer-core.js');
+const silverApp = read('draw004.github.io/silver-supply-demand-macro-stress-explorer.js');
+const silverPdf = read('draw004.github.io/silver-supply-demand-macro-stress-explorer-pdf-renderer.js');
+const silverReport = read('draw004.github.io/silver-supply-demand-macro-stress-explorer-report-standard.js');
+const silverReferenceRaw = read('draw004.github.io/data/silver-market-reference.json');
+const silverValidator = read('draw004.github.io/scripts/validate-silver-market-reference.mjs');
+const silverArticle = read('draw004.github.io/silver-vs-gold.html');
+const silverSpec = read('draw004.github.io/docs/CARROWMONT_SEO3D_SILVER_SUPPLY_DEMAND_MACRO_STRESS_EXPLORER_SPEC_FINAL.md');
+const silverImplementation = read('draw004.github.io/docs/CARROWMONT_SEO3D_SILVER_SUPPLY_DEMAND_MACRO_STRESS_EXPLORER_IMPLEMENTATION.md');
+const silverQa = fs.readFileSync(new URL('../tests/14-silver-supply-demand-macro-stress.spec.js', import.meta.url), 'utf8');
+let silverReference=null;try{silverReference=JSON.parse(silverReferenceRaw);}catch(_){}
+add('main site: Silver Explorer product, physical reference, validator, discovery article, spec and implementation files exist',
+  !!silverHtml&&!!silverCss&&!!silverCore&&!!silverApp&&!!silverPdf&&!!silverReport&&!!silverReferenceRaw&&!!silverValidator&&!!silverArticle&&!!silverSpec&&!!silverImplementation
+);
+add('main site: Silver Explorer canonical metadata, one H1 and indexability contract are present',
+  silverHtml.includes('<link rel="canonical" href="https://carrowmont.com/silver-supply-demand-macro-stress-explorer.html">') &&
+  silverHtml.includes('<meta name="robots" content="index,follow">') && silverHtml.includes('"@type":"WebApplication"') &&
+  (silverHtml.match(/<h1\b/g)||[]).length===1
+);
+add('main site: Silver completed-year physical reference preserves 2025 World Silver Survey provenance and USGS cross-check',
+  !!silverReference && silverReference.schemaVersion===1 && silverReference.methodologyVersion==='silver-supply-demand-macro-v1.0' &&
+  silverReference.referenceYear===2025 && silverReference.supply?.mineProductionMoz===846.6 && silverReference.supply?.recyclingMoz===197.6 &&
+  silverReference.demand?.industrialMoz===657.4 && silverReference.demand?.physicalInvestmentMoz===217.7 && silverReference.publishedBalanceMoz===-40.3 &&
+  /World Silver Survey 2026/.test(silverReference.source?.title||'') && /U\.S\. Geological Survey|USGS/.test(silverReference.secondaryValidation?.publisher||'')
+);
+add('main site: Silver browser path uses only bundled same-origin Silver and shared Gold macro references',
+  silverApp.includes("fetch('data/silver-market-reference.json'") && silverApp.includes("fetch('data/gold-macro-reference.json'") &&
+  !/silverinstitute\.org|usgs\.gov|home\.treasury\.gov|federalreserve\.gov/i.test(silverApp) && !/api[_-]?key|openai|anthropic/i.test(silverApp+silverCore)
+);
+add('main site: Silver physical balance thresholds and disclosed simple sensitivities match the approved deterministic specification',
+  silverCore.includes("if(r<=-0.05)") && silverCore.includes("if(r<=-0.02)") && silverCore.includes("if(r<0.02)") && silverCore.includes("if(r<0.05)") &&
+  silverCore.includes("industrial:{weak:-5,reference:0,strong:5}") && silverCore.includes("physicalInvestment:{weak:-10,reference:0,strong:10}") &&
+  silverCore.includes("mineProduction:{weak:-2,reference:0,strong:2}") && silverCore.includes("recycling:{weak:-10,reference:0,strong:10}")
+);
+add('main site: Silver explicitly separates physical and macro outputs and rejects price-prediction framing',
+  /Physical market/i.test(silverHtml) && /Macro backdrop/i.test(silverHtml) && silverHtml.includes('Silver is not simply “cheaper gold”') &&
+  silverHtml.includes('does not guarantee a price increase') && silverHtml.includes('No price forecast') &&
+  !/silver (?:will|must) (?:rise|fall)|buy silver now|sell silver now/i.test(silverApp+silverCore)
+);
+add('main site: Silver Advanced Assumptions begin collapsed and expose Moz/metric-tonne display without local-currency conversion',
+  silverHtml.includes('id="advancedAssumptions"') && !silverHtml.includes('id="advancedAssumptions" open') &&
+  silverHtml.includes('data-unit="moz"') && silverHtml.includes('data-unit="tonnes"') && silverCore.includes('MOZ_TO_TONNES=31.1034768')
+);
+add('main site: Silver actions share one deterministic scenario across Copy Summary, CSV and four-page report layer',
+  silverHtml.includes('Copy Summary') && silverHtml.includes('Download CSV') && silverHtml.includes('Generate Silver Report') &&
+  silverApp.includes('window.__carrowmontSilverLastResult') && silverApp.includes('function copySummary()') && silverApp.includes('function downloadCsv()') &&
+  silverPdf.includes("filename:'carrowmont-silver-supply-demand-macro-stress-report.pdf'") && silverReport.includes('continuePlanningPage')
+);
+add('main site: Silver-vs-Gold discovery article is canonical, substantive, globally neutral and links twice to the Explorer',
+  /<link[^>]*href="https:\/\/carrowmont\.com\/silver-vs-gold\.html"[^>]*rel="canonical"|<link[^>]*rel="canonical"[^>]*href="https:\/\/carrowmont\.com\/silver-vs-gold\.html"/i.test(silverArticle) && (silverArticle.match(/<h1\b/g)||[]).length===1 &&
+  (silverArticle.match(/href="\/silver-supply-demand-macro-stress-explorer\.html"/g)||[]).length>=2 &&
+  /industrial demand/i.test(silverArticle) && /40\.3 million ounces/.test(silverArticle) && !/₹|\blakhs?\b|\bcrores?\b/i.test(learnMainVisibleText(silverArticle))
+);
+add('main site: Silver discovery funnel is connected through Learn, Gold context, Tools directory and sitemap',
+  read('draw004.github.io/learn.html').includes('href="/silver-vs-gold.html"') &&
+  ['gold-as-an-investment.html','gold-and-inflation.html','gold-vs-stocks.html','physical-gold-vs-gold-etf.html','gold-macro-stress-explorer.html'].every(f=>read('draw004.github.io/'+f).includes('href="/silver-vs-gold.html"')) &&
+  read('draw004.github.io/tools.html').includes('href="/silver-supply-demand-macro-stress-explorer.html"') &&
+  sitemapLastmods.get('https://carrowmont.com/silver-vs-gold.html')==='2026-10-10' && sitemapLastmods.get('https://carrowmont.com/silver-supply-demand-macro-stress-explorer.html')==='2026-10-10'
+);
+add('main site: Silver annual physical-reference validator is offline, deterministic and protects source reconciliation',
+  silverValidator.includes('publishedBalanceMoz') && silverValidator.includes('publishedTotalDemandMoz') && silverValidator.includes('history') &&
+  silverValidator.includes('secondaryValidation') && !/fetch\(|https?:\/\//.test(silverValidator)
+);
+let silverCoreApi=null;try{const sandbox={module:{exports:{}},exports:{},console};vm.runInNewContext(silverCore,sandbox,{filename:'silver-supply-demand-macro-stress-explorer-core.js'});silverCoreApi=sandbox.module.exports;}catch(_){}
+add('main site: Silver core executes as an isolated pure deterministic module',
+  !!silverCoreApi && typeof silverCoreApi.buildScenario==='function' && typeof silverCoreApi.classifyBalanceRatio==='function' && typeof silverCoreApi.toTonnes==='function' &&
+  !/document\.|window\.|fetch\(|XMLHttpRequest/.test(silverCore)
+);
+if(silverCoreApi&&silverReference&&goldMacroReference){
+  const ref=silverCoreApi.buildScenario(silverReference,goldMacroReference,{});
+  const industrial=silverCoreApi.buildScenario(silverReference,goldMacroReference,{adjustments:{industrial:5}});
+  const recycling=silverCoreApi.buildScenario(silverReference,goldMacroReference,{adjustments:{recycling:10}});
+  add('main site: Silver approved deterministic reference and scenario fixtures pass independently',
+    Math.abs(ref.totals.totalSupply-1090.4)<1e-9 && Math.abs(ref.totals.totalDemand-1130.7)<1e-9 && Math.abs(ref.totals.balance+40.3)<1e-9 && ref.balanceClass.label==='Modeled deficit' &&
+    industrial.balanceClass.label==='Large modeled deficit' && recycling.balanceClass.label==='Near balance' &&
+    silverCoreApi.classifyBalanceRatio(-.06).label==='Large modeled deficit' && silverCoreApi.classifyBalanceRatio(.06).label==='Large modeled surplus' &&
+    Math.abs(silverCoreApi.toMoz(silverCoreApi.toTonnes(123.456))-123.456)<1e-9
+  );
+}
+add('central QA: Silver suite covers deterministic physical fixtures, hidden advanced controls, discovery funnel, exports, PDF, privacy and mobile',
+  silverQa.includes('completed-year reference and independent deterministic physical fixtures reconcile') && silverQa.includes('Advanced Assumptions open through the real user flow') &&
+  silverQa.includes('discovery article answers silver-vs-gold intent') && silverQa.includes('PDF is exactly four pages') && silverQa.includes('same-origin bundled Silver/Gold references') &&
+  silverQa.includes('360px and 390px')
+);
+add('main site: Silver implementation record locks Snapshot 39, two-PR scope and no workflow permission requirement',
+  silverImplementation.includes('Snapshot 39') && silverImplementation.includes('932669af99842a2ca31b30f76ffffc9d3edec509') &&
+  silverImplementation.includes('4727a788bdbe01b64c61f9abe55a06baac4b53de') && silverImplementation.includes('Expected generated release PR count: **2**') &&
+  silverImplementation.includes('Workflows: Read and write is not required')
+);
+
 // LEARN-LOCALE1 global Learn-content localization contract - 2026-10-10.
 const learnLocaleJs = read('draw004.github.io/learn-localization.js');
 const learnLocaleMain = read('draw004.github.io/locale.js');
@@ -1755,8 +1849,8 @@ const localeCurrencyCodes = [...localeCurrencyBlock.matchAll(/\b([A-Z]{3}):\s*\{
 const learnExampleCodes = [...learnExampleBlock.matchAll(/\b([A-Z]{3}):\s*\{/g)].map(m => m[1]);
 const learnMainTexts = Object.fromEntries(learnLocalePages.map(file => [file, learnMainVisibleText(read('draw004.github.io/'+file))]));
 const regionalLeakPattern = /₹|\brupees?\b|\blakhs?\b|\bcrores?\b|\bSIP(?:s)?\b/i;
-add('main site: LEARN-LOCALE1 audits exactly all 53 Learn/hub pages through the shared localization layer',
-  learnLocalePages.length === 53 && learnLocalePages.includes('learn.html') && learnLocalePages.includes('financial-independence-number.html')
+add('main site: LEARN-LOCALE1 audits exactly all 54 Learn/hub pages through the shared localization layer',
+  learnLocalePages.length === 54 && learnLocalePages.includes('learn.html') && learnLocalePages.includes('financial-independence-number.html')
 );
 add('main site: LEARN-LOCALE1 raw Learn main content is globally neutral with no hard-coded India monetary/SIP leakage',
   learnLocalePages.every(file => !regionalLeakPattern.test(learnMainTexts[file]))
