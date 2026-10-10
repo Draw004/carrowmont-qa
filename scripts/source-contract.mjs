@@ -17,7 +17,7 @@ const read = rel => {
   return fs.readFileSync(p, 'utf8');
 };
 
-const qaCommon = read('carrowmont-qa/helpers/common.js');
+const qaCommon = fs.readFileSync(new URL('../helpers/common.js', import.meta.url), 'utf8');
 add('central QA: Cloudflare RUM ingestion is isolated from automated QA traffic',
   qaCommon.includes('async function isolateThirdPartyAnalyticsForQa(page)') &&
   qaCommon.includes("page.route('https://cloudflareinsights.com/**'") &&
