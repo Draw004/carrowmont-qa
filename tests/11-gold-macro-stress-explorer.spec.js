@@ -119,10 +119,20 @@ test.describe('Gold Under Macro Stress Explorer',()=>{
     const requests=[];page.on('request',r=>{if(['fetch','xhr'].includes(r.resourceType()))requests.push(r.url());});await gotoClean(page,PAGE);await waitForRendered(page);await page.locator('#exploreBtn').click();const origin=new URL(page.url()).origin;const isIsolatedCloudflareRum=u=>/^https:\/\/cloudflareinsights\.com\/cdn-cgi\/rum(?:[/?#]|$)/i.test(u);const thirdParty=requests.filter(u=>!u.startsWith(origin)&&!isIsolatedCloudflareRum(u));expect(thirdParty).toEqual([]);expect(requests.some(u=>u.startsWith(origin)&&/data\/gold-macro-reference\.json/.test(u))).toBeTruthy();const scriptSource=await page.locator('body').evaluate(()=>[...document.scripts].map(s=>s.src).filter(Boolean).join('\n'));expect(scriptSource).not.toMatch(/api[_-]?key|openai|anthropic/i);const appResponse=await (await page.request.get(`${origin}/gold-macro-stress-explorer.js`)).text();expect(appResponse).not.toMatch(/home\.treasury\.gov|federalreserve\.gov|bls\.gov|matteoiacoviello|financialresearch\.gov|gold\.org/i);
   });
 
-  test('[AUTO] updater fixtures cover valid change, no-change, malformed input, partial failure and anomaly rejection',async({},testInfo)=>{
+  test('[AUTO] updater fixtures cover valid change, no-change, malformed input, partial failure and anomaly rejection',async({request},testInfo)=>{
     test.skip(testInfo.project.name!=='chrome-desktop','Updater fixture gate runs once.');
-    const sourceRoot=path.resolve(process.env.SOURCE_ROOT||'..'),updater=path.join(sourceRoot,'draw004.github.io','scripts','update-gold-macro-reference.mjs'),current=path.join(sourceRoot,'draw004.github.io','data','gold-macro-reference.json');expect(fs.existsSync(updater)).toBeTruthy();expect(fs.existsSync(current)).toBeTruthy();const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'carrowmont-gold-updater-'));
+    const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'carrowmont-gold-updater-'));
     try{
+      // Publisher serves the staged main-site tree through BASE_URL, while live Automated QA checks out only carrowmont-qa.
+      // Materialize the exact served updater/reference pair so this fixture gate exercises the deployed/staged product in both layouts.
+      const base=(process.env.BASE_URL||'https://carrowmont.com').replace(/\/+$/,'');
+      const updaterResponse=await request.get(`${base}/scripts/update-gold-macro-reference.mjs`,{failOnStatusCode:false});
+      const currentResponse=await request.get(`${base}/data/gold-macro-reference.json`,{failOnStatusCode:false});
+      expect(updaterResponse.status(),`Updater asset was not served from ${base}`).toBe(200);
+      expect(currentResponse.status(),`Reference asset was not served from ${base}`).toBe(200);
+      const updater=path.join(tmp,'update-gold-macro-reference.mjs'),current=path.join(tmp,'gold-macro-reference.json');
+      fs.writeFileSync(updater,await updaterResponse.body());
+      fs.writeFileSync(current,await currentResponse.body());
       const fixture=syntheticUpdaterFixture(),fixturePath=path.join(tmp,'valid.json'),out=path.join(tmp,'updated.json');fs.writeFileSync(fixturePath,JSON.stringify(fixture));const valid=runUpdater(updater,current,out,fixturePath);expect(valid.status,valid.stderr||valid.stdout).toBe(0);const validResult=JSON.parse(valid.stdout);expect(validResult.ok).toBeTruthy();expect(validResult.changed).toBeTruthy();expect(validResult.preservedReviewed.centralBankDemand).toBeTruthy();expect(validResult.preservedReviewed.fiscalStress).toBeTruthy();expect(fs.existsSync(out)).toBeTruthy();const old=JSON.parse(fs.readFileSync(current,'utf8')),next=JSON.parse(fs.readFileSync(out,'utf8'));expect(next.drivers.centralBankDemand).toEqual(old.drivers.centralBankDemand);expect(next.drivers.fiscalStress).toEqual(old.drivers.fiscalStress);
       const noChangeOut=path.join(tmp,'no-change.json');const noChange=runUpdater(updater,out,noChangeOut,fixturePath);expect(noChange.status,noChange.stderr||noChange.stdout).toBe(0);expect(JSON.parse(noChange.stdout).changed).toBeFalsy();expect(fs.existsSync(noChangeOut)).toBeFalsy();
       const malformedPath=path.join(tmp,'malformed.json');fs.writeFileSync(malformedPath,JSON.stringify({...fixture,ofr:undefined}));const malformedOut=path.join(tmp,'malformed-out.json'),beforeHash=fileHash(current);const malformed=runUpdater(updater,current,malformedOut,malformedPath);expect(malformed.status).toBe(2);expect(fs.existsSync(malformedOut)).toBeFalsy();expect(fileHash(current)).toBe(beforeHash);
