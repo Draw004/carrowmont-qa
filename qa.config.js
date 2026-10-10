@@ -94,5 +94,6 @@ export const mainSitePages = [
   { key: 'methodology', path: '/methodology.html', text: 'Methodology' },
   { key: 'four-percent-rule-stress-test', path: '/4-percent-rule-stress-test.html', text: '4% Rule Stress Test' },
   { key: 'fi-number-by-spending', path: '/financial-independence-number-by-spending.html', text: 'See how spending changes your financial independence number' },
-  { key: 'us-debt-interest-cost', path: '/us-debt-interest-cost-calculator.html', text: 'See how debt and refinancing rates can change the U.S. interest burden' }
+  { key: 'us-debt-interest-cost', path: '/us-debt-interest-cost-calculator.html', text: 'See how debt and refinancing rates can change the U.S. interest burden' },
+  { key: 'gold-macro-stress-explorer', path: '/gold-macro-stress-explorer.html', text: 'See the competing macro forces shaping gold' }
 ];
