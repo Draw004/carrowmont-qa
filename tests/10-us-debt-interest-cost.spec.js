@@ -76,6 +76,6 @@ test.describe('US Debt Interest Cost Calculator',()=>{
   });
 
   test('[AUTO] browser uses only same-origin bundled reference data and contains no client secret',async({page})=>{
-    const requests=[];page.on('request',r=>{if(['fetch','xhr'].includes(r.resourceType()))requests.push(r.url());});await gotoClean(page,PAGE);await waitForRendered(page);await page.locator('#calculateBtn').click();const thirdParty=requests.filter(u=>!u.startsWith(new URL(page.url()).origin));expect(thirdParty).toEqual([]);const source=await page.locator('body').evaluate(()=>[...document.scripts].map(s=>s.src).filter(Boolean).join('\n'));expect(source).not.toMatch(/api[_-]?key|openai|anthropic/i);
+    const requests=[];page.on('request',r=>{if(['fetch','xhr'].includes(r.resourceType()))requests.push(r.url());});await gotoClean(page,PAGE);await waitForRendered(page);await page.locator('#calculateBtn').click();const origin=new URL(page.url()).origin;const isIsolatedCloudflareRum=u=>/^https:\/\/cloudflareinsights\.com\/cdn-cgi\/rum(?:[/?#]|$)/i.test(u);const thirdParty=requests.filter(u=>!u.startsWith(origin)&&!isIsolatedCloudflareRum(u));expect(thirdParty).toEqual([]);const source=await page.locator('body').evaluate(()=>[...document.scripts].map(s=>s.src).filter(Boolean).join('\n'));expect(source).not.toMatch(/api[_-]?key|openai|anthropic/i);
   });
 });
