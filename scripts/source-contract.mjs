@@ -676,6 +676,114 @@ if (mainHome || mainSiteJs) {
     fs.existsSync(path.join(root, 'draw004.github.io/carrowmont-hero-laptop.webp')) &&
     fs.existsSync(path.join(root, 'draw004.github.io/carrowmont-hero-mobile.webp'))
   );
+
+
+  const toolsDirectory = read('draw004.github.io/tools.html');
+  const toolsSitemap = read('draw004.github.io/sitemap.xml');
+  const toolsArchitecture = read('draw004.github.io/docs/CARROWMONT_ARCHITECTURE.md');
+  const toolsDemandMatrix = read('draw004.github.io/docs/CARROWMONT_HOMEPAGE_TOOL_DEMAND_MATRIX.md');
+  const toolsImplementation = read('draw004.github.io/docs/CARROWMONT_TOOLS_HUB1_IMPLEMENTATION.md');
+  const toolsQa = fs.readFileSync(new URL('../tests/12-tools-hub.spec.js', import.meta.url), 'utf8');
+  const qaConfig = fs.readFileSync(new URL('../qa.config.js', import.meta.url), 'utf8');
+  const currentToolPaths = [
+    '/budget-cash-flow-planner/','/sip-calculator/','/retirement-calculator/','/inflation-calculator/',
+    '/goal-planner/','/financial-independence/','/4-percent-rule-stress-test.html',
+    '/financial-independence-number-by-spending.html','/us-debt-interest-cost-calculator.html',
+    '/gold-macro-stress-explorer.html'
+  ];
+  const supportedCountryCodes = [
+    'IN','US','CA','GB','AU','AT','BD','BE','NZ','CL','DK','CN','JP','KR','SG','AE','SA','OM','QA',
+    'DE','FR','IT','ES','FI','IE','NL','NO','PL','PT','SE','CH','BR','MX','ZA','ID','MY','TH','PH','VN',
+    'HK','TW','RU','TR','OTHER'
+  ];
+  add('main site: TOOLS-HUB1 canonical all-tools directory is indexable and structured',
+    toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
+    toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
+    toolsDirectory.includes('"@type":"CollectionPage"') && toolsDirectory.includes('"@type":"ItemList"') &&
+    toolsDirectory.includes('"numberOfItems":10') &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 10
+  );
+  add('main site: TOOLS-HUB1 directory groups six core tools, two stress tests and two macro explorers',
+    toolsDirectory.includes('id="core-planning-tools"') &&
+    toolsDirectory.includes('id="planning-stress-tests"') &&
+    toolsDirectory.includes('id="macro-market-explorers"') &&
+    (toolsDirectory.match(/data-directory-tool=/g)||[]).length === 6 &&
+    currentToolPaths.every(toolPath => toolsDirectory.includes(`href="${toolPath}"`)) &&
+    !/coming soon/i.test(toolsDirectory)
+  );
+  add('main site: homepage keeps six complete real tool cards and a visually distinct fixed Explore All Tools gateway',
+    mainHome.includes('data-homepage-core-grid') && mainHome.includes('data-core-tool-count="6"') &&
+    (mainHome.match(/data-tool-id="(?:budget|investment|retirement|inflation|goals|independence)"/g)||[]).length === 6 &&
+    mainHome.includes('data-tools-gateway') && mainHome.includes('Explore All Tools') &&
+    mainHome.includes('class="tool-icon explore-tools-icon"') && mainHome.includes('href="/tools.html"') &&
+    mainCss.includes('.explore-all-card{') && mainCss.includes('linear-gradient(135deg') &&
+    mainCss.includes('.planning-grid[data-core-tool-count="7"] .explore-all-card{grid-column:span 1}')
+  );
+  add('main site: homepage authority discovery links all four current focused assets without displacing core tools',
+    mainHome.includes('id="authorityToolsHeading"') && mainHome.includes('Explore more financial tools') &&
+    ['/4-percent-rule-stress-test.html','/financial-independence-number-by-spending.html','/us-debt-interest-cost-calculator.html','/gold-macro-stress-explorer.html']
+      .every(toolPath => mainHome.includes(`href="${toolPath}"`)) &&
+    (mainHome.match(/class="authority-tool-card"/g)||[]).length === 4
+  );
+  add('main site: View all tools and primary Tools navigation use the canonical directory',
+    mainHome.includes('<a class="text-link" href="/tools.html">View all tools') &&
+    (mainHome.match(/href="\/tools\.html"/g)||[]).length >= 5 &&
+    mainSiteJs.includes('upgradeLegacyToolsLinks') &&
+    mainSiteJs.includes('a[href="/#tools"], a[href="#tools"]') &&
+    mainSiteJs.includes('link.setAttribute("href", "/tools.html")')
+  );
+  add('main site: country-demand ordering is deterministic, country-based and keeps gateway outside ranking',
+    mainSiteJs.includes('const TOOL_ORDER_PROFILES = Object.freeze') &&
+    mainSiteJs.includes('const REGION_ORDER_PROFILE = Object.freeze') &&
+    mainSiteJs.includes('function getOrderForRegion(regionCode)') &&
+    mainSiteJs.includes('const regionCode = locale.getRegion()') &&
+    mainSiteJs.includes('if (!grid || lastOrderedRegion === regionCode) return') &&
+    mainSiteJs.includes('grid.appendChild(card)') && mainSiteJs.includes('grid.appendChild(gateway)') &&
+    mainSiteJs.includes('grid.dataset.appliedOrder')
+  );
+  add('main site: every supported country has an explicit demand-profile mapping',
+    supportedCountryCodes.every(code => new RegExp(`\\b${code}:\\s*"P(?:[1-9]|10|11)"`).test(mainSiteJs)) &&
+    ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11'].every(profile => new RegExp(`\\b${profile}:\\s*Object\\.freeze`).test(mainSiteJs))
+  );
+  add('main site: India receives SIP terminology while other countries retain recurring-investment terminology',
+    mainHome.includes('data-cm-investment-title') && toolsDirectory.includes('data-cm-investment-title') &&
+    mainSiteJs.includes('india ? "SIP Calculator" : "Recurring Investment Calculator"') &&
+    mainSiteJs.includes('india ? "Calculate SIP →" : "Calculate investments →"') &&
+    mainSiteJs.includes('document.body.classList.toggle("india-inr", regionCode === "IN")')
+  );
+  add('main site: TOOLS-HUB1 responsive rules preserve card identity and prevent directory/gateway collapse',
+    mainCss.includes('TOOLS-HUB1: all-tools discovery + scalable homepage tool grid') &&
+    mainCss.includes('.authority-tools-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))') &&
+    mainCss.includes('.tools-directory-grid-core{grid-template-columns:repeat(3,minmax(0,1fr))}') &&
+    mainCss.includes('@media(max-width:700px)') && mainCss.includes('.tools-directory-grid-core{grid-template-columns:1fr}') &&
+    mainCss.includes('.explore-all-card{grid-column:span 1;min-height:255px}')
+  );
+  add('main site: TOOLS-HUB1 architecture and demand matrix document evidence, fallbacks and future seventh-tool rule',
+    toolsArchitecture.includes('20A. All-Tools Directory and Homepage Discovery Rule') &&
+    toolsArchitecture.includes('Currency-only changes must not reorder tools') &&
+    toolsDemandMatrix.includes('Research source registry') && toolsDemandMatrix.includes('Country-to-profile matrix') &&
+    toolsDemandMatrix.includes('The planned Home Loan / Mortgage Prepayment & Early Payoff tool is not ranked until it is live') &&
+    supportedCountryCodes.every(code => toolsDemandMatrix.includes(`| ${code} |`))
+  );
+  add('main site: TOOLS-HUB1 implementation record locks Snapshot 36, two-PR scope and no workflow permission requirement',
+    toolsImplementation.includes('Snapshot 36') && toolsImplementation.includes('d6392c73d57c6bbed19ec6ef8da71ab1896c6a30') &&
+    toolsImplementation.includes('034ba87da64af4853f69d6e94454df2f662224c5') &&
+    toolsImplementation.includes('Expected generated release PR count: **2**') &&
+    toolsImplementation.includes('Workflows: Read and write is **not required**')
+  );
+  add('main site: sitemap includes canonical tools directory with release lastmod',
+    /<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-10<\/lastmod>/.test(toolsSitemap)
+  );
+  add('central QA: TOOLS-HUB1 is registered and covers country order, terminology, legacy links, responsiveness and visuals',
+    qaConfig.includes("key: 'tools-directory'") && qaConfig.includes("path: '/tools.html'") &&
+    toolsQa.includes('country controls terminology and deterministic card priority') &&
+    toolsQa.includes('currency alone never reorders') && toolsQa.includes('upgrades legacy visible all-tools links') &&
+    toolsQa.includes('1440px, 390px and 360px') && toolsQa.includes('[VISUAL] capture homepage and tools-directory discovery references')
+  );
+  add('central QA: TOOLS-HUB1 does not expand the six-tool report registry',
+    (qaConfig.slice(0, qaConfig.indexOf('export const mainSitePages')).match(/key:\s*'/g)||[]).length === 6 &&
+    !qaConfig.slice(0, qaConfig.indexOf('export const mainSitePages')).includes("key: 'tools-directory'")
+  );
 }
 
 
