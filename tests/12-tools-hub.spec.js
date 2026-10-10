@@ -14,8 +14,10 @@ const ALL_TOOL_PATHS = [
   '/4-percent-rule-stress-test.html',
   '/financial-independence-number-by-spending.html',
   '/us-debt-interest-cost-calculator.html',
-  '/gold-macro-stress-explorer.html'
+  '/gold-macro-stress-explorer.html',
+  '/silver-supply-demand-macro-stress-explorer.html'
 ];
+const HOMEPAGE_AUTHORITY_PATHS = ALL_TOOL_PATHS.slice(6, 10);
 
 async function dismissAnalytics(page) {
   const decline = page.locator('[data-analytics-choice="denied"]').first();
@@ -52,7 +54,7 @@ async function expectHomepageOrder(page, expected) {
 }
 
 test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
-  test('[AUTO] canonical tools directory exposes exactly ten live tools in three meaningful categories', async ({ page }) => {
+  test('[AUTO] canonical tools directory exposes eleven live tools in three meaningful categories', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, DIRECTORY);
     await dismissAnalytics(page);
@@ -63,8 +65,8 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
     await expect(page.locator('#core-planning-tools .directory-tool-card')).toHaveCount(6);
     await expect(page.locator('#planning-stress-tests .directory-tool-card')).toHaveCount(2);
-    await expect(page.locator('#macro-market-explorers .directory-tool-card')).toHaveCount(2);
-    await expect(page.locator('.directory-tool-card')).toHaveCount(10);
+    await expect(page.locator('#macro-market-explorers .directory-tool-card')).toHaveCount(3);
+    await expect(page.locator('.directory-tool-card')).toHaveCount(11);
     await expect(page.locator('body')).not.toContainText(/coming soon/i);
 
     for (const path of ALL_TOOL_PATHS) {
@@ -75,8 +77,8 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     const json = JSON.parse(schema);
     expect(json['@type']).toBe('CollectionPage');
     expect(json.mainEntity?.['@type']).toBe('ItemList');
-    expect(json.mainEntity?.numberOfItems).toBe(10);
-    expect(json.mainEntity?.itemListElement).toHaveLength(10);
+    expect(json.mainEntity?.numberOfItems).toBe(11);
+    expect(json.mainEntity?.itemListElement).toHaveLength(11);
     expect(errors).toEqual([]);
   });
 
@@ -113,7 +115,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
 
     await expect(page.locator('a.text-link[href="/tools.html"]').first()).toContainText('View all tools');
     await expect(page.locator('.authority-tools-grid .authority-tool-card')).toHaveCount(4);
-    for (const path of ALL_TOOL_PATHS.slice(6)) {
+    for (const path of HOMEPAGE_AUTHORITY_PATHS) {
       await expect(page.locator(`.authority-tools-grid a[href="${path}"]`)).toHaveCount(1);
     }
     expect(errors).toEqual([]);
@@ -206,7 +208,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       await gotoClean(page, DIRECTORY);
       await dismissAnalytics(page);
       await assertNoHorizontalOverflow(page, `${width}px all-tools directory`);
-      await expect(page.locator('.directory-tool-card')).toHaveCount(10);
+      await expect(page.locator('.directory-tool-card')).toHaveCount(11);
     }
   });
 
