@@ -2079,6 +2079,48 @@ add('central QA: Mortgage Learn V1 protects country-aware FAQ, contextual result
   mortgageLearnQa.includes('Home Loans & Mortgages cluster') && mortgageLearnQa.includes('390,360')
 );
 
+
+// CORE6 Tool <-> Learn Integration V1 - 2026-10-11.
+const core6ToolLearnCases = [
+  { repo:'sip-calculator', page:'index.html', primary:'/compound-interest-monthly-contributions.html', related:['/starting-investing-earlier.html','/step-up-sip-vs-regular-sip.html','/investment-time-to-target.html'], tool:'/sip-calculator/' },
+  { repo:'goal-planner', page:'index.html', primary:'/savings-goal-planning.html', related:['/how-much-should-i-invest-each-month.html','/planning-life-goals.html','/emergency-fund-how-much.html'], tool:'/goal-planner/' },
+  { repo:'financial-independence', page:'index.html', primary:'/when-can-i-reach-financial-independence.html', related:['/coast-fire-explained.html','/longevity-risk-retirement.html','/diversification-across-asset-classes.html'], tool:'/financial-independence/' },
+  { repo:'inflation-calculator', page:'index.html', primary:'/inflation-value-of-money-over-time.html', related:['/future-cost-of-expenses.html','/inflation-purchasing-power-savings.html','/todays-money-vs-future-money.html'], tool:'/inflation-calculator/' },
+  { repo:'retirement-calculator', page:'planner.html', primary:'/how-much-money-do-i-need-to-retire.html', related:['/retirement-expenses.html','/how-long-will-retirement-savings-last.html','/inflation-and-retirement-planning.html'], tool:'/retirement-calculator/' },
+  { repo:'budget-cash-flow-planner', page:'index.html', primary:'/cash-flow-vs-income.html', related:['/budgeting-by-pay-frequency.html','/budgeting-with-irregular-income.html','/sinking-fund-vs-emergency-fund.html'], tool:'/budget-cash-flow-planner/' }
+];
+const core6ToolLearnQa = fs.readFileSync(new URL('../tests/17-core6-tool-learn-integration.spec.js', import.meta.url), 'utf8');
+add('CORE6 Tool-Learn V1: all six remaining core tools expose one primary education bridge and contextual result links',
+  core6ToolLearnCases.every(item => {
+    const html = read(item.repo+'/'+item.page);
+    return html.includes('data-cm-tool-learn="primary"') && html.includes('href="'+item.primary+'"') &&
+      html.includes('data-cm-tool-learn="result"') && item.related.every(href => html.includes('href="'+href+'"')) && html.includes('href="/learn.html"');
+  })
+);
+add('CORE6 Tool-Learn V1: the shared education-card presentation is present in every affected core-tool stylesheet',
+  core6ToolLearnCases.every(item => {
+    const css = read(item.repo+'/styles.css');
+    return css.includes('CORE6 Tool <-> Learn Integration V1') && css.includes('.cm-learn-bridge-card') && css.includes('.cm-result-learn-card') && css.includes('@media(max-width:800px)');
+  })
+);
+add('CORE6 Tool-Learn V1: every selected primary and contextual Learn guide links back to its mapped core tool',
+  core6ToolLearnCases.every(item => [item.primary,...item.related].every(href => {
+    const file = href.replace(/^\//,'');
+    const article = read('draw004.github.io/'+file);
+    return article.includes('data-cm-learn-article="1"') && article.includes('class="guide-action-first"') && article.includes('href="'+item.tool+'"');
+  }))
+);
+add('CORE6 Tool-Learn V1: Retirement exposes education on both its public landing page and working planner',
+  read('retirement-calculator/index.html').includes('data-cm-tool-learn="primary"') &&
+  read('retirement-calculator/index.html').includes('href="/how-much-money-do-i-need-to-retire.html"') &&
+  read('retirement-calculator/planner.html').includes('data-cm-tool-learn="primary"') &&
+  read('retirement-calculator/planner.html').includes('data-cm-tool-learn="result"')
+);
+add('central QA: CORE6 Tool-Learn V1 protects both link directions and 390/360 mobile overflow',
+  core6ToolLearnQa.includes('primary Learn bridge') && core6ToolLearnQa.includes('shared bottom CTA') &&
+  core6ToolLearnQa.includes('Retirement landing page') && core6ToolLearnQa.includes('390, 360')
+);
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);
