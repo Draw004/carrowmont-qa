@@ -31,7 +31,8 @@ const tools = [
   ['inflation-calculator', 'index.html', 'app.js', 'Generate Inflation Report'],
   ['retirement-calculator', 'planner.html', 'app.js', 'Generate Retirement Report'],
   ['sip-calculator', 'index.html', 'app.js', 'Generate SIP Report'],
-  ['budget-cash-flow-planner', 'index.html', 'app.js', 'Generate Budget &amp; Cash Flow Report']
+  ['budget-cash-flow-planner', 'index.html', 'app.js', 'Generate Budget &amp; Cash Flow Report'],
+  ['mortgage-payoff-calculator', 'index.html', 'app.js', 'Generate Mortgage Payoff Report']
 ];
 
 for (const [dir, htmlFile, jsFile, buttonText] of tools) {
@@ -305,7 +306,8 @@ const reportTools = [
   ['financial-independence', 'index.html', 'fi-pdf-renderer.js'],
   ['inflation-calculator', 'index.html', 'inflation-pdf-renderer.js'],
   ['retirement-calculator', 'planner.html', 'retirement-pdf-renderer.js'],
-  ['budget-cash-flow-planner', 'index.html', 'budget-pdf-renderer.js']
+  ['budget-cash-flow-planner', 'index.html', 'budget-pdf-renderer.js'],
+  ['mortgage-payoff-calculator', 'index.html', 'mortgage-payoff-pdf-renderer.js']
 ];
 const standards = reportTools.map(([dir]) => read(`${dir}/report-standard.js`));
 add('reports: shared report standard exists in all tools', standards.every(Boolean));
@@ -322,7 +324,7 @@ add('reports: standard defines separate guide and tools pages',
   standards[0]?.includes('Terminology used in this report') &&
   standards[0]?.includes('Important assumptions & disclaimer')
 );
-add('reports: shared tool registry includes all six active calculators',
+add('reports: shared tool registry includes all seven active calculators',
   standards[0]?.includes("key:'investment'") &&
   standards[0]?.includes("key:'retirement'") &&
   standards[0]?.includes("key:'goal'") &&
@@ -687,7 +689,7 @@ if (mainHome || mainSiteJs) {
   const qaConfig = fs.readFileSync(new URL('../qa.config.js', import.meta.url), 'utf8');
   const currentToolPaths = [
     '/budget-cash-flow-planner/','/sip-calculator/','/retirement-calculator/','/inflation-calculator/',
-    '/goal-planner/','/financial-independence/','/4-percent-rule-stress-test.html',
+    '/goal-planner/','/financial-independence/','/mortgage-payoff-calculator/','/4-percent-rule-stress-test.html',
     '/financial-independence-number-by-spending.html','/us-debt-interest-cost-calculator.html',
     '/gold-macro-stress-explorer.html','/silver-supply-demand-macro-stress-explorer.html'
   ];
@@ -700,20 +702,20 @@ if (mainHome || mainSiteJs) {
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
     toolsDirectory.includes('"@type":"CollectionPage"') && toolsDirectory.includes('"@type":"ItemList"') &&
-    toolsDirectory.includes('"numberOfItems":11') &&
-    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 11
+    toolsDirectory.includes('"numberOfItems":12') &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 12
   );
-  add('main site: TOOLS-HUB1 directory groups six core tools, two stress tests and three macro explorers',
+  add('main site: CORE7 directory groups seven core tools, two stress tests and three macro explorers',
     toolsDirectory.includes('id="core-planning-tools"') &&
     toolsDirectory.includes('id="planning-stress-tests"') &&
     toolsDirectory.includes('id="macro-market-explorers"') &&
-    (toolsDirectory.match(/data-directory-tool=/g)||[]).length === 6 &&
+    (toolsDirectory.match(/data-directory-tool=/g)||[]).length === 7 &&
     currentToolPaths.every(toolPath => toolsDirectory.includes(`href="${toolPath}"`)) &&
     !/coming soon/i.test(toolsDirectory)
   );
-  add('main site: homepage keeps six complete real tool cards and a visually distinct fixed Explore All Tools gateway',
-    mainHome.includes('data-homepage-core-grid') && mainHome.includes('data-core-tool-count="6"') &&
-    (mainHome.match(/data-tool-id="(?:budget|investment|retirement|inflation|goals|independence)"/g)||[]).length === 6 &&
+  add('main site: homepage keeps seven complete real tool cards and a visually distinct fixed Explore All Tools gateway',
+    mainHome.includes('data-homepage-core-grid') && mainHome.includes('data-core-tool-count="7"') &&
+    (mainHome.match(/data-tool-id="(?:budget|investment|retirement|inflation|goals|independence|housing)"/g)||[]).length === 7 &&
     mainHome.includes('data-tools-gateway') && mainHome.includes('Explore All Tools') &&
     mainHome.includes('class="tool-icon explore-tools-icon"') && mainHome.includes('href="/tools.html"') &&
     mainCss.includes('.explore-all-card{') && mainCss.includes('linear-gradient(135deg') &&
@@ -758,11 +760,13 @@ if (mainHome || mainSiteJs) {
     mainCss.includes('@media(max-width:700px)') && mainCss.includes('.tools-directory-grid-core{grid-template-columns:1fr}') &&
     mainCss.includes('.explore-all-card{grid-column:span 1;min-height:255px}')
   );
-  add('main site: TOOLS-HUB1 architecture and demand matrix document evidence, fallbacks and future seventh-tool rule',
+  add('main site: CORE7 architecture and demand matrix document evidence, fallbacks and seven-tool country ordering',
     toolsArchitecture.includes('20A. All-Tools Directory and Homepage Discovery Rule') &&
     toolsArchitecture.includes('Currency-only changes must not reorder tools') &&
+    toolsArchitecture.includes('October 2026 CORE7 Home Loan / Mortgage extension') &&
     toolsDemandMatrix.includes('Research source registry') && toolsDemandMatrix.includes('Country-to-profile matrix') &&
-    toolsDemandMatrix.includes('The planned Home Loan / Mortgage Prepayment & Early Payoff tool is not ranked until it is live') &&
+    toolsDemandMatrix.includes('The seven ranked tools are:') && toolsDemandMatrix.includes('`housing`') &&
+    toolsDemandMatrix.includes('Explore All Tools') && toolsDemandMatrix.includes('fixed eighth gateway card') &&
     supportedCountryCodes.every(code => toolsDemandMatrix.includes(`| ${code} |`))
   );
   add('main site: TOOLS-HUB1 implementation record locks Snapshot 36, two-PR scope and no workflow permission requirement',
@@ -780,8 +784,9 @@ if (mainHome || mainSiteJs) {
     toolsQa.includes('currency alone never reorders') && toolsQa.includes('upgrades legacy visible all-tools links') &&
     toolsQa.includes('1440px, 390px and 360px') && toolsQa.includes('[VISUAL] capture homepage and tools-directory discovery references')
   );
-  add('central QA: TOOLS-HUB1 does not expand the six-tool report registry',
-    (qaConfig.slice(0, qaConfig.indexOf('export const mainSitePages')).match(/key:\s*'/g)||[]).length === 6 &&
+  add('central QA: CORE7 registers seven primary tools while keeping tools-directory outside the report registry',
+    (qaConfig.slice(0, qaConfig.indexOf('export const mainSitePages')).match(/key:\s*'/g)||[]).length === 7 &&
+    qaConfig.slice(0, qaConfig.indexOf('export const mainSitePages')).includes("key: 'mortgage-payoff-calculator'") &&
     !qaConfig.slice(0, qaConfig.indexOf('export const mainSitePages')).includes("key: 'tools-directory'")
   );
 }
@@ -934,8 +939,8 @@ add('main site: Learn v2 standard documents depth, evidence and calculation-cons
 );
 
 
-const standardizedFooterDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner'];
-const sharedFooterToolHrefs = ['/sip-calculator/','/retirement-calculator/','/inflation-calculator/','/goal-planner/','/financial-independence/','/budget-cash-flow-planner/','/#tools'];
+const standardizedFooterDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner','mortgage-payoff-calculator'];
+const sharedFooterToolHrefs = ['/sip-calculator/','/retirement-calculator/','/inflation-calculator/','/goal-planner/','/financial-independence/','/budget-cash-flow-planner/','/mortgage-payoff-calculator/','/tools.html'];
 function footerToolsBlock(html) {
   const m = html.match(/<div class="footer-col"><strong>Tools<\/strong>([\s\S]*?)<\/div>/i);
   return m ? m[1] : '';
@@ -944,7 +949,7 @@ for (const dir of standardizedFooterDirs) {
   const html = read(`${dir}/index.html`);
   const css = read(`${dir}/styles.css`);
   const toolsBlock = footerToolsBlock(html);
-  add(`${dir}: standardized shared footer structure, six-tool registry and no navigation arrows`,
+  add(`${dir}: standardized shared footer structure, seven-tool registry and no navigation arrows`,
     html.includes('footer-brand-block') &&
     html.includes('footer-investment-link') &&
     sharedFooterToolHrefs.every(href => toolsBlock.includes(`href="${href}"`)) &&
@@ -956,7 +961,7 @@ for (const dir of standardizedFooterDirs) {
 }
 const retirementPlannerHtml = read('retirement-calculator/planner.html');
 const retirementPlannerTools = footerToolsBlock(retirementPlannerHtml);
-add('retirement: calculator page also uses the six-tool shared footer',
+add('retirement: calculator page also uses the seven-tool shared footer',
   retirementPlannerHtml.includes('footer-investment-link') &&
   sharedFooterToolHrefs.every(href => retirementPlannerTools.includes(`href="${href}"`)) &&
   !retirementPlannerTools.includes('→') &&
@@ -969,13 +974,14 @@ const currencyFormatSources = [
   read('financial-independence/app.js'),
   read('inflation-calculator/app.js'),
   read('retirement-calculator/locale-ui.js'),
-  read('budget-cash-flow-planner/app.js')
+  read('budget-cash-flow-planner/app.js'),
+  read('mortgage-payoff-calculator/app.js')
 ];
-add('shared UI: all six tools render currency options as CODE dot Currency Name',
+add('shared UI: all seven tools render currency options as CODE dot Currency Name',
   currencyFormatSources.every(src => /\$\{(?:code|c|k)\} · \$\{/.test(src))
 );
 
-const sharedLocaleCssDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner'];
+const sharedLocaleCssDirs = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner','mortgage-payoff-calculator'];
 for (const dir of sharedLocaleCssDirs) {
   const css = read(`${dir}/styles.css`);
   add(`${dir}: shared locale pill geometry is locked to 44px desktop and 38px mobile`,
@@ -1008,15 +1014,93 @@ if (smartSs2Spec) {
 
 const uiStandard = read('draw004.github.io/docs/CARROWMONT_SHARED_UI_STANDARD.md');
 if (uiStandard) {
-  add('main site: shared UI standard documents the six-tool registry and no-arrow footer rule',
-    uiStandard.includes('Version:** 1.0') &&
+  add('main site: shared UI standard documents the seven-tool CORE7 registry and no-arrow footer rule',
+    uiStandard.includes('Version:** 1.1') &&
     uiStandard.includes('Budget & Cash Flow Planner') &&
+    uiStandard.includes('Home Loan / Mortgage Prepayment & Early Payoff Calculator') &&
+    uiStandard.includes('current seven-tool registry') &&
     uiStandard.includes('No arrows in footer navigation') &&
     uiStandard.includes('UI Standardization Batch 1') &&
     uiStandard.includes('44px on desktop') && uiStandard.includes('38px on mobile')
   );
 }
 
+
+
+// CORE7 Home Loan / Mortgage Prepayment & Early Payoff - Snapshot 43 implementation contract.
+const mortgageHtml = read('mortgage-payoff-calculator/index.html');
+const mortgageCore = read('mortgage-payoff-calculator/core.js');
+const mortgageApp = read('mortgage-payoff-calculator/app.js');
+const mortgagePdf = read('mortgage-payoff-calculator/mortgage-payoff-pdf-renderer.js');
+const mortgageState = read('mortgage-payoff-calculator/shared-plan-state.js');
+const mortgageBridge = read('mortgage-payoff-calculator/shared-plan-bridge.js');
+const mortgageReadme = read('mortgage-payoff-calculator/README.md');
+const mortgageQa = fs.readFileSync(new URL('../tests/15-mortgage-payoff-calculator.spec.js', import.meta.url), 'utf8');
+const core7Spec = read('draw004.github.io/docs/CARROWMONT_CORE7_HOME_LOAN_MORTGAGE_PAYOFF_SPEC.md');
+const core7ToolsDirectory = read('draw004.github.io/tools.html');
+const core7Sitemap = read('draw004.github.io/sitemap.xml');
+const core7Css = read('draw004.github.io/carrowmont.css');
+
+add('CORE7 mortgage: canonical page, four modes and neutral recurring part-prepayment state are present',
+  mortgageHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/') &&
+  ['recurring','lump','target','full'].every(mode => mortgageHtml.includes(`data-mode="${mode}"`)) &&
+  mortgageHtml.includes('id="recurringEnabled"') &&
+  mortgageHtml.includes('<option value="">Choose frequency</option>') &&
+  mortgageHtml.includes('<option value="quarterly">Quarterly</option>') &&
+  !/id="extraFrequency"[^>]*>\s*<option[^>]*selected/i.test(mortgageHtml)
+);
+add('CORE7 mortgage: scheduled repayment, planning view and part-prepayment cadence remain separate concepts',
+  mortgageHtml.includes('id="paymentFrequency"') && mortgageHtml.includes('data-view="monthly"') && mortgageHtml.includes('data-view="paycycle"') &&
+  mortgageHtml.includes('id="extraFrequency"') && mortgageApp.includes("planningView==='paycycle'") &&
+  mortgagePdf.includes('View changes presentation only')
+);
+add('CORE7 mortgage: calculation engine includes standard and Canadian fixed-rate conventions plus payoff safety',
+  mortgageCore.includes("if(convention==='canada-fixed') return Math.pow(1+r/2,2/m)-1") &&
+  mortgageCore.includes('scheduledPayment') && mortgageCore.includes("error:'negative-amortization'") &&
+  mortgageCore.includes('Math.min(extra,maxExtra)') && mortgageCore.includes('Math.max(0,opening+interest-scheduled-extra)')
+);
+add('CORE7 mortgage: target-payoff lump sum is applied before target-period interest',
+  mortgageCore.includes('const startBalance=Math.max(0,finite(input.balance)-lump)') &&
+  mortgageCore.includes('simulate({balance:startBalance') && mortgageCore.includes('initialLumpSum:lump')
+);
+add('CORE7 mortgage: CSV and PDF expose methodology, scenario assumptions and complete schedule contract',
+  mortgageApp.includes("['target_payoff_date'") && mortgageApp.includes("['recurring_extra_start_period'") &&
+  mortgageApp.includes("['methodology_version','1.0.0']") && mortgageApp.includes("['period','date','opening_balance'") &&
+  mortgagePdf.includes('Report Guide & Methodology') === false && mortgagePdf.includes('.guidePage(') && mortgagePdf.includes('.continuePlanningPage(')
+);
+add('CORE7 mortgage: shared local plan state is versioned, local-only and semantic',
+  mortgageState.includes("const STORAGE_KEY = 'carrowmont_plan_context_v1'") && mortgageState.includes('const SCHEMA_VERSION = 1') &&
+  mortgageState.includes("new Set(['locale', 'assumptions', 'housingLoan'])") &&
+  !/fetch\s*\(|XMLHttpRequest|sendBeacon\s*\(/.test(mortgageState + mortgageBridge)
+);
+const sharedStateCopies = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner','mortgage-payoff-calculator'].map(dir => read(`${dir}/shared-plan-state.js`));
+const sharedBridgeCopies = ['sip-calculator','goal-planner','financial-independence','inflation-calculator','retirement-calculator','budget-cash-flow-planner','mortgage-payoff-calculator'].map(dir => read(`${dir}/shared-plan-bridge.js`));
+add('CORE7 mortgage: shared-plan-state helper is byte-identical across all seven primary tools', sharedStateCopies.every(Boolean) && sharedStateCopies.every(x => x === sharedStateCopies[0]));
+add('CORE7 mortgage: shared-plan bridge is byte-identical across all seven primary tools', sharedBridgeCopies.every(Boolean) && sharedBridgeCopies.every(x => x === sharedBridgeCopies[0]));
+add('CORE7 mortgage: existing tools use safe explicit housing handoff rules rather than silent double counting',
+  mortgageBridge.includes('Use in Rent / mortgage') && mortgageBridge.includes('Apply to Home loan / rent') &&
+  mortgageBridge.includes('Use balance as goal amount') && mortgageBridge.includes('will not add this automatically and risk double-counting') &&
+  mortgageBridge.includes('will not automatically redirect that future payment into investing') &&
+  mortgageBridge.includes('will not inflate the loan balance')
+);
+add('CORE7 mortgage: main homepage/directory/sitemap integrate seventh primary tool and fixed eighth gateway',
+  mainHome.includes('data-core-tool-count="7"') && mainHome.includes('data-tool-id="housing"') &&
+  core7ToolsDirectory.includes('data-directory-tool="housing"') && core7ToolsDirectory.includes('href="/mortgage-payoff-calculator/"') &&
+  core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/') &&
+  core7Css.includes('.planning-grid[data-core-tool-count="7"] .explore-all-card{grid-column:span 1}')
+);
+add('CORE7 mortgage: country-demand runtime includes housing in all seven-item profiles and keeps currency outside order selection',
+  ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11'].every(profile => {
+    const m=mainSiteJs.match(new RegExp(`${profile}:\\s*Object\\.freeze\\(\\[([^\\]]+)\\]`));
+    return m && m[1].includes('housing') && (m[1].match(/"/g)||[]).length===14;
+  }) && mainSiteJs.includes('const regionCode = locale.getRegion()')
+);
+add('CORE7 mortgage: approved merged specification and dedicated QA protect the release',
+  core7Spec.includes('Home Loan / Mortgage Prepayment & Early Payoff Calculator') &&
+  core7Spec.includes('Part-prepayment cadence is user-selected') &&
+  mortgageQa.includes('recurring part-prepayment is neutral by default') && mortgageQa.includes('Pay Cycle View do not change amortization') &&
+  mortgageReadme.includes('Carrowmont')
+);
 
 // BING-SEO1 technical indexing foundation - 2026-10-08.
 const indexNowKey = 'd7088229f885cb74d3cd2a3b696b5708';

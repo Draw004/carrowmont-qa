@@ -98,6 +98,15 @@ test.describe('PDF report generation and download standard', () => {
         expect(canvasText).toContain('retirement contribution required');
       }
 
+      if (tool.key === 'mortgage-payoff-calculator') {
+        const mortgageText = canvasText.replace(/\s+/g, ' ').trim();
+        expect(mortgageText).toContain('Home Loan Prepayment / Foreclosure');
+        expect(mortgageText).toContain('Scheduled repayment frequency');
+        expect(mortgageText).toContain('Planning view');
+        expect(mortgageText).toContain('Recurring part-prepayment was not enabled');
+        expect(mortgageText).toContain('No country-specific cadence was assumed');
+      }
+
       if (tool.key === 'budget-cash-flow-planner') {
         const budgetText = canvasText.replace(/\s+/g, ' ').trim();
         const webSuggestionTitles = await page.locator('#insightGrid .insight-card h3').allInnerTexts();
@@ -132,12 +141,13 @@ test.describe('PDF report generation and download standard', () => {
       if (tool.requiresToolsReportPage) {
         expect(canvasText).toContain('Continue planning with Carrowmont');
         const expectedOtherTools = {
-          'financial-independence': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
-          'goal-planner': ['SIP Calculator', 'Retirement Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
-          'inflation-calculator': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Budget & Cash Flow Planner'],
-          'retirement-planner': ['SIP Calculator', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
-          'sip-calculator': ['Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
-          'budget-cash-flow-planner': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator']
+          'financial-independence': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'goal-planner': ['SIP Calculator', 'Retirement Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'inflation-calculator': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'retirement-planner': ['SIP Calculator', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'sip-calculator': ['Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'budget-cash-flow-planner': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Home Loan Prepayment'],
+          'mortgage-payoff-calculator': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner']
         }[tool.key] || [];
         for (const title of expectedOtherTools) expect(canvasText, `${tool.name} report missing ${title}`).toContain(title);
       }

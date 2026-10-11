@@ -433,8 +433,8 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#futureLumpYear')).toBeDisabled();
   });
 
-  test('[AUTO] Shared UI: all tool footers expose the six-tool registry with no navigation arrows', async ({ page }) => {
-    const expectedHrefs = ['/sip-calculator/','/retirement-calculator/','/inflation-calculator/','/goal-planner/','/financial-independence/','/budget-cash-flow-planner/','/#tools'];
+  test('[AUTO] Shared UI: all tool footers expose the seven-tool registry with no navigation arrows', async ({ page }) => {
+    const expectedHrefs = ['/sip-calculator/','/retirement-calculator/','/inflation-calculator/','/goal-planner/','/financial-independence/','/budget-cash-flow-planner/','/mortgage-payoff-calculator/','/tools.html'];
     for (const tool of tools) {
       await gotoClean(page, tool.path);
       const footer = page.locator('.site-footer .footer-col').filter({ has: page.locator('strong', { hasText: 'Tools' }) }).first();

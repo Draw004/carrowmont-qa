@@ -3,7 +3,7 @@ import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow, saveReference
 
 const HOME = '/';
 const DIRECTORY = '/tools.html';
-const CORE_IDS = ['budget', 'investment', 'retirement', 'inflation', 'goals', 'independence'];
+const CORE_IDS = ['budget', 'investment', 'retirement', 'inflation', 'goals', 'independence', 'housing'];
 const ALL_TOOL_PATHS = [
   '/budget-cash-flow-planner/',
   '/sip-calculator/',
@@ -11,13 +11,14 @@ const ALL_TOOL_PATHS = [
   '/inflation-calculator/',
   '/goal-planner/',
   '/financial-independence/',
+  '/mortgage-payoff-calculator/',
   '/4-percent-rule-stress-test.html',
   '/financial-independence-number-by-spending.html',
   '/us-debt-interest-cost-calculator.html',
   '/gold-macro-stress-explorer.html',
   '/silver-supply-demand-macro-stress-explorer.html'
 ];
-const HOMEPAGE_AUTHORITY_PATHS = ALL_TOOL_PATHS.slice(6, 10);
+const HOMEPAGE_AUTHORITY_PATHS = ALL_TOOL_PATHS.slice(7, 11);
 
 async function dismissAnalytics(page) {
   const decline = page.locator('[data-analytics-choice="denied"]').first();
@@ -54,7 +55,7 @@ async function expectHomepageOrder(page, expected) {
 }
 
 test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
-  test('[AUTO] canonical tools directory exposes eleven live tools in three meaningful categories', async ({ page }) => {
+  test('[AUTO] canonical tools directory exposes twelve live tools in three meaningful categories', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, DIRECTORY);
     await dismissAnalytics(page);
@@ -63,10 +64,10 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await expect(page.locator('h1')).toHaveText('Financial calculators, planners and scenario tools');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com/tools.html');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
-    await expect(page.locator('#core-planning-tools .directory-tool-card')).toHaveCount(6);
+    await expect(page.locator('#core-planning-tools .directory-tool-card')).toHaveCount(7);
     await expect(page.locator('#planning-stress-tests .directory-tool-card')).toHaveCount(2);
     await expect(page.locator('#macro-market-explorers .directory-tool-card')).toHaveCount(3);
-    await expect(page.locator('.directory-tool-card')).toHaveCount(11);
+    await expect(page.locator('.directory-tool-card')).toHaveCount(12);
     await expect(page.locator('body')).not.toContainText(/coming soon/i);
 
     for (const path of ALL_TOOL_PATHS) {
@@ -77,19 +78,19 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     const json = JSON.parse(schema);
     expect(json['@type']).toBe('CollectionPage');
     expect(json.mainEntity?.['@type']).toBe('ItemList');
-    expect(json.mainEntity?.numberOfItems).toBe(11);
-    expect(json.mainEntity?.itemListElement).toHaveLength(11);
+    expect(json.mainEntity?.numberOfItems).toBe(12);
+    expect(json.mainEntity?.itemListElement).toHaveLength(12);
     expect(errors).toEqual([]);
   });
 
-  test('[AUTO] homepage keeps six complete visual tool cards, a standout fixed gateway and four authority links', async ({ page }) => {
+  test('[AUTO] homepage keeps seven complete visual tool cards, a standout fixed gateway and four authority links', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, HOME);
     await dismissAnalytics(page);
 
     const grid = page.locator('[data-homepage-core-grid]');
     await expect(grid).toHaveCount(1);
-    await expect(grid.locator('[data-tool-id]')).toHaveCount(6);
+    await expect(grid.locator('[data-tool-id]')).toHaveCount(7);
     await expect(grid.locator('[data-tools-gateway]')).toHaveCount(1);
 
     for (const id of CORE_IDS) {
@@ -111,7 +112,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     });
     expect(gatewayStyle.backgroundImage).toContain('gradient');
     expect(gatewayStyle.color).toBe('rgb(255, 255, 255)');
-    expect(gatewayStyle.position).toBe(6);
+    expect(gatewayStyle.position).toBe(7);
 
     await expect(page.locator('a.text-link[href="/tools.html"]').first()).toContainText('View all tools');
     await expect(page.locator('.authority-tools-grid .authority-tool-card')).toHaveCount(4);
@@ -126,12 +127,12 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await dismissAnalytics(page);
 
     await setLocaleDirect(page, 'IN', 'INR');
-    await expectHomepageOrder(page, ['investment', 'retirement', 'budget', 'inflation', 'goals', 'independence']);
+    await expectHomepageOrder(page, ['investment', 'housing', 'retirement', 'budget', 'inflation', 'goals', 'independence']);
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-title]')).toHaveText('SIP Calculator');
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-cta]')).toContainText('Calculate SIP');
 
     await setLocaleDirect(page, 'US', 'USD');
-    const usOrder = ['retirement', 'investment', 'budget', 'inflation', 'goals', 'independence'];
+    const usOrder = ['housing', 'retirement', 'investment', 'budget', 'inflation', 'goals', 'independence'];
     await expectHomepageOrder(page, usOrder);
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-title]')).toHaveText('Recurring Investment Calculator');
 
@@ -140,7 +141,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await expect(page.locator('[data-homepage-core-grid]')).toHaveAttribute('data-applied-country', 'US');
 
     await setLocaleDirect(page, 'TR', 'TRY');
-    await expectHomepageOrder(page, ['inflation', 'budget', 'investment', 'retirement', 'goals', 'independence']);
+    await expectHomepageOrder(page, ['inflation', 'budget', 'housing', 'investment', 'retirement', 'goals', 'independence']);
   });
 
   test('[AUTO] country-demand contract covers every supported country with complete unique tool orders', async ({ page }) => {
@@ -158,8 +159,8 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     expect(result.mapped.sort()).toEqual(result.regions.sort());
     expect(result.profileKeys.sort()).toEqual(['P1','P10','P11','P2','P3','P4','P5','P6','P7','P8','P9'].sort());
     for (const [country, order] of Object.entries(result.orders)) {
-      expect(order, `${country} order length`).toHaveLength(6);
-      expect(new Set(order).size, `${country} order uniqueness`).toBe(6);
+      expect(order, `${country} order length`).toHaveLength(7);
+      expect(new Set(order).size, `${country} order uniqueness`).toBe(7);
       expect([...order].sort(), `${country} order contents`).toEqual([...CORE_IDS].sort());
     }
   });
@@ -172,6 +173,8 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await setLocaleDirect(page, 'GB', 'GBP');
     await expect(page.locator('[data-directory-tool="investment"] [data-cm-investment-title]')).toHaveText('Recurring Investment Calculator');
     await expect(page.locator('[data-directory-tool="investment"] a')).toHaveAttribute('href', '/sip-calculator/');
+    await expect(page.locator('[data-directory-tool="housing"] [data-cm-housing-title]')).toHaveText('Mortgage Overpayment');
+    await expect(page.locator('[data-directory-tool="housing"] a')).toHaveAttribute('href', '/mortgage-payoff-calculator/');
   });
 
   test('[AUTO] shared site script upgrades legacy visible all-tools links without mass-editing content pages', async ({ page }) => {
@@ -203,12 +206,16 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       });
       expect(gatewayRect.left).toBeGreaterThanOrEqual(0);
       expect(gatewayRect.right).toBeLessThanOrEqual(width + 1);
-      expect(gatewayRect.width).toBeGreaterThan(width <= 390 ? 280 : 400);
+      const firstToolRect = await page.locator('[data-homepage-core-grid] [data-tool-id]').first().evaluate(el => {
+        const r = el.getBoundingClientRect();
+        return { width: r.width };
+      });
+      expect(Math.abs(gatewayRect.width - firstToolRect.width), `${width}px gateway should use the same card width as a core tool`).toBeLessThanOrEqual(2);
 
       await gotoClean(page, DIRECTORY);
       await dismissAnalytics(page);
       await assertNoHorizontalOverflow(page, `${width}px all-tools directory`);
-      await expect(page.locator('.directory-tool-card')).toHaveCount(11);
+      await expect(page.locator('.directory-tool-card')).toHaveCount(12);
     }
   });
 
