@@ -1027,6 +1027,7 @@ if (uiStandard) {
 
 
 
+
 // CORE7 Home Loan / Mortgage Prepayment & Early Payoff - Snapshot 43 implementation contract.
 const mortgageHtml = read('mortgage-payoff-calculator/index.html');
 const mortgageCore = read('mortgage-payoff-calculator/core.js');
@@ -1036,6 +1037,24 @@ const mortgageState = read('mortgage-payoff-calculator/shared-plan-state.js');
 const mortgageBridge = read('mortgage-payoff-calculator/shared-plan-bridge.js');
 const mortgageReadme = read('mortgage-payoff-calculator/README.md');
 const mortgageQa = fs.readFileSync(new URL('../tests/15-mortgage-payoff-calculator.spec.js', import.meta.url), 'utf8');
+const mortgageStyles = read('mortgage-payoff-calculator/styles.css');
+
+add('mortgage: shared shell follows approved Carrowmont header/footer standard',
+  mortgageHtml.includes('class="brand-wordmark">CARROWMONT</span>') &&
+  mortgageHtml.includes('<a href="#planner">Calculator</a>') &&
+  mortgageHtml.includes('<a href="#how-it-works">How it works</a>') &&
+  mortgageHtml.includes('<a href="#methodology">Methodology</a>') &&
+  mortgageHtml.includes('<a href="/tools.html">All tools</a>') &&
+  mortgageHtml.includes('<a href="/">Home</a>') &&
+  mortgageHtml.includes('class="mobile-nav"') &&
+  mortgageHtml.includes('class="footer-wordmark" href="/">CARROWMONT</a>') &&
+  mortgageHtml.includes('<strong>Carrowmont</strong>') &&
+  mortgageHtml.includes('<strong>Legal</strong>') &&
+  mortgageHtml.includes('footer-product-bottom') &&
+  mortgageStyles.includes('CORE7 shared-shell conformance - 2026-10-11') &&
+  mortgageStyles.includes('.site-header .mobile-nav')
+);
+
 const core7Spec = read('draw004.github.io/docs/CARROWMONT_CORE7_HOME_LOAN_MORTGAGE_PAYOFF_SPEC.md');
 const core7ToolsDirectory = read('draw004.github.io/tools.html');
 const core7Sitemap = read('draw004.github.io/sitemap.xml');

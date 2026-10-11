@@ -22,7 +22,7 @@ test.describe('Layout and responsive guardrails', () => {
     }
   });
 
-  test('[AUTO] Shared locale pill geometry is identical across all six tools', async ({ page }, testInfo) => {
+  test('[AUTO] Shared locale pill geometry is identical across all seven tools', async ({ page }, testInfo) => {
     const metric = async path => {
       await gotoClean(page, path);
       return page.evaluate(() => {
@@ -45,7 +45,7 @@ test.describe('Layout and responsive guardrails', () => {
     };
     const paths = {
       SIP:'/sip-calculator/', Goal:'/goal-planner/', FI:'/financial-independence/', Inflation:'/inflation-calculator/',
-      Retirement:'/retirement-calculator/planner.html', Budget:'/budget-cash-flow-planner/'
+      Retirement:'/retirement-calculator/planner.html', Budget:'/budget-cash-flow-planner/', Mortgage:'/mortgage-payoff-calculator/'
     };
     const values = {};
     for (const [name,path] of Object.entries(paths)) values[name] = await metric(path);
@@ -55,16 +55,19 @@ test.describe('Layout and responsive guardrails', () => {
       expect(current.summaryRadius, `${name} locale control should be a pill`).toBe('999px');
       expect(current.summaryBoxSizing, `${name} locale pill should use border-box sizing`).toBe('border-box');
     }
-    const sip = values.SIP, budget = values.Budget;
-    expect(Math.abs(budget.left - sip.left), 'Budget header left edge').toBeLessThan(2);
-    expect(Math.abs(budget.right - sip.right), 'Budget header right edge').toBeLessThan(2);
-    expect(Math.abs(budget.width - sip.width), 'Budget header width').toBeLessThan(2);
-    expect(budget.brandSize, 'Budget shared wordmark size').toBe(sip.brandSize);
-    expect(budget.brandColor, 'Budget shared wordmark color').toBe(sip.brandColor);
-    if (testInfo.project.name.includes('desktop')) {
-      expect(Math.abs(budget.popoverWidth - sip.popoverWidth), 'Budget locale popover width').toBeLessThan(2);
-      expect(budget.popoverPadding, 'Budget locale popover padding').toBe(sip.popoverPadding);
-      expect(budget.popoverRadius, 'Budget locale popover radius').toBe(sip.popoverRadius);
+    const sip = values.SIP;
+    for (const name of ['Budget','Mortgage']) {
+      const current = values[name];
+      expect(Math.abs(current.left - sip.left), `${name} header left edge`).toBeLessThan(2);
+      expect(Math.abs(current.right - sip.right), `${name} header right edge`).toBeLessThan(2);
+      expect(Math.abs(current.width - sip.width), `${name} header width`).toBeLessThan(2);
+      expect(current.brandSize, `${name} shared wordmark size`).toBe(sip.brandSize);
+      expect(current.brandColor, `${name} shared wordmark color`).toBe(sip.brandColor);
+      if (testInfo.project.name.includes('desktop')) {
+        expect(Math.abs(current.popoverWidth - sip.popoverWidth), `${name} locale popover width`).toBeLessThan(2);
+        expect(current.popoverPadding, `${name} locale popover padding`).toBe(sip.popoverPadding);
+        expect(current.popoverRadius, `${name} locale popover radius`).toBe(sip.popoverRadius);
+      }
     }
   });
 
