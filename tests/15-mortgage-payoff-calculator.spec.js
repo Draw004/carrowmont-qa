@@ -157,6 +157,23 @@ test.describe('CORE7 Home Loan / Mortgage Prepayment & Early Payoff', () => {
     }
   });
 
+
+  test('[AUTO] shared header and footer follow the approved Carrowmont UI standard', async ({ page }) => {
+    await gotoClean(page, PATH);
+    await setLocale(page, 'IN', 'INR');
+    const nav = page.locator('.site-header .top-nav a');
+    await expect(nav).toHaveText(['Calculator','How it works','Methodology','All tools','Home']);
+    await expect(page.locator('.site-header .brand-wordmark')).toHaveText('CARROWMONT');
+    await expect(page.locator('#localeSummary')).toContainText('India · INR');
+    await expect(page.locator('.site-footer .footer-brand-block .footer-wordmark')).toHaveText('CARROWMONT');
+    await expect(page.locator('.site-footer .footer-col')).toHaveCount(3);
+    await expect(page.locator('.site-footer .footer-col').nth(0).locator('strong')).toHaveText('Tools');
+    await expect(page.locator('.site-footer .footer-col').nth(1).locator('strong')).toHaveText('Carrowmont');
+    await expect(page.locator('.site-footer .footer-col').nth(2).locator('strong')).toHaveText('Legal');
+    await expect(page.locator('.site-footer .footer-product-name')).toContainText('Home Loan');
+    await expect(page.locator('.site-footer .footer-bottom')).toContainText('Illustrative estimates, not financial advice.');
+  });
+
   test('[AUTO] shared browser state is semantic and same-currency Budget handoff requires explicit user action', async ({ page }) => {
     await page.goto(PATH, { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
