@@ -803,7 +803,7 @@ const newLearnPages = [
   'coast-fire-explained.html','sip-during-market-fall.html'
 ];
 add('main site: Learn expansion adds Budget & Cash Flow pillar and popular-question discovery',
-  learnHub.includes('data-category="budget"') && learnHub.includes('POPULAR PLANNING QUESTIONS') && learnHub.includes('learn-expansion.js?v=20260927-learn1')
+  learnHub.includes('data-category="budget"') && learnHub.includes('data-category="home"') && learnHub.includes('POPULAR PLANNING QUESTIONS') && learnHub.includes('learn-expansion.js?v=20261011-mortgage1')
 );
 add('main site: all 14 new Learn pages exist and are linked from Learn hub',
   newLearnPages.every(file => fs.existsSync(path.join(root,'draw004.github.io',file)) && learnHub.includes('href="/'+file+'"'))
@@ -820,8 +820,8 @@ add('main site: sitemap contains at least 71 URLs including all 14 first-wave Le
   (learnSitemap.match(/<loc>/g)||[]).length>=71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 add('main site: Learn expansion preserves country-aware investment wording and market ordering',
-  learnExpansion.includes("['investment','assets','retirement','budget','goals','fi','inflation','foundation']") &&
-  learnExpansion.includes("['retirement','assets','budget','goals','investment','fi','inflation','foundation']") &&
+  learnExpansion.includes("['investment','assets','home','retirement','budget','goals','fi','inflation','foundation']") &&
+  learnExpansion.includes("['retirement','assets','home','budget','goals','investment','fi','inflation','foundation']") &&
   learnExpansion.includes('What happens to a SIP when markets fall?') &&
   learnExpansion.includes('What happens to recurring investments when markets fall?')
 );
@@ -869,6 +869,13 @@ const standardizedLearnFiles = fs.existsSync(learnArticleDir)
     }).sort()
   : [];
 const standardizedLearnPages = standardizedLearnFiles.map(file => ({ file, page: read('draw004.github.io/' + file) }));
+const mortgageLearnFiles = [
+  'one-extra-mortgage-payment-a-year.html',
+  'monthly-extra-vs-annual-lump-sum-mortgage.html',
+  'biweekly-fortnightly-mortgage-payments.html',
+  'extra-mortgage-payments-early-vs-late.html',
+  'pay-off-mortgage-five-years-early.html'
+];
 const standardLearnTitles = standardizedLearnPages.map(({page}) => (page.match(/<title>([^<]+)<\/title>/i)||[])[1] || '');
 const standardLearnDescriptions = standardizedLearnPages.map(({page}) => ((page.match(/<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/i)||page.match(/<meta[^>]*content="([^"]*)"[^>]*name="description"[^>]*>/i)||[])[1] || ''));
 
@@ -881,10 +888,10 @@ add('main site: shared Learn article CSS/JS standard exists',
   learnArticleStandardDoc.includes('required structure and editorial-depth standard for every indexable Carrowmont Learn article')
 );
 add('main site: all Learn Article pages inherit the reusable article standard',
-  standardizedLearnPages.length >= 52 && standardizedLearnPages.every(({page}) =>
+  standardizedLearnPages.length >= 57 && standardizedLearnPages.every(({file,page}) =>
     page.includes('data-cm-learn-article="1"') &&
     page.includes('learn-article.css?v=20261010-global1') &&
-    page.includes('learn-article.js?v=20260928-standard2') &&
+    (page.includes('learn-article.js?v=20260928-standard2') || (mortgageLearnFiles.includes(file) && page.includes('learn-article.js?v=20261011-mortgage1'))) &&
     page.includes('class="article-meta"') &&
     page.includes('class="guide-action-first"') &&
     page.includes('class="reference-note"') &&
@@ -1616,7 +1623,7 @@ add('main site: SEO3C is discoverable from the approved macro-relevant cluster',
 );
 add('main site: SEO3C canonical route and refreshed contextual pages are in sitemap with release lastmod',
   sitemapLastmods.get('https://carrowmont.com/us-debt-interest-cost-calculator.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-11' &&
   sitemapLastmods.get('https://carrowmont.com/stocks-vs-bonds.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/inflation-and-retirement-planning.html') === '2026-10-10'
@@ -1952,8 +1959,8 @@ const localeCurrencyCodes = [...localeCurrencyBlock.matchAll(/\b([A-Z]{3}):\s*\{
 const learnExampleCodes = [...learnExampleBlock.matchAll(/\b([A-Z]{3}):\s*\{/g)].map(m => m[1]);
 const learnMainTexts = Object.fromEntries(learnLocalePages.map(file => [file, learnMainVisibleText(read('draw004.github.io/'+file))]));
 const regionalLeakPattern = /₹|\brupees?\b|\blakhs?\b|\bcrores?\b|\bSIP(?:s)?\b/i;
-add('main site: LEARN-LOCALE1 audits exactly all 54 Learn/hub pages through the shared localization layer',
-  learnLocalePages.length === 54 && learnLocalePages.includes('learn.html') && learnLocalePages.includes('financial-independence-number.html')
+add('main site: LEARN-LOCALE1 audits exactly all 59 Learn/hub pages through the shared localization layer',
+  learnLocalePages.length === 59 && learnLocalePages.includes('learn.html') && learnLocalePages.includes('financial-independence-number.html')
 );
 add('main site: LEARN-LOCALE1 raw Learn main content is globally neutral with no hard-coded India monetary/SIP leakage',
   learnLocalePages.every(file => !regionalLeakPattern.test(learnMainTexts[file]))
@@ -1996,7 +2003,7 @@ add('main site: LEARN-LOCALE1 required previously-unidentified pages now have st
   read('draw004.github.io/todays-money-vs-future-money.html').includes('data-cm-page="today-vs-future-money-guide"')
 );
 add('main site: LEARN-LOCALE1 updates all content-changed Learn sitemap entries without creating duplicate country URLs',
-  initialLearnLocaleAffected.every(file => sitemapLastmods.get('https://carrowmont.com/' + file) === '2026-10-10') &&
+  initialLearnLocaleAffected.every(file => sitemapLastmods.get('https://carrowmont.com/' + file) === ((file === 'learn.html' || file === 'rent-vs-buy-home.html') ? '2026-10-11' : '2026-10-10')) &&
   !/\/in\/|\/us\/|\?country=/.test(learnLocaleSitemap)
 );
 add('main site: LEARN-LOCALE1 cache-busts the shared localization/CSS assets and keeps long related-guide links mobile-safe',
@@ -2017,6 +2024,59 @@ add('main site: LEARN-LOCALE1 implementation record locks Snapshot 37, controlli
   learnLocaleImplementation.includes('05a41d03d2aa3215284d5d8955b5ac77767a80c4') &&
   learnLocaleImplementation.includes('Expected generated release PR count: **2**') &&
   learnLocaleImplementation.includes('Workflows: Read and write is **not required**')
+);
+
+
+// Mortgage Learn & Education Integration V1 - 2026-10-11.
+const mortgageLearnHub = read('draw004.github.io/learn.html');
+const mortgageLearnScript = read('draw004.github.io/mortgage-learn.js');
+const mortgageLearnArticleJs = read('draw004.github.io/learn-article.js');
+const mortgageLearnToolHtml = read('mortgage-payoff-calculator/index.html');
+const mortgageLearnToolApp = read('mortgage-payoff-calculator/app.js');
+const mortgageLearnToolCss = read('mortgage-payoff-calculator/styles.css');
+const mortgageLearnRentBuy = read('draw004.github.io/rent-vs-buy-home.html');
+const mortgageLearnImpl = read('draw004.github.io/docs/CARROWMONT_MORTGAGE_LEARN_EDUCATION_V1_IMPLEMENTATION.md');
+const mortgageLearnQa = fs.readFileSync(new URL('../tests/16-mortgage-learn-education.spec.js', import.meta.url), 'utf8');
+add('Mortgage Learn V1: all five universal guides exist, inherit the article standard and are discoverable from the Learn hub',
+  mortgageLearnFiles.every(file => fs.existsSync(path.join(root,'draw004.github.io',file)) && mortgageLearnHub.includes('href="/'+file+'"') && read('draw004.github.io/'+file).includes('data-cm-learn-article="1"') && read('draw004.github.io/'+file).includes('href="/mortgage-payoff-calculator/"')) &&
+  mortgageLearnHub.includes('id="home-loans"') && mortgageLearnHub.includes('Home Loans &amp; Mortgages')
+);
+add('Mortgage Learn V1: new guides use the shared mortgage-localization layer and shared bottom tool-return pattern',
+  mortgageLearnScript.includes("IN:{kicker:'HOME LOAN PREPAYMENT GUIDE'") && mortgageLearnScript.includes("GB:{kicker:'MORTGAGE OVERPAYMENT GUIDE'") &&
+  mortgageLearnArticleJs.includes("'/mortgage-payoff-calculator/': 'Mortgage / Home Loan Payoff Calculator'") &&
+  mortgageLearnFiles.every(file => read('draw004.github.io/'+file).includes('mortgage-learn.js?v=20261011-mortgage1'))
+);
+add('Mortgage Learn V1: new guides preserve the shared single-content-wrapper and one-direct-answer article structure',
+  mortgageLearnFiles.every(file => {
+    const page = read('draw004.github.io/'+file);
+    return /<article class="guide-section"><div>\s*<div class="guide-action-first">/.test(page) &&
+      !page.includes('class="guide-number"') &&
+      (page.match(/class="guide-answer"/g)||[]).length === 1;
+  })
+);
+add('Mortgage Learn V1: tool exposes before-model Learn bridge, contextual result education and exactly one country-aware FAQ slot',
+  mortgageLearnToolHtml.includes('UNDERSTAND BEFORE YOU MODEL') && mortgageLearnToolHtml.includes('href="/one-extra-mortgage-payment-a-year.html"') &&
+  mortgageLearnToolHtml.includes('id="resultLearnLink"') && mortgageLearnToolHtml.includes('id="countryFaqItem"') &&
+  !mortgageLearnToolHtml.includes('What does home-loan foreclosure mean in India?') && !mortgageLearnToolHtml.includes('What is mortgage overpayment in the UK?') &&
+  mortgageLearnToolApp.includes('function countryFaq(') && mortgageLearnToolApp.includes("href:'/pay-off-mortgage-five-years-early.html'") &&
+  mortgageLearnToolCss.includes('Mortgage Learn & Education Integration V1')
+);
+add('Mortgage Learn V1: Learn-to-Tool and Tool-to-Learn paths are bidirectional and Rent vs Buy is contextually connected',
+  mortgageLearnFiles.every(file => read('draw004.github.io/'+file).includes('href="/mortgage-payoff-calculator/"')) &&
+  mortgageLearnToolHtml.includes('href="/learn.html#home-loans"') && mortgageLearnRentBuy.includes('href="/mortgage-payoff-calculator/"') && mortgageLearnRentBuy.includes('href="/one-extra-mortgage-payment-a-year.html"')
+);
+add('Mortgage Learn V1: sitemap contains every new guide with the release date and changed discovery pages are refreshed',
+  mortgageLearnFiles.every(file => sitemapLastmods.get('https://carrowmont.com/'+file)==='2026-10-11') &&
+  sitemapLastmods.get('https://carrowmont.com/learn.html')==='2026-10-11' && sitemapLastmods.get('https://carrowmont.com/rent-vs-buy-home.html')==='2026-10-11'
+);
+add('Mortgage Learn V1: implementation record locks Snapshot 44, three-PR scope and no workflow permission requirement',
+  mortgageLearnImpl.includes('Source Snapshot 44') && mortgageLearnImpl.includes('5c8c9ae3a8afbf6c6bb1d4ad3de6888e6f8a2ff8') &&
+  mortgageLearnImpl.includes('5b62be00cbe76d78003c94567006cc0c3590c637') && mortgageLearnImpl.includes('dba41980f57dcad9dcbf409b4ce092d22dbd004c') &&
+  mortgageLearnImpl.includes('Expected generated release PR count: **3**') && mortgageLearnImpl.includes('Workflows: Read and write` is **not required**')
+);
+add('central QA: Mortgage Learn V1 protects country-aware FAQ, contextual result education, bidirectional links and mobile overflow',
+  mortgageLearnQa.includes('country-aware FAQ') && mortgageLearnQa.includes('result education link changes') && mortgageLearnQa.includes('shared bottom CTA') &&
+  mortgageLearnQa.includes('Home Loans & Mortgages cluster') && mortgageLearnQa.includes('390,360')
 );
 
 console.log('\nCarrowmont source contract check\n');
