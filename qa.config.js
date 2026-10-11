@@ -72,6 +72,20 @@ export const tools = [
     requiresToolsReportPage: true
   },
   {
+    key: 'mortgage-payoff-calculator',
+    name: 'Home Loan / Mortgage Prepayment & Early Payoff',
+    path: '/mortgage-payoff-calculator/',
+    reportButton: '#reportBtn',
+    reportStatus: '#reportDownloadStatus',
+    reportMinPages: 5,
+    charts: ['#balanceChart'],
+    requiredText: ['Copy Summary', 'Download CSV', 'Enable recurring part-prepayment'],
+    keyInputs: ['#balance', '#annualRate', '#remainingYears', '#paymentFrequency'],
+    layoutParent: '.actions-card',
+    requiresGuideReportPage: true,
+    requiresToolsReportPage: true
+  },
+  {
     key: 'sip-calculator',
     name: 'SIP Calculator',
     path: '/sip-calculator/',
@@ -98,5 +112,6 @@ export const mainSitePages = [
   { key: 'us-debt-interest-cost', path: '/us-debt-interest-cost-calculator.html', text: 'See how debt and refinancing rates can change the U.S. interest burden' },
   { key: 'gold-macro-stress-explorer', path: '/gold-macro-stress-explorer.html', text: 'See the competing macro forces shaping gold' },
   { key: 'silver-vs-gold', path: '/silver-vs-gold.html', text: 'Silver vs gold' },
-  { key: 'silver-supply-demand-macro-stress', path: '/silver-supply-demand-macro-stress-explorer.html', text: 'See what is driving silver' }
+  { key: 'silver-supply-demand-macro-stress', path: '/silver-supply-demand-macro-stress-explorer.html', text: 'See what is driving silver' },
+  { key: 'mortgage-payoff-calculator-page', path: '/mortgage-payoff-calculator/', text: 'part-prepayments' }
 ];

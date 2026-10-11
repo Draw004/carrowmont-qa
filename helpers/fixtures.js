@@ -158,6 +158,20 @@ export async function prepareToolForQa(page, toolKey) {
     await expect(page.locator('#moneyRemaining')).toContainText(/31,000|31K|31 k|₹31/);
   }
 
+  if (toolKey === 'mortgage-payoff-calculator') {
+    await setInput(page, '#balance', 5000000);
+    await setInput(page, '#annualRate', 8.5);
+    await setInput(page, '#remainingYears', 15);
+    await setInput(page, '#remainingMonths', 0);
+    const scheduledFrequency = page.locator('#paymentFrequency');
+    if (await scheduledFrequency.count()) await scheduledFrequency.selectOption('monthly');
+    const recurringEnabled = page.locator('#recurringEnabled');
+    if (await recurringEnabled.count() && await recurringEnabled.isChecked()) await recurringEnabled.uncheck();
+    const extraFrequency = page.locator('#extraFrequency');
+    if (await extraFrequency.count()) await expect(extraFrequency).toHaveValue('');
+    await expect(page.locator('#reportBtn')).toBeEnabled({ timeout: 10000 });
+  }
+
   if (toolKey === 'sip-calculator') {
     const growth = page.locator('#growthTab');
     if (await growth.count()) await growth.click();
