@@ -48,6 +48,12 @@ const sipHtml = read('sip-calculator/index.html');
 const sipCore = read('sip-calculator/core.js');
 const sipApp = read('sip-calculator/app.js');
 const sipLocale = read('sip-calculator/locale.js');
+add('sip: GSEO1B-1 search title broadens global intent while preserving the visible India product label',
+  sipHtml.includes('<title>Investment Calculator &amp; SIP Calculator | Carrowmont</title>') &&
+  sipHtml.includes('content="Investment Calculator &amp; SIP Calculator | Carrowmont"') &&
+  sipHtml.includes('"name":"Carrowmont Investment & SIP Calculator"') &&
+  sipHtml.includes('<span class="product-label">SIP Calculator</span>')
+);
 add('sip: contribution-frequency selector', sipHtml.includes('id="contributionFrequency"'));
 add('sip: standardized frequency periods',
   /weekly\s*:\s*52/.test(sipCore) &&
@@ -85,6 +91,12 @@ const goalHtml = read('goal-planner/index.html');
 const goalApp = read('goal-planner/app.js');
 const goalLocale = read('goal-planner/locale.js');
 const goalPdf = read('goal-planner/goal-pdf-renderer.js');
+add('goal: GSEO1B-1 search title identifies savings-goal calculator intent while preserving Goal Planner UI',
+  goalHtml.includes('<title>Savings Goal Calculator &amp; Financial Goal Planner | Carrowmont</title>') &&
+  goalHtml.includes('content="Savings Goal Calculator &amp; Financial Goal Planner | Carrowmont"') &&
+  goalHtml.includes('"name":"Carrowmont Savings Goal Calculator & Financial Goal Planner"') &&
+  goalHtml.includes('<span class="product-label">Goal Planner</span>')
+);
 add('goal: separate pay and savings/contribution frequency inputs',
   goalHtml.includes('id="payFrequency"') &&
   goalHtml.includes('id="contributionFrequency"') &&
@@ -1692,6 +1704,12 @@ add('main site: SEO3D canonical metadata, WebApplication schema and one H1 are p
   goldMacroHtml.includes('"@type":"WebApplication"') && goldMacroHtml.includes('isAccessibleForFree') &&
   (goldMacroHtml.match(/<h1\b/g) || []).length === 1
 );
+add('main site: GSEO1B-1 Gold primary action navigates to the already-live scenario result',
+  goldMacroHtml.includes('id="exploreBtn" aria-controls="goldResults">View Gold Scenario Results</button>') &&
+  goldMacroHtml.includes('class="gmse-results" id="goldResults" tabindex="-1"') &&
+  goldMacroApp.includes('function viewResults()') && goldMacroApp.includes('scrollIntoView') &&
+  goldMacroApp.includes("els.explore.addEventListener('click',viewResults)")
+);
 add('main site: SEO3D exposes exactly six approved drivers and keeps reference/source detail collapsed by default',
   ['realYield','dollar','inflation','centralBank','fiscal','stress'].every(key => goldMacroApp.includes(`${key}:`)) &&
   goldMacroHtml.includes('id="referenceDataDetails"') && !goldMacroHtml.includes('id="referenceDataDetails" open') &&
@@ -1776,7 +1794,7 @@ add('main site: SEO3D is discoverable from Learn, gold cluster and SEO3C',
   usDebtHtml.includes('href="/gold-macro-stress-explorer.html"')
 );
 add('main site: SEO3D canonical route and refreshed gold cluster are in sitemap with release lastmod',
-  sitemapLastmods.get('https://carrowmont.com/gold-macro-stress-explorer.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-macro-stress-explorer.html') === '2026-10-12' &&
   sitemapLastmods.get('https://carrowmont.com/gold-as-an-investment.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/gold-vs-stocks.html') === '2026-10-10' &&
