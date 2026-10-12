@@ -72,6 +72,11 @@ test.describe('Gold Under Macro Stress Explorer',()=>{
     await page.locator('#referenceDataDetails summary').click();await expect(page.locator('#referenceDataDetails')).toHaveAttribute('open','');await expect(page.locator('#referenceDataBody tr')).toHaveCount(6);await expect(page.locator('#referenceDataBody')).toContainText('U.S. Department of the Treasury');await expect(page.locator('#referenceDataBody')).toContainText('World Gold Council');
   });
 
+  test('[AUTO] primary scenario action moves focus to the current live result without changing the deterministic scenario',async({page})=>{
+    await gotoClean(page,PAGE);await waitForRendered(page);await expect(page.locator('#exploreBtn')).toHaveText('View Gold Scenario Results');
+    await page.locator('#driver-dollar').selectOption('2');const before=await page.evaluate(()=>window.__carrowmontGoldLastResult.scenario);await page.locator('#exploreBtn').click();await expect(page.locator('#goldResults')).toBeFocused();const after=await page.evaluate(()=>window.__carrowmontGoldLastResult.scenario);expect(after).toEqual(before);await expect(page.locator('#scenarioType')).toHaveText('CUSTOM WHAT-IF SCENARIO');
+  });
+
   test('[AUTO] custom what-if scenario, conflict visibility and Reset fixture L preserve exact reference state',async({page})=>{
     await gotoClean(page,PAGE);await waitForRendered(page);const reference=await page.evaluate(()=>window.__carrowmontGoldLastResult.referenceScores);
     await page.locator('#driver-realYield').selectOption('-2');await page.locator('#driver-dollar').selectOption('-2');await page.locator('#driver-inflation').selectOption('1');await page.locator('#driver-centralBank').selectOption('1');await page.locator('#driver-fiscal').selectOption('1');await page.locator('#driver-stress').selectOption('1');await page.locator('#exploreBtn').click();

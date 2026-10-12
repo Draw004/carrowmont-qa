@@ -45,6 +45,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
         // The same calculator is intentionally localized by country/currency:
         // India/INR uses SIP terminology; international views use Recurring Investment terminology.
         await chooseUnitedStatesLocale(page);
+        await expect(page).toHaveTitle('Investment Calculator & Recurring Investment Calculator | Carrowmont');
         await expect(page.locator('.product-label')).toHaveText('Recurring Investment Calculator');
         await expect(page.locator('#contributionFrequency')).toHaveValue('biweekly');
         await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Biweekly (Every 2 Weeks)');
@@ -54,6 +55,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
         if (await indiaBadgeInternational.count()) await expect(indiaBadgeInternational).toBeHidden();
 
         await chooseIndiaLocale(page);
+        await expect(page).toHaveTitle('Investment Calculator & SIP Calculator | Carrowmont');
         await expect(page.locator('.product-label')).toHaveText('SIP Calculator');
         await expect(page.locator('#contributionFrequency')).toHaveValue('monthly');
         await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Every 2 Weeks');
@@ -167,6 +169,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
     // Set India explicitly before validating the Monthly country default so this
     // test is deterministic in CI and still verifies the country-aware behavior.
     await chooseIndiaLocale(page);
+    await expect(page).toHaveTitle('Savings Goal Calculator & Financial Goal Planner | Carrowmont');
     await expect(pay).toHaveValue('monthly');
     await expect(contribution).toHaveValue('monthly');
     await expect(pay.locator('option[value="biweekly"]')).toHaveText('Every 2 Weeks');
