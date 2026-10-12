@@ -51,7 +51,7 @@ test.describe('MDC1A Mortgage Decision Centre - Prepayment vs Investing',()=>{
     await expect(page.locator('.decision-card .decision-status',{hasText:'Live'})).toHaveCount(2);
     await expect(page.locator('.decision-card.planned')).toHaveCount(2);
     await expect(page.locator('.decision-card.planned a')).toHaveCount(0);
-    await expect(page.locator(`a[href="/mortgage-payoff-calculator/"]`).first()).toBeVisible();
+    await expect(page.locator('.decision-card:not(.planned) a[href="/mortgage-payoff-calculator/"]')).toBeVisible();
     await expect(page.locator('.decision-card:not(.planned) a[href="prepayment-vs-investing.html"]')).toBeVisible();
   });
 
