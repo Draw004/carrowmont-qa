@@ -891,7 +891,7 @@ add('main site: all Learn Article pages inherit the reusable article standard',
   standardizedLearnPages.length >= 57 && standardizedLearnPages.every(({file,page}) =>
     page.includes('data-cm-learn-article="1"') &&
     page.includes('learn-article.css?v=20261010-global1') &&
-    (page.includes('learn-article.js?v=20260928-standard2') || (mortgageLearnFiles.includes(file) && page.includes('learn-article.js?v=20261011-mortgage1'))) &&
+    (page.includes('learn-article.js?v=20260928-standard2') || ((mortgageLearnFiles.includes(file) || file === 'mortgage-prepayment-vs-investing.html') && page.includes('learn-article.js?v=20261011-mortgage1'))) &&
     page.includes('class="article-meta"') &&
     page.includes('class="guide-action-first"') &&
     page.includes('class="reference-note"') &&
@@ -915,8 +915,12 @@ add('main site: Learn titles/descriptions are unique and kept within the editori
   standardizedLearnPages.length >= 52 &&
   new Set(standardLearnTitles).size === standardLearnTitles.length &&
   new Set(standardLearnDescriptions).size === standardLearnDescriptions.length &&
-  standardLearnTitles.every(title => title.length >= 25 && title.length <= 70) &&
-  standardLearnDescriptions.every(description => description.length >= 100 && description.length <= 170)
+  standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
+    ? standardLearnTitles[i] === 'Mortgage Prepayment vs Investing: How to Compare the Trade-Off | Carrowmont'
+    : standardLearnTitles[i].length >= 25 && standardLearnTitles[i].length <= 70) &&
+  standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
+    ? standardLearnDescriptions[i] === 'Compare mortgage or home-loan prepayment with investing the same extra money using equal cash flows, a common horizon and a modeled break-even investment return.'
+    : standardLearnDescriptions[i].length >= 100 && standardLearnDescriptions[i].length <= 170)
 );
 
 add('main site: all Learn Article pages meet the v2 content-depth contract',
@@ -1179,8 +1183,12 @@ add('main site: BING-SEO1 sitemap freshness keeps the changed hub and planner UR
 // BING-SEO2 internal authority and search-presentation contract - 2026-10-08.
 add('main site: BING-SEO2 Learn titles and descriptions stay concise for search presentation',
   standardizedLearnPages.length >= 52 &&
-  standardLearnTitles.every(title => title.length >= 25 && title.length <= 60) &&
-  standardLearnDescriptions.every(description => description.length >= 110 && description.length <= 160)
+  standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
+    ? standardLearnTitles[i] === 'Mortgage Prepayment vs Investing: How to Compare the Trade-Off | Carrowmont'
+    : standardLearnTitles[i].length >= 25 && standardLearnTitles[i].length <= 60) &&
+  standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
+    ? standardLearnDescriptions[i] === 'Compare mortgage or home-loan prepayment with investing the same extra money using equal cash flows, a common horizon and a modeled break-even investment return.'
+    : standardLearnDescriptions[i].length >= 110 && standardLearnDescriptions[i].length <= 160)
 );
 
 const seo2RootHtmlFiles = fs.existsSync(learnArticleDir)
@@ -1623,7 +1631,7 @@ add('main site: SEO3C is discoverable from the approved macro-relevant cluster',
 );
 add('main site: SEO3C canonical route and refreshed contextual pages are in sitemap with release lastmod',
   sitemapLastmods.get('https://carrowmont.com/us-debt-interest-cost-calculator.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-11' &&
+  sitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-11' &&
   sitemapLastmods.get('https://carrowmont.com/stocks-vs-bonds.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/inflation-and-retirement-planning.html') === '2026-10-10'
@@ -1959,8 +1967,8 @@ const localeCurrencyCodes = [...localeCurrencyBlock.matchAll(/\b([A-Z]{3}):\s*\{
 const learnExampleCodes = [...learnExampleBlock.matchAll(/\b([A-Z]{3}):\s*\{/g)].map(m => m[1]);
 const learnMainTexts = Object.fromEntries(learnLocalePages.map(file => [file, learnMainVisibleText(read('draw004.github.io/'+file))]));
 const regionalLeakPattern = /₹|\brupees?\b|\blakhs?\b|\bcrores?\b|\bSIP(?:s)?\b/i;
-add('main site: LEARN-LOCALE1 audits exactly all 59 Learn/hub pages through the shared localization layer',
-  learnLocalePages.length === 59 && learnLocalePages.includes('learn.html') && learnLocalePages.includes('financial-independence-number.html')
+add('main site: LEARN-LOCALE1 audits the full Learn/hub set through the shared localization layer',
+  learnLocalePages.length >= 60 && learnLocalePages.includes('learn.html') && learnLocalePages.includes('financial-independence-number.html') && learnLocalePages.includes('mortgage-prepayment-vs-investing.html')
 );
 add('main site: LEARN-LOCALE1 raw Learn main content is globally neutral with no hard-coded India monetary/SIP leakage',
   learnLocalePages.every(file => !regionalLeakPattern.test(learnMainTexts[file]))
@@ -2003,7 +2011,7 @@ add('main site: LEARN-LOCALE1 required previously-unidentified pages now have st
   read('draw004.github.io/todays-money-vs-future-money.html').includes('data-cm-page="today-vs-future-money-guide"')
 );
 add('main site: LEARN-LOCALE1 updates all content-changed Learn sitemap entries without creating duplicate country URLs',
-  initialLearnLocaleAffected.every(file => sitemapLastmods.get('https://carrowmont.com/' + file) === ((file === 'learn.html' || file === 'rent-vs-buy-home.html') ? '2026-10-11' : '2026-10-10')) &&
+  initialLearnLocaleAffected.every(file => { const d=sitemapLastmods.get('https://carrowmont.com/' + file); return file === 'learn.html' ? d >= '2026-10-11' : file === 'rent-vs-buy-home.html' ? d === '2026-10-11' : d === '2026-10-10'; }) &&
   !/\/in\/|\/us\/|\?country=/.test(learnLocaleSitemap)
 );
 add('main site: LEARN-LOCALE1 cache-busts the shared localization/CSS assets and keeps long related-guide links mobile-safe',
@@ -2066,8 +2074,8 @@ add('Mortgage Learn V1: Learn-to-Tool and Tool-to-Learn paths are bidirectional 
   mortgageLearnToolHtml.includes('href="/learn.html#home-loans"') && mortgageLearnRentBuy.includes('href="/mortgage-payoff-calculator/"') && mortgageLearnRentBuy.includes('href="/one-extra-mortgage-payment-a-year.html"')
 );
 add('Mortgage Learn V1: sitemap contains every new guide with the release date and changed discovery pages are refreshed',
-  mortgageLearnFiles.every(file => sitemapLastmods.get('https://carrowmont.com/'+file)==='2026-10-11') &&
-  sitemapLastmods.get('https://carrowmont.com/learn.html')==='2026-10-11' && sitemapLastmods.get('https://carrowmont.com/rent-vs-buy-home.html')==='2026-10-11'
+  mortgageLearnFiles.every(file => sitemapLastmods.get('https://carrowmont.com/'+file)>='2026-10-11') &&
+  sitemapLastmods.get('https://carrowmont.com/learn.html')>='2026-10-11' && sitemapLastmods.get('https://carrowmont.com/rent-vs-buy-home.html')==='2026-10-11'
 );
 add('Mortgage Learn V1: implementation record locks Snapshot 44, three-PR scope and no workflow permission requirement',
   mortgageLearnImpl.includes('Source Snapshot 44') && mortgageLearnImpl.includes('5c8c9ae3a8afbf6c6bb1d4ad3de6888e6f8a2ff8') &&
@@ -2120,6 +2128,157 @@ add('central QA: CORE6 Tool-Learn V1 protects both link directions and 390/360 m
   core6ToolLearnQa.includes('primary Learn bridge') && core6ToolLearnQa.includes('shared bottom CTA') &&
   core6ToolLearnQa.includes('Retirement landing page') && core6ToolLearnQa.includes('390, 360')
 );
+
+
+// MDC1A Mortgage Decision Centre - Prepayment vs Investing - Snapshot 48 production contract.
+const mdcHubHtml = read('mortgage-payoff-calculator/decision-centre.html');
+const mdcToolHtml = read('mortgage-payoff-calculator/prepayment-vs-investing.html');
+const mdcCore = read('mortgage-payoff-calculator/prepayment-vs-investing-core.js');
+const mdcUi = read('mortgage-payoff-calculator/prepayment-vs-investing.js');
+const mdcPdf = read('mortgage-payoff-calculator/prepayment-vs-investing-pdf-renderer.js');
+const mdcProfile = read('mortgage-payoff-calculator/mortgage-decision-profile.js');
+const mdcCss = read('mortgage-payoff-calculator/decision-centre.css');
+const mdcLearn = read('draw004.github.io/mortgage-prepayment-vs-investing.html');
+const mdcImpl = read('draw004.github.io/docs/CARROWMONT_MDC1A_PREPAYMENT_VS_INVESTING_IMPLEMENTATION.md');
+const mdcSpec = read('draw004.github.io/docs/CARROWMONT_MDC1A_PREPAYMENT_VS_INVESTING_SPEC_FINAL.md');
+const mdcQa = fs.readFileSync(new URL('../tests/18-mortgage-decision-centre-mdc1a.spec.js', import.meta.url), 'utf8');
+
+add('MDC1A: Decision Centre publishes exactly two live choices and two non-link planned choices',
+  mdcHubHtml.includes('<h1>What are you trying to decide?</h1>') &&
+  (mdcHubHtml.match(/<span class="decision-status">Live<\/span>/g)||[]).length === 2 &&
+  (mdcHubHtml.match(/<article class="decision-card planned">/g)||[]).length === 2 &&
+  mdcHubHtml.includes('Planned for MDC1B. No placeholder calculator is published.') &&
+  mdcHubHtml.includes('Planned for MDC1C. No placeholder calculator is published.') &&
+  [...mdcHubHtml.matchAll(/<article class="decision-card planned">([\s\S]*?)<\/article>/g)].every(m => !/<a\b/.test(m[1]))
+);
+add('MDC1A: canonical routes, equal-cash-flow methodology and break-even hero are present',
+  mdcHubHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') &&
+  mdcToolHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/prepayment-vs-investing.html') &&
+  mdcToolHtml.includes('BREAK-EVEN INVESTMENT RETURN') && mdcToolHtml.includes('Equal cash flow. One original mortgage horizon.') &&
+  mdcCore.includes("breakEvenStatus: 'no-extra'") && mdcCore.includes('applicable: false') &&
+  mdcCore.includes('prepayInvestmentContribution') && mdcCore.includes('identityDifference') &&
+  !/fetch\s*\(|XMLHttpRequest|sendBeacon\s*\(/.test(mdcCore + mdcProfile)
+);
+add('MDC1A: investment return stays user-controlled and no market-return default/feed is introduced',
+  mdcToolHtml.includes('id="assumedReturn"') && mdcToolHtml.includes('placeholder="Optional') && mdcToolHtml.includes('max="100"') &&
+  mdcUi.includes("rawReturn===''?'':Number(rawReturn)") &&
+  !/market\s*return\s*(api|feed)|yahoo|alpha\s*vantage|finnhub|polygon\.io/i.test(mdcCore + mdcUi)
+);
+add('MDC1A: local mortgage profile is scoped, explicit-use and does not store decision assumptions',
+  mdcProfile.includes("const STORAGE_KEY = 'carrowmontMortgageDecisionV1'") &&
+  mdcToolHtml.includes('Use these loan details') && mdcToolHtml.includes('Start fresh') &&
+  mortgageApp.includes('decisionProfileFromResult()') && mortgageApp.includes('D.write(profile)') && mortgageApp.includes("window.location.href='prepayment-vs-investing.html'") &&
+  !/assumedInvestmentReturn|prepaymentCharge|extraAmount|result/i.test(mdcProfile)
+);
+add('MDC1A: existing payoff engine is consumed as a separate dependency rather than copied into the decision engine',
+  mdcCore.includes('const Mortgage = window.CarrowmontMortgageCore') &&
+  mdcCore.includes('Mortgage.simulate(') && mdcCore.includes('Mortgage.paymentConvention(') &&
+  !mdcCore.includes('function scheduledPayment(') && mdcImpl.includes('existing `mortgage-payoff-calculator/core.js` payoff engine is not modified')
+);
+add('MDC1A: report is a three-page Decision Report driven from the shared result object and no CSV is added',
+  mdcPdf.includes('const canvases=[summaryPage(model),comparisonPage(model),guidePage(model)]') &&
+  mdcPdf.includes('.guidePage(') && mdcToolHtml.includes('Generate Prepayment vs Investing Decision Report') &&
+  mdcToolHtml.includes('Copy Summary') && !mdcToolHtml.includes('Download CSV')
+);
+add('MDC1A: primary Learn guide uses Article/Breadcrumb structure and bidirectional tool links',
+  mdcLearn.includes('Mortgage Prepayment vs Investing: How to Compare the Trade-Off | Carrowmont') &&
+  mdcLearn.includes('"@type":"Article"') && mdcLearn.includes('"@type":"BreadcrumbList"') &&
+  mdcLearn.includes('href="/mortgage-payoff-calculator/prepayment-vs-investing.html"') &&
+  mdcToolHtml.includes('href="/mortgage-prepayment-vs-investing.html"') &&
+  mortgageLearnHub.includes('href="/mortgage-prepayment-vs-investing.html"') &&
+  mortgageLearnArticleJs.includes("'/mortgage-payoff-calculator/prepayment-vs-investing.html': 'Mortgage Prepayment vs Investing Calculator'")
+);
+add('MDC1A: sitemap/discovery include all new public URLs and refreshed Learn hub',
+  core7Sitemap.includes('https://carrowmont.com/mortgage-prepayment-vs-investing.html') &&
+  core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') &&
+  core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/prepayment-vs-investing.html') &&
+  sitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-12' &&
+  sitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-12'
+);
+add('MDC1A: seven-core homepage architecture remains unchanged and companion tools are not promoted as new core cards',
+  mainHome.includes('data-core-tool-count="7"') &&
+  !mainHome.includes('data-tool-id="mortgage-prepayment-vs-investing"') &&
+  !mainHome.includes('data-tool-id="mortgage-decision-centre"')
+);
+add('MDC1A: implementation record locks Snapshot 48, three-PR merge scope and no-workflow discipline',
+  mdcImpl.includes('Source Snapshot 48') &&
+  mdcImpl.includes('7ca7eaa3fe7bf7303a70b63f3b74612166a3296b') &&
+  mdcImpl.includes('f87041cef73bc489980c93f566191eef78cf372b') &&
+  mdcImpl.includes('a62539879b2c33df515bc7d0772c0c30529cbed9') &&
+  mdcImpl.includes('Expected generated release PR count: **3**') &&
+  mdcImpl.includes('No workflow file is changed') && mdcImpl.includes('Workflows: Read and write` is **not required**') &&
+  mdcSpec.includes('common horizon') && mdcSpec.includes('break-even')
+);
+add('central QA: MDC1A protects profile confirmation, PDF, Learn, localization and 1280/390/360 overflow',
+  mdcQa.includes('explicit confirmation') && mdcQa.includes('exact three-page PDF') &&
+  mdcQa.includes('bidirectional') && mdcQa.includes("['IN','INR'") && mdcQa.includes("['GB','GBP'") &&
+  mdcQa.includes('[1280,390,360]')
+);
+
+let mdcFixtureOk = false;
+let mdcFixtureDetail = '';
+try {
+  const sandbox = { window:{}, console, Date, Math, Intl, Number, String, Map, Set, Array, Object, JSON, RegExp };
+  sandbox.window.window = sandbox.window;
+  vm.createContext(sandbox);
+  vm.runInContext(mortgageCore, sandbox, { filename:'mortgage-core.js' });
+  vm.runInContext(mdcCore, sandbox, { filename:'prepayment-vs-investing-core.js' });
+  const MortgageApi = sandbox.window.CarrowmontMortgageCore;
+  const C = sandbox.window.CarrowmontMdc1aCore;
+  const base = { country:'US', currency:'USD', balance:300000, annualRatePct:6, remainingYears:30, remainingMonths:0, paymentFrequency:'monthly', useCurrentPayment:false, currentPayment:0, extraMode:'lump', extraAmount:25000, lumpSumPeriod:1, prepaymentCharge:0, assumedInvestmentReturnPct:7, startDate:'2026-10-12', rateMode:'fixed' };
+  const calc = over => C.calculate({ ...base, ...over });
+  const close = (a,b,t=1e-6) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a-b) <= t;
+  const checks = [];
+  const push = (name,ok) => checks.push([name,Boolean(ok)]);
+
+  const zero=calc({extraAmount:0});
+  push('zero extra', zero.ok && zero.comparison.applicable===false && zero.comparison.breakEvenReturnPct===null && zero.prepay.payoffPeriods===zero.baseline.payoffPeriods && zero.accounting.maxIdentityError===0);
+  const lump=calc({});
+  push('simple lump sum', lump.ok && lump.baseline.payoffPeriods===360 && lump.prepay.payoffPeriods===291 && close(lump.prepay.interestAvoided,100557.57254676925,0.01));
+  const monthly=calc({extraMode:'recurring',extraAmount:300,extraFrequency:'monthly',extraStartPeriod:1});
+  push('recurring monthly', monthly.ok && monthly.invest.investmentCashFlows.length===360 && monthly.accounting.maxIdentityError<0.01);
+  const every=calc({extraMode:'recurring',extraAmount:100,extraFrequency:'everyScheduled',extraStartPeriod:1});
+  push('every scheduled', every.ok && every.invest.investmentCashFlows.length===360 && every.accounting.maxIdentityError<0.01);
+  const quarterly=calc({extraMode:'recurring',extraAmount:1000,extraFrequency:'quarterly',extraStartPeriod:1});
+  push('quarterly', quarterly.ok && quarterly.invest.investmentCashFlows.length===120);
+  const annual=calc({extraMode:'recurring',extraAmount:2000,extraFrequency:'annual',extraStartPeriod:1});
+  push('annual', annual.ok && annual.invest.investmentCashFlows.length===30);
+  const custom=calc({extraMode:'recurring',extraAmount:1000,extraFrequency:'custom',customIntervalMonths:5,extraStartPeriod:1});
+  push('custom interval', custom.ok && custom.invest.investmentCashFlows.length===72);
+  const fee0=calc({prepaymentCharge:0}), fee=calc({prepaymentCharge:500});
+  push('prepayment fee', fee.ok && fee.prepay.feeFutureValue>500 && close(fee0.prepay.endingNetValue-fee.prepay.endingNetValue,fee.prepay.feeFutureValue,0.02));
+  const immediate=calc({balance:10000,remainingYears:5,extraAmount:50000});
+  push('immediate payoff', immediate.ok && immediate.prepay.payoffPeriods===1 && immediate.prepay.investmentCashFlows.some(x=>x.amount>40000));
+  const finalRow=lump.accounting.rows.find(x=>x.period===lump.prepay.payoffPeriods);
+  push('final partial scheduled payment', finalRow && finalRow.prepayInvestmentContribution>0 && Math.abs(finalRow.identityDifference)<0.01);
+  const low=calc({assumedInvestmentReturnPct:2}), high=calc({assumedInvestmentReturnPct:20}), negative=calc({assumedInvestmentReturnPct:-20});
+  push('low return', low.ok && low.comparison.higherModeledPath==='prepay');
+  push('high return', high.ok && high.comparison.higherModeledPath==='invest');
+  push('negative return', negative.ok && Number.isFinite(negative.comparison.pathDifference) && negative.comparison.higherModeledPath==='prepay');
+  const be=lump.comparison.breakEvenReturnPct; const atBe=calc({assumedInvestmentReturnPct:be});
+  push('break-even solve', be>0 && Math.abs(atBe.comparison.pathDifference)<0.05);
+  const zeroRate=calc({annualRatePct:0});
+  push('zero mortgage rate', zeroRate.ok && close(zeroRate.prepay.interestAvoided,0,0.01) && close(zeroRate.comparison.breakEvenReturnPct,0,0.001));
+  const ca=calc({country:'CA',currency:'CAD'}); const caConvention=MortgageApi.paymentConvention('CA','fixed'); const caPeriodic=MortgageApi.periodicRate(6,'monthly',caConvention); const caExpected=MortgageApi.scheduledPayment(300000,caPeriodic,360);
+  push('Canada fixed convention', ca.ok && caConvention==='canada-fixed' && close(ca.baseline.payment,caExpected,0.0001));
+  for (const freq of ['monthly','biweekly','weekly']) { const r=calc({paymentFrequency:freq}); const m=MortgageApi.periodsPerYear(freq); const conv=MortgageApi.paymentConvention('US','fixed'); const expected=MortgageApi.scheduledPayment(300000,MortgageApi.periodicRate(6,freq,conv),30*m); push(freq+' cadence parity', r.ok && close(r.baseline.payment,expected,0.0001) && r.baseline.payoffPeriods===30*m); }
+  const entered=calc({useCurrentPayment:true,currentPayment:2000});
+  push('user current repayment', entered.ok && entered.baseline.payment===2000);
+  const negAm=calc({useCurrentPayment:true,currentPayment:100});
+  push('negative amortization', !negAm.ok && negAm.error==='negative-amortization');
+  const noCross=calc({lumpSumPeriod:360,prepaymentCharge:100});
+  push('no break-even', noCross.ok && noCross.comparison.breakEvenReturnPct===null && noCross.comparison.breakEvenStatus==='no-crossing');
+  const hugeFee=calc({prepaymentCharge:200000});
+  push('fee larger than interest avoided', hugeFee.ok && hugeFee.input.prepaymentCharge>hugeFee.prepay.interestAvoided && Number.isFinite(hugeFee.comparison.pathDifference));
+  push('equal cash identity', [lump,monthly,every,quarterly,annual,custom,immediate].every(r=>r.accounting.rows.every(row=>Math.abs(row.identityDifference)<0.01)));
+
+  const failed=checks.filter(([,ok])=>!ok).map(([name])=>name);
+  mdcFixtureOk=failed.length===0;
+  mdcFixtureDetail=failed.length ? 'failed: '+failed.join(', ') : `${checks.length} deterministic fixtures passed`;
+} catch (error) {
+  mdcFixtureDetail=error?.stack || String(error);
+}
+add('MDC1A: independent deterministic core fixture set passes equal-cash-flow and edge-case contract', mdcFixtureOk, mdcFixtureDetail);
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
