@@ -1760,11 +1760,18 @@ add('main site: SEO3D responsive safeguards cover 700px and 420px breakpoints an
   goldMacroCss.includes('@media(max-width:700px)') && goldMacroCss.includes('@media(max-width:420px)') &&
   /\.gmse-table-wrap\{[^}]*overflow:auto/.test(goldMacroCss) && /\.gmse-chart-wrap\{[^}]*overflow/.test(goldMacroCss)
 );
-add('main site: SEO3D weekly updater is all-or-nothing, history-validated, anomaly guarded and preserves reviewed fields',
-  goldMacroUpdater.includes('Promise.all([fetchTreasury(),fetchDollar(),fetchCpi(),fetchGpr(),fetchOfr()])') &&
+add('main site: SEO3D weekly updater fails closed for core sources, preserves validated OFR only on explicit availability failure, and keeps reviewed fields protected',
+  goldMacroUpdater.includes('Promise.all([fetchTreasury(),fetchDollar(),fetchCpi(),fetchGpr()])') &&
+  goldMacroUpdater.includes('OFR_AVAILABILITY_STATUSES') && goldMacroUpdater.includes('class OfrUnavailableError') &&
+  goldMacroUpdater.includes("status:ofr.preserved?'preserved':'refreshed'") &&
+  goldMacroUpdater.includes('prior validated OFR reference may be preserved') &&
+  goldMacroUpdater.includes('OFR FSI input missing without an approved availability fallback') &&
   goldMacroUpdater.includes('insufficient five-year history') && goldMacroUpdater.includes('insufficient monthly history') &&
   goldMacroUpdater.includes('source date moved backwards') && goldMacroUpdater.includes('Anomaly guard:') &&
   goldMacroUpdater.includes('structuredClone(oldRef)') && goldMacroUpdater.includes('preservedReviewed') &&
+  goldMacroSpec.includes('fail-closed for Treasury real yields, Broad Dollar, CPI and GPR') &&
+  goldMacroSpec.includes('previously validated OFR FSI value, percentile and source date') &&
+  goldMacroImplementation.includes('sourceStatus.ofr.status = "preserved"') &&
   !/drivers\.centralBankDemand\s*=|drivers\.fiscalStress\s*=/.test(goldMacroUpdater)
 );
 add('main site: SEO3D updater uses approved sources and only automated fields are refreshed',
@@ -1809,10 +1816,11 @@ add('main site: SEO3D final spec and implementation lock Snapshot 34, determinis
   goldMacroImplementation.includes('a0e41cf3a753c1da6b0bff886cdf84639cada8a3') &&
   goldMacroImplementation.includes('Expected generated release PR count: **2**')
 );
-add('central QA: SEO3D covers live-style RUM privacy, mobile widths, PDF and updater failure fixtures',
+add('central QA: SEO3D covers live-style RUM privacy, mobile widths, PDF, OFR availability fallback and updater hard-failure fixtures',
   goldMacroQa.includes('isIsolatedCloudflareRum') && goldMacroQa.includes('360px and 390px') &&
   goldMacroQa.includes('PDF is exactly four pages') && goldMacroQa.includes('malformed input') &&
-  goldMacroQa.includes('partial failure') && goldMacroQa.includes('anomaly rejection')
+  goldMacroQa.includes('OFR availability fallback') && goldMacroQa.includes('non-OFR failure') &&
+  goldMacroQa.includes('sourceStatus.ofr.status') && goldMacroQa.includes('anomaly rejection')
 );
 let goldMacroCoreApi = null;
 try {
