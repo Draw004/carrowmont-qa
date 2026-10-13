@@ -1765,6 +1765,8 @@ add('main site: SEO3D weekly updater fails closed for core sources, preserves va
   goldMacroUpdater.includes('OFR_AVAILABILITY_STATUSES') && goldMacroUpdater.includes('class OfrUnavailableError') &&
   goldMacroUpdater.includes("status:ofr.preserved?'preserved':'refreshed'") &&
   goldMacroUpdater.includes('prior validated OFR reference may be preserved') &&
+  goldMacroUpdater.includes('Current reference snapshotDate is invalid.') &&
+  goldMacroUpdater.includes('previousSnapshotDate,newestAutomatedDate') &&
   goldMacroUpdater.includes('OFR FSI input missing without an approved availability fallback') &&
   goldMacroUpdater.includes('insufficient five-year history') && goldMacroUpdater.includes('insufficient monthly history') &&
   goldMacroUpdater.includes('source date moved backwards') && goldMacroUpdater.includes('Anomaly guard:') &&
@@ -1772,6 +1774,8 @@ add('main site: SEO3D weekly updater fails closed for core sources, preserves va
   goldMacroSpec.includes('fail-closed for Treasury real yields, Broad Dollar, CPI and GPR') &&
   goldMacroSpec.includes('previously validated OFR FSI value, percentile and source date') &&
   goldMacroImplementation.includes('sourceStatus.ofr.status = "preserved"') &&
+  goldMacroSpec.includes('top-level `snapshotDate` is monotonic') &&
+  goldMacroImplementation.includes('monotonic reference freshness') &&
   !/drivers\.centralBankDemand\s*=|drivers\.fiscalStress\s*=/.test(goldMacroUpdater)
 );
 add('main site: SEO3D updater uses approved sources and only automated fields are refreshed',
