@@ -2387,8 +2387,8 @@ add('MDC1A: sitemap/discovery include all new public URLs and refreshed Learn hu
   core7Sitemap.includes('https://carrowmont.com/mortgage-prepayment-vs-investing.html') &&
   core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') &&
   core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/prepayment-vs-investing.html') &&
-  sitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-12' &&
-  sitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-12'
+  sitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') >= '2026-10-12' &&
+  sitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-12'
 );
 add('MDC1A: seven-core homepage architecture remains unchanged and companion tools are not promoted as new core cards',
   mainHome.includes('data-core-tool-count="7"') &&
@@ -2474,6 +2474,70 @@ try {
   mdcFixtureDetail=error?.stack || String(error);
 }
 add('MDC1A: independent deterministic core fixture set passes equal-cash-flow and edge-case contract', mdcFixtureOk, mdcFixtureDetail);
+
+
+// GSEO1D internal topic authority - Snapshot 56 - 2026-10-13.
+const gseo1dLearnHub = read('draw004.github.io/learn.html');
+const gseo1dMortgageDecision = read('mortgage-payoff-calculator/decision-centre.html');
+const gseo1dMortgageDecisionCss = read('mortgage-payoff-calculator/decision-centre.css');
+const gseo1dMortgageGuide = read('draw004.github.io/mortgage-prepayment-vs-investing.html');
+const gseo1dSpec = read('draw004.github.io/docs/CARROWMONT_GSEO1D_INTERNAL_TOPIC_AUTHORITY_SPEC.md');
+const gseo1dQa = fs.readFileSync(new URL('../tests/19-gseo1d-internal-topic-authority.spec.js', import.meta.url), 'utf8');
+const gseo1dTopicOwners = [
+  ['investment','/sip-calculator/'],
+  ['retirement','/retirement-calculator/planner.html'],
+  ['budget','/budget-cash-flow-planner/'],
+  ['goals','/goal-planner/'],
+  ['fi','/financial-independence/'],
+  ['inflation','/inflation-calculator/'],
+  ['home','/mortgage-payoff-calculator/decision-centre.html']
+];
+add('main site: GSEO1D Learn hub gives each mapped planning cluster exactly one contextual primary-tool owner',
+  (gseo1dLearnHub.match(/data-cm-topic-tool=/g)||[]).length === 7 &&
+  gseo1dTopicOwners.every(([topic,href]) =>
+    gseo1dLearnHub.includes(`data-cm-topic-tool="${topic}" href="${href}"`)
+  ) &&
+  !/data-category="assets"[^]*?data-cm-topic-tool=/.test((gseo1dLearnHub.match(/<section class="category-box" data-category="assets"[\s\S]*?<\/section>/)||[])[0]||'') &&
+  !/data-category="foundation"[^]*?data-cm-topic-tool=/.test((gseo1dLearnHub.match(/<section class="category-box foundation-box" data-category="foundation"[\s\S]*?<\/section>/)||[])[0]||'')
+);
+add('mortgage: GSEO1D creates a bounded Learn hub -> Decision Centre <-> explainer authority path',
+  gseo1dLearnHub.includes('data-cm-topic-tool="home" href="/mortgage-payoff-calculator/decision-centre.html"') &&
+  gseo1dMortgageDecision.includes('data-cm-topic-learn="prepay-vs-invest" href="/mortgage-prepayment-vs-investing.html"') &&
+  gseo1dMortgageGuide.includes('href="/mortgage-payoff-calculator/decision-centre.html"') &&
+  gseo1dMortgageDecisionCss.includes('.decision-card .decision-learn-link')
+);
+add('main site: GSEO1D preserves one primary calculator owner per targeted intent without search-facing metadata churn',
+  gseo1dLearnHub.includes('data-cm-topic-tool="investment" href="/sip-calculator/"') &&
+  gseo1dLearnHub.includes('data-cm-topic-tool="retirement" href="/retirement-calculator/planner.html"') &&
+  gseo1dLearnHub.includes('data-cm-topic-tool="budget" href="/budget-cash-flow-planner/"') &&
+  gseo1dLearnHub.includes('data-cm-topic-tool="goals" href="/goal-planner/"') &&
+  gseo1dLearnHub.includes('data-cm-topic-tool="fi" href="/financial-independence/"') &&
+  gseo1dLearnHub.includes('data-cm-topic-tool="inflation" href="/inflation-calculator/"') &&
+  gseoFiHtml.includes('<title>Financial Independence &amp; FIRE Calculator | Carrowmont</title>') &&
+  gseoRetirementPlannerHtml.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>') &&
+  gseoBudgetHtml.includes('<title>Budget Calculator &amp; Monthly Cash Flow Planner | Carrowmont</title>') &&
+  gseoInflationHtml.includes('<title>Inflation &amp; Purchasing Power Calculator | Carrowmont</title>')
+);
+const gseo1dSitemapLastmods = new Map([...learnSitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(match => {
+  const loc = match[1].match(/<loc>([^<]+)<\/loc>/);
+  const lastmod = match[1].match(/<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+  return loc && lastmod ? [loc[1], lastmod[1]] : null;
+}).filter(Boolean));
+add('main site: GSEO1D sitemap freshness matches the changed hub, mortgage explainer and Decision Centre',
+  gseo1dSitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-13' &&
+  gseo1dSitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-13' &&
+  gseo1dSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') === '2026-10-13' &&
+  gseo1dMortgageGuide.includes('"dateModified":"2026-10-13"') &&
+  gseo1dMortgageGuide.includes('Updated 13 Oct 2026')
+);
+add('GSEO1D: specification and browser QA lock contextual authority without link dumping',
+  gseo1dSpec.includes('without link dumping') &&
+  gseo1dSpec.includes('Primary internal ownership map') &&
+  gseo1dSpec.includes('Expected Publisher output: **3 PRs**') &&
+  gseo1dQa.includes('exactly one contextual primary-tool path') &&
+  gseo1dQa.includes('Mortgage Decision Centre and explainer stay bidirectionally connected') &&
+  gseo1dQa.includes('[390, 360]')
+);
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
