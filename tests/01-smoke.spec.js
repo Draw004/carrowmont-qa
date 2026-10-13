@@ -240,6 +240,57 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('main h1')).toHaveText('See what inflation can do to your money.');
   });
 
+  test('[AUTO] GSEO1C: domain identity, trust policy and core-tool structured data stay connected', async ({ page }) => {
+    const readJsonLd = async () => page.locator('script[type="application/ld+json"]').evaluateAll(nodes =>
+      nodes.flatMap(node => {
+        try {
+          const parsed = JSON.parse(node.textContent || '{}');
+          return Array.isArray(parsed['@graph']) ? parsed['@graph'] : [parsed];
+        } catch { return []; }
+      })
+    );
+
+    await gotoClean(page, '/');
+    let nodes = await readJsonLd();
+    const website = nodes.find(node => node['@type'] === 'WebSite');
+    const organization = nodes.find(node => node['@type'] === 'Organization');
+    expect(website?.['@id']).toBe('https://carrowmont.com/#website');
+    expect(website?.publisher?.['@id']).toBe('https://carrowmont.com/#organization');
+    expect(organization?.['@id']).toBe('https://carrowmont.com/#organization');
+    expect(organization?.email).toBe('contact@carrowmont.com');
+
+    await gotoClean(page, '/editorial-policy.html');
+    await expect(page.locator('main h1')).toHaveText('Clear standards for how Carrowmont publishes financial information.');
+    await expect(page.locator('main a[href="/methodology.html"]')).toBeVisible();
+    await expect(page.locator('main a[href="/disclaimer.html"]')).toBeVisible();
+    await expect(page.locator('main a[href="/contact.html"]')).toBeVisible();
+
+    const apps = [
+      ['/sip-calculator/', 'Carrowmont Investment & SIP Calculator'],
+      ['/goal-planner/', 'Carrowmont Savings Goal Calculator & Financial Goal Planner'],
+      ['/financial-independence/', 'Carrowmont Financial Independence & FIRE Calculator'],
+      ['/inflation-calculator/', 'Carrowmont Inflation & Purchasing Power Calculator'],
+      ['/retirement-calculator/planner.html', 'Carrowmont Retirement Calculator & Planner'],
+      ['/budget-cash-flow-planner/', 'Carrowmont Budget Calculator & Monthly Cash Flow Planner'],
+      ['/mortgage-payoff-calculator/', 'Carrowmont Mortgage Payoff & Home Loan Prepayment Calculator']
+    ];
+    for (const [path, name] of apps) {
+      await gotoClean(page, path);
+      nodes = await readJsonLd();
+      const app = nodes.find(node => node['@type'] === 'WebApplication');
+      const breadcrumb = nodes.find(node => node['@type'] === 'BreadcrumbList');
+      expect(app?.name).toBe(name);
+      expect(app?.isPartOf?.['@id']).toBe('https://carrowmont.com/#website');
+      expect(app?.publisher?.['@id']).toBe('https://carrowmont.com/#organization');
+      expect(breadcrumb?.itemListElement).toHaveLength(3);
+    }
+
+    await gotoClean(page, '/retirement-calculator/');
+    nodes = await readJsonLd();
+    expect(nodes.some(node => node['@type'] === 'WebSite')).toBe(false);
+    expect(nodes.find(node => node['@type'] === 'WebPage')?.isPartOf?.['@id']).toBe('https://carrowmont.com/#website');
+  });
+
   test('[AUTO] Financial Independence: frequency inputs are first, independent, linkable, and country-aware', async ({ page }) => {
     await gotoClean(page, '/financial-independence/');
     const pay = page.locator('#payFrequency');
