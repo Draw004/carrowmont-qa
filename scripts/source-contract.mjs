@@ -195,7 +195,7 @@ const gseo1cTools = read('draw004.github.io/tools.html');
 const gseo1cAbout = read('draw004.github.io/about.html');
 const gseo1cMethodology = read('draw004.github.io/methodology.html');
 const gseo1cEditorial = read('draw004.github.io/editorial-policy.html');
-const gseo1cQaConfig = read('carrowmont-qa/qa.config.js');
+const gseo1cQaConfig = fs.readFileSync(new URL('../qa.config.js', import.meta.url), 'utf8');
 const gseo1cHomeWebsite = jsonLdNode(gseo1cHome, 'WebSite');
 const gseo1cHomeOrg = jsonLdNode(gseo1cHome, 'Organization');
 add('main site: GSEO1C publishes one connected domain-level WebSite and Organization identity',
