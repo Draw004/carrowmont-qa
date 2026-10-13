@@ -2206,7 +2206,7 @@ add('main site: LEARN-LOCALE1 required previously-unidentified pages now have st
   read('draw004.github.io/todays-money-vs-future-money.html').includes('data-cm-page="today-vs-future-money-guide"')
 );
 add('main site: LEARN-LOCALE1 updates all content-changed Learn sitemap entries without creating duplicate country URLs',
-  initialLearnLocaleAffected.every(file => { const d=sitemapLastmods.get('https://carrowmont.com/' + file); return file === 'learn.html' ? d >= '2026-10-11' : file === 'rent-vs-buy-home.html' ? d === '2026-10-11' : d === '2026-10-10'; }) &&
+  initialLearnLocaleAffected.every(file => { const d=sitemapLastmods.get('https://carrowmont.com/' + file); return file === 'learn.html' ? d >= '2026-10-11' : file === 'rent-vs-buy-home.html' ? d === '2026-10-11' : ['zero-based-budgeting.html','asset-allocation-explained.html','diversification-across-asset-classes.html','emergency-fund-how-much.html','how-much-should-i-invest-each-month.html'].includes(file) ? d === '2026-10-13' : d === '2026-10-10'; }) &&
   !/\/in\/|\/us\/|\?country=/.test(learnLocaleSitemap)
 );
 add('main site: LEARN-LOCALE1 cache-busts the shared localization/CSS assets and keeps long related-guide links mobile-safe',
@@ -2537,6 +2537,72 @@ add('GSEO1D: specification and browser QA lock contextual authority without link
   gseo1dQa.includes('exactly one contextual primary-tool path') &&
   gseo1dQa.includes('Mortgage Decision Centre and explainer stay bidirectionally connected') &&
   gseo1dQa.includes('[390, 360]')
+);
+
+
+// GSEO1E Learn search-intent refinement - Snapshot 57 - 2026-10-13.
+const gseo1eAssetAllocation = read('draw004.github.io/asset-allocation-explained.html');
+const gseo1eZeroBased = read('draw004.github.io/zero-based-budgeting.html');
+const gseo1eDiversification = read('draw004.github.io/diversification-across-asset-classes.html');
+const gseo1eEmergencyFund = read('draw004.github.io/emergency-fund-how-much.html');
+const gseo1eMonthlyInvest = read('draw004.github.io/how-much-should-i-invest-each-month.html');
+const gseo1eSpec = read('draw004.github.io/docs/CARROWMONT_GSEO1E_LEARN_SEARCH_INTENT_REFINEMENT_SPEC.md');
+const gseo1eQa = fs.readFileSync(new URL('../tests/20-gseo1e-learn-search-intent.spec.js', import.meta.url), 'utf8');
+const gseo1eAssetArticle = jsonLdNode(gseo1eAssetAllocation, 'Article');
+const gseo1eEmergencyArticle = jsonLdNode(gseo1eEmergencyFund, 'Article');
+const gseo1eEmergencyBreadcrumb = jsonLdNode(gseo1eEmergencyFund, 'BreadcrumbList');
+
+add('main site: GSEO1E asset-allocation definition intent is explicit without H1 churn',
+  gseo1eAssetAllocation.includes('<title>What Is Asset Allocation? How It Works | Carrowmont</title>') &&
+  gseo1eAssetAllocation.includes('<h1>What is asset allocation, and why does it matter?</h1>') &&
+  gseo1eAssetAllocation.includes('Asset allocation is how a portfolio is divided among stocks, bonds, cash and other assets.') &&
+  gseo1eAssetArticle?.dateModified === '2026-10-13'
+);
+add('main site: GSEO1E zero-based budgeting absorbs observed wording variants without a duplicate URL',
+  gseo1eZeroBased.includes('<title>Zero-Based Budgeting: How It Works | Carrowmont</title>') &&
+  gseo1eZeroBased.includes('<h1>What is zero-based budgeting and how does it work?</h1>') &&
+  gseo1eZeroBased.includes('What if I searched for zero-sum budgeting or zero-balance budgeting?') &&
+  gseo1eZeroBased.includes('zero unassigned income') &&
+  !learnSitemap.includes('zero-sum-budgeting.html') && !learnSitemap.includes('zero-balance-budgeting.html')
+);
+add('main site: GSEO1E diversification and asset allocation remain separate informational owners',
+  gseo1eDiversification.includes('<title>Diversification Across Asset Classes | Carrowmont</title>') &&
+  gseo1eDiversification.includes('<h1>What does diversification across asset classes actually mean?</h1>') &&
+  gseo1eDiversification.includes('How is diversification different from asset allocation?') &&
+  gseo1eDiversification.includes('href="/asset-allocation-explained.html"') &&
+  gseo1eAssetAllocation.includes('What Is Asset Allocation? How It Works | Carrowmont')
+);
+add('main site: GSEO1E emergency-fund and monthly-investment questions align to their owned informational intents',
+  gseo1eEmergencyFund.includes('<title>How Much Emergency Fund Should You Have? | Carrowmont</title>') &&
+  gseo1eEmergencyFund.includes('<h1 id="articleTitle">How much emergency fund should you have?</h1>') &&
+  gseo1eEmergencyArticle?.headline === 'How much emergency fund should you have?' &&
+  gseo1eEmergencyBreadcrumb?.itemListElement?.[2]?.name === 'How much emergency fund should you have?' &&
+  gseo1eMonthlyInvest.includes('<title>How Much Should You Invest Each Month? | Carrowmont</title>') &&
+  gseo1eMonthlyInvest.includes('<h1>How much should you invest each month to reach a financial goal?</h1>') &&
+  gseo1eMonthlyInvest.includes('class="guide-action-first"') && gseo1eMonthlyInvest.includes('href="/goal-planner/"')
+);
+const gseo1eSitemapLastmods = new Map([...learnSitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(match => {
+  const loc = match[1].match(/<loc>([^<]+)<\/loc>/);
+  const lastmod = match[1].match(/<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+  return loc && lastmod ? [loc[1], lastmod[1]] : null;
+}).filter(Boolean));
+const gseo1eChangedUrls = [
+  'https://carrowmont.com/zero-based-budgeting.html',
+  'https://carrowmont.com/asset-allocation-explained.html',
+  'https://carrowmont.com/diversification-across-asset-classes.html',
+  'https://carrowmont.com/emergency-fund-how-much.html',
+  'https://carrowmont.com/how-much-should-i-invest-each-month.html'
+];
+add('GSEO1E: evidence, sitemap freshness and browser QA lock a bounded refinement release',
+  gseo1eChangedUrls.every(url => gseo1eSitemapLastmods.get(url) === '2026-10-13') &&
+  gseo1eSpec.includes('Source Snapshot 57') &&
+  gseo1eSpec.includes('Explicit hold decisions') &&
+  gseo1eSpec.includes('No new “content-gap” page is justified') &&
+  gseo1eSpec.includes('Expected Publisher output: **2 PRs**') &&
+  gseo1eQa.includes('definition-first snippet') &&
+  gseo1eQa.includes('zero-sum wording') &&
+  gseo1eQa.includes('Goal Planner handoff') &&
+  gseo1eQa.includes('[390, 360]')
 );
 
 console.log('\nCarrowmont source contract check\n');
