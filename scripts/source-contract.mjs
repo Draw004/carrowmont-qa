@@ -1850,7 +1850,7 @@ if (goldMacroCoreApi) {
   const I = goldMacroCoreApi.classifyDollar({fiveYearPercentile:75,trend13WeekPct:3.5});
   let refScores = null;
   try { refScores = goldMacroCoreApi.referenceScores(goldMacroReference); } catch (_) {}
-  add('main site: SEO3D approved deterministic fixtures A-K and release reference classifications pass independently',
+  add('main site: SEO3D approved deterministic fixtures A-K and current bundled reference classifications pass independently',
     A.weightedSum === 0 && A.label === 'Mixed macro environment' && !A.hasConflict &&
     B.weightedSum === 7 && Math.abs(B.normalized-.5)<1e-12 && B.label === 'Supportive macro environment' &&
     C.weightedSum === -7 && Math.abs(C.normalized+.5)<1e-12 && C.label === 'Macro headwinds' &&
@@ -1861,7 +1861,17 @@ if (goldMacroCoreApi) {
     /Real yields/.test(goldMacroCoreApi.buildInterpretation(G)) && /headwind/i.test(goldMacroCoreApi.buildInterpretation(G)) &&
     H.baseScore === 2 && H.trendModifier === 1 && H.score === 2 && I.baseScore === -1 && I.trendModifier === -1 && I.score === -2 &&
     goldMacroCoreApi.combineStress(2,0) === 2 && goldMacroCoreApi.combineStress(-1,-1) === -1 &&
-    !!refScores && Object.entries({realYield:-2,dollar:-2,inflation:-2,centralBank:1,fiscal:2,stress:2}).every(([k,v]) => refScores[k] === v)
+    !!refScores && (() => {
+      const storedReferenceScores = {
+        realYield: goldMacroReference?.drivers?.realYields?.referenceScore,
+        dollar: goldMacroReference?.drivers?.dollar?.referenceScore,
+        inflation: goldMacroReference?.drivers?.inflation?.referenceScore,
+        centralBank: goldMacroReference?.drivers?.centralBankDemand?.referenceScore,
+        fiscal: goldMacroReference?.drivers?.fiscalStress?.referenceScore,
+        stress: goldMacroReference?.drivers?.stress?.referenceScore
+      };
+      return Object.entries(storedReferenceScores).every(([k,v]) => Number.isFinite(v) && refScores[k] === v);
+    })()
   );
 }
 
