@@ -137,6 +137,42 @@ add('goal: report and copy summary include selected frequencies',
   goalPdf.includes('selected savings / contribution frequency')
 );
 
+// GSEO1B-2 core-tool search-intent contract - 2026-10-13.
+const gseoFiHtml = read('financial-independence/index.html');
+const gseoRetirementLandingHtml = read('retirement-calculator/index.html');
+const gseoRetirementPlannerHtml = read('retirement-calculator/planner.html');
+const gseoBudgetHtml = read('budget-cash-flow-planner/index.html');
+const gseoInflationHtml = read('inflation-calculator/index.html');
+add('financial-independence: GSEO1B-2 identifies Financial Independence and FIRE calculator intent without changing visible product identity',
+  gseoFiHtml.includes('<title>Financial Independence &amp; FIRE Calculator | Carrowmont</title>') &&
+  gseoFiHtml.includes('content="Financial Independence &amp; FIRE Calculator | Carrowmont"') &&
+  gseoFiHtml.includes('"name":"Carrowmont Financial Independence & FIRE Calculator"') &&
+  gseoFiHtml.includes('<span class="product-label">Financial Independence</span>') &&
+  gseoFiHtml.includes('<h1>See how spending and saving may shape your path to financial independence.</h1>')
+);
+add('retirement: GSEO1B-2 assigns calculator intent to planner page while preserving the overview landing-page identity',
+  gseoRetirementPlannerHtml.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>') &&
+  gseoRetirementPlannerHtml.includes('content="Retirement Calculator &amp; Retirement Planner | Carrowmont"') &&
+  gseoRetirementPlannerHtml.includes('"name": "Carrowmont Retirement Calculator & Planner"') &&
+  gseoRetirementPlannerHtml.includes('<a class="product-label" href="index.html">Retirement Planner</a>') &&
+  gseoRetirementPlannerHtml.includes('<h1>Your retirement plan should reflect how your expenses actually change.</h1>') &&
+  gseoRetirementLandingHtml.includes('<title>Carrowmont Retirement Planner | Expense-Aware Retirement Planning</title>')
+);
+add('budget: GSEO1B-2 identifies budget-calculator and monthly cash-flow intent without changing visible product identity',
+  gseoBudgetHtml.includes('<title>Budget Calculator &amp; Monthly Cash Flow Planner | Carrowmont</title>') &&
+  gseoBudgetHtml.includes('content="Budget Calculator &amp; Monthly Cash Flow Planner | Carrowmont"') &&
+  gseoBudgetHtml.includes('"name":"Carrowmont Budget Calculator & Monthly Cash Flow Planner"') &&
+  gseoBudgetHtml.includes('<span class="product-label">Budget &amp; Cash Flow Planner</span>') &&
+  gseoBudgetHtml.includes('<h1>See what comes in, what goes out, and what is actually left.</h1>')
+);
+add('inflation: GSEO1B-2 identifies purchasing-power calculator intent without changing visible product identity',
+  gseoInflationHtml.includes('<title>Inflation &amp; Purchasing Power Calculator | Carrowmont</title>') &&
+  gseoInflationHtml.includes('content="Inflation &amp; Purchasing Power Calculator | Carrowmont"') &&
+  gseoInflationHtml.includes('"name":"Carrowmont Inflation & Purchasing Power Calculator"') &&
+  gseoInflationHtml.includes('<a class="product-label" href="index.html">Inflation Calculator</a>') &&
+  gseoInflationHtml.includes('<h1>See what inflation can do to your money.</h1>')
+);
+
 const localeParityTools = [
   ['goal-planner', 'app.js'],
   ['financial-independence', 'app.js'],
@@ -1192,6 +1228,13 @@ add('main site: BING-SEO1 sitemap freshness keeps the changed hub and planner UR
 );
 
 
+add('main site: GSEO1B-2 sitemap freshness marks only the changed core calculator URLs at the release date',
+  sitemapLastmods.get('https://carrowmont.com/financial-independence/') === '2026-10-13' &&
+  sitemapLastmods.get('https://carrowmont.com/retirement-calculator/planner.html') === '2026-10-13' &&
+  sitemapLastmods.get('https://carrowmont.com/budget-cash-flow-planner/') === '2026-10-13' &&
+  sitemapLastmods.get('https://carrowmont.com/inflation-calculator/') === '2026-10-13'
+);
+
 // BING-SEO2 internal authority and search-presentation contract - 2026-10-08.
 add('main site: BING-SEO2 Learn titles and descriptions stay concise for search presentation',
   standardizedLearnPages.length >= 52 &&
@@ -1502,7 +1545,7 @@ add('main site: FI Number by Spending route and refreshed FI guides remain in si
   sitemapLastmods.get('https://carrowmont.com/financial-independence-number-by-spending.html') === '2026-10-09' &&
   sitemapLastmods.get('https://carrowmont.com/financial-independence-number.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/when-can-i-reach-financial-independence.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/financial-independence/') === '2026-10-09'
+  sitemapLastmods.get('https://carrowmont.com/financial-independence/') === '2026-10-13'
 );
 add('financial-independence: SEO3B handoff is explicit, validated and keeps the approved FI core separate',
   fiHtml.includes('id="seo3bHandoffNotice"') &&
