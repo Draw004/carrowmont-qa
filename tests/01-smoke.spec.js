@@ -216,6 +216,30 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(contribution).toHaveValue('weekly');
   });
 
+  test('[AUTO] GSEO1B-2: core calculator search identities change without changing visible product headings', async ({ page }) => {
+    await gotoClean(page, '/financial-independence/');
+    await expect(page).toHaveTitle('Financial Independence & FIRE Calculator | Carrowmont');
+    await expect(page.locator('.product-label')).toHaveText('Financial Independence');
+    await expect(page.locator('main h1')).toHaveText('See how spending and saving may shape your path to financial independence.');
+
+    await gotoClean(page, '/retirement-calculator/');
+    await expect(page).toHaveTitle('Carrowmont Retirement Planner | Expense-Aware Retirement Planning');
+    await gotoClean(page, '/retirement-calculator/planner.html');
+    await expect(page).toHaveTitle('Retirement Calculator & Retirement Planner | Carrowmont');
+    await expect(page.locator('.product-label')).toHaveText('Retirement Planner');
+    await expect(page.locator('main h1')).toHaveText('Your retirement plan should reflect how your expenses actually change.');
+
+    await gotoClean(page, '/budget-cash-flow-planner/');
+    await expect(page).toHaveTitle('Budget Calculator & Monthly Cash Flow Planner | Carrowmont');
+    await expect(page.locator('.product-label')).toHaveText('Budget & Cash Flow Planner');
+    await expect(page.locator('main h1')).toHaveText('See what comes in, what goes out, and what is actually left.');
+
+    await gotoClean(page, '/inflation-calculator/');
+    await expect(page).toHaveTitle('Inflation & Purchasing Power Calculator | Carrowmont');
+    await expect(page.locator('.product-label')).toHaveText('Inflation Calculator');
+    await expect(page.locator('main h1')).toHaveText('See what inflation can do to your money.');
+  });
+
   test('[AUTO] Financial Independence: frequency inputs are first, independent, linkable, and country-aware', async ({ page }) => {
     await gotoClean(page, '/financial-independence/');
     const pay = page.locator('#payFrequency');
