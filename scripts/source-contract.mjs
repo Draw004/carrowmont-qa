@@ -17,6 +17,22 @@ const read = rel => {
   return fs.readFileSync(p, 'utf8');
 };
 
+const jsonLdNodes = html => {
+  const nodes = [];
+  for (const match of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try {
+      const parsed = JSON.parse(match[1]);
+      if (Array.isArray(parsed?.['@graph'])) nodes.push(...parsed['@graph']);
+      else if (parsed && typeof parsed === 'object') nodes.push(parsed);
+    } catch {}
+  }
+  return nodes;
+};
+const jsonLdNode = (html, type) => jsonLdNodes(html).find(node => {
+  const t = node?.['@type'];
+  return Array.isArray(t) ? t.includes(type) : t === type;
+});
+
 const qaCommon = fs.readFileSync(new URL('../helpers/common.js', import.meta.url), 'utf8');
 add('central QA: Cloudflare RUM ingestion is isolated from automated QA traffic',
   qaCommon.includes('async function isolateThirdPartyAnalyticsForQa(page)') &&
@@ -171,6 +187,83 @@ add('inflation: GSEO1B-2 identifies purchasing-power calculator intent without c
   gseoInflationHtml.includes('"name":"Carrowmont Inflation & Purchasing Power Calculator"') &&
   gseoInflationHtml.includes('<a class="product-label" href="index.html">Inflation Calculator</a>') &&
   gseoInflationHtml.includes('<h1>See what inflation can do to your money.</h1>')
+);
+
+// GSEO1C trust + structured-data foundation - 2026-10-13.
+const gseo1cHome = read('draw004.github.io/index.html');
+const gseo1cTools = read('draw004.github.io/tools.html');
+const gseo1cAbout = read('draw004.github.io/about.html');
+const gseo1cMethodology = read('draw004.github.io/methodology.html');
+const gseo1cEditorial = read('draw004.github.io/editorial-policy.html');
+const gseo1cQaConfig = read('carrowmont-qa/qa.config.js');
+const gseo1cHomeWebsite = jsonLdNode(gseo1cHome, 'WebSite');
+const gseo1cHomeOrg = jsonLdNode(gseo1cHome, 'Organization');
+add('main site: GSEO1C publishes one connected domain-level WebSite and Organization identity',
+  gseo1cHomeWebsite?.['@id'] === 'https://carrowmont.com/#website' &&
+  gseo1cHomeWebsite?.name === 'Carrowmont' &&
+  gseo1cHomeWebsite?.url === 'https://carrowmont.com/' &&
+  gseo1cHomeWebsite?.alternateName === 'carrowmont.com' &&
+  gseo1cHomeWebsite?.publisher?.['@id'] === 'https://carrowmont.com/#organization' &&
+  gseo1cHomeOrg?.['@id'] === 'https://carrowmont.com/#organization' &&
+  gseo1cHomeOrg?.name === 'Carrowmont' &&
+  gseo1cHomeOrg?.url === 'https://carrowmont.com/' &&
+  gseo1cHomeOrg?.email === 'contact@carrowmont.com'
+);
+const gseo1cTrustPages = [
+  [gseo1cAbout, 'AboutPage', 'https://carrowmont.com/about.html'],
+  [gseo1cMethodology, 'WebPage', 'https://carrowmont.com/methodology.html'],
+  [gseo1cEditorial, 'WebPage', 'https://carrowmont.com/editorial-policy.html']
+];
+add('main site: GSEO1C trust pages are indexable, connected to the site entity and expose breadcrumbs',
+  gseo1cTrustPages.every(([html,type,url]) => {
+    const pageNode = jsonLdNode(html, type);
+    const breadcrumb = jsonLdNode(html, 'BreadcrumbList');
+    return html.includes('<meta name="robots" content="index,follow">') &&
+      html.includes(`<link rel="canonical" href="${url}">`) &&
+      pageNode?.url === url && pageNode?.isPartOf?.['@id'] === 'https://carrowmont.com/#website' &&
+      pageNode?.breadcrumb?.['@id'] === `${url}#breadcrumb` && breadcrumb?.['@id'] === `${url}#breadcrumb`;
+  }) &&
+  gseo1cAbout.includes('/editorial-policy.html') &&
+  gseo1cMethodology.includes('/editorial-policy.html') &&
+  gseo1cQaConfig.includes("key: 'editorial-policy'") && gseo1cQaConfig.includes("path: '/editorial-policy.html'") &&
+  gseo1cEditorial.includes('Professional review labels') &&
+  gseo1cEditorial.includes('Automated checks reduce implementation risk but cannot guarantee that every page is error-free.')
+);
+const gseo1cAppPages = [
+  ['sip-calculator/index.html', 'https://carrowmont.com/sip-calculator/'],
+  ['goal-planner/index.html', 'https://carrowmont.com/goal-planner/'],
+  ['financial-independence/index.html', 'https://carrowmont.com/financial-independence/'],
+  ['inflation-calculator/index.html', 'https://carrowmont.com/inflation-calculator/'],
+  ['retirement-calculator/planner.html', 'https://carrowmont.com/retirement-calculator/planner.html'],
+  ['budget-cash-flow-planner/index.html', 'https://carrowmont.com/budget-cash-flow-planner/'],
+  ['mortgage-payoff-calculator/index.html', 'https://carrowmont.com/mortgage-payoff-calculator/']
+];
+add('core tools: GSEO1C WebApplication nodes share publisher/site identity and three-level breadcrumbs',
+  gseo1cAppPages.every(([file,url]) => {
+    const html = read(file);
+    const app = jsonLdNode(html, 'WebApplication');
+    const breadcrumb = jsonLdNode(html, 'BreadcrumbList');
+    const items = breadcrumb?.itemListElement || [];
+    return app?.['@id'] === `${url}#app` && app?.url === url &&
+      app?.applicationCategory === 'FinanceApplication' && app?.operatingSystem === 'Any' &&
+      app?.isPartOf?.['@id'] === 'https://carrowmont.com/#website' &&
+      app?.publisher?.['@id'] === 'https://carrowmont.com/#organization' &&
+      items.length === 3 && items[0]?.item === 'https://carrowmont.com/' &&
+      items[1]?.item === 'https://carrowmont.com/tools.html' && items[2]?.item === url;
+  })
+);
+const gseo1cRetirementLanding = read('retirement-calculator/index.html');
+add('retirement: GSEO1C removes unsupported subdirectory WebSite identity while preserving landing-page intent',
+  !jsonLdNode(gseo1cRetirementLanding, 'WebSite') &&
+  jsonLdNode(gseo1cRetirementLanding, 'WebPage')?.url === 'https://carrowmont.com/retirement-calculator/' &&
+  jsonLdNode(gseo1cRetirementLanding, 'WebPage')?.isPartOf?.['@id'] === 'https://carrowmont.com/#website' &&
+  jsonLdNode(gseo1cRetirementLanding, 'BreadcrumbList')?.itemListElement?.length === 3 &&
+  gseo1cRetirementLanding.includes('<title>Carrowmont Retirement Planner | Expense-Aware Retirement Planning</title>')
+);
+add('main site: GSEO1C tools directory shares the domain WebSite identity and breadcrumb contract',
+  jsonLdNode(gseo1cTools, 'CollectionPage')?.isPartOf?.['@id'] === 'https://carrowmont.com/#website' &&
+  jsonLdNode(gseo1cTools, 'CollectionPage')?.breadcrumb?.['@id'] === 'https://carrowmont.com/tools.html#breadcrumb' &&
+  jsonLdNode(gseo1cTools, 'BreadcrumbList')?.itemListElement?.length === 2
 );
 
 const localeParityTools = [
@@ -749,8 +842,8 @@ if (mainHome || mainSiteJs) {
   add('main site: TOOLS-HUB1 canonical all-tools directory is indexable and structured',
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
-    toolsDirectory.includes('"@type":"CollectionPage"') && toolsDirectory.includes('"@type":"ItemList"') &&
-    toolsDirectory.includes('"numberOfItems":12') &&
+    /"@type"\s*:\s*"CollectionPage"/.test(toolsDirectory) && /"@type"\s*:\s*"ItemList"/.test(toolsDirectory) &&
+    /"numberOfItems"\s*:\s*12/.test(toolsDirectory) &&
     (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 12
   );
   add('main site: CORE7 directory groups seven core tools, two stress tests and three macro explorers',
@@ -824,7 +917,7 @@ if (mainHome || mainSiteJs) {
     toolsImplementation.includes('Workflows: Read and write is **not required**')
   );
   add('main site: sitemap includes canonical tools directory with release lastmod',
-    /<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-10<\/lastmod>/.test(toolsSitemap)
+    ((toolsSitemap.match(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/) || [])[1] || '') >= '2026-10-10'
   );
   add('central QA: TOOLS-HUB1 is registered and covers country order, terminology, legacy links, responsiveness and visuals',
     qaConfig.includes("key: 'tools-directory'") && qaConfig.includes("path: '/tools.html'") &&
@@ -1233,6 +1326,25 @@ add('main site: GSEO1B-2 sitemap freshness marks only the changed core calculato
   sitemapLastmods.get('https://carrowmont.com/retirement-calculator/planner.html') === '2026-10-13' &&
   sitemapLastmods.get('https://carrowmont.com/budget-cash-flow-planner/') === '2026-10-13' &&
   sitemapLastmods.get('https://carrowmont.com/inflation-calculator/') === '2026-10-13'
+);
+
+const gseo1cSitemapLastmods = new Map([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/g)].map(m => [m[1], m[2]]));
+add('main site: GSEO1C sitemap publishes the editorial policy and refreshes all structured-data/trust pages',
+  [
+    'https://carrowmont.com/',
+    'https://carrowmont.com/tools.html',
+    'https://carrowmont.com/about.html',
+    'https://carrowmont.com/methodology.html',
+    'https://carrowmont.com/editorial-policy.html',
+    'https://carrowmont.com/sip-calculator/',
+    'https://carrowmont.com/goal-planner/',
+    'https://carrowmont.com/financial-independence/',
+    'https://carrowmont.com/inflation-calculator/',
+    'https://carrowmont.com/retirement-calculator/',
+    'https://carrowmont.com/retirement-calculator/planner.html',
+    'https://carrowmont.com/budget-cash-flow-planner/',
+    'https://carrowmont.com/mortgage-payoff-calculator/'
+  ].every(url => gseo1cSitemapLastmods.get(url) === '2026-10-13')
 );
 
 // BING-SEO2 internal authority and search-presentation contract - 2026-10-08.

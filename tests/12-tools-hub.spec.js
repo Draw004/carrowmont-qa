@@ -74,12 +74,17 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       await expect(page.locator(`a[href="${path}"]`).first(), `${path} should be directly linked`).toBeVisible();
     }
 
-    const schema = await page.locator('script[type="application/ld+json"]').textContent();
-    const json = JSON.parse(schema);
-    expect(json['@type']).toBe('CollectionPage');
-    expect(json.mainEntity?.['@type']).toBe('ItemList');
-    expect(json.mainEntity?.numberOfItems).toBe(12);
-    expect(json.mainEntity?.itemListElement).toHaveLength(12);
+    const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll(nodes =>
+      nodes.flatMap(node => {
+        const parsed = JSON.parse(node.textContent || '{}');
+        return Array.isArray(parsed['@graph']) ? parsed['@graph'] : [parsed];
+      })
+    );
+    const collectionPage = schemas.find(node => node['@type'] === 'CollectionPage');
+    expect(collectionPage).toBeTruthy();
+    expect(collectionPage.mainEntity?.['@type']).toBe('ItemList');
+    expect(collectionPage.mainEntity?.numberOfItems).toBe(12);
+    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(12);
     expect(errors).toEqual([]);
   });
 
@@ -190,7 +195,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     expect(response.ok()).toBeTruthy();
     const xml = await response.text();
     expect(xml).toContain('<loc>https://carrowmont.com/tools.html</loc>');
-    expect(xml).toMatch(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-10<\/lastmod>/);
+    expect(xml).toMatch(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-13<\/lastmod>/);
   });
 
   test('[AUTO] homepage and directory avoid horizontal overflow at 1440px, 390px and 360px', async ({ page }) => {
