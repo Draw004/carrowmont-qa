@@ -65,15 +65,16 @@ async function gotoWithSeededProfile(page,profile){
 }
 
 test.describe('MDC1B Refinance / Balance Transfer Break-Even',()=>{
-  test('[AUTO] Decision Centre publishes three live decisions and leaves only MDC1C planned',async({page})=>{
+  test('[AUTO] Decision Centre keeps the earlier mortgage decisions live after MDC1C completes the four-choice family',async({page})=>{
     await gotoClean(page,HUB);
     await expect(page.getByRole('heading',{name:'What are you trying to decide?'})).toBeVisible();
     await expect(page.locator('.decision-card')).toHaveCount(4);
-    await expect(page.locator('.decision-card .decision-status',{hasText:'Live'})).toHaveCount(3);
-    await expect(page.locator('.decision-card.planned')).toHaveCount(1);
-    await expect(page.locator('.decision-card.planned a')).toHaveCount(0);
-    await expect(page.locator('.decision-card:not(.planned) a[href="refinance-break-even.html"]')).toBeVisible();
-    await expect(page.locator('.decision-card.planned')).toContainText('Rate Shock');
+    await expect(page.locator('.decision-card .decision-status',{hasText:'Live'})).toHaveCount(4);
+    await expect(page.locator('.decision-card.planned')).toHaveCount(0);
+    await expect(page.locator('.decision-card a[href="/mortgage-payoff-calculator/"]')).toBeVisible();
+    await expect(page.locator('.decision-card a[href="prepayment-vs-investing.html"]')).toBeVisible();
+    await expect(page.locator('.decision-card a[href="refinance-break-even.html"]')).toBeVisible();
+    await expect(page.locator('.decision-card a[href="rate-rise-stress-test.html"]')).toBeVisible();
   });
 
   test('[AUTO] canonical search identity and three-payment rate-vs-term separation are present',async({page})=>{
