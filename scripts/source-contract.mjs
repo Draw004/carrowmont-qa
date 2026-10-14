@@ -1058,7 +1058,9 @@ add('main site: Learn titles/descriptions are unique and kept within the editori
   new Set(standardLearnDescriptions).size === standardLearnDescriptions.length &&
   standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
     ? standardLearnTitles[i] === 'Mortgage Prepayment vs Investing: How to Compare the Trade-Off | Carrowmont'
-    : standardLearnTitles[i].length >= 25 && standardLearnTitles[i].length <= 70) &&
+    : file === 'mortgage-rate-rise-payment-stress.html'
+      ? standardLearnTitles[i] === 'How Much Could Your Mortgage Payment Rise if Rates Increase? | Carrowmont'
+      : standardLearnTitles[i].length >= 25 && standardLearnTitles[i].length <= 70) &&
   standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
     ? standardLearnDescriptions[i] === 'Compare mortgage or home-loan prepayment with investing the same extra money using equal cash flows, a common horizon and a modeled break-even investment return.'
     : standardLearnDescriptions[i].length >= 100 && standardLearnDescriptions[i].length <= 170)
@@ -1352,7 +1354,9 @@ add('main site: BING-SEO2 Learn titles and descriptions stay concise for search 
   standardizedLearnPages.length >= 52 &&
   standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
     ? standardLearnTitles[i] === 'Mortgage Prepayment vs Investing: How to Compare the Trade-Off | Carrowmont'
-    : standardLearnTitles[i].length >= 25 && standardLearnTitles[i].length <= 60) &&
+    : file === 'mortgage-rate-rise-payment-stress.html'
+      ? standardLearnTitles[i] === 'How Much Could Your Mortgage Payment Rise if Rates Increase? | Carrowmont'
+      : standardLearnTitles[i].length >= 25 && standardLearnTitles[i].length <= 60) &&
   standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
     ? standardLearnDescriptions[i] === 'Compare mortgage or home-loan prepayment with investing the same extra money using equal cash flows, a common horizon and a modeled break-even investment return.'
     : standardLearnDescriptions[i].length >= 110 && standardLearnDescriptions[i].length <= 160)
@@ -2338,13 +2342,13 @@ const mdcImpl = read('draw004.github.io/docs/CARROWMONT_MDC1A_PREPAYMENT_VS_INVE
 const mdcSpec = read('draw004.github.io/docs/CARROWMONT_MDC1A_PREPAYMENT_VS_INVESTING_SPEC_FINAL.md');
 const mdcQa = fs.readFileSync(new URL('../tests/18-mortgage-decision-centre-mdc1a.spec.js', import.meta.url), 'utf8');
 
-add('MDC family after MDC1B: Decision Centre publishes exactly three live choices and one non-link planned MDC1C choice',
+add('MDC family after MDC1C: Decision Centre publishes exactly four live choices and no planned placeholder',
   mdcHubHtml.includes('<h1>What are you trying to decide?</h1>') &&
-  (mdcHubHtml.match(/<span class="decision-status">Live<\/span>/g)||[]).length === 3 &&
-  (mdcHubHtml.match(/<article class="decision-card planned">/g)||[]).length === 1 &&
+  (mdcHubHtml.match(/<span class="decision-status">Live<\/span>/g)||[]).length === 4 &&
+  (mdcHubHtml.match(/<article class="decision-card planned">/g)||[]).length === 0 &&
   mdcHubHtml.includes('href="refinance-break-even.html"') &&
-  mdcHubHtml.includes('Planned for MDC1C. No placeholder calculator is published.') &&
-  [...mdcHubHtml.matchAll(/<article class="decision-card planned">([\s\S]*?)<\/article>/g)].every(m => !/<a\b/.test(m[1]))
+  mdcHubHtml.includes('href="rate-rise-stress-test.html"') &&
+  mdcHubHtml.includes('href="/mortgage-rate-rise-payment-stress.html"')
 );
 add('MDC1A: canonical routes, equal-cash-flow methodology and break-even hero are present',
   mdcHubHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') &&
@@ -2535,11 +2539,11 @@ add('MDC1B: sitemap/discovery publish both new routes and refresh the changed hu
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/one-extra-mortgage-payment-a-year.html') === '2026-10-14'
 );
-add('MDC1B: seven-core homepage stays unchanged and MDC1C remains planned/non-link',
+add('MDC1B: seven-core homepage stays unchanged while MDC1C becomes a separate live Decision Centre route',
   mainHome.includes('data-core-tool-count="7"') &&
   !mainHome.includes('data-tool-id="mortgage-refinance-break-even"') &&
-  mdcHubHtml.includes('Rate Shock / Budget') && mdcHubHtml.includes('Planned for MDC1C. No placeholder calculator is published.') &&
-  !mdcHubHtml.includes('rate-shock-budget-stress.html')
+  !mainHome.includes('data-tool-id="mortgage-rate-rise-stress"') &&
+  mdcHubHtml.includes('Rate Rise / Payment Stress') && mdcHubHtml.includes('href="rate-rise-stress-test.html"')
 );
 add('MDC1B: implementation record locks Snapshot 59, three-PR scope and no-workflow discipline',
   mdc1bImpl.includes('Source Snapshot 59') &&
@@ -2609,6 +2613,135 @@ try {
   mdc1bFixtureDetail=error?.stack || String(error);
 }
 add('MDC1B: independent deterministic refinance fixtures pass rate-isolation, durable-break-even and equivalence contracts', mdc1bFixtureOk, mdc1bFixtureDetail);
+
+
+// MDC1C Mortgage Rate Rise & Payment Stress Test - Snapshot 61 production contract.
+const mdc1cToolHtml = read('mortgage-payoff-calculator/rate-rise-stress-test.html');
+const mdc1cCore = read('mortgage-payoff-calculator/rate-rise-stress-test-core.js');
+const mdc1cUi = read('mortgage-payoff-calculator/rate-rise-stress-test.js');
+const mdc1cPdf = read('mortgage-payoff-calculator/rate-rise-stress-test-pdf-renderer.js');
+const mdc1cLearn = read('draw004.github.io/mortgage-rate-rise-payment-stress.html');
+const mdc1cImpl = read('draw004.github.io/docs/CARROWMONT_MDC1C_RATE_RISE_PAYMENT_STRESS_IMPLEMENTATION.md');
+const mdc1cSpec = read('draw004.github.io/docs/CARROWMONT_MDC1C_RATE_RISE_PAYMENT_STRESS_SPEC_FINAL.md');
+const mdc1cQa = fs.readFileSync(new URL('../tests/22-mdc1c-rate-rise-payment-stress.spec.js', import.meta.url), 'utf8');
+
+add('MDC1C: canonical search identity, four-live Decision Centre and visible rate-vs-today separation are present',
+  mdc1cToolHtml.includes('<title>Mortgage Rate Rise Calculator &amp; Payment Stress Test | Carrowmont</title>') &&
+  mdc1cToolHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/rate-rise-stress-test.html') &&
+  mdc1cToolHtml.includes('id="rateOnlyChangeResult"') && mdc1cToolHtml.includes('id="todayChangeResult"') &&
+  (mdcHubHtml.match(/<span class="decision-status">Live<\/span>/g)||[]).length === 4 &&
+  (mdcHubHtml.match(/decision-card planned/g)||[]).length === 0 &&
+  mdcHubHtml.includes('href="rate-rise-stress-test.html"')
+);
+add('MDC1C: existing mortgage engine drives projection, same-rate reference and stress scenarios without a duplicated payment formula',
+  mdc1cCore.includes('const M = window.CarrowmontMortgageCore') && mdc1cCore.includes('M.simulate({') &&
+  mdc1cCore.includes('sameRateReferencePayment') && mdc1cCore.includes('remainingPeriods') &&
+  mdc1cCore.includes('const payment = M.scheduledPayment(') && !mdc1cCore.includes('function scheduledPayment(') &&
+  !/fetch\s*\(|XMLHttpRequest|sendBeacon\s*\(/.test(mdc1cCore + mdc1cUi)
+);
+add('MDC1C: standard percentage-point ladder, monthly-equivalent normalization and optional non-normative budget crossover are explicit',
+  mdc1cCore.includes('Object.freeze([0.25, 0.50, 1.00, 2.00, 3.00])') &&
+  mdc1cCore.includes('function monthlyEquivalent(') && mdc1cCore.includes('function solveZeroBufferRate(') &&
+  mdc1cCore.includes('MAX_RATE = 50') && mdc1cToolHtml.includes('Modeled zero-buffer rate') &&
+  mdc1cToolHtml.includes('not a recommended maximum or lender affordability result') &&
+  !/safe rate|maximum affordable rate/i.test(mdc1cUi)
+);
+add('MDC1C: shared profile remains explicit-use and household/stress assumptions are not persisted',
+  mdc1cToolHtml.includes('Use these loan details') && mdc1cToolHtml.includes('Start fresh') &&
+  mdc1cUi.includes('Future rate, reset timing, income, expenses and results were not saved.') &&
+  mdc1cUi.includes('Stress rate, timing and household budget were not taken from the profile.') &&
+  !/monthlyTakeHomeIncome|monthlyEssentialOutgoings|stressedAnnualRatePct|monthsUntilRateChange/.test(mdcProfile)
+);
+add('MDC1C: report is exact three pages from the deterministic result and no CSV export is introduced',
+  mdc1cPdf.includes('const canvases=[summaryPage(model),scenarioPage(model),guidePage(model)]') &&
+  mdc1cPdf.includes("filename:'carrowmont-mortgage-rate-rise-stress-report.pdf'") &&
+  mdc1cToolHtml.includes('Generate Payment Stress Decision Report') && mdc1cToolHtml.includes('Copy Summary') &&
+  !mdc1cToolHtml.includes('Download CSV')
+);
+add('MDC1C: Learn guide, Learn hub, sitemap and shared bottom CTA publish a bidirectional rate-stress path',
+  mdc1cLearn.includes('How Much Could Your Mortgage Payment Rise if Rates Increase? | Carrowmont') &&
+  mdc1cLearn.includes('"@type":"Article"') && mdc1cLearn.includes('"@type":"BreadcrumbList"') &&
+  mdc1cLearn.includes('href="/mortgage-payoff-calculator/rate-rise-stress-test.html"') &&
+  mdc1cToolHtml.includes('href="/mortgage-rate-rise-payment-stress.html"') &&
+  mortgageLearnHub.includes('href="/mortgage-rate-rise-payment-stress.html"') &&
+  mortgageLearnArticleJs.includes("'/mortgage-payoff-calculator/rate-rise-stress-test.html': 'Mortgage Rate Rise & Payment Stress Test'") &&
+  core7Sitemap.includes('https://carrowmont.com/mortgage-rate-rise-payment-stress.html') &&
+  core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/rate-rise-stress-test.html')
+);
+add('MDC1C: seven-core homepage remains unchanged and existing payoff/MDC1A/MDC1B production engines remain separate',
+  mainHome.includes('data-core-tool-count="7"') &&
+  !mainHome.includes('data-tool-id="mortgage-rate-rise-stress"') &&
+  mdc1cCore !== mdcCore && mdc1cCore !== mdc1bCore &&
+  mdc1cSpec.includes('MDC1C')
+);
+add('MDC1C: implementation record locks Snapshot 61, three-PR scope and no-workflow discipline',
+  mdc1cImpl.includes('Source Snapshot 61') &&
+  mdc1cImpl.includes('3a8eecc1dd50011a801abfab7c1e5e2c90167a8f') &&
+  mdc1cImpl.includes('35c3ec813e9dc6d1791290ebdd88bafb5dea911d') &&
+  mdc1cImpl.includes('c00ec350207292c2fe149c689c1aee1ae454fab7') &&
+  mdc1cImpl.includes('Expected generated release PR count: **3**') &&
+  mdc1cImpl.includes('No workflow file is changed') && mdc1cImpl.includes('Workflows: Read and write` is **not required**')
+);
+add('central QA: MDC1C protects explicit profile confirmation, exact three-page PDF, localization, Tool/Learn and 1280/390/360 overflow',
+  mdc1cQa.includes('explicit confirmation') && mdc1cQa.includes('exact three-page PDF') &&
+  mdc1cQa.includes("['IN','INR'") && mdc1cQa.includes("['GB','GBP'") &&
+  mdc1cQa.includes('Tool and Learn guide are bidirectional') && mdc1cQa.includes('[1280,390,360]')
+);
+
+let mdc1cFixtureOk = false;
+let mdc1cFixtureDetail = '';
+try {
+  const sandbox = { window:{}, console, Date, Math, Intl, Number, String, Map, Set, Array, Object, JSON, RegExp };
+  sandbox.window.window = sandbox.window;
+  vm.createContext(sandbox);
+  vm.runInContext(mortgageCore, sandbox, { filename:'mortgage-core.js' });
+  vm.runInContext(mdc1cCore, sandbox, { filename:'rate-rise-stress-test-core.js' });
+  const C = sandbox.window.CarrowmontMdc1cCore;
+  const close = (a,b,t=1e-6) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a-b) <= t;
+  const checks=[]; const push=(name,ok)=>checks.push([name,Boolean(ok)]);
+  const base={country:'US',currency:'USD',balance:400000,annualRatePct:6,remainingYears:20,remainingMonths:0,paymentFrequency:'monthly',useCurrentPayment:false,currentPayment:null,monthsUntilRateChange:0,stressedAnnualRatePct:7,householdBudgetEnabled:false,monthlyTakeHomeIncome:null,monthlyEssentialOutgoings:null,startDate:'2026-10-14'};
+  const calc=over=>C.calculate({...base,...over});
+  const immediate=calc({}); const plus2=calc({stressedAnnualRatePct:8}); const future=calc({monthsUntilRateChange:24});
+  const india=calc({country:'IN',currency:'INR',balance:5000000,annualRatePct:8.5,remainingYears:15,stressedAnnualRatePct:9.5});
+  const canada=calc({country:'CA',currency:'CAD',balance:500000,annualRatePct:5,remainingYears:25,monthsUntilRateChange:36,stressedAnnualRatePct:6});
+  const zero=calc({balance:100000,annualRatePct:0,remainingYears:10,stressedAnnualRatePct:1});
+  const budget=calc({householdBudgetEnabled:true,monthlyTakeHomeIncome:6500,monthlyEssentialOutgoings:3500});
+  const futureBudget=calc({monthsUntilRateChange:24,householdBudgetEnabled:true,monthlyTakeHomeIncome:6500,monthlyEssentialOutgoings:3500});
+  const indiaBudget=calc({country:'IN',currency:'INR',balance:5000000,annualRatePct:8.5,remainingYears:15,stressedAnnualRatePct:9.5,householdBudgetEnabled:true,monthlyTakeHomeIncome:120000,monthlyEssentialOutgoings:65000});
+  const canadaBudget=calc({country:'CA',currency:'CAD',balance:500000,annualRatePct:5,remainingYears:25,monthsUntilRateChange:36,stressedAnnualRatePct:6,householdBudgetEnabled:true,monthlyTakeHomeIncome:7000,monthlyEssentialOutgoings:3500});
+  const override=calc({useCurrentPayment:true,currentPayment:3000,monthsUntilRateChange:24});
+  const biweekly=calc({paymentFrequency:'biweekly'}); const weekly=calc({paymentFrequency:'weekly'});
+  const down=calc({stressedAnnualRatePct:5}); const max=calc({stressedAnnualRatePct:50});
+  const badReset=calc({monthsUntilRateChange:240}); const negAm=calc({useCurrentPayment:true,currentPayment:100});
+  const noBudget=calc({householdBudgetEnabled:true,monthlyTakeHomeIncome:null,monthlyEssentialOutgoings:null});
+
+  push('immediate current payment', immediate.ok && close(immediate.current.paymentToday,2865.724233912691,0.01));
+  push('immediate +1 stressed payment', immediate.ok && close(immediate.customScenario.payment,3101.1957424754924,0.01) && close(immediate.customScenario.rateOnlyChange,235.47150856280132,0.01));
+  push('+2 stressed payment', plus2.ok && close(plus2.customScenario.payment,3345.7602759738656,0.01) && close(plus2.customScenario.rateOnlyChange,480.0360420611746,0.01));
+  push('future projected balance', future.ok && close(future.reset.projectedBalance,377982.9400320151,0.01));
+  push('future +1 payment', future.ok && close(future.customScenario.payment,3082.459081048156,0.01) && close(future.customScenario.rateOnlyChange,216.7348471354726,0.01));
+  push('India fixture', india.ok && close(india.current.paymentToday,49236.97789627968,0.01) && close(india.customScenario.payment,52211.234143189606,0.01));
+  push('Canada convention fixture', canada.ok && close(canada.current.paymentToday,2908.0249251850773,0.01) && close(canada.reset.projectedBalance,467237.1164811398,0.01) && close(canada.customScenario.payment,3171.272720983039,0.01));
+  push('zero-rate deterministic fixture', zero.ok && close(zero.current.paymentToday,833.3333333333334,0.01) && close(zero.customScenario.payment,876.0412137016195,0.01));
+  push('optional budget shortfall and zero crossover', budget.ok && budget.budget.applicable && close(budget.budget.customBuffer,-101.19574247549235,0.01) && close(budget.budget.zeroBufferRatePct,6.575081981625562,1e-6));
+  push('future budget zero crossover', futureBudget.ok && close(futureBudget.budget.zeroBufferRatePct,6.623966650909031,1e-6));
+  push('India budget zero crossover', indiaBudget.ok && close(indiaBudget.budget.zeroBufferRatePct,10.41281416947579,1e-6));
+  push('Canada budget zero crossover', canadaBudget.ok && close(canadaBudget.budget.zeroBufferRatePct,7.197361901892508,1e-6));
+  push('current-payment override preserves two comparisons', override.ok && close(override.reset.projectedBalance,374568.0447589218,0.01) && close(override.reset.sameRateReferencePayment,2839.8337846253467,0.01) && close(override.customScenario.payment,3054.6105359670382,0.01) && close(override.customScenario.rateOnlyChange,214.77675134169158,0.01) && close(override.customScenario.todayChange,54.61053596703823,0.01));
+  push('biweekly monthly equivalent', biweekly.ok && close(biweekly.customScenario.payment,1430.293182084091,0.01) && close(biweekly.customScenario.monthlyEquivalent,3098.9685611821974,0.01));
+  push('weekly monthly equivalent is normalized', weekly.ok && close(weekly.customScenario.monthlyEquivalent,immediate.customScenario.monthlyEquivalent,15));
+  push('lower stressed rate is allowed', down.ok && down.customScenario.rateOnlyChange<0 && down.customScenario.todayChange<0);
+  push('50 percent ceiling accepted', max.ok && max.customScenario.annualRatePct===50 && max.customScenario.payment>0);
+  push('standard ladder contains five increments', immediate.ok && immediate.ladder.length===5 && immediate.ladder.map(x=>x.deltaPctPoints).join(',')==='0.25,0.5,1,2,3');
+  push('reset at or after term rejected', !badReset.ok && badReset.error==='reset-after-term');
+  push('negative amortization override rejected', !negAm.ok && negAm.error==='negative-amortization');
+  push('budget remains optional if figures absent', noBudget.ok && !noBudget.budget.applicable);
+  push('pure rate effect references same remaining term', immediate.ok && immediate.reset.remainingPeriods===immediate.current.totalPeriods && close(immediate.reset.sameRateReferencePayment,immediate.current.formulaPayment,0.01));
+
+  const failed=checks.filter(([,ok])=>!ok).map(([name])=>name);
+  mdc1cFixtureOk=failed.length===0; mdc1cFixtureDetail=failed.length ? 'failed: '+failed.join(', ') : `${checks.length} deterministic fixtures passed`;
+} catch (error) { mdc1cFixtureDetail=error?.stack || String(error); }
+add('MDC1C: independent deterministic fixtures pass projection, rate stress, country convention, cadence and optional-budget contracts', mdc1cFixtureOk, mdc1cFixtureDetail);
 
 
 // GSEO1D internal topic authority - Snapshot 56 - 2026-10-13.
