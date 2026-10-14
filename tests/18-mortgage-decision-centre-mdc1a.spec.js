@@ -44,15 +44,16 @@ async function enterStandardScenario(page){
 }
 
 test.describe('MDC1A Mortgage Decision Centre - Prepayment vs Investing',()=>{
-  test('[AUTO] Decision Centre exposes two live decisions and two non-link planned decisions',async({page})=>{
+  test('[AUTO] Decision Centre keeps MDC1A live after MDC1B adds a third live choice and leaves MDC1C non-link planned',async({page})=>{
     await gotoClean(page,HUB);
     await expect(page.getByRole('heading',{name:'What are you trying to decide?'})).toBeVisible();
     await expect(page.locator('.decision-card')).toHaveCount(4);
-    await expect(page.locator('.decision-card .decision-status',{hasText:'Live'})).toHaveCount(2);
-    await expect(page.locator('.decision-card.planned')).toHaveCount(2);
+    await expect(page.locator('.decision-card .decision-status',{hasText:'Live'})).toHaveCount(3);
+    await expect(page.locator('.decision-card.planned')).toHaveCount(1);
     await expect(page.locator('.decision-card.planned a')).toHaveCount(0);
     await expect(page.locator('.decision-card:not(.planned) a[href="/mortgage-payoff-calculator/"]')).toBeVisible();
     await expect(page.locator('.decision-card:not(.planned) a[href="prepayment-vs-investing.html"]')).toBeVisible();
+    await expect(page.locator('.decision-card:not(.planned) a[href="refinance-break-even.html"]')).toBeVisible();
   });
 
   test('[AUTO] zero extra stays comparison-not-applicable while blank assumed return still calculates break-even',async({page})=>{
