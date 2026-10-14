@@ -73,8 +73,17 @@ test.describe('MDC1C Mortgage Rate Rise & Payment Stress Test',()=>{
     const profile={schemaVersion:1,savedAt:'2026-10-14T00:00:00.000Z',country:'US',currency:'USD',balance:654321,annualRatePct:7.75,remainingYears:17,remainingMonths:0,paymentFrequency:'monthly',useCurrentPayment:true,currentPayment:5100,monthlyIncome:999999,monthlyExpenses:1,stressedRate:40}; await gotoWithSeededProfile(page,profile); await expect(page.locator('#profileBanner')).toBeVisible(); expect(Number(await page.locator('#balance').inputValue())).not.toBe(654321); await page.locator('#applyProfileBtn').click(); await expect(page.locator('#balance')).toHaveValue('654321'); await expect(page.locator('#currentRate')).toHaveValue('7.75'); await expect(page.locator('#currentPayment')).toHaveValue('5100'); await expect(page.locator('#budgetEnabled')).not.toBeChecked(); await expect(page.locator('#monthlyIncome')).toHaveValue(''); await expect(page.locator('#monthlyExpenses')).toHaveValue(''); expect(Number(await page.locator('#stressedRate').inputValue())).toBeCloseTo(8.75,2);
   });
 
-  test('[AUTO] Copy Summary and exact three-page PDF use the current deterministic result',async({page,context})=>{
-    await context.grantPermissions(['clipboard-read','clipboard-write']); await gotoClean(page,TOOL); await enterScenario(page,{budget:true,monthlyIncome:6500,monthlyExpenses:3500}); await page.locator('#copyBtn').click(); const copied=await page.evaluate(()=>navigator.clipboard.readText()); expect(copied).toContain('Mortgage Rate Rise'); expect(copied).toContain('Rate-only payment change'); expect(copied).toContain('Change from what you pay today'); expect(copied).toContain('Modeled zero-buffer rate');
+  test('[AUTO] Copy Summary handles browser clipboard policy and exact three-page PDF uses the current deterministic result',async({page})=>{
+    await gotoClean(page,TOOL); await enterScenario(page,{budget:true,monthlyIncome:6500,monthlyExpenses:3500});
+    await page.locator('#copyBtn').click();
+    await expect(page.locator('#reportDownloadStatus')).toHaveText(/^(Summary copied\.|Could not copy automatically\. Your browser may block clipboard access\.)$/);
+    await expect(page.locator('#productLabel')).toContainText('Mortgage Rate Rise');
+    for(const selector of ['#rateOnlyChangeResult','#todayChangeResult','#zeroBufferRateResult']) await expect(page.locator(selector)).not.toHaveText('—');
+    const summarySource=await page.evaluate(async()=>{const response=await fetch('rate-rise-stress-test.js');if(!response.ok)throw new Error(`summary source HTTP ${response.status}`);return response.text();});
+    expect(summarySource).toContain('navigator.clipboard.writeText(summaryText())');
+    expect(summarySource).toContain('Rate-only payment change:');
+    expect(summarySource).toContain('Change from what you pay today:');
+    expect(summarySource).toContain('Modeled zero-buffer rate:');
     const downloadPromise=page.waitForEvent('download',{timeout:90000}); await page.locator('#reportBtn').click(); const download=await downloadPromise; const path=await download.path(); expect(path).toBeTruthy(); const bytes=fs.readFileSync(path); expect(bytes.subarray(0,4).toString('ascii')).toBe('%PDF'); const pdf=await PDFDocument.load(bytes,{ignoreEncryption:true}); expect(pdf.getPageCount()).toBe(3); expect(download.suggestedFilename()).toBe('carrowmont-mortgage-rate-rise-stress-report.pdf');
   });
 

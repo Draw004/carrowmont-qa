@@ -2873,6 +2873,78 @@ add('GSEO1E: evidence, sitemap freshness and browser QA lock a bounded refinemen
   gseo1eQa.includes('[390, 360]')
 );
 
+
+
+// Mortgage terminology + shared-plan hotfix - Snapshot 62 - 2026-10-14.
+const mortgageHotfixLocale = read('mortgage-payoff-calculator/locale.js');
+const mortgageHotfixPayoffHtml = read('mortgage-payoff-calculator/index.html');
+const mortgageHotfixPayoffJs = read('mortgage-payoff-calculator/app.js');
+const mortgageHotfixHubHtml = read('mortgage-payoff-calculator/decision-centre.html');
+const mortgageHotfixHubJs = read('mortgage-payoff-calculator/decision-centre.js');
+const mortgageHotfixPrepayHtml = read('mortgage-payoff-calculator/prepayment-vs-investing.html');
+const mortgageHotfixPrepayJs = read('mortgage-payoff-calculator/prepayment-vs-investing.js');
+const mortgageHotfixRefiHtml = read('mortgage-payoff-calculator/refinance-break-even.html');
+const mortgageHotfixRefiJs = read('mortgage-payoff-calculator/refinance-break-even.js');
+const mortgageHotfixStressHtml = read('mortgage-payoff-calculator/rate-rise-stress-test.html');
+const mortgageHotfixStressJs = read('mortgage-payoff-calculator/rate-rise-stress-test.js');
+const mortgageHotfixPdfFiles = [
+  read('mortgage-payoff-calculator/mortgage-payoff-pdf-renderer.js'),
+  read('mortgage-payoff-calculator/prepayment-vs-investing-pdf-renderer.js'),
+  read('mortgage-payoff-calculator/refinance-break-even-pdf-renderer.js'),
+  read('mortgage-payoff-calculator/rate-rise-stress-test-pdf-renderer.js')
+];
+const mortgageHotfixQa = fs.readFileSync(new URL('../tests/23-mortgage-localization-shared-plan-hotfix.spec.js', import.meta.url), 'utf8');
+
+add('mortgage hotfix: one locale helper owns Home Loan vs Mortgage family wording',
+  mortgageHotfixLocale.includes('function getMortgageTerms') &&
+  mortgageHotfixLocale.includes("const homeLoanMarket = ['IN', 'AU', 'NZ'].includes(region)") &&
+  mortgageHotfixLocale.includes("const mortgageMarket = ['US', 'CA', 'GB', 'IE'].includes(region)") &&
+  mortgageHotfixLocale.includes("familyName = homeLoanMarket ? 'Home Loan Decision Centre'") &&
+  mortgageHotfixLocale.includes('function applyMortgageCopy')
+);
+add('mortgage hotfix: payoff and all Decision Centre modules apply shared family terminology at runtime',
+  [mortgageHotfixPayoffJs,mortgageHotfixHubJs,mortgageHotfixPrepayJs,mortgageHotfixRefiJs,mortgageHotfixStressJs]
+    .every(src=>src.includes('applyMortgageCopy?.()')) &&
+  mortgageHotfixPayoffHtml.includes('data-mortgage-copy="nextDecision"') &&
+  mortgageHotfixHubHtml.includes('data-mortgage-copy="familyName"') &&
+  mortgageHotfixPrepayHtml.includes('data-mortgage-copy="prepayPrivacy"') &&
+  mortgageHotfixRefiHtml.includes('data-mortgage-copy="refiPrivacy"') &&
+  mortgageHotfixStressHtml.includes('data-mortgage-copy="stressPrivacy"')
+);
+add('mortgage hotfix: previously hard-coded Decision Centre, FAQ, privacy and footer strings are localization targets',
+  mortgageHotfixPayoffHtml.includes('data-mortgage-copy="payoffExtraFaq"') &&
+  mortgageHotfixPayoffHtml.includes('data-mortgage-copy="payoffDecisionLink"') &&
+  mortgageHotfixHubHtml.includes('data-mortgage-copy="learnLabel"') &&
+  mortgageHotfixPrepayHtml.includes('data-mortgage-copy="prepayFreedCashFaq"') &&
+  mortgageHotfixPrepayHtml.includes('data-mortgage-copy="clearSavedDetails"') &&
+  mortgageHotfixRefiHtml.includes('data-mortgage-copy="toolsLabel"') &&
+  mortgageHotfixStressHtml.includes('data-mortgage-copy="stressExpensesLabel"') &&
+  mortgageHotfixStressHtml.includes('data-mortgage-copy="zeroBufferExplanation"')
+);
+add('mortgage hotfix: shared-plan stop-sharing clears only housing-loan values and blocks silent republishing',
+  mortgageHotfixPayoffJs.includes("SHARED_LOAN_ENABLED_KEY='carrowmont_mortgage_shared_plan_enabled_v1'") &&
+  mortgageHotfixPayoffJs.includes("S.clear(SHARED_LOAN_PATHS)") &&
+  mortgageHotfixPayoffJs.includes("!sharedLoanEnabled()") &&
+  mortgageHotfixPayoffJs.includes("Loan details are no longer available to other Carrowmont tools.") &&
+  !mortgageHotfixPayoffJs.includes("S?.clear();els.reportStatus.textContent='Shared Carrowmont plan values cleared from this browser.'") &&
+  mortgageHotfixPayoffHtml.includes('id="sharedPlanStatus"') &&
+  mortgageHotfixPayoffHtml.includes('Stop sharing this loan with other Carrowmont tools')
+);
+add('mortgage hotfix: PDFs use the same country-aware mortgage/home-loan terminology source',
+  mortgageHotfixPdfFiles.every(src=>src.includes('getMortgageTerms?.()')) &&
+  mortgageHotfixPdfFiles.every(src=>src.includes('T()'))
+);
+add('mortgage hotfix: user-facing copy avoids V1 jargon in the localized extra-money explanation',
+  mortgageHotfixLocale.includes('Choose how you want to use the extra money.') &&
+  !mortgageHotfixLocale.includes('Choose one V1 mode.')
+);
+add('central QA: mortgage hotfix protects country wording, targeted clear semantics and 1280/390/360 layouts',
+  mortgageHotfixQa.includes('Decision Centre family wording follows India, US, UK and Australia terminology') &&
+  mortgageHotfixQa.includes('Stop sharing clears only housing-loan values') &&
+  mortgageHotfixQa.includes("assumptions.inflationPct") &&
+  mortgageHotfixQa.includes('[1280,390,360]')
+);
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);
