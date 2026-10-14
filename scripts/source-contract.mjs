@@ -1032,7 +1032,7 @@ add('main site: all Learn Article pages inherit the reusable article standard',
   standardizedLearnPages.length >= 57 && standardizedLearnPages.every(({file,page}) =>
     page.includes('data-cm-learn-article="1"') &&
     page.includes('learn-article.css?v=20261010-global1') &&
-    (page.includes('learn-article.js?v=20260928-standard2') || ((mortgageLearnFiles.includes(file) || file === 'mortgage-prepayment-vs-investing.html') && page.includes('learn-article.js?v=20261011-mortgage1'))) &&
+    (page.includes('learn-article.js?v=20260928-standard2') || ((mortgageLearnFiles.includes(file) || file === 'mortgage-prepayment-vs-investing.html') && page.includes('learn-article.js?v=20261011-mortgage1')) || (file === 'mortgage-refinance-break-even.html' && page.includes('learn-article.js?v=20261014-mdc1b1'))) &&
     page.includes('class="article-meta"') &&
     page.includes('class="guide-action-first"') &&
     page.includes('class="reference-note"') &&
@@ -2338,11 +2338,11 @@ const mdcImpl = read('draw004.github.io/docs/CARROWMONT_MDC1A_PREPAYMENT_VS_INVE
 const mdcSpec = read('draw004.github.io/docs/CARROWMONT_MDC1A_PREPAYMENT_VS_INVESTING_SPEC_FINAL.md');
 const mdcQa = fs.readFileSync(new URL('../tests/18-mortgage-decision-centre-mdc1a.spec.js', import.meta.url), 'utf8');
 
-add('MDC1A: Decision Centre publishes exactly two live choices and two non-link planned choices',
+add('MDC family after MDC1B: Decision Centre publishes exactly three live choices and one non-link planned MDC1C choice',
   mdcHubHtml.includes('<h1>What are you trying to decide?</h1>') &&
-  (mdcHubHtml.match(/<span class="decision-status">Live<\/span>/g)||[]).length === 2 &&
-  (mdcHubHtml.match(/<article class="decision-card planned">/g)||[]).length === 2 &&
-  mdcHubHtml.includes('Planned for MDC1B. No placeholder calculator is published.') &&
+  (mdcHubHtml.match(/<span class="decision-status">Live<\/span>/g)||[]).length === 3 &&
+  (mdcHubHtml.match(/<article class="decision-card planned">/g)||[]).length === 1 &&
+  mdcHubHtml.includes('href="refinance-break-even.html"') &&
   mdcHubHtml.includes('Planned for MDC1C. No placeholder calculator is published.') &&
   [...mdcHubHtml.matchAll(/<article class="decision-card planned">([\s\S]*?)<\/article>/g)].every(m => !/<a\b/.test(m[1]))
 );
@@ -2475,6 +2475,141 @@ try {
 }
 add('MDC1A: independent deterministic core fixture set passes equal-cash-flow and edge-case contract', mdcFixtureOk, mdcFixtureDetail);
 
+// MDC1B Mortgage Decision Centre - Refinance / Balance Transfer Break-Even - Snapshot 59 production contract.
+const mdc1bToolHtml = read('mortgage-payoff-calculator/refinance-break-even.html');
+const mdc1bCore = read('mortgage-payoff-calculator/refinance-break-even-core.js');
+const mdc1bUi = read('mortgage-payoff-calculator/refinance-break-even.js');
+const mdc1bPdf = read('mortgage-payoff-calculator/refinance-break-even-pdf-renderer.js');
+const mdc1bLearn = read('draw004.github.io/mortgage-refinance-break-even.html');
+const mdc1bImpl = read('draw004.github.io/docs/CARROWMONT_MDC1B_REFINANCE_BREAK_EVEN_IMPLEMENTATION.md');
+const mdc1bSpec = read('draw004.github.io/docs/CARROWMONT_MDC1B_REFINANCE_BREAK_EVEN_SPEC_FINAL.md');
+const mdc1bQa = fs.readFileSync(new URL('../tests/21-mdc1b-refinance-break-even.spec.js', import.meta.url), 'utf8');
+
+add('MDC1B: canonical route, search identity and three-payment rate/term separation are present',
+  mdc1bToolHtml.includes('<title>Mortgage Refinance Break-Even Calculator | Carrowmont</title>') &&
+  mdc1bToolHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') &&
+  mdc1bToolHtml.includes('id="currentPaymentResult"') && mdc1bToolHtml.includes('id="rateOnlyPaymentResult"') && mdc1bToolHtml.includes('id="proposedPaymentResult"') &&
+  mdc1bToolHtml.includes('Separate the rate effect from the term effect.') &&
+  mdc1bCore.includes('rateOnlySameTerm') && mdc1bCore.includes('principal: normalized.balance') &&
+  mdc1bCore.includes('const proposedPrincipal = normalized.balance + financedFees')
+);
+add('MDC1B: fee, cashback, holding-period and durable-break-even rules are explicit and deterministic',
+  mdc1bCore.includes('const netSwitchingCost = normalized.switchingFees + normalized.exitCharge - normalized.cashback') &&
+  mdc1bCore.includes('function durableBreakEven(') && mdc1bCore.includes('suffixMin') &&
+  mdc1bCore.includes('holdingPeriodAdvantage') && mdc1bCore.includes('temporaryCrossingPeriod') &&
+  mdc1bCore.includes('lowerPaymentHigherLifetimeCost') &&
+  !/fetch\s*\(|XMLHttpRequest|sendBeacon\s*\(/.test(mdc1bCore + mdc1bUi)
+);
+add('MDC1B: existing mortgage engine is reused and current-payment profile overrides cannot drive the refinance comparison',
+  mdc1bCore.includes('const M = window.CarrowmontMortgageCore') && mdc1bCore.includes('M.simulate(') && mdc1bCore.includes('M.paymentConvention(') &&
+  mdc1bUi.includes('Saved current-payment overrides are not used by this refinance model.') &&
+  mdc1bUi.includes('override was intentionally ignored') && mdc1bUi.includes('useCurrentPayment: false, currentPayment: null') &&
+  !mdc1bCore.includes('function scheduledPayment(')
+);
+add('MDC1B: report is an exact three-page decision report from the shared result object and no CSV is added',
+  mdc1bPdf.includes('const canvases=[summaryPage(model),comparisonPage(model),guidePage(model)]') &&
+  mdc1bPdf.includes("filename:'carrowmont-refinance-break-even-decision-report.pdf'") &&
+  mdc1bToolHtml.includes('Generate Refinance Decision Report') && mdc1bToolHtml.includes('Copy Summary') &&
+  !mdc1bToolHtml.includes('Download CSV')
+);
+add('MDC1B: Learn guide and Decision Centre create a bidirectional refinance path with a shared bottom CTA mapping',
+  mdc1bLearn.includes('When Does Mortgage Refinancing Break Even? | Carrowmont') &&
+  mdc1bLearn.includes('"@type":"Article"') && mdc1bLearn.includes('"@type":"BreadcrumbList"') &&
+  mdc1bLearn.includes('href="/mortgage-payoff-calculator/refinance-break-even.html"') &&
+  mdc1bToolHtml.includes('href="/mortgage-refinance-break-even.html"') &&
+  mortgageLearnHub.includes('href="/mortgage-refinance-break-even.html"') &&
+  mortgageLearnArticleJs.includes("'/mortgage-payoff-calculator/refinance-break-even.html': 'Mortgage Refinance Break-Even Calculator'")
+);
+const mdc1bSitemapLastmods = new Map([...core7Sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(match => {
+  const loc = match[1].match(/<loc>([^<]+)<\/loc>/);
+  const lastmod = match[1].match(/<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+  return loc && lastmod ? [loc[1], lastmod[1]] : null;
+}).filter(Boolean));
+add('MDC1B: sitemap/discovery publish both new routes and refresh the changed hubs',
+  core7Sitemap.includes('https://carrowmont.com/mortgage-refinance-break-even.html') &&
+  core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-refinance-break-even.html') === '2026-10-14' &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') === '2026-10-14' &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') === '2026-10-14' &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-14' &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-14' &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/one-extra-mortgage-payment-a-year.html') === '2026-10-14'
+);
+add('MDC1B: seven-core homepage stays unchanged and MDC1C remains planned/non-link',
+  mainHome.includes('data-core-tool-count="7"') &&
+  !mainHome.includes('data-tool-id="mortgage-refinance-break-even"') &&
+  mdcHubHtml.includes('Rate Shock / Budget') && mdcHubHtml.includes('Planned for MDC1C. No placeholder calculator is published.') &&
+  !mdcHubHtml.includes('rate-shock-budget-stress.html')
+);
+add('MDC1B: implementation record locks Snapshot 59, three-PR scope and no-workflow discipline',
+  mdc1bImpl.includes('Source Snapshot 59') &&
+  mdc1bImpl.includes('e2db46fd12843e68238515ff2b92d032f2398dce') &&
+  mdc1bImpl.includes('84b149c7fc730ac0daa0b7fe0c38cfadf12b6345') &&
+  mdc1bImpl.includes('d8f6e1189537cec5120e88d621803396e359e889') &&
+  mdc1bImpl.includes('Expected generated release PR count: **3**') &&
+  mdc1bImpl.includes('No workflow file is changed') && mdc1bImpl.includes('Workflows: Read and write` is **not required**') &&
+  mdc1bSpec.includes('durable') && mdc1bSpec.includes('same remaining term')
+);
+add('central QA: MDC1B protects profile confirmation, PDF, Tool/Learn, localization and 1280/390/360 overflow',
+  mdc1bQa.includes('explicit confirmation') && mdc1bQa.includes('exact three-page PDF') &&
+  mdc1bQa.includes('bidirectional') && mdc1bQa.includes("['IN','INR'") && mdc1bQa.includes("['GB','GBP'") &&
+  mdc1bQa.includes('[1280,390,360]')
+);
+
+let mdc1bFixtureOk = false;
+let mdc1bFixtureDetail = '';
+try {
+  const sandbox = { window:{}, console, Date, Math, Intl, Number, String, Map, Set, Array, Object, JSON, RegExp };
+  sandbox.window.window = sandbox.window;
+  vm.createContext(sandbox);
+  vm.runInContext(mortgageCore, sandbox, { filename:'mortgage-core.js' });
+  vm.runInContext(mdc1bCore, sandbox, { filename:'refinance-break-even-core.js' });
+  const C = sandbox.window.CarrowmontMdc1bCore;
+  const base = { country:'US', currency:'USD', balance:300000, currentRatePct:6.5, remainingYears:20, remainingMonths:0, paymentFrequency:'monthly', newRatePct:5.5, proposedYears:20, proposedMonths:0, switchingFees:5000, exitCharge:0, cashback:0, feePaymentMode:'upfront', useHoldingPeriod:true, holdingYears:5, holdingMonths:0, startDate:'2026-10-14' };
+  const calc = over => C.calculate({ ...base, ...over });
+  const close = (a,b,t=1e-6) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a-b) <= t;
+  const checks = [];
+  const push = (name,ok) => checks.push([name,Boolean(ok)]);
+
+  const standard=calc({});
+  const noFee=calc({switchingFees:0});
+  const financed=calc({feePaymentMode:'financed'});
+  const cashback=calc({cashback:2000});
+  const longer=calc({proposedYears:30});
+  const shorter=calc({proposedYears:15});
+  const noBreak=calc({newRatePct:6.4,switchingFees:15000});
+  const temporary=calc({newRatePct:5.5,proposedYears:30,switchingFees:1000});
+  const holdEarly=calc({holdingYears:1});
+  const cashOver=calc({switchingFees:1000,cashback:5000});
+  const zero=calc({currentRatePct:0,newRatePct:0,switchingFees:0});
+  const canada=calc({country:'CA'});
+  const biweekly=calc({paymentFrequency:'biweekly'});
+  const weekly=calc({paymentFrequency:'weekly'});
+
+  push('standard upfront exact break-even month', standard.ok && standard.comparison.durableBreakEvenPeriod===21 && standard.comparison.durableBreakEvenMonths===21 && standard.comparison.lifetimeAdvantage>0);
+  push('same-term rate isolation', standard.ok && close(standard.rateOnlySameTerm.principal,base.balance) && standard.rateOnlySameTerm.termPeriods===standard.currentLoan.termPeriods && close(standard.rateOnlySameTerm.payment,standard.proposedLoan.payment,0.01));
+  push('no-fee immediate', noFee.ok && noFee.comparison.durableBreakEvenPeriod===0 && noFee.costs.netSwitchingCost===0);
+  push('financed fee principal plus interest', financed.ok && financed.proposedLoan.financedFees===5000 && financed.proposedLoan.principal===305000 && financed.comparison.durableBreakEvenPeriod>standard.comparison.durableBreakEvenPeriod && financed.proposedLoan.totalInterest>standard.proposedLoan.totalInterest);
+  push('cashback earlier break-even', cashback.ok && cashback.costs.netSwitchingCost===3000 && cashback.comparison.durableBreakEvenPeriod<standard.comparison.durableBreakEvenPeriod);
+  push('longer term warning and durable protection', longer.ok && longer.comparison.termChangePeriods>0 && longer.comparison.lowerPaymentHigherLifetimeCost && longer.comparison.durableBreakEvenPeriod===null && longer.comparison.temporaryCrossingPeriod!=null && longer.comparison.lifetimeAdvantage<0);
+  push('shorter term higher payment lower lifetime cost', shorter.ok && shorter.comparison.termChangePeriods<0 && shorter.comparison.paymentChange>0 && shorter.comparison.lifetimeAdvantage>0);
+  push('no break-even', noBreak.ok && noBreak.comparison.durableBreakEvenPeriod===null && noBreak.comparison.temporaryCrossingPeriod===null && noBreak.comparison.lifetimeAdvantage<0);
+  push('temporary crossing not promoted', temporary.ok && temporary.comparison.temporaryCrossingPeriod!=null && temporary.comparison.durableBreakEvenPeriod===null);
+  push('holding before/after', holdEarly.ok && holdEarly.comparison.holdingPeriodAdvantage<0 && standard.comparison.holdingPeriodAdvantage>0 && holdEarly.comparison.holdingPeriodPeriods===12);
+  push('cashback exceeds costs', cashOver.ok && cashOver.costs.netSwitchingCost<0 && cashOver.comparison.durableBreakEvenPeriod===0);
+  push('zero-rate deterministic', zero.ok && close(zero.currentLoan.payment,1250,0.01) && zero.comparison.durableBreakEvenPeriod===0 && close(zero.comparison.lifetimeAdvantage,0,0.01));
+  push('Canada fixed convention remains distinct', canada.ok && canada.currentLoan.payment!==standard.currentLoan.payment && canada.currentLoan.payment>0);
+  push('repayment frequency month conversion', biweekly.ok && weekly.ok && biweekly.comparison.durableBreakEvenPeriod===44 && biweekly.comparison.durableBreakEvenMonths===21 && weekly.comparison.durableBreakEvenPeriod===88 && weekly.comparison.durableBreakEvenMonths===21);
+  push('economic equivalence invariant', [standard,noFee,financed,cashback,longer,shorter,noBreak,temporary,holdEarly,cashOver,zero,canada,biweekly,weekly].every(r=>r.ok && r.comparison.equivalenceMaxError<0.01));
+
+  const failed=checks.filter(([,ok])=>!ok).map(([name])=>name);
+  mdc1bFixtureOk=failed.length===0;
+  mdc1bFixtureDetail=failed.length ? 'failed: '+failed.join(', ') : `${checks.length} deterministic fixtures passed`;
+} catch (error) {
+  mdc1bFixtureDetail=error?.stack || String(error);
+}
+add('MDC1B: independent deterministic refinance fixtures pass rate-isolation, durable-break-even and equivalence contracts', mdc1bFixtureOk, mdc1bFixtureDetail);
+
 
 // GSEO1D internal topic authority - Snapshot 56 - 2026-10-13.
 const gseo1dLearnHub = read('draw004.github.io/learn.html');
@@ -2524,11 +2659,11 @@ const gseo1dSitemapLastmods = new Map([...learnSitemap.matchAll(/<url>([\s\S]*?)
   return loc && lastmod ? [loc[1], lastmod[1]] : null;
 }).filter(Boolean));
 add('main site: GSEO1D sitemap freshness matches the changed hub, mortgage explainer and Decision Centre',
-  gseo1dSitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-13' &&
-  gseo1dSitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-13' &&
-  gseo1dSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') === '2026-10-13' &&
-  gseo1dMortgageGuide.includes('"dateModified":"2026-10-13"') &&
-  gseo1dMortgageGuide.includes('Updated 13 Oct 2026')
+  gseo1dSitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-13' &&
+  gseo1dSitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') >= '2026-10-13' &&
+  gseo1dSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') >= '2026-10-13' &&
+  gseo1dMortgageGuide.includes('\"dateModified\":\"2026-10-14\"') &&
+  gseo1dMortgageGuide.includes('Updated 14 Oct 2026')
 );
 add('GSEO1D: specification and browser QA lock contextual authority without link dumping',
   gseo1dSpec.includes('without link dumping') &&
