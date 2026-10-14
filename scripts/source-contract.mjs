@@ -2210,11 +2210,11 @@ add('main site: LEARN-LOCALE1 required previously-unidentified pages now have st
   read('draw004.github.io/todays-money-vs-future-money.html').includes('data-cm-page="today-vs-future-money-guide"')
 );
 add('main site: LEARN-LOCALE1 updates all content-changed Learn sitemap entries without creating duplicate country URLs',
-  initialLearnLocaleAffected.every(file => { const d=sitemapLastmods.get('https://carrowmont.com/' + file); return file === 'learn.html' ? d >= '2026-10-11' : file === 'rent-vs-buy-home.html' ? d === '2026-10-11' : ['zero-based-budgeting.html','asset-allocation-explained.html','diversification-across-asset-classes.html','emergency-fund-how-much.html','how-much-should-i-invest-each-month.html'].includes(file) ? d === '2026-10-13' : d === '2026-10-10'; }) &&
+  initialLearnLocaleAffected.every(file => { const d=sitemapLastmods.get('https://carrowmont.com/' + file); return file === 'learn.html' ? d >= '2026-10-11' : file === 'rent-vs-buy-home.html' ? d >= '2026-10-11' : ['zero-based-budgeting.html','asset-allocation-explained.html','diversification-across-asset-classes.html','emergency-fund-how-much.html','how-much-should-i-invest-each-month.html'].includes(file) ? d >= '2026-10-13' : d >= '2026-10-10'; }) &&
   !/\/in\/|\/us\/|\?country=/.test(learnLocaleSitemap)
 );
 add('main site: LEARN-LOCALE1 cache-busts the shared localization/CSS assets and keeps long related-guide links mobile-safe',
-  learnLocalePages.every(file => read('draw004.github.io/'+file).includes('learn-localization.js?v=20261010-global1')) &&
+  learnLocalePages.every(file => /learn-localization\.js\?v=(?:20261010-global1|20261014-mortgage-learn2|20261014-housing3)/.test(read('draw004.github.io/'+file))) &&
   standardizedLearnPages.every(({page}) => page.includes('learn-article.css?v=20261010-global1')) &&
   learnArticleCss.includes('.seo-related-guides .text-link') && learnArticleCss.includes('white-space:normal')
 );
@@ -2251,7 +2251,7 @@ add('Mortgage Learn V1: all five universal guides exist, inherit the article sta
 add('Mortgage Learn V1: new guides use the shared mortgage-localization layer and shared bottom tool-return pattern',
   mortgageLearnScript.includes("IN:{kicker:'HOME LOAN PREPAYMENT GUIDE'") && mortgageLearnScript.includes("GB:{kicker:'MORTGAGE OVERPAYMENT GUIDE'") &&
   mortgageLearnArticleJs.includes("'/mortgage-payoff-calculator/': 'Mortgage / Home Loan Payoff Calculator'") &&
-  mortgageLearnFiles.every(file => read('draw004.github.io/'+file).includes('mortgage-learn.js?v=20261011-mortgage1'))
+  mortgageLearnFiles.every(file => read('draw004.github.io/'+file).includes('mortgage-learn.js?v=20261014-mortgage-learn2'))
 );
 add('Mortgage Learn V1: new guides preserve the shared single-content-wrapper and one-direct-answer article structure',
   mortgageLearnFiles.every(file => {
@@ -2274,7 +2274,7 @@ add('Mortgage Learn V1: Learn-to-Tool and Tool-to-Learn paths are bidirectional 
 );
 add('Mortgage Learn V1: sitemap contains every new guide with the release date and changed discovery pages are refreshed',
   mortgageLearnFiles.every(file => sitemapLastmods.get('https://carrowmont.com/'+file)>='2026-10-11') &&
-  sitemapLastmods.get('https://carrowmont.com/learn.html')>='2026-10-11' && sitemapLastmods.get('https://carrowmont.com/rent-vs-buy-home.html')==='2026-10-11'
+  sitemapLastmods.get('https://carrowmont.com/learn.html')>='2026-10-11' && sitemapLastmods.get('https://carrowmont.com/rent-vs-buy-home.html')>='2026-10-11'
 );
 add('Mortgage Learn V1: implementation record locks Snapshot 44, three-PR scope and no workflow permission requirement',
   mortgageLearnImpl.includes('Source Snapshot 44') && mortgageLearnImpl.includes('5c8c9ae3a8afbf6c6bb1d4ad3de6888e6f8a2ff8') &&
@@ -2862,7 +2862,7 @@ const gseo1eChangedUrls = [
   'https://carrowmont.com/how-much-should-i-invest-each-month.html'
 ];
 add('GSEO1E: evidence, sitemap freshness and browser QA lock a bounded refinement release',
-  gseo1eChangedUrls.every(url => gseo1eSitemapLastmods.get(url) === '2026-10-13') &&
+  gseo1eChangedUrls.every(url => gseo1eSitemapLastmods.get(url) >= '2026-10-13') &&
   gseo1eSpec.includes('Source Snapshot 57') &&
   gseo1eSpec.includes('Explicit hold decisions') &&
   gseo1eSpec.includes('No new “content-gap” page is justified') &&
@@ -2943,6 +2943,83 @@ add('central QA: mortgage hotfix protects country wording, targeted clear semant
   mortgageHotfixQa.includes('Stop sharing clears only housing-loan values') &&
   mortgageHotfixQa.includes("assumptions.inflationPct") &&
   mortgageHotfixQa.includes('[1280,390,360]')
+);
+
+
+// Learn housing-language localization hotfix - Snapshot 63 - 2026-10-14.
+const mortgageLearnHotfixLocale = read('draw004.github.io/locale.js');
+const mortgageLearnHotfixHub = read('draw004.github.io/learn.html');
+const mortgageLearnHotfixLocalization = read('draw004.github.io/learn-localization.js');
+const mortgageLearnHotfixRuntime = read('draw004.github.io/mortgage-learn.js');
+const mortgageLearnHotfixRentBuy = read('draw004.github.io/rent-vs-buy-home.html');
+const mortgageLearnHotfixSitemap = read('draw004.github.io/sitemap.xml');
+const mortgageLearnHotfixQa = fs.readFileSync(new URL('../tests/24-mortgage-learn-localization-hotfix.spec.js', import.meta.url), 'utf8');
+const mortgageLearnHotfixPages = [
+  'mortgage-prepayment-vs-investing.html','mortgage-refinance-break-even.html','mortgage-rate-rise-payment-stress.html',
+  'one-extra-mortgage-payment-a-year.html','monthly-extra-vs-annual-lump-sum-mortgage.html',
+  'biweekly-fortnightly-mortgage-payments.html','extra-mortgage-payments-early-vs-late.html','pay-off-mortgage-five-years-early.html'
+].map(name=>read('draw004.github.io/'+name));
+const housingLearnAuditNames = [
+  'biweekly-fortnightly-mortgage-payments.html','budgeting-by-pay-frequency.html','emergency-fund-how-much.html',
+  'extra-mortgage-payments-early-vs-late.html','how-much-money-do-i-need-to-retire.html',
+  'monthly-extra-vs-annual-lump-sum-mortgage.html','mortgage-prepayment-vs-investing.html',
+  'mortgage-rate-rise-payment-stress.html','mortgage-refinance-break-even.html','one-extra-mortgage-payment-a-year.html',
+  'pay-off-mortgage-five-years-early.html','real-estate-vs-stocks.html','reit-vs-direct-property.html',
+  'rent-vs-buy-home.html','rental-yield-explained.html','retirement-expenses.html',
+  'retirement-monthly-income-needed.html','retirement-savings-by-age.html'
+];
+const housingLearnAuditPages = housingLearnAuditNames.map(name=>read('draw004.github.io/'+name));
+
+add('main Learn: one country-aware mortgage/home-loan terminology helper now serves the Learn surface',
+  mortgageLearnHotfixLocale.includes('function getMortgageTerms') &&
+  mortgageLearnHotfixLocale.includes("const homeLoanMarket = ['IN', 'AU', 'NZ'].includes(region)") &&
+  mortgageLearnHotfixLocale.includes("const mortgageMarket = ['US', 'CA', 'GB', 'IE'].includes(region)") &&
+  mortgageLearnHotfixLocale.includes("learnCategory = homeLoanMarket ? 'Home Loans'") &&
+  mortgageLearnHotfixLocale.includes('learnPrepayTitle') && mortgageLearnHotfixLocale.includes('learnRefiTitle') && mortgageLearnHotfixLocale.includes('learnStressTitle')
+);
+add('main Learn: hub home-loan/mortgage category, Decision Centre CTA and mortgage cards are localized at runtime',
+  mortgageLearnHotfixLocalization.includes('function updateMortgageLearnHub') &&
+  mortgageLearnHotfixLocalization.includes('#home-loans') &&
+  mortgageLearnHotfixLocalization.includes('/mortgage-prepayment-vs-investing.html') &&
+  mortgageLearnHotfixLocalization.includes('/mortgage-refinance-break-even.html') &&
+  mortgageLearnHotfixLocalization.includes('/mortgage-rate-rise-payment-stress.html') &&
+  mortgageLearnHotfixLocalization.includes('/one-extra-mortgage-payment-a-year.html') &&
+  mortgageLearnHotfixLocalization.includes('t.learnHubCta') && mortgageLearnHotfixLocalization.includes('t.learnRentBuyDesc')
+);
+add('main Learn: sitewide Learn housing copy uses reversible country localization beyond the mortgage cluster',
+  mortgageLearnHotfixLocalization.includes('var housingTextSource=new WeakMap()') &&
+  mortgageLearnHotfixLocalization.includes('function localizeHousingLearnSurface') &&
+  mortgageLearnHotfixLocalization.includes("body.dataset.cmLearnArticle==='1'") &&
+  mortgageLearnHotfixLocalization.includes("parent.closest('script,style,code,pre,.reference-note')") &&
+  housingLearnAuditPages.length === 18 &&
+  housingLearnAuditPages.every(src=>src.includes('learn-localization.js?v=20261014-housing3'))
+);
+add('main Learn: mortgage guide hero/back-link/footer wording follows country without changing canonical URLs',
+  mortgageLearnHotfixRuntime.includes('function articleTitle') &&
+  mortgageLearnHotfixRuntime.includes('function updateVisibleFrame') &&
+  mortgageLearnHotfixRuntime.includes("'← Back to '+t.learnGuides") &&
+  mortgageLearnHotfixRuntime.includes('.footer-col a[href="/mortgage-payoff-calculator/"]') &&
+  mortgageLearnHotfixPages.every(src=>src.includes('mortgage-learn.js?v=20261014-mortgage-learn2')) &&
+  mortgageLearnHotfixPages.every(src=>src.includes('locale.js?v=20261014-housing3'))
+);
+add('main Learn: Rent vs Buy explains the Goal Planner boundary instead of presenting it as the comparison tool',
+  mortgageLearnHotfixRentBuy.includes('PLANNING A DOWN PAYMENT?') &&
+  mortgageLearnHotfixRentBuy.includes('Plan the down-payment goal only') &&
+  mortgageLearnHotfixRentBuy.includes('It does not compare renting with buying') &&
+  mortgageLearnHotfixRentBuy.includes('dedicated Rent vs Buy Calculator')
+);
+add('main Learn: changed housing education URLs are fresh in the sitemap and keep stable canonical routes',
+  mortgageLearnHotfixPages.every(src=>src.includes('rel="canonical"')) &&
+  ['learn.html',...housingLearnAuditNames].every(name=>new RegExp('<loc>https://carrowmont\\.com/'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'</loc>\\s*<lastmod>2026-10-14</lastmod>').test(mortgageLearnHotfixSitemap)) &&
+  mortgageLearnHotfixHub.includes('learn-localization.js?v=20261014-housing3')
+);
+add('central QA: Learn housing hotfix covers India, US, UK, Australia, cross-cluster articles and 390/360 responsive layouts',
+  mortgageLearnHotfixQa.includes("'IN','INR'") && mortgageLearnHotfixQa.includes("'US','USD'") &&
+  mortgageLearnHotfixQa.includes("'GB','GBP'") && mortgageLearnHotfixQa.includes("'AU','AUD'") &&
+  mortgageLearnHotfixQa.includes('housing wording is localized across Learn articles outside the mortgage cluster') &&
+  mortgageLearnHotfixQa.includes('Rent vs Buy no longer presents Goal Planner as the comparison calculator') &&
+  mortgageLearnHotfixQa.includes('[390,360]') &&
+  mortgageLearnHotfixQa.includes('Open Home Loan Decision Centre') && mortgageLearnHotfixQa.includes('Open Mortgage Decision Centre')
 );
 
 console.log('\nCarrowmont source contract check\n');
