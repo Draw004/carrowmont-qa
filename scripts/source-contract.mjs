@@ -843,10 +843,10 @@ if (mainHome || mainSiteJs) {
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
     /"@type"\s*:\s*"CollectionPage"/.test(toolsDirectory) && /"@type"\s*:\s*"ItemList"/.test(toolsDirectory) &&
-    /"numberOfItems"\s*:\s*12/.test(toolsDirectory) &&
-    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 12
+    /"numberOfItems"\s*:\s*13/.test(toolsDirectory) &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 13
   );
-  add('main site: CORE7 directory groups seven core tools, two stress tests and three macro explorers',
+  add('main site: CORE7 directory keeps seven core tools while focused secondary tools expand safely',
     toolsDirectory.includes('id="core-planning-tools"') &&
     toolsDirectory.includes('id="planning-stress-tests"') &&
     toolsDirectory.includes('id="macro-market-explorers"') &&
@@ -1346,7 +1346,7 @@ add('main site: GSEO1C sitemap publishes the editorial policy and refreshes all 
     'https://carrowmont.com/retirement-calculator/planner.html',
     'https://carrowmont.com/budget-cash-flow-planner/',
     'https://carrowmont.com/mortgage-payoff-calculator/'
-  ].every(url => gseo1cSitemapLastmods.get(url) === '2026-10-13')
+  ].every(url => (gseo1cSitemapLastmods.get(url) || '') >= '2026-10-13')
 );
 
 // BING-SEO2 internal authority and search-presentation contract - 2026-10-08.
@@ -3020,6 +3020,103 @@ add('central QA: Learn housing hotfix covers India, US, UK, Australia, cross-clu
   mortgageLearnHotfixQa.includes('Rent vs Buy no longer presents Goal Planner as the comparison calculator') &&
   mortgageLearnHotfixQa.includes('[390,360]') &&
   mortgageLearnHotfixQa.includes('Open Home Loan Decision Centre') && mortgageLearnHotfixQa.includes('Open Mortgage Decision Centre')
+);
+
+
+// DEBT1 Debt Payoff Calculator production contract - 2026-10-14.
+const debt1Html = read('budget-cash-flow-planner/debt-payoff-calculator.html');
+const debt1Core = read('budget-cash-flow-planner/debt-payoff-core.js');
+const debt1App = read('budget-cash-flow-planner/debt-payoff-calculator.js');
+const debt1Pdf = read('budget-cash-flow-planner/debt-payoff-pdf-renderer.js');
+const debt1BudgetHtml = read('budget-cash-flow-planner/index.html');
+const debt1BudgetApp = read('budget-cash-flow-planner/app.js');
+const debt1Tools = read('draw004.github.io/tools.html');
+const debt1LearnHub = read('draw004.github.io/learn.html');
+const debt1Learn = read('draw004.github.io/debt-snowball-vs-avalanche.html');
+const debt1Sitemap = read('draw004.github.io/sitemap.xml');
+const debt1Home = read('draw004.github.io/index.html');
+const debt1Qa = fs.readFileSync(new URL('../tests/25-debt-payoff-calculator.spec.js', import.meta.url), 'utf8');
+
+add('DEBT1: canonical Debt Payoff Calculator identity and plain-language primary inputs are present',
+  debt1Html.includes('<title>Debt Payoff Calculator | Compare Snowball vs Avalanche | Carrowmont</title>') &&
+  debt1Html.includes('https://carrowmont.com/budget-cash-flow-planner/debt-payoff-calculator.html') &&
+  debt1Html.includes('How much do you owe?') &&
+  debt1Html.includes('Extra amount I can pay each month') &&
+  debt1Html.includes('Pay highest-interest debt first') &&
+  debt1Html.includes('Pay smallest debt first')
+);
+add('DEBT1: deterministic core owns equal-budget monthly interest, tie rules and same-month spillover',
+  debt1Core.includes('const totalMonthlyBudget = baseMinimumBudget + extra') &&
+  debt1Core.includes("if (method === 'avalanche')") &&
+  debt1Core.includes('while (remainingBudget > EPSILON') &&
+  debt1Core.includes('targetSort(method, a, b)') &&
+  debt1Core.includes("version: 'DEBT1-1.0'")
+);
+add('DEBT1: core fixture pack protects all 19 required edge cases',
+  debt1Core.includes('function runFixtures()') &&
+  (debt1Core.match(/add\('/g)||[]).length >= 19 &&
+  debt1Qa.includes('fixtures).toHaveLength(19)')
+);
+add('DEBT1: zero-extra comparison and 600-month unresolved protection are built into the same result object',
+  debt1Core.includes("const avalancheZero = simulateStrategy(normalized, 0, 'avalanche'") &&
+  debt1Core.includes("const snowballZero = simulateStrategy(normalized, 0, 'snowball'") &&
+  debt1Core.includes('const MAX_MONTHS = 600') &&
+  debt1Core.includes("status: allPaid ? 'paid_off' : 'unresolved'")
+);
+add('DEBT1: debt details are not automatically persisted and shared state is limited to explicit Budget extra-payment handoff',
+  !debt1App.includes('localStorage.setItem') &&
+  debt1App.includes("S.get('assumptions.possibleMonthlyDebtExtra')") &&
+  debt1App.includes("entry.sourceTool!=='budget-cash-flow-planner'") &&
+  debt1App.includes('30*60*1000') &&
+  debt1App.includes("S?.clear('assumptions.possibleMonthlyDebtExtra')")
+);
+add('Budget: positive money remaining offers an explicit Debt Payoff handoff without silently applying it',
+  debt1BudgetHtml.includes('id="debtPayoffHandoffBtn"') &&
+  debt1BudgetHtml.includes('Explore debt payoff with this monthly amount') &&
+  debt1BudgetApp.includes("plan.set('assumptions.possibleMonthlyDebtExtra',c.remaining") &&
+  debt1BudgetApp.includes("sourceTool:'budget-cash-flow-planner'") &&
+  debt1BudgetApp.includes("window.location.href='debt-payoff-calculator.html'")
+);
+add('DEBT1: Copy Summary and exact three-page PDF are driven from the deterministic result object',
+  debt1App.includes('function summaryText()') &&
+  debt1App.includes('window.CarrowmontDebtPayoffPdfRenderer.download({result') &&
+  debt1Pdf.includes('const canvases=[page1(model),page2(model),page3(model)]') &&
+  debt1Pdf.includes("filename:'carrowmont-debt-payoff-report.pdf'")
+);
+add('DEBT1: Tool and Learn guide form a bidirectional plain-language journey',
+  debt1Html.includes('href="/debt-snowball-vs-avalanche.html"') &&
+  debt1Learn.includes('Debt snowball vs avalanche: which debt gets paid first?') &&
+  debt1Learn.includes('href="/budget-cash-flow-planner/debt-payoff-calculator.html"') &&
+  debt1Learn.includes('Snowball') && debt1Learn.includes('Avalanche')
+);
+add('DEBT1: Tools Hub lists Debt Payoff as a secondary focused calculator, not an eighth core tool',
+  debt1Tools.includes('data-secondary-tool="debt-payoff"') &&
+  debt1Tools.includes('<span class="directory-tool-type">Debt planning</span>') &&
+  debt1Tools.includes('/budget-cash-flow-planner/debt-payoff-calculator.html') &&
+  debt1Home.includes('data-core-tool-count="7"') &&
+  (debt1Home.match(/data-tool-id=/g)||[]).length === 7 &&
+  !debt1Home.includes('data-tool-id="debt-payoff"')
+);
+add('DEBT1: Learn hub owns educational comparison intent in the Budget & Cash Flow category',
+  debt1LearnHub.includes('/debt-snowball-vs-avalanche.html') &&
+  debt1LearnHub.includes('Debt snowball vs avalanche: which debt gets paid first?') &&
+  debt1LearnHub.includes('Compare paying the smallest balance first with paying the highest-interest debt first.')
+);
+add('DEBT1: sitemap publishes both new canonical public URLs with release-date lastmod',
+  /<loc>https:\/\/carrowmont\.com\/debt-snowball-vs-avalanche\.html<\/loc><lastmod>2026-10-14<\/lastmod>/.test(debt1Sitemap) &&
+  /<loc>https:\/\/carrowmont\.com\/budget-cash-flow-planner\/debt-payoff-calculator\.html<\/loc><lastmod>2026-10-14<\/lastmod>/.test(debt1Sitemap)
+);
+add('DEBT1: structured data uses WebApplication for the tool and Article for the Learn guide',
+  Boolean(jsonLdNode(debt1Html,'WebApplication')) && Boolean(jsonLdNode(debt1Html,'BreadcrumbList')) &&
+  Boolean(jsonLdNode(debt1Learn,'Article')) && Boolean(jsonLdNode(debt1Learn,'BreadcrumbList'))
+);
+add('DEBT1: browser QA protects handoff, privacy, PDF, discovery, plain language and 1280/390/360 layouts',
+  debt1Qa.includes('Budget handoff is explicit, short-lived, currency-safe and cleared after apply') &&
+  debt1Qa.includes('entered debt details are not silently persisted to localStorage') &&
+  debt1Qa.includes('exact PDF is three pages') &&
+  debt1Qa.includes('Tool, Learn, Tools Hub and sitemap') &&
+  debt1Qa.includes('primary fields, results and CTAs stay in plain language') &&
+  debt1Qa.includes('[1280,390,360]')
 );
 
 console.log('\nCarrowmont source contract check\n');

@@ -16,7 +16,8 @@ const ALL_TOOL_PATHS = [
   '/financial-independence-number-by-spending.html',
   '/us-debt-interest-cost-calculator.html',
   '/gold-macro-stress-explorer.html',
-  '/silver-supply-demand-macro-stress-explorer.html'
+  '/silver-supply-demand-macro-stress-explorer.html',
+  '/budget-cash-flow-planner/debt-payoff-calculator.html'
 ];
 const HOMEPAGE_AUTHORITY_PATHS = ALL_TOOL_PATHS.slice(7, 11);
 
@@ -55,7 +56,7 @@ async function expectHomepageOrder(page, expected) {
 }
 
 test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
-  test('[AUTO] canonical tools directory exposes twelve live tools in three meaningful categories', async ({ page }) => {
+  test('[AUTO] canonical tools directory exposes thirteen live tools in three meaningful categories', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, DIRECTORY);
     await dismissAnalytics(page);
@@ -65,9 +66,9 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com/tools.html');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
     await expect(page.locator('#core-planning-tools .directory-tool-card')).toHaveCount(7);
-    await expect(page.locator('#planning-stress-tests .directory-tool-card')).toHaveCount(2);
+    await expect(page.locator('#planning-stress-tests .directory-tool-card')).toHaveCount(3);
     await expect(page.locator('#macro-market-explorers .directory-tool-card')).toHaveCount(3);
-    await expect(page.locator('.directory-tool-card')).toHaveCount(12);
+    await expect(page.locator('.directory-tool-card')).toHaveCount(13);
     await expect(page.locator('body')).not.toContainText(/coming soon/i);
 
     for (const path of ALL_TOOL_PATHS) {
@@ -83,8 +84,8 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     const collectionPage = schemas.find(node => node['@type'] === 'CollectionPage');
     expect(collectionPage).toBeTruthy();
     expect(collectionPage.mainEntity?.['@type']).toBe('ItemList');
-    expect(collectionPage.mainEntity?.numberOfItems).toBe(12);
-    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(12);
+    expect(collectionPage.mainEntity?.numberOfItems).toBe(13);
+    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(13);
     expect(errors).toEqual([]);
   });
 
@@ -195,7 +196,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     expect(response.ok()).toBeTruthy();
     const xml = await response.text();
     expect(xml).toContain('<loc>https://carrowmont.com/tools.html</loc>');
-    expect(xml).toMatch(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-13<\/lastmod>/);
+    expect(xml).toMatch(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-14<\/lastmod>/);
   });
 
   test('[AUTO] homepage and directory avoid horizontal overflow at 1440px, 390px and 360px', async ({ page }) => {
@@ -220,7 +221,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       await gotoClean(page, DIRECTORY);
       await dismissAnalytics(page);
       await assertNoHorizontalOverflow(page, `${width}px all-tools directory`);
-      await expect(page.locator('.directory-tool-card')).toHaveCount(12);
+      await expect(page.locator('.directory-tool-card')).toHaveCount(13);
     }
   });
 
