@@ -579,7 +579,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)', { timeout: 10000 });
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('₹1 crore', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('₹10,000', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['investment', 'assets', 'home', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
+    await expectLearnCategoryOrder(page, ['investment', 'assets', 'home', 'macro', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
 
     // United States + USD: international terminology, USD examples and international order.
     await setLearnLocaleDirect(page, 'US', 'USD');
@@ -587,14 +587,14 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500', { timeout: 10000 });
     await expect(page.locator('#investmentCategoryTitle')).not.toContainText('SIP', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['retirement', 'assets', 'home', 'budget', 'goals', 'investment', 'fi', 'inflation', 'foundation']);
+    await expectLearnCategoryOrder(page, ['retirement', 'assets', 'home', 'macro', 'budget', 'goals', 'investment', 'fi', 'inflation', 'foundation']);
 
     // India + USD: country still controls SIP terminology/order; currency controls money examples.
     await setLearnLocaleDirect(page, 'IN', 'USD');
     await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)', { timeout: 10000 });
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['investment', 'assets', 'home', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
+    await expectLearnCategoryOrder(page, ['investment', 'assets', 'home', 'macro', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
 
     expect(errors, `Learn hub browser errors:
 ${errors.join('\n')}`).toEqual([]);
