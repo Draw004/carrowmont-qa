@@ -3334,6 +3334,56 @@ add('central QA: MCR1 protects causes, evidence, default uncertainty, articles, 
   mcrQa.includes('seven-core homepage')
 );
 
+
+// SEO3-MCR1 Batch 2 - Bond Yields, Equities & Gold Search Cluster - Snapshot 69 - 2026-10-15.
+const mcrB2Names = [
+  'why-do-stocks-fall-when-bond-yields-rise.html',
+  'what-happens-to-gold-when-interest-rates-rise.html',
+  'what-happens-to-gold-when-dollar-rises.html'
+];
+const mcrB2Pages = mcrB2Names.map(name => read('draw004.github.io/' + name));
+const mcrB2Spec = read('draw004.github.io/docs/CARROWMONT_SEO3_MCR1_BATCH2_BOND_EQUITIES_GOLD_SEARCH_CLUSTER_SPEC_FINAL.md');
+const mcrB2Implementation = read('draw004.github.io/docs/CARROWMONT_SEO3_MCR1_BATCH2_BOND_EQUITIES_GOLD_SEARCH_CLUSTER_IMPLEMENTATION.md');
+const mcrB2Qa = fs.readFileSync(new URL('../tests/28-mcr1-batch2-bond-equities-gold.spec.js', import.meta.url), 'utf8');
+add('MCR1 Batch 2: three focused bond/equity/gold pages are canonical, substantive and globally neutral',
+  mcrB2Pages.every((page,i) =>
+    page.includes('data-cm-learn-article="1"') && page.includes('data-cm-mcr-learn="1"') &&
+    page.includes('class="guide-answer"') && page.includes('data-cm-depth="1"') && page.includes('Chain Breaker') &&
+    page.includes('Frequently asked questions') && page.includes('class="reference-note"') &&
+    page.includes('href="/market-chain-reaction-explorer.html#') && Boolean(jsonLdNode(page,'Article')) && Boolean(jsonLdNode(page,'BreadcrumbList')) &&
+    page.includes(`https://carrowmont.com/${mcrB2Names[i]}`) && !/₹|\blakhs?\b|\bcrores?\b/i.test(learnMainVisibleText(page)) &&
+    learnMainVisibleText(page).split(/\s+/).filter(Boolean).length > 1000
+  )
+);
+add('MCR1 Batch 2: focused pages protect mechanism-vs-tendency terminology and gold multi-factor nuance',
+  mcrB2Pages[0].includes('mechanical inverse price/yield relationship') && mcrB2Pages[0].includes('do <em>not</em> automatically mean falling stocks') &&
+  mcrB2Pages[1].includes('<strong>real yields</strong>') && mcrB2Pages[1].includes('policy-rate increase does not mechanically make gold fall') &&
+  mcrB2Pages[2].includes('relationship is not mechanical') && mcrB2Pages[2].includes('local-currency gold') &&
+  mcrB2Pages.every(page => !/\b(?:buy now|sell now|will definitely|guaranteed return)\b/i.test(learnMainVisibleText(page)))
+);
+add('MCR1 Batch 2: Learn, Explorer and existing authority pages form a deliberate internal-link network',
+  mcrB2Names.every(name => mcrHub.includes(`href="/${name}"`) && mcrHtml.includes(`href="/${name}"`)) &&
+  read('draw004.github.io/what-happens-when-bond-yields-rise.html').includes('href="/why-do-stocks-fall-when-bond-yields-rise.html"') &&
+  read('draw004.github.io/what-happens-when-bond-yields-rise.html').includes('href="/what-happens-to-gold-when-interest-rates-rise.html"') &&
+  read('draw004.github.io/what-happens-when-dollar-strengthens.html').includes('href="/what-happens-to-gold-when-dollar-rises.html"') &&
+  read('draw004.github.io/stocks-vs-bonds.html').includes('href="/why-do-stocks-fall-when-bond-yields-rise.html"') &&
+  read('draw004.github.io/gold-as-an-investment.html').includes('href="/what-happens-to-gold-when-interest-rates-rise.html"') &&
+  read('draw004.github.io/gold-macro-stress-explorer.html').includes('href="/what-happens-to-gold-when-dollar-rises.html"')
+);
+add('MCR1 Batch 2: sitemap publishes only canonical new pages with 2026-10-15 freshness',
+  mcrB2Names.every(name => sitemapLastmods.get('https://carrowmont.com/'+name)==='2026-10-15') &&
+  !/<loc>[^<]*#event=/.test(learnSitemap)
+);
+add('MCR1 Batch 2: specification and implementation lock Snapshot 69 and the controlled release path',
+  mcrB2Spec.includes('Specification — FINAL') && mcrB2Spec.includes('Snapshot 69') &&
+  mcrB2Spec.includes('0d9ee6e436660d00a6ce0bc6859363da8031ce53') && mcrB2Spec.includes('d96117032795c0fc2a4aa1d978747d37b946e334') &&
+  mcrB2Implementation.includes('Snapshot 69') && mcrB2Implementation.includes('CREATE_PRS') && mcrB2Implementation.includes('Do not merge the staging branch itself')
+);
+add('central QA: MCR1 Batch 2 protects focused intent, authority links, sitemap and 1280/390/360 layouts',
+  mcrB2Qa.includes('three focused pages') && mcrB2Qa.includes('focused intent ownership') &&
+  mcrB2Qa.includes('authority pages') && mcrB2Qa.includes('[1280,390,360]') && mcrB2Qa.includes('seven-core homepage')
+);
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);
