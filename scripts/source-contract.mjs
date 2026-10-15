@@ -833,7 +833,8 @@ if (mainHome || mainSiteJs) {
     '/goal-planner/','/financial-independence/','/mortgage-payoff-calculator/','/4-percent-rule-stress-test.html',
     '/financial-independence-number-by-spending.html','/us-debt-interest-cost-calculator.html',
     '/gold-macro-stress-explorer.html','/silver-supply-demand-macro-stress-explorer.html',
-    '/budget-cash-flow-planner/debt-payoff-calculator.html','/mortgage-payoff-calculator/rent-vs-buy-calculator.html'
+    '/budget-cash-flow-planner/debt-payoff-calculator.html','/mortgage-payoff-calculator/rent-vs-buy-calculator.html',
+    '/market-chain-reaction-explorer.html'
   ];
   const supportedCountryCodes = [
     'IN','US','CA','GB','AU','AT','BD','BE','NZ','CL','DK','CN','JP','KR','SG','AE','SA','OM','QA',
@@ -844,8 +845,8 @@ if (mainHome || mainSiteJs) {
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
     /"@type"\s*:\s*"CollectionPage"/.test(toolsDirectory) && /"@type"\s*:\s*"ItemList"/.test(toolsDirectory) &&
-    /"numberOfItems"\s*:\s*14/.test(toolsDirectory) &&
-    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 14
+    /"numberOfItems"\s*:\s*15/.test(toolsDirectory) &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 15
   );
   add('main site: CORE7 directory keeps seven core tools while focused secondary tools expand safely',
     toolsDirectory.includes('id="core-planning-tools"') &&
@@ -962,8 +963,8 @@ add('main site: sitemap contains at least 71 URLs including all 14 first-wave Le
   (learnSitemap.match(/<loc>/g)||[]).length>=71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 add('main site: Learn expansion preserves country-aware investment wording and market ordering',
-  learnExpansion.includes("['investment','assets','home','retirement','budget','goals','fi','inflation','foundation']") &&
-  learnExpansion.includes("['retirement','assets','home','budget','goals','investment','fi','inflation','foundation']") &&
+  learnExpansion.includes("['investment','assets','home','macro','retirement','budget','goals','fi','inflation','foundation']") &&
+  learnExpansion.includes("['retirement','assets','home','macro','budget','goals','investment','fi','inflation','foundation']") &&
   learnExpansion.includes('What happens to a SIP when markets fall?') &&
   learnExpansion.includes('What happens to recurring investments when markets fall?')
 );
@@ -1802,7 +1803,7 @@ add('main site: SEO3C is discoverable from the approved macro-relevant cluster',
   goldInflation.includes('href="/us-debt-interest-cost-calculator.html"') && inflationRetirement.includes('href="/us-debt-interest-cost-calculator.html"')
 );
 add('main site: SEO3C canonical route and refreshed contextual pages are in sitemap with release lastmod',
-  sitemapLastmods.get('https://carrowmont.com/us-debt-interest-cost-calculator.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/us-debt-interest-cost-calculator.html') >= '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-11' &&
   sitemapLastmods.get('https://carrowmont.com/stocks-vs-bonds.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
@@ -1965,7 +1966,7 @@ add('main site: SEO3D is discoverable from Learn, gold cluster and SEO3C',
   usDebtHtml.includes('href="/gold-macro-stress-explorer.html"')
 );
 add('main site: SEO3D canonical route and refreshed gold cluster are in sitemap with release lastmod',
-  sitemapLastmods.get('https://carrowmont.com/gold-macro-stress-explorer.html') === '2026-10-12' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-macro-stress-explorer.html') >= '2026-10-12' &&
   sitemapLastmods.get('https://carrowmont.com/gold-as-an-investment.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/gold-vs-stocks.html') === '2026-10-10' &&
@@ -2097,7 +2098,7 @@ add('main site: Silver discovery funnel is connected through Learn, Gold context
   read('draw004.github.io/learn.html').includes('href="/silver-vs-gold.html"') &&
   ['gold-as-an-investment.html','gold-and-inflation.html','gold-vs-stocks.html','physical-gold-vs-gold-etf.html','gold-macro-stress-explorer.html'].every(f=>read('draw004.github.io/'+f).includes('href="/silver-vs-gold.html"')) &&
   read('draw004.github.io/tools.html').includes('href="/silver-supply-demand-macro-stress-explorer.html"') &&
-  sitemapLastmods.get('https://carrowmont.com/silver-vs-gold.html')==='2026-10-10' && sitemapLastmods.get('https://carrowmont.com/silver-supply-demand-macro-stress-explorer.html')==='2026-10-10'
+  sitemapLastmods.get('https://carrowmont.com/silver-vs-gold.html')==='2026-10-10' && sitemapLastmods.get('https://carrowmont.com/silver-supply-demand-macro-stress-explorer.html')>='2026-10-10'
 );
 add('main site: Silver annual physical-reference validator is offline, deterministic and protects source reconciliation',
   silverValidator.includes('publishedBalanceMoz') && silverValidator.includes('publishedTotalDemandMoz') && silverValidator.includes('history') &&
@@ -2536,7 +2537,7 @@ add('MDC1B: sitemap/discovery publish both new routes and refresh the changed hu
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-refinance-break-even.html') === '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') === '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') === '2026-10-14' &&
-  mdc1bSitemapLastmods.get('https://carrowmont.com/learn.html') === '2026-10-14' &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/one-extra-mortgage-payment-a-year.html') === '2026-10-14'
 );
@@ -3012,11 +3013,8 @@ add('main Learn: Rent vs Buy keeps Goal Planner limited to down-payment planning
 );
 add('main Learn: changed housing education URLs are fresh in the sitemap and keep stable canonical routes',
   mortgageLearnHotfixPages.every(src=>src.includes('rel="canonical"')) &&
-  ['learn.html',...housingLearnAuditNames.filter(name=>name!=='rent-vs-buy-home.html')].every(name => {
-    const safe = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp('<loc>https://carrowmont\\.com/'+safe+'</loc>\\s*<lastmod>2026-10-14</lastmod>').test(mortgageLearnHotfixSitemap);
-  }) &&
-  /<loc>https:\/\/carrowmont\.com\/rent-vs-buy-home\.html<\/loc><lastmod>2026-10-15<\/lastmod>/.test(mortgageLearnHotfixSitemap) &&
+  ['learn.html',...housingLearnAuditNames.filter(name=>name!=='rent-vs-buy-home.html')].every(name => (sitemapLastmods.get('https://carrowmont.com/' + name) || '') >= '2026-10-14') &&
+  (sitemapLastmods.get('https://carrowmont.com/rent-vs-buy-home.html') || '') >= '2026-10-15' &&
   mortgageLearnHotfixHub.includes('learn-localization.js?v=20261014-housing3')
 );
 add('central QA: Learn housing hotfix covers India, US, UK, Australia, cross-cluster articles and 390/360 responsive layouts',
@@ -3189,10 +3187,10 @@ add('RENT1: tool and existing Learn guide form a bidirectional live journey whil
   rent1Learn.includes('Open the Rent vs Buy Calculator') && rent1Learn.includes('Use Goal Planner separately') &&
   !rent1Learn.includes('will use a dedicated Rent vs Buy Calculator')
 );
-add('RENT1: Tools Hub grows to 14 live tools without changing the seven-core homepage or four-module Decision Centre',
+add('RENT1: Tools Hub keeps Rent vs Buy live while later authority tools can extend the directory without changing the seven-core homepage or four-module Decision Centre',
   rent1Tools.includes('data-secondary-tool="rent-vs-buy"') &&
   rent1Tools.includes('/mortgage-payoff-calculator/rent-vs-buy-calculator.html') &&
-  /"numberOfItems"\s*:\s*14/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===14 &&
+  /"numberOfItems"\s*:\s*15/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===15 &&
   rent1Home.includes('data-core-tool-count="7"') && (rent1Home.match(/data-tool-id=/g)||[]).length===7 &&
   !rent1Home.includes('data-tool-id="rent-vs-buy"') && (rent1Centre.match(/class="decision-card"/g)||[]).length===4 &&
   !rent1Centre.includes('Rent vs Buy Calculator')
@@ -3220,6 +3218,120 @@ add('RENT1: responsive CSS protects narrow screens and chart/table equivalents r
   rent1Css.includes('@media(max-width:390px)') && rent1Css.includes('@media(max-width:720px)') && rent1Css.includes('.rent1-crossover-line') &&
   rent1Html.includes('id="wealthChart"') && rent1Html.includes('id="checkpointRows"') &&
   rent1Html.includes('Projected home value') && rent1Html.includes('Remaining loan')
+);
+
+
+
+// SEO3-MCR1 Market Chain Reaction Explorer - Snapshot 68 - 2026-10-15.
+const mcrHtml = read('draw004.github.io/market-chain-reaction-explorer.html');
+const mcrTools = read('draw004.github.io/tools.html');
+const mcrHome = read('draw004.github.io/index.html');
+const mcrHub = read('draw004.github.io/learn.html');
+const mcrCss = read('draw004.github.io/market-chain-reaction-explorer.css');
+const mcrCore = read('draw004.github.io/market-chain-reaction-explorer-core.js');
+const mcrApp = read('draw004.github.io/market-chain-reaction-explorer.js');
+const mcrLearnCss = read('draw004.github.io/market-chain-learn.css');
+const mcrSpec = read('draw004.github.io/docs/CARROWMONT_SEO3_MCR1_MARKET_CHAIN_REACTION_EXPLORER_SPEC_FINAL.md');
+const mcrImplementation = read('draw004.github.io/docs/CARROWMONT_SEO3_MCR1_MARKET_CHAIN_REACTION_EXPLORER_IMPLEMENTATION.md');
+const mcrQa = fs.readFileSync(new URL('../tests/27-market-chain-reaction-explorer.spec.js', import.meta.url), 'utf8');
+const mcrLearnNames = [
+  'what-happens-when-bond-yields-rise.html',
+  'how-oil-prices-affect-inflation.html',
+  'what-happens-when-fed-cuts-interest-rates.html',
+  'what-happens-when-dollar-strengthens.html'
+];
+const mcrLearnPages = mcrLearnNames.map(name => read('draw004.github.io/' + name));
+let mcrEvents={events:[],targets:[]},mcrRelations={relationships:[]},mcrSources={sources:[]};
+try { mcrEvents=JSON.parse(read('draw004.github.io/data/market-chain-events.json')); } catch {}
+try { mcrRelations=JSON.parse(read('draw004.github.io/data/market-chain-relations.json')); } catch {}
+try { mcrSources=JSON.parse(read('draw004.github.io/data/market-chain-sources.json')); } catch {}
+const mcrRelationMap=new Map((mcrRelations.relationships||[]).map(r=>[r.id,r]));
+const mcrSourceIds=new Set((mcrSources.sources||[]).map(x=>x.id));
+const mcrAllowedVerdicts=new Set(['Usually supportive','Usually a headwind','Usually pushes higher','Usually pushes lower','Mixed / cause-dependent','Indirect effect','No reliable one-way relationship','Mechanical inverse relationship']);
+const mcrAllowedTypes=new Set(['Mechanical relationship','Economic transmission','Market tendency','Context-dependent relationship']);
+const mcrCoverageOk=(mcrEvents.events||[]).every(event => (event.targets||[]).every(target => mcrRelationMap.has(`${event.id}__${target}`)));
+const mcrRelationsOk=(mcrRelations.relationships||[]).every(r =>
+  mcrAllowedVerdicts.has(r.verdict) && mcrAllowedTypes.has(r.relationshipType) &&
+  typeof r.directAnswer==='string' && r.directAnswer.length>20 &&
+  Array.isArray(r.mechanismSteps) && r.mechanismSteps.length>=2 &&
+  typeof r.chainBreaker==='string' && r.chainBreaker.length>20 &&
+  Array.isArray(r.sourceIds) && r.sourceIds.length>=1 && r.sourceIds.every(id=>mcrSourceIds.has(id)) &&
+  !/will definitely|guaranteed return|buy now|sell now|must rise|must fall/i.test(r.directAnswer+' '+r.chainBreaker)
+);
+add('MCR1: canonical Explorer is a deterministic educational authority product with one indexable base URL',
+  mcrHtml.includes('<title>What Happens When Markets Change? | Carrowmont</title>') &&
+  mcrHtml.includes('<h1>What Happens When Markets Change?</h1>') &&
+  mcrHtml.includes('rel="canonical" href="https://carrowmont.com/market-chain-reaction-explorer.html"') &&
+  Boolean(jsonLdNode(mcrHtml,'WebApplication')) && Boolean(jsonLdNode(mcrHtml,'BreadcrumbList')) &&
+  mcrHtml.includes('No price forecast') && mcrHtml.includes('why did the move happen?') &&
+  mcrCore.includes("const VERSION='MCR1-1.0'") && mcrApp.includes('window.__carrowmontMarketChainLastResult')
+);
+add('MCR1: event/cause/outcome library has 12 events, 25 targets and exactly 73 reviewed relationships',
+  (mcrEvents.events||[]).length===12 && (mcrEvents.targets||[]).length===25 &&
+  (mcrRelations.relationships||[]).length===73 && (mcrSources.sources||[]).length>=10 && mcrCoverageOk
+);
+add('MCR1: every exposed relationship uses controlled terminology, evidence and a mandatory Chain Breaker',
+  mcrRelationsOk && mcrCore.includes('Missing relationship') && mcrCore.includes('has no Chain Breaker') &&
+  mcrHtml.includes('Chain Breaker: what could make the opposite happen?')
+);
+add('MCR1: cause-specific logic protects the central rule that why the market moved changes the answer',
+  (mcrRelationMap.get('yields-rise__broad-stocks')?.causeOverrides?.growth?.directAnswer || '').length>20 &&
+  (mcrRelationMap.get('yields-rise__broad-stocks')?.causeOverrides?.inflation?.directAnswer || '').length>20 &&
+  (mcrRelationMap.get('oil-rise__broad-stocks')?.causeOverrides?.demand?.directAnswer || '').length>20 &&
+  (mcrRelationMap.get('oil-rise__broad-stocks')?.causeOverrides?.supply?.directAnswer || '').length>20 &&
+  mcrRelationMap.get('yields-rise__bond-prices')?.verdict==='Mechanical inverse relationship'
+);
+add('MCR1: hypothetical Treasury default stress is explicitly uncertain rather than presented as a forecast',
+  (mcrEvents.events||[]).find(x=>x.id==='treasury-default-stress')?.specialWarning?.length>40 &&
+  (mcrEvents.events||[]).find(x=>x.id==='treasury-default-stress')?.targets?.every(target => (mcrRelationMap.get(`treasury-default-stress__${target}`)?.scenarioWarning || (mcrEvents.events||[]).find(x=>x.id==='treasury-default-stress')?.specialWarning)) &&
+  mcrSpec.includes('default') && mcrSpec.includes('No reliable one-way relationship')
+);
+add('MCR1: visitor runtime uses reviewed same-origin static JSON with no third-party market API or runtime AI layer',
+  mcrApp.includes("'data/market-chain-events.json'") && mcrApp.includes("'data/market-chain-relations.json'") && mcrApp.includes("'data/market-chain-sources.json'") &&
+  !/openai|anthropic|gemini|cohere|alphavantage|finnhub|polygon\.io|iexcloud/i.test(mcrApp+mcrCore) &&
+  mcrImplementation.includes('does not call') && mcrImplementation.includes('external AI service')
+);
+add('MCR1: Explorer keeps substantial static education and a no-JavaScript path to the four Batch-1 guides',
+  mcrHtml.includes('<noscript>') && mcrHtml.includes('PLAIN-ENGLISH GLOSSARY') &&
+  mcrHtml.includes('Mechanical relationship') && mcrHtml.includes('Context-dependent relationship') &&
+  mcrLearnNames.every(name=>mcrHtml.includes(`href="/${name}"`))
+);
+add('MCR1: four Batch-1 Learn pages satisfy Carrowmont depth, source, canonical and global-language standards',
+  mcrLearnPages.every((page,i) =>
+    page.includes('data-cm-learn-article="1"') && page.includes('class="guide-answer"') && page.includes('data-cm-rich="1"') &&
+    page.includes('data-cm-depth="1"') && page.includes('Frequently asked questions') && page.includes('class="reference-note"') &&
+    page.includes('href="/market-chain-reaction-explorer.html#') && page.includes('learn-article.css?v=20261010-global1') &&
+    page.includes('learn-localization.js?v=20261014-housing3') && Boolean(jsonLdNode(page,'Article')) && Boolean(jsonLdNode(page,'BreadcrumbList')) &&
+    page.includes(`https://carrowmont.com/${mcrLearnNames[i]}`) && !/₹|\blakhs?\b|\bcrores?\b/i.test(learnMainVisibleText(page))
+  ) && mcrLearnCss.includes('data-cm-mcr-learn')
+);
+add('MCR1: Learn hub and Tools directory expose the macro network without changing the seven-core homepage',
+  mcrHub.includes('data-category="macro"') && mcrHub.includes('class="category-tool-link" href="/market-chain-reaction-explorer.html"') &&
+  mcrLearnNames.every(name=>mcrHub.includes(`href="/${name}"`)) &&
+  mcrTools.includes('data-secondary-tool="market-chain-reaction"') && mcrTools.includes('href="/market-chain-reaction-explorer.html"') &&
+  /"numberOfItems"\s*:\s*15/.test(mcrTools) && (mcrTools.match(/class="directory-tool-card/g)||[]).length===15 &&
+  mcrHome.includes('data-core-tool-count="7"') && !mcrHome.includes('data-tool-id="market-chain-reaction"')
+);
+add('MCR1: existing Gold, Silver and U.S. debt authority assets link into the new explanation layer',
+  read('draw004.github.io/gold-macro-stress-explorer.html').includes('market-chain-reaction-explorer.html#event=yields-rise') &&
+  read('draw004.github.io/silver-supply-demand-macro-stress-explorer.html').includes('market-chain-reaction-explorer.html#event=dollar-strengthens') &&
+  read('draw004.github.io/us-debt-interest-cost-calculator.html').includes('market-chain-reaction-explorer.html#event=fiscal-stress')
+);
+add('MCR1: sitemap publishes the Explorer and four guides with current release freshness and no fragment URLs',
+  ['market-chain-reaction-explorer.html',...mcrLearnNames].every(name => sitemapLastmods.get('https://carrowmont.com/'+name)==='2026-10-15') &&
+  !/<loc>[^<]*#event=/.test(learnSitemap)
+);
+add('MCR1: final specification and implementation record lock Snapshot 68 and the controlled release model',
+  mcrSpec.includes('Specification — FINAL') && mcrSpec.includes('Snapshot 68') &&
+  mcrSpec.includes('71f321a742f48da3f3e3beff14d568ad6ee306c7') &&
+  mcrImplementation.includes('Snapshot 68') && mcrImplementation.includes('CREATE_PRS') &&
+  mcrImplementation.includes('Do not merge the staging branch itself')
+);
+add('central QA: MCR1 protects causes, evidence, default uncertainty, articles, discovery, privacy and 1280/390/360 layouts',
+  mcrQa.includes('toHaveLength(12)') && mcrQa.includes('toHaveLength(73)') &&
+  mcrQa.includes('Treasury default stress') && mcrQa.includes('same-origin reviewed static data') &&
+  mcrQa.includes('four Batch-1 Learn pages') && mcrQa.includes('[1280,390,360]') &&
+  mcrQa.includes('seven-core homepage')
 );
 
 console.log('\nCarrowmont source contract check\n');

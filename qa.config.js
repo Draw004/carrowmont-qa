@@ -114,5 +114,6 @@ export const mainSitePages = [
   { key: 'gold-macro-stress-explorer', path: '/gold-macro-stress-explorer.html', text: 'See the competing macro forces shaping gold' },
   { key: 'silver-vs-gold', path: '/silver-vs-gold.html', text: 'Silver vs gold' },
   { key: 'silver-supply-demand-macro-stress', path: '/silver-supply-demand-macro-stress-explorer.html', text: 'See what is driving silver' },
+  { key: 'market-chain-reaction-explorer', path: '/market-chain-reaction-explorer.html', text: 'What Happens When Markets Change?' },
   { key: 'mortgage-payoff-calculator-page', path: '/mortgage-payoff-calculator/', text: 'part-prepayments' }
 ];
