@@ -69,7 +69,16 @@ test.describe('MCR1 Market Chain Reaction Explorer',()=>{
   });
 
   test('[AUTO] Explorer runtime reads only same-origin reviewed static data and does not call a market API or AI service',async({page})=>{
-    const external=[];page.on('request',req=>{if(!['fetch','xhr'].includes(req.resourceType()))return;const pageUrl=page.url();if(!/^https?:/i.test(pageUrl))return;const u=new URL(req.url());if(u.origin!==new URL(pageUrl).origin)external.push(req.url());});await gotoClean(page,PAGE);await waitReady(page);expect(external).toEqual([]);
+    const requests=[];
+    page.on('request',req=>{if(['fetch','xhr'].includes(req.resourceType()))requests.push(req.url());});
+    await gotoClean(page,PAGE);await waitReady(page);
+    const origin=new URL(page.url()).origin;
+    const isIsolatedCloudflareRum=u=>/^https:\/\/cloudflareinsights\.com\/cdn-cgi\/rum(?:[/?#]|$)/i.test(u);
+    const thirdParty=requests.filter(u=>!u.startsWith(origin)&&!isIsolatedCloudflareRum(u));
+    expect(thirdParty).toEqual([]);
+    for(const file of ['market-chain-events.json','market-chain-relations.json','market-chain-sources.json']){
+      expect(requests.some(u=>u.startsWith(origin)&&u.includes(`/data/${file}`)),`Expected same-origin reviewed data request for ${file}`).toBeTruthy();
+    }
   });
 
   test('[AUTO] four Batch-1 Learn pages are substantive, canonical, globally neutral and link back to the Explorer',async({page})=>{
