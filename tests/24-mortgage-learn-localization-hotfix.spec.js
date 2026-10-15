@@ -106,14 +106,15 @@ test.describe('Learn housing country-language hotfix',()=>{
     }
   });
 
-  test('[AUTO] Rent vs Buy no longer presents Goal Planner as the comparison calculator',async({page})=>{
+  test('[AUTO] Rent vs Buy guide routes to the live comparison calculator while Goal Planner stays down-payment-only',async({page})=>{
     await gotoClean(page,RENT_BUY);
     await setLocale(page,'IN','INR');
     const action=page.locator('.guide-action-first');
-    await expect(action.locator('.action-label')).toHaveText('PLANNING A DOWN PAYMENT?');
-    await expect(action.locator('a[href="/goal-planner/"] span')).toHaveText('Plan the down-payment goal only');
-    await expect(action).toContainText('It does not compare renting with buying');
-    await expect(action).toContainText('dedicated Rent vs Buy Calculator');
+    await expect(action.locator('.action-label')).toHaveText('COMPARE THE TWO PATHS');
+    await expect(action.locator('a[href="/mortgage-payoff-calculator/rent-vs-buy-calculator.html"] span')).toHaveText('Open the Rent vs Buy Calculator');
+    await expect(action).toContainText('same starting housing cash');
+    await expect(action.locator('a[href="/goal-planner/"]')).toContainText('Use Goal Planner separately');
+    await expect(action).toContainText('amount and timing of a future down payment');
   });
 
   test('[AUTO] country-language localization keeps Learn hub, mortgage guide and Rent vs Buy mobile-safe',async({page})=>{
