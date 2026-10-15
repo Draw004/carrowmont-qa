@@ -832,7 +832,8 @@ if (mainHome || mainSiteJs) {
     '/budget-cash-flow-planner/','/sip-calculator/','/retirement-calculator/','/inflation-calculator/',
     '/goal-planner/','/financial-independence/','/mortgage-payoff-calculator/','/4-percent-rule-stress-test.html',
     '/financial-independence-number-by-spending.html','/us-debt-interest-cost-calculator.html',
-    '/gold-macro-stress-explorer.html','/silver-supply-demand-macro-stress-explorer.html'
+    '/gold-macro-stress-explorer.html','/silver-supply-demand-macro-stress-explorer.html',
+    '/budget-cash-flow-planner/debt-payoff-calculator.html','/mortgage-payoff-calculator/rent-vs-buy-calculator.html'
   ];
   const supportedCountryCodes = [
     'IN','US','CA','GB','AU','AT','BD','BE','NZ','CL','DK','CN','JP','KR','SG','AE','SA','OM','QA',
@@ -843,8 +844,8 @@ if (mainHome || mainSiteJs) {
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
     /"@type"\s*:\s*"CollectionPage"/.test(toolsDirectory) && /"@type"\s*:\s*"ItemList"/.test(toolsDirectory) &&
-    /"numberOfItems"\s*:\s*13/.test(toolsDirectory) &&
-    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 13
+    /"numberOfItems"\s*:\s*14/.test(toolsDirectory) &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 14
   );
   add('main site: CORE7 directory keeps seven core tools while focused secondary tools expand safely',
     toolsDirectory.includes('id="core-planning-tools"') &&
@@ -3002,22 +3003,27 @@ add('main Learn: mortgage guide hero/back-link/footer wording follows country wi
   mortgageLearnHotfixPages.every(src=>src.includes('mortgage-learn.js?v=20261014-mortgage-learn2')) &&
   mortgageLearnHotfixPages.every(src=>src.includes('locale.js?v=20261014-housing3'))
 );
-add('main Learn: Rent vs Buy explains the Goal Planner boundary instead of presenting it as the comparison tool',
-  mortgageLearnHotfixRentBuy.includes('PLANNING A DOWN PAYMENT?') &&
-  mortgageLearnHotfixRentBuy.includes('Plan the down-payment goal only') &&
-  mortgageLearnHotfixRentBuy.includes('It does not compare renting with buying') &&
-  mortgageLearnHotfixRentBuy.includes('dedicated Rent vs Buy Calculator')
+add('main Learn: Rent vs Buy keeps Goal Planner limited to down-payment planning and routes comparison intent to RENT1',
+  mortgageLearnHotfixRentBuy.includes('COMPARE THE TWO PATHS') &&
+  mortgageLearnHotfixRentBuy.includes('Open the Rent vs Buy Calculator') &&
+  mortgageLearnHotfixRentBuy.includes('/mortgage-payoff-calculator/rent-vs-buy-calculator.html') &&
+  mortgageLearnHotfixRentBuy.includes('Use Goal Planner separately') &&
+  mortgageLearnHotfixRentBuy.includes('amount and timing of a future down payment')
 );
 add('main Learn: changed housing education URLs are fresh in the sitemap and keep stable canonical routes',
   mortgageLearnHotfixPages.every(src=>src.includes('rel="canonical"')) &&
-  ['learn.html',...housingLearnAuditNames].every(name=>new RegExp('<loc>https://carrowmont\\.com/'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'</loc>\\s*<lastmod>2026-10-14</lastmod>').test(mortgageLearnHotfixSitemap)) &&
+  ['learn.html',...housingLearnAuditNames.filter(name=>name!=='rent-vs-buy-home.html')].every(name => {
+    const safe = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp('<loc>https://carrowmont\\.com/'+safe+'</loc>\\s*<lastmod>2026-10-14</lastmod>').test(mortgageLearnHotfixSitemap);
+  }) &&
+  /<loc>https:\/\/carrowmont\.com\/rent-vs-buy-home\.html<\/loc><lastmod>2026-10-15<\/lastmod>/.test(mortgageLearnHotfixSitemap) &&
   mortgageLearnHotfixHub.includes('learn-localization.js?v=20261014-housing3')
 );
 add('central QA: Learn housing hotfix covers India, US, UK, Australia, cross-cluster articles and 390/360 responsive layouts',
   mortgageLearnHotfixQa.includes("'IN','INR'") && mortgageLearnHotfixQa.includes("'US','USD'") &&
   mortgageLearnHotfixQa.includes("'GB','GBP'") && mortgageLearnHotfixQa.includes("'AU','AUD'") &&
   mortgageLearnHotfixQa.includes('housing wording is localized across Learn articles outside the mortgage cluster') &&
-  mortgageLearnHotfixQa.includes('Rent vs Buy no longer presents Goal Planner as the comparison calculator') &&
+  mortgageLearnHotfixQa.includes('Rent vs Buy guide routes to the live comparison calculator while Goal Planner stays down-payment-only') &&
   mortgageLearnHotfixQa.includes('[390,360]') &&
   mortgageLearnHotfixQa.includes('Open Home Loan Decision Centre') && mortgageLearnHotfixQa.includes('Open Mortgage Decision Centre')
 );
@@ -3117,6 +3123,103 @@ add('DEBT1: browser QA protects handoff, privacy, PDF, discovery, plain language
   debt1Qa.includes('Tool, Learn, Tools Hub and sitemap') &&
   debt1Qa.includes('primary fields, results and CTAs stay in plain language') &&
   debt1Qa.includes('[1280,390,360]')
+);
+
+
+// RENT1 Rent vs Buy Calculator production contract - 2026-10-15.
+const rent1Html = read('mortgage-payoff-calculator/rent-vs-buy-calculator.html');
+const rent1Core = read('mortgage-payoff-calculator/rent-vs-buy-core.js');
+const rent1App = read('mortgage-payoff-calculator/rent-vs-buy-calculator.js');
+const rent1Css = read('mortgage-payoff-calculator/rent-vs-buy-calculator.css');
+const rent1Pdf = read('mortgage-payoff-calculator/rent-vs-buy-pdf-renderer.js');
+const rent1Learn = read('draw004.github.io/rent-vs-buy-home.html');
+const rent1Tools = read('draw004.github.io/tools.html');
+const rent1Sitemap = read('draw004.github.io/sitemap.xml');
+const rent1Home = read('draw004.github.io/index.html');
+const rent1Centre = read('mortgage-payoff-calculator/decision-centre.html');
+const rent1Qa = fs.readFileSync(new URL('../tests/26-rent-vs-buy-calculator.spec.js', import.meta.url), 'utf8');
+
+add('RENT1: canonical Rent vs Buy identity, search metadata and plain-language core inputs are present',
+  rent1Html.includes('<title>Rent vs Buy Calculator | Compare Renting and Buying | Carrowmont</title>') &&
+  rent1Html.includes('https://carrowmont.com/mortgage-payoff-calculator/rent-vs-buy-calculator.html') &&
+  rent1Html.includes('Price of the home') && rent1Html.includes('Down payment') &&
+  rent1Html.includes('Monthly rent for a similar home') && rent1Html.includes('How long do you expect to stay?')
+);
+add('RENT1: deterministic core owns same-starting-cash and same-monthly-housing-budget rules symmetrically',
+  rent1Core.includes("const VERSION='RENT1-1.0'") &&
+  rent1Core.includes('const startingHousingCash=Math.max(buyerUpfront,renterUpfront)') &&
+  rent1Core.includes('const sharedMonthlyHousingBudget=Math.max(buyerHousingOutflow,renterHousingOutflow)') &&
+  rent1Core.includes('const buyerAdd=sharedMonthlyHousingBudget-buyerHousingOutflow') &&
+  rent1Core.includes('const renterAdd=sharedMonthlyHousingBudget-renterHousingOutflow')
+);
+add('RENT1: mortgage amortization, refundable deposit, selling cost and negative-equity treatment are explicit',
+  rent1Core.includes('loanPayment=Math.min(payment,loanBalance+interest)') &&
+  rent1Core.includes('const saleCost=homeValue*(input.sellingCostPct/100)') &&
+  rent1Core.includes('const netHomeSaleProceeds=final.homeValue-saleCost-final.loanBalance') &&
+  rent1Core.includes('renterEndWealth=final.renterInvestment+input.refundableRentalDeposit')
+);
+add('RENT1: stable crossover semantics reject misleading temporary crossings',
+  rent1Core.includes("state:'stable-crossover'") &&
+  rent1Core.includes("state:'no-single-stable-break-even'") &&
+  rent1App.includes('No single stable break-even point within this period')
+);
+let rent1Fixtures=[];
+try {
+  const sandbox={window:{},module:{exports:{}}}; vm.createContext(sandbox); vm.runInContext(rent1Core,sandbox); rent1Fixtures=sandbox.window.CarrowmontRentVsBuyCore.runFixtures();
+} catch {}
+add('RENT1: independent deterministic fixture pack protects all 30 required edge cases',
+  rent1Fixtures.length===30 && rent1Fixtures.every(x=>x.ok) && rent1Qa.includes('fixtures).toHaveLength(30)')
+);
+add('RENT1: country changes terminology and currency changes formatting without changing the core math',
+  rent1App.includes("['IN','AU','NZ'].includes(r)") && rent1App.includes("['US','CA','GB','IE'].includes(r)") &&
+  rent1App.includes('Starting EMI / home-loan payment') && rent1App.includes('Starting home-loan repayment') &&
+  rent1App.includes('changing currency changes the unit and formatting only') === false &&
+  rent1Html.includes('changing currency changes the unit and formatting only') &&
+  rent1Core.includes("country:String(raw.country||'OTHER'), currency:String(raw.currency||'USD')")
+);
+add('RENT1: Copy Summary and exact three-page report are driven from the same deterministic result object',
+  rent1App.includes('function summaryText()') && rent1App.includes('Starting buy housing cost:') && rent1App.includes('window.CarrowmontRentVsBuyPdfRenderer.generate({result:lastResult') &&
+  rent1Pdf.includes('const pages=[summaryPage(model),detailPage(model),guidePage(model)]') && rent1Pdf.includes('SELECTED YEAR CHECKPOINTS') &&
+  rent1Pdf.includes('Starting monthly housing cost · Buy') && rent1Pdf.includes("filename:'carrowmont-rent-vs-buy-report.pdf'")
+);
+add('RENT1: tool and existing Learn guide form a bidirectional live journey while Goal Planner remains down-payment-only',
+  rent1Html.includes('href="/rent-vs-buy-home.html"') && rent1Html.includes('href="/budget-cash-flow-planner/"') &&
+  rent1Html.includes('href="/mortgage-payoff-calculator/rate-rise-stress-test.html"') &&
+  rent1Learn.includes('href="/mortgage-payoff-calculator/rent-vs-buy-calculator.html"') &&
+  rent1Learn.includes('Open the Rent vs Buy Calculator') && rent1Learn.includes('Use Goal Planner separately') &&
+  !rent1Learn.includes('will use a dedicated Rent vs Buy Calculator')
+);
+add('RENT1: Tools Hub grows to 14 live tools without changing the seven-core homepage or four-module Decision Centre',
+  rent1Tools.includes('data-secondary-tool="rent-vs-buy"') &&
+  rent1Tools.includes('/mortgage-payoff-calculator/rent-vs-buy-calculator.html') &&
+  /"numberOfItems"\s*:\s*14/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===14 &&
+  rent1Home.includes('data-core-tool-count="7"') && (rent1Home.match(/data-tool-id=/g)||[]).length===7 &&
+  !rent1Home.includes('data-tool-id="rent-vs-buy"') && (rent1Centre.match(/class="decision-card"/g)||[]).length===4 &&
+  !rent1Centre.includes('Rent vs Buy Calculator')
+);
+add('RENT1: new tool and materially updated Learn page are fresh in the sitemap',
+  /<loc>https:\/\/carrowmont\.com\/mortgage-payoff-calculator\/rent-vs-buy-calculator\.html<\/loc><lastmod>2026-10-15<\/lastmod>/.test(rent1Sitemap) &&
+  /<loc>https:\/\/carrowmont\.com\/rent-vs-buy-home\.html<\/loc><lastmod>2026-10-15<\/lastmod>/.test(rent1Sitemap) &&
+  /<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-15<\/lastmod>/.test(rent1Sitemap)
+);
+add('RENT1: structured data uses WebApplication for the tool and retains Article for the Learn guide',
+  Boolean(jsonLdNode(rent1Html,'WebApplication')) && Boolean(jsonLdNode(rent1Html,'BreadcrumbList')) &&
+  Boolean(jsonLdNode(rent1Learn,'Article')) && Boolean(jsonLdNode(rent1Learn,'BreadcrumbList'))
+);
+add('RENT1: privacy boundary avoids Mortgage Decision Profile and shared-plan writes',
+  !rent1App.includes('CarrowmontMortgageDecisionProfile') && !rent1App.includes('CarrowmontPlanState') &&
+  !rent1App.includes('localStorage.setItem') && rent1Html.includes('does not save or overwrite your Mortgage / Home Loan Decision Centre profile')
+);
+add('RENT1: browser QA protects localization, equal-resource rules, PDF, discovery, privacy, plain language and 1280/390/360 layouts',
+  rent1Qa.includes('country and currency catalogue loads') && rent1Qa.includes('equal-resource rules are visible and match the result object') &&
+  rent1Qa.includes('exact report is three pages') && rent1Qa.includes('Tool, Learn, Tools Hub and sitemap') &&
+  rent1Qa.includes('does not silently write Mortgage Decision Profile or shared housing-plan state') &&
+  rent1Qa.includes('primary fields, results, CTAs and methodology stay in plain language') && rent1Qa.includes('[1280,390,360]')
+);
+add('RENT1: responsive CSS protects narrow screens and chart/table equivalents remain available',
+  rent1Css.includes('@media(max-width:390px)') && rent1Css.includes('@media(max-width:720px)') && rent1Css.includes('.rent1-crossover-line') &&
+  rent1Html.includes('id="wealthChart"') && rent1Html.includes('id="checkpointRows"') &&
+  rent1Html.includes('Projected home value') && rent1Html.includes('Remaining loan')
 );
 
 console.log('\nCarrowmont source contract check\n');
