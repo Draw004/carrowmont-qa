@@ -6,9 +6,69 @@ on:
     - cron: '30 2 * * *'
 
 jobs:
+  preflight:
+    name: Live route preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    env:
+      BASE_URL: https://carrowmont.com
+
+    steps:
+      - name: Verify live core routes before browser QA
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          paths=(
+            "/"
+            "/tools.html"
+            "/budget-cash-flow-planner/"
+            "/sip-calculator/"
+            "/retirement-calculator/"
+            "/inflation-calculator/"
+            "/goal-planner/"
+            "/financial-independence/"
+            "/mortgage-payoff-calculator/"
+            "/compound-interest-calculator/"
+          )
+
+          failures=0
+          for path in "${paths[@]}"; do
+            url="${BASE_URL}${path}"
+            code="$(curl -L -sS -o /dev/null -w '%{http_code}' \
+              --retry 2 --retry-delay 2 --connect-timeout 10 --max-time 30 \
+              "$url" || true)"
+
+            if [[ "$code" != "200" ]]; then
+              echo "::error title=Live route preflight failed::${url} returned HTTP ${code:-no-response}"
+              failures=$((failures + 1))
+            else
+              echo "PASS ${url} -> HTTP 200"
+            fi
+          done
+
+          if [[ "$failures" -ne 0 ]]; then
+            echo "Live route preflight found $failures failing route(s). Browser QA will not start."
+            exit 1
+          fi
+
   qa:
+    name: QA - ${{ matrix.label }}
+    needs: preflight
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 25
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: chrome-desktop
+            label: Chrome Desktop
+          - project: edge-desktop
+            label: Edge Desktop
+          - project: mobile-chromium
+            label: Mobile Chromium
 
     env:
       BASE_URL: https://carrowmont.com
@@ -25,17 +85,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright Chromium
+      - name: Install Playwright Chromium support
         run: npx playwright install chromium
 
-      - name: Run automated QA
-        run: npm run qa
+      - name: Run ${{ matrix.label }} QA
+        run: npx playwright test --project="${{ matrix.project }}"
 
-      - name: Upload QA reports and screenshots
+      - name: Upload ${{ matrix.label }} QA reports and screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: carrowmont-qa-results
+          name: carrowmont-qa-results-${{ matrix.project }}
           path: |
             qa-summary.md
             qa-results.json
