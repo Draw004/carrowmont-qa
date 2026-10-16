@@ -16,6 +16,11 @@ const read = rel => {
   if (!fs.existsSync(p)) return '';
   return fs.readFileSync(p, 'utf8');
 };
+const readQa = rel => {
+  const p = new URL(`../${rel}`, import.meta.url);
+  if (!fs.existsSync(p)) return '';
+  return fs.readFileSync(p, 'utf8');
+};
 
 const jsonLdNodes = html => {
   const nodes = [];
@@ -41,7 +46,7 @@ add('central QA: Cloudflare RUM ingestion is isolated from automated QA traffic'
   qaCommon.includes('await isolateThirdPartyAnalyticsForQa(page);')
 );
 
-const automatedQaWorkflow = read('carrowmont-qa/.github/workflows/carrowmont-qa.yml');
+const automatedQaWorkflow = readQa('.github/workflows/carrowmont-qa.yml');
 const batchPublisherWorkflow = read('draw004.github.io/.github/workflows/carrowmont-batch-pr-publisher.yml');
 add('central QA workflow: live core-route preflight blocks expensive browser cascades after deployment 404s',
   automatedQaWorkflow.includes('Live route preflight') &&
