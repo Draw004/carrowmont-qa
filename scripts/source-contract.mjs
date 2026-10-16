@@ -41,6 +41,32 @@ add('central QA: Cloudflare RUM ingestion is isolated from automated QA traffic'
   qaCommon.includes('await isolateThirdPartyAnalyticsForQa(page);')
 );
 
+const automatedQaWorkflow = read('carrowmont-qa/.github/workflows/carrowmont-qa.yml');
+const batchPublisherWorkflow = read('draw004.github.io/.github/workflows/carrowmont-batch-pr-publisher.yml');
+add('central QA workflow: live core-route preflight blocks expensive browser cascades after deployment 404s',
+  automatedQaWorkflow.includes('Live route preflight') &&
+  automatedQaWorkflow.includes('/compound-interest-calculator/') &&
+  automatedQaWorkflow.includes('Browser QA will not start') &&
+  automatedQaWorkflow.includes('needs: preflight')
+);
+add('central QA workflow: Chrome, Edge and mobile projects are sharded into parallel matrix jobs with independent artifacts',
+  automatedQaWorkflow.includes('fail-fast: false') &&
+  automatedQaWorkflow.includes('project: chrome-desktop') &&
+  automatedQaWorkflow.includes('project: edge-desktop') &&
+  automatedQaWorkflow.includes('project: mobile-chromium') &&
+  automatedQaWorkflow.includes('npx playwright test --project="${{ matrix.project }}"') &&
+  automatedQaWorkflow.includes('carrowmont-qa-results-${{ matrix.project }}') &&
+  automatedQaWorkflow.includes('timeout-minutes: 25')
+);
+add('publisher: release manifests must provide non-empty release IDs, names, summaries, PR titles and commit messages before publication',
+  batchPublisherWorkflow.includes('.release_id | type == "string"') &&
+  batchPublisherWorkflow.includes('.release_name | type == "string"') &&
+  batchPublisherWorkflow.includes('.summary | type == "string"') &&
+  batchPublisherWorkflow.includes('.pr_title | type == "string"') &&
+  batchPublisherWorkflow.includes('.commit_message | type == "string"') &&
+  batchPublisherWorkflow.includes('Release manifest metadata contract verified.')
+);
+
 const tools = [
   ['financial-independence', 'index.html', 'app.js', 'Generate Financial Independence Report'],
   ['goal-planner', 'index.html', 'app.js', 'Generate Goal Report'],
