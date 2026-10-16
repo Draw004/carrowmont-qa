@@ -184,5 +184,23 @@ export async function prepareToolForQa(page, toolKey) {
     await setInput(page, '#annualStepUp', 0);
   }
 
+  if (toolKey === 'compound-interest-calculator') {
+    await setInput(page, '#principal', 100000);
+    await setInput(page, '#annualRate', 7);
+    await setInput(page, '#years', 10);
+    await page.locator('#compoundingFrequency').selectOption('monthly');
+    const contributionEnabled = page.locator('#contributionEnabled');
+    if (await contributionEnabled.count() && !(await contributionEnabled.isChecked())) await contributionEnabled.check();
+    await setInput(page, '#contributionAmount', 5000);
+    await page.locator('#contributionFrequency').selectOption('monthly');
+    await page.locator('#contributionTiming').selectOption('end');
+    const advanced = page.locator('details.advanced');
+    if (await advanced.count() && !(await advanced.getAttribute('open'))) await advanced.locator('summary').click();
+    const inflationEnabled = page.locator('#inflationEnabled');
+    if (await inflationEnabled.count() && !(await inflationEnabled.isChecked())) await inflationEnabled.check();
+    await setInput(page, '#inflationRate', 3);
+    await expect(page.locator('#reportBtn')).toBeEnabled({ timeout: 10000 });
+  }
+
   await page.waitForTimeout(250);
 }
