@@ -3,7 +3,7 @@ import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow, saveReference
 
 const HOME = '/';
 const DIRECTORY = '/tools.html';
-const CORE_IDS = ['budget', 'investment', 'retirement', 'inflation', 'goals', 'independence', 'housing'];
+const CORE_IDS = ['budget', 'investment', 'compound', 'retirement', 'inflation', 'goals', 'independence', 'housing'];
 const ALL_TOOL_PATHS = [
   '/budget-cash-flow-planner/',
   '/sip-calculator/',
@@ -12,6 +12,7 @@ const ALL_TOOL_PATHS = [
   '/goal-planner/',
   '/financial-independence/',
   '/mortgage-payoff-calculator/',
+  '/compound-interest-calculator/',
   '/4-percent-rule-stress-test.html',
   '/financial-independence-number-by-spending.html',
   '/us-debt-interest-cost-calculator.html',
@@ -21,7 +22,7 @@ const ALL_TOOL_PATHS = [
   '/mortgage-payoff-calculator/rent-vs-buy-calculator.html',
   '/market-chain-reaction-explorer.html'
 ];
-const HOMEPAGE_AUTHORITY_PATHS = ALL_TOOL_PATHS.slice(7, 11);
+const HOMEPAGE_AUTHORITY_PATHS = ALL_TOOL_PATHS.slice(8, 12);
 
 async function dismissAnalytics(page) {
   const decline = page.locator('[data-analytics-choice="denied"]').first();
@@ -58,7 +59,7 @@ async function expectHomepageOrder(page, expected) {
 }
 
 test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
-  test('[AUTO] canonical tools directory exposes fifteen live tools in three meaningful categories', async ({ page }) => {
+  test('[AUTO] canonical tools directory exposes sixteen live tools in three meaningful categories', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, DIRECTORY);
     await dismissAnalytics(page);
@@ -67,10 +68,10 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await expect(page.locator('h1')).toHaveText('Financial calculators, planners and scenario tools');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com/tools.html');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
-    await expect(page.locator('#core-planning-tools .directory-tool-card')).toHaveCount(7);
+    await expect(page.locator('#core-planning-tools .directory-tool-card')).toHaveCount(8);
     await expect(page.locator('#planning-stress-tests .directory-tool-card')).toHaveCount(4);
     await expect(page.locator('#macro-market-explorers .directory-tool-card')).toHaveCount(4);
-    await expect(page.locator('.directory-tool-card')).toHaveCount(15);
+    await expect(page.locator('.directory-tool-card')).toHaveCount(16);
     await expect(page.locator('body')).not.toContainText(/coming soon/i);
 
     for (const path of ALL_TOOL_PATHS) {
@@ -86,19 +87,19 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     const collectionPage = schemas.find(node => node['@type'] === 'CollectionPage');
     expect(collectionPage).toBeTruthy();
     expect(collectionPage.mainEntity?.['@type']).toBe('ItemList');
-    expect(collectionPage.mainEntity?.numberOfItems).toBe(15);
-    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(15);
+    expect(collectionPage.mainEntity?.numberOfItems).toBe(16);
+    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(16);
     expect(errors).toEqual([]);
   });
 
-  test('[AUTO] homepage keeps seven complete visual tool cards, a standout fixed gateway and four authority links', async ({ page }) => {
+  test('[AUTO] homepage keeps eight complete visual tool cards, a standout fixed gateway and four authority links', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, HOME);
     await dismissAnalytics(page);
 
     const grid = page.locator('[data-homepage-core-grid]');
     await expect(grid).toHaveCount(1);
-    await expect(grid.locator('[data-tool-id]')).toHaveCount(7);
+    await expect(grid.locator('[data-tool-id]')).toHaveCount(8);
     await expect(grid.locator('[data-tools-gateway]')).toHaveCount(1);
 
     for (const id of CORE_IDS) {
@@ -120,7 +121,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     });
     expect(gatewayStyle.backgroundImage).toContain('gradient');
     expect(gatewayStyle.color).toBe('rgb(255, 255, 255)');
-    expect(gatewayStyle.position).toBe(7);
+    expect(gatewayStyle.position).toBe(8);
 
     await expect(page.locator('a.text-link[href="/tools.html"]').first()).toContainText('View all tools');
     await expect(page.locator('.authority-tools-grid .authority-tool-card')).toHaveCount(4);
@@ -135,12 +136,12 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await dismissAnalytics(page);
 
     await setLocaleDirect(page, 'IN', 'INR');
-    await expectHomepageOrder(page, ['investment', 'housing', 'retirement', 'budget', 'inflation', 'goals', 'independence']);
+    await expectHomepageOrder(page, ['investment', 'compound', 'housing', 'retirement', 'budget', 'inflation', 'goals', 'independence']);
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-title]')).toHaveText('SIP Calculator');
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-cta]')).toContainText('Calculate SIP');
 
     await setLocaleDirect(page, 'US', 'USD');
-    const usOrder = ['housing', 'retirement', 'investment', 'budget', 'inflation', 'goals', 'independence'];
+    const usOrder = ['housing', 'retirement', 'investment', 'compound', 'budget', 'inflation', 'goals', 'independence'];
     await expectHomepageOrder(page, usOrder);
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-title]')).toHaveText('Recurring Investment Calculator');
 
@@ -149,7 +150,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await expect(page.locator('[data-homepage-core-grid]')).toHaveAttribute('data-applied-country', 'US');
 
     await setLocaleDirect(page, 'TR', 'TRY');
-    await expectHomepageOrder(page, ['inflation', 'budget', 'housing', 'investment', 'retirement', 'goals', 'independence']);
+    await expectHomepageOrder(page, ['inflation', 'budget', 'housing', 'investment', 'compound', 'retirement', 'goals', 'independence']);
   });
 
   test('[AUTO] country-demand contract covers every supported country with complete unique tool orders', async ({ page }) => {
@@ -167,8 +168,8 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     expect(result.mapped.sort()).toEqual(result.regions.sort());
     expect(result.profileKeys.sort()).toEqual(['P1','P10','P11','P2','P3','P4','P5','P6','P7','P8','P9'].sort());
     for (const [country, order] of Object.entries(result.orders)) {
-      expect(order, `${country} order length`).toHaveLength(7);
-      expect(new Set(order).size, `${country} order uniqueness`).toBe(7);
+      expect(order, `${country} order length`).toHaveLength(8);
+      expect(new Set(order).size, `${country} order uniqueness`).toBe(8);
       expect([...order].sort(), `${country} order contents`).toEqual([...CORE_IDS].sort());
     }
   });
@@ -198,7 +199,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     expect(response.ok()).toBeTruthy();
     const xml = await response.text();
     expect(xml).toContain('<loc>https://carrowmont.com/tools.html</loc>');
-    expect(xml).toMatch(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-15<\/lastmod>/);
+    expect(xml).toMatch(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-16<\/lastmod>/);
   });
 
   test('[AUTO] homepage and directory avoid horizontal overflow at 1440px, 390px and 360px', async ({ page }) => {
@@ -223,7 +224,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       await gotoClean(page, DIRECTORY);
       await dismissAnalytics(page);
       await assertNoHorizontalOverflow(page, `${width}px all-tools directory`);
-      await expect(page.locator('.directory-tool-card')).toHaveCount(15);
+      await expect(page.locator('.directory-tool-card')).toHaveCount(16);
     }
   });
 

@@ -98,6 +98,20 @@ export const tools = [
     layoutParent: '.snapshot-actions',
     requiresGuideReportPage: true,
     requiresToolsReportPage: true
+  },
+  {
+    key: 'compound-interest-calculator',
+    name: 'Compound Interest Calculator',
+    path: '/compound-interest-calculator/',
+    reportButton: '#reportBtn',
+    reportStatus: '#reportDownloadStatus',
+    reportMinPages: 5,
+    charts: ['#growthChart'],
+    requiredText: ['Compound Interest Calculator', 'Copy Summary', 'Generate Compound Interest Report'],
+    keyInputs: ['#principal', '#annualRate', '#years', '#compoundingFrequency'],
+    layoutParent: '.actions-card',
+    requiresGuideReportPage: true,
+    requiresToolsReportPage: true
   }
 ];
 
@@ -115,5 +129,6 @@ export const mainSitePages = [
   { key: 'silver-vs-gold', path: '/silver-vs-gold.html', text: 'Silver vs gold' },
   { key: 'silver-supply-demand-macro-stress', path: '/silver-supply-demand-macro-stress-explorer.html', text: 'See what is driving silver' },
   { key: 'market-chain-reaction-explorer', path: '/market-chain-reaction-explorer.html', text: 'What Happens When Markets Change?' },
-  { key: 'mortgage-payoff-calculator-page', path: '/mortgage-payoff-calculator/', text: 'part-prepayments' }
+  { key: 'mortgage-payoff-calculator-page', path: '/mortgage-payoff-calculator/', text: 'part-prepayments' },
+  { key: 'compound-interest-calculator-page', path: '/compound-interest-calculator/', text: 'See how compounding can change your money over time.' }
 ];

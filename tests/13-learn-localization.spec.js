@@ -146,15 +146,15 @@ test.describe('LEARN-LOCALE1 global Learn localization', () => {
     await expect.poll(async () => page.evaluate(() => Boolean(window.CarrowmontToolsHub && window.CarrowmontLocale))).toBe(true);
 
     await page.evaluate(() => { window.CarrowmontLocale.setLocale('IN','INR'); window.CarrowmontToolsHub.apply(); });
-    await expect.poll(() => homepageOrder(page)).toEqual(['investment','housing','retirement','budget','inflation','goals','independence']);
+    await expect.poll(() => homepageOrder(page)).toEqual(['investment','compound','housing','retirement','budget','inflation','goals','independence']);
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-title]')).toHaveText('SIP Calculator');
-    await expect(page.locator('[data-homepage-core-grid] > article[data-tool-id] .tool-icon')).toHaveCount(7);
+    await expect(page.locator('[data-homepage-core-grid] > article[data-tool-id] .tool-icon')).toHaveCount(8);
     await expect(page.locator('[data-tools-gateway] .tool-icon')).toHaveCount(1);
     await expect(page.locator('[data-tools-gateway]')).toBeVisible();
     await expect(page.locator('[data-homepage-core-grid] > article').last()).toHaveAttribute('data-tools-gateway', '');
 
     await page.evaluate(() => { window.CarrowmontLocale.setLocale('US','USD'); window.CarrowmontToolsHub.apply(); });
-    await expect.poll(() => homepageOrder(page)).toEqual(['housing','retirement','investment','budget','inflation','goals','independence']);
+    await expect.poll(() => homepageOrder(page)).toEqual(['housing','retirement','investment','compound','budget','inflation','goals','independence']);
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-title]')).toHaveText('Recurring Investment Calculator');
     await expect(page.locator('[data-tools-gateway]')).toBeVisible();
     await expect(page.locator('.authority-tools-grid .authority-tool-card')).toHaveCount(4);
