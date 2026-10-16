@@ -1299,7 +1299,33 @@ add('main site: IndexNow automation uses the global endpoint, read-only workflow
   indexNowScript.includes('urls.length > 10000')
 );
 
-const sitemapLastmods = new Map([...learnSitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>\s*<\/url>/g)].map(m => [m[1], m[2]]));
+const sitemapUrlBlocks = [...learnSitemap.matchAll(/<url\b[^>]*>([\s\S]*?)<\/url>/gi)];
+const sitemapEntries = sitemapUrlBlocks.map(match => {
+  const block = match[1];
+  const loc = (block.match(/<loc>\s*([^<]+?)\s*<\/loc>/i) || [])[1];
+  const lastmod = (block.match(/<lastmod>\s*(\d{4}-\d{2}-\d{2})\s*<\/lastmod>/i) || [])[1];
+  return loc && lastmod ? [loc.trim(), lastmod] : null;
+}).filter(Boolean);
+const sitemapLastmods = new Map(sitemapEntries);
+add('main site: sitemap parsing covers every URL even when optional changefreq/priority fields are present',
+  sitemapUrlBlocks.length > 0 &&
+  sitemapEntries.length === sitemapUrlBlocks.length &&
+  sitemapLastmods.size === sitemapUrlBlocks.length &&
+  [
+    'https://carrowmont.com/mortgage-payoff-calculator/',
+    'https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html',
+    'https://carrowmont.com/mortgage-payoff-calculator/rate-rise-stress-test.html',
+    'https://carrowmont.com/mortgage-payoff-calculator/prepayment-vs-investing.html',
+    'https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html',
+    'https://carrowmont.com/budget-cash-flow-planner/debt-payoff-calculator.html',
+    'https://carrowmont.com/mortgage-payoff-calculator/rent-vs-buy-calculator.html'
+  ].every(url => sitemapLastmods.has(url))
+);
+add('main site: IndexNow parser reads sitemap URL blocks instead of requiring lastmod to be the final child',
+  indexNowScript.includes('const urlBlocks = [...xml.matchAll(/<url\\b[^>]*>([\\s\\S]*?)<\\/url>/gi)]') &&
+  indexNowScript.includes('entries.length !== urlBlocks.length') &&
+  indexNowScript.includes('Every sitemap <url> entry must include both <loc> and <lastmod>.')
+);
 add('main site: every Learn Article sitemap lastmod matches JSON-LD dateModified',
   standardizedLearnPages.length >= 52 && standardizedLearnPages.every(({page}) => {
     const canonical = ((page.match(/<link[^>]*rel="canonical"[^>]*href="([^"]+)"/i) || page.match(/<link[^>]*href="([^"]+)"[^>]*rel="canonical"/i) || [])[1] || '');
