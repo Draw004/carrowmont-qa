@@ -113,6 +113,22 @@ export const tools = [
     requiresGuideReportPage: true,
     requiresToolsReportPage: true
   }
+,
+  {
+    key: 'loan-calculator',
+    name: 'Loan / EMI Calculator',
+    path: '/loan-calculator/',
+    reportButton: '#reportBtn',
+    reportStatus: '#reportDownloadStatus',
+    reportMinPages: 5,
+    charts: ['#balanceChart'],
+    requiredText: ['Copy Summary', 'Download CSV'],
+    reportButtonText: /^(?:Generate EMI \/ Loan Report|Generate Loan Report|Generate Loan Repayment Report|Generate Loan \/ EMI Report)$/,
+    keyInputs: ['#principal', '#annualRate', '#termYears', '#termMonths'],
+    layoutParent: '.actions-card',
+    requiresGuideReportPage: true,
+    requiresToolsReportPage: true
+  }
 ];
 
 export const mainSitePages = [
@@ -130,5 +146,6 @@ export const mainSitePages = [
   { key: 'silver-supply-demand-macro-stress', path: '/silver-supply-demand-macro-stress-explorer.html', text: 'See what is driving silver' },
   { key: 'market-chain-reaction-explorer', path: '/market-chain-reaction-explorer.html', text: 'What Happens When Markets Change?' },
   { key: 'mortgage-payoff-calculator-page', path: '/mortgage-payoff-calculator/', text: 'part-prepayments' },
-  { key: 'compound-interest-calculator-page', path: '/compound-interest-calculator/', text: 'See how compounding can change your money over time.' }
+  { key: 'compound-interest-calculator-page', path: '/compound-interest-calculator/', text: 'See how compounding can change your money over time.' },
+  { key: 'loan-calculator-page', path: '/loan-calculator/', text: 'See what a loan could cost each month.' }
 ];

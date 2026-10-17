@@ -67,6 +67,11 @@ test.describe('Carrowmont smoke and content contracts', () => {
         await expect(page.locator('body')).toContainText(tool.requiredText[0]);
         for (const text of tool.requiredText.slice(1)) await expect(page.getByText(text, { exact: true })).toBeVisible();
       }
+      if (tool.reportButton) {
+        const reportButton = page.locator(tool.reportButton);
+        await expect(reportButton, `${tool.name}: ${tool.reportButton}`).toBeVisible();
+        if (tool.reportButtonText) await expect(reportButton).toHaveText(tool.reportButtonText);
+      }
       await expect(page.getByText('Back to all Carrowmont tools', { exact: false })).toBeVisible();
       for (const selector of tool.keyInputs) await expect(page.locator(selector), `${tool.name}: ${selector}`).toBeVisible();
       expect(errors, `${tool.name} browser errors:\n${errors.join('\n')}`).toEqual([]);

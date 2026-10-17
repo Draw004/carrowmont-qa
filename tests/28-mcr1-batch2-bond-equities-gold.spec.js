@@ -8,7 +8,7 @@ const PAGES=[
 ];
 
 test.describe('MCR1 Batch 2 bond yields, equities and gold search cluster',()=>{
-  // Protect eight-core homepage while expanding authority content.
+  // Protect nine-core homepage while expanding authority content.
   test('[AUTO] three focused pages are substantive canonical Learn articles with reviewed Explorer states',async({page})=>{
     for(const [path,h1,state] of PAGES){
       const errors=monitorPageErrors(page);await gotoClean(page,path);expect(errors).toEqual([]);
@@ -42,7 +42,7 @@ test.describe('MCR1 Batch 2 bond yields, equities and gold search cluster',()=>{
     await gotoClean(page,'/gold-macro-stress-explorer.html');await expect(page.locator('a[href="/what-happens-to-gold-when-interest-rates-rise.html"]')).toBeVisible();await expect(page.locator('a[href="/what-happens-to-gold-when-dollar-rises.html"]')).toBeVisible();
     await gotoClean(page,'/stocks-vs-bonds.html');await expect(page.locator('a[href="/why-do-stocks-fall-when-bond-yields-rise.html"]')).toBeVisible();
     await gotoClean(page,'/gold-as-an-investment.html');await expect(page.locator('a[href="/what-happens-to-gold-when-interest-rates-rise.html"]')).toBeVisible();
-    await gotoClean(page,'/');await expect(page.locator('[data-core-tool-count="8"]')).toHaveCount(1);await expect(page.locator('[data-tool-id="market-chain-reaction"]')).toHaveCount(0);
+    await gotoClean(page,'/');await expect(page.locator('[data-core-tool-count="9"]')).toHaveCount(1);await expect(page.locator('[data-tool-id="market-chain-reaction"]')).toHaveCount(0);
   });
 
   test('[AUTO] sitemap publishes exactly the canonical Batch-2 URLs with current release freshness',async({request})=>{
