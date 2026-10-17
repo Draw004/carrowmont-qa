@@ -516,14 +516,14 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#futureLumpYear')).toBeDisabled();
   });
 
-  test('[AUTO] Shared UI: all tool footers expose the seven-tool registry with no navigation arrows', async ({ page }) => {
-    const expectedHrefs = ['/sip-calculator/','/retirement-calculator/','/inflation-calculator/','/goal-planner/','/financial-independence/','/budget-cash-flow-planner/','/mortgage-payoff-calculator/','/tools.html'];
+  test('[AUTO] Shared UI: all tool footers expose the permanent five gateway links with no navigation arrows', async ({ page }) => {
+    const expectedHrefs = ['/tools.html','/sip-calculator/','/retirement-calculator/','/mortgage-payoff-calculator/','/budget-cash-flow-planner/'];
     for (const tool of tools) {
       await gotoClean(page, tool.path);
-      const footer = page.locator('.site-footer .footer-col').filter({ has: page.locator('strong', { hasText: 'Tools' }) }).first();
-      await expect(footer, `${tool.name}: Tools footer column`).toBeVisible();
-      const hrefs = await footer.locator('a').evaluateAll(links => links.map(a => a.getAttribute('href')));
-      for (const href of expectedHrefs) expect(hrefs, `${tool.name}: missing footer link ${href}`).toContain(href);
+      const footer = page.locator('.site-footer .footer-col[data-cm-compact-tools="1"]').first();
+      await expect(footer, `${tool.name}: compact Tools footer column`).toBeVisible();
+      const hrefs = await footer.locator(':scope > a').evaluateAll(links => links.map(a => a.getAttribute('href')));
+      expect(hrefs, `${tool.name}: compact footer gateway order`).toEqual(expectedHrefs);
       expect(await footer.innerText(), `${tool.name}: footer navigation must not contain arrows`).not.toContain('→');
     }
   });

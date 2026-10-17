@@ -92,7 +92,7 @@ test.describe('RENT1 Rent vs Buy Calculator',()=>{
   test('[AUTO] Tool, Learn, Tools Hub and sitemap form the intended discovery path',async({page})=>{
     await gotoClean(page,TOOL); expect(await page.locator('a[href="/rent-vs-buy-home.html"]').count()).toBeGreaterThanOrEqual(1);
     await gotoClean(page,LEARN); await expect(page.locator('.guide-action-first a[href="/mortgage-payoff-calculator/rent-vs-buy-calculator.html"]')).toBeVisible(); await expect(page.locator('.guide-action-first a[href="/goal-planner/"]')).toContainText('Use Goal Planner separately');
-    await gotoClean(page,TOOLS); await expect(page.locator('[data-secondary-tool="rent-vs-buy"] a')).toHaveAttribute('href','/mortgage-payoff-calculator/rent-vs-buy-calculator.html'); await expect(page.locator('.directory-tool-card')).toHaveCount(17);
+    await gotoClean(page,TOOLS); await expect(page.locator('[data-secondary-tool="rent-vs-buy"] a')).toHaveAttribute('href','/mortgage-payoff-calculator/rent-vs-buy-calculator.html'); await expect(page.locator('.directory-tool-card')).toHaveCount(18);
     const xml=await page.evaluate(async()=>fetch('/sitemap.xml').then(r=>r.text())); expect(xml).toContain('https://carrowmont.com/mortgage-payoff-calculator/rent-vs-buy-calculator.html'); expect(xml).toContain('<lastmod>2026-10-15</lastmod>');
   });
 

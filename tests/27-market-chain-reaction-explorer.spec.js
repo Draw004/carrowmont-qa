@@ -87,7 +87,7 @@ test.describe('MCR1 Market Chain Reaction Explorer',()=>{
 
   test('[AUTO] Learn hub, Tools directory and sitemap publish the MCR1 discovery network without changing the nine-core homepage',async({page,request})=>{
     await gotoClean(page,'/learn.html');await expect(page.locator('[data-category="macro"]')).toBeVisible();await expect(page.locator('[data-category="macro"] .category-tool-link[href="/market-chain-reaction-explorer.html"]')).toBeVisible();for(const [path] of ARTICLES)await expect(page.locator(`a[href="${path}"]`).first()).toBeVisible();
-    await gotoClean(page,'/tools.html');await expect(page.locator('.directory-tool-card')).toHaveCount(17);await expect(page.locator('[data-secondary-tool="market-chain-reaction"] a')).toHaveAttribute('href','/market-chain-reaction-explorer.html');
+    await gotoClean(page,'/tools.html');await expect(page.locator('.directory-tool-card')).toHaveCount(18);await expect(page.locator('[data-secondary-tool="market-chain-reaction"] a')).toHaveAttribute('href','/market-chain-reaction-explorer.html');
     await gotoClean(page,'/');await expect(page.locator('[data-core-tool-count="9"]')).toHaveCount(1);await expect(page.locator('[data-tool-id="market-chain-reaction"]')).toHaveCount(0);
     const xml=await (await request.get('/sitemap.xml')).text();for(const u of [PAGE,...ARTICLES.map(x=>x[0])])expect(xml).toContain(`<loc>https://carrowmont.com${u}</loc><lastmod>2026-10-15</lastmod>`);
   });

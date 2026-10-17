@@ -876,7 +876,7 @@ if (mainHome || mainSiteJs) {
     '/financial-independence-number-by-spending.html','/us-debt-interest-cost-calculator.html',
     '/gold-macro-stress-explorer.html','/silver-supply-demand-macro-stress-explorer.html',
     '/budget-cash-flow-planner/debt-payoff-calculator.html','/mortgage-payoff-calculator/rent-vs-buy-calculator.html',
-    '/market-chain-reaction-explorer.html'
+    '/market-chain-reaction-explorer.html','/retirement-calculator/withdrawal-calculator.html'
   ];
   const supportedCountryCodes = [
     'IN','US','CA','GB','AU','AT','BD','BE','NZ','CL','DK','CN','JP','KR','SG','AE','SA','OM','QA',
@@ -887,8 +887,8 @@ if (mainHome || mainSiteJs) {
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
     /"@type"\s*:\s*"CollectionPage"/.test(toolsDirectory) && /"@type"\s*:\s*"ItemList"/.test(toolsDirectory) &&
-    /"numberOfItems"\s*:\s*17/.test(toolsDirectory) &&
-    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 17
+    /"numberOfItems"\s*:\s*18/.test(toolsDirectory) &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 18
   );
   add('main site: CORE9 directory keeps nine core tools while focused secondary tools expand safely',
     toolsDirectory.includes('id="core-planning-tools"') &&
@@ -1386,7 +1386,7 @@ add('CORE8 compound: report uses standardized guide and Continue Planning pages 
 add('CORE8 compound: homepage, tools directory, sitemap and Learn cluster integrate the canonical calculator',
   mainHome.includes('data-tool-id="compound"') && mainHome.includes('href="/compound-interest-calculator/"') &&
   core7ToolsDirectory.includes('data-directory-tool="compound"') && core7ToolsDirectory.includes('href="/compound-interest-calculator/"') &&
-  /"numberOfItems"\s*:\s*17/.test(core7ToolsDirectory) && core7Sitemap.includes('https://carrowmont.com/compound-interest-calculator/') &&
+  /"numberOfItems"\s*:\s*18/.test(core7ToolsDirectory) && core7Sitemap.includes('https://carrowmont.com/compound-interest-calculator/') &&
   read('draw004.github.io/compounding-and-time.html').includes('href="/compound-interest-calculator/"') &&
   read('draw004.github.io/compound-interest-monthly-contributions.html').includes('href="/compound-interest-calculator/"')
 );
@@ -3335,7 +3335,7 @@ add('RENT1: tool and existing Learn guide form a bidirectional live journey whil
 add('RENT1: Tools Hub keeps Rent vs Buy live while CORE8 expands the primary suite without changing the four-module Decision Centre',
   rent1Tools.includes('data-secondary-tool="rent-vs-buy"') &&
   rent1Tools.includes('/mortgage-payoff-calculator/rent-vs-buy-calculator.html') &&
-  /"numberOfItems"\s*:\s*17/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===17 &&
+  /"numberOfItems"\s*:\s*18/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===18 &&
   rent1Home.includes('data-core-tool-count="9"') && (rent1Home.match(/data-tool-id=/g)||[]).length===9 &&
   !rent1Home.includes('data-tool-id="rent-vs-buy"') && (rent1Centre.match(/class="decision-card"/g)||[]).length===4 &&
   !rent1Centre.includes('Rent vs Buy Calculator')
@@ -3454,7 +3454,7 @@ add('MCR1: Learn hub and Tools directory expose the macro network without promot
   mcrHub.includes('data-category="macro"') && mcrHub.includes('class="category-tool-link" href="/market-chain-reaction-explorer.html"') &&
   mcrLearnNames.every(name=>mcrHub.includes(`href="/${name}"`)) &&
   mcrTools.includes('data-secondary-tool="market-chain-reaction"') && mcrTools.includes('href="/market-chain-reaction-explorer.html"') &&
-  /"numberOfItems"\s*:\s*17/.test(mcrTools) && (mcrTools.match(/class="directory-tool-card/g)||[]).length===17 &&
+  /"numberOfItems"\s*:\s*18/.test(mcrTools) && (mcrTools.match(/class="directory-tool-card/g)||[]).length===18 &&
   mcrHome.includes('data-core-tool-count="9"') && !mcrHome.includes('data-tool-id="market-chain-reaction"')
 );
 add('MCR1: existing Gold, Silver and U.S. debt authority assets link into the new explanation layer',
@@ -3613,12 +3613,12 @@ add('CORE9 loan: shared report, plan-state and bridge files remain byte-identica
   sharedStateCopies.length===9 && sharedStateCopies.every(x=>x===loanState) &&
   sharedBridgeCopies.length===9 && sharedBridgeCopies.every(x=>x===loanBridge)
 );
-add('CORE9 loan: homepage and Tools Hub expose nine core tools while the directory contains seventeen total tools',
+add('CORE9 loan: homepage and Tools Hub expose nine core tools while the directory contains eighteen total tools',
   mainHome.includes('data-core-tool-count="9"') && mainHome.includes('data-tool-id="loan"') && mainHome.includes('href="/loan-calculator/"') &&
   (mainHome.match(/data-tool-id=/g)||[]).length===9 &&
   loanTools.includes('data-directory-tool="loan"') && loanTools.includes('href="/loan-calculator/"') &&
-  (loanTools.match(/data-directory-tool=/g)||[]).length===9 && (loanTools.match(/class="directory-tool-card/g)||[]).length===17 &&
-  /"numberOfItems"\s*:\s*17/.test(loanTools)
+  (loanTools.match(/data-directory-tool=/g)||[]).length===9 && (loanTools.match(/class="directory-tool-card/g)||[]).length===18 &&
+  /"numberOfItems"\s*:\s*18/.test(loanTools)
 );
 add('CORE9 loan: country-demand profiles contain nine unique core IDs and loan terminology is country-aware without changing math',
   ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11'].every(profile=>{
@@ -3631,7 +3631,7 @@ add('CORE9 loan: country-demand profiles contain nine unique core IDs and loan t
 add('CORE9 loan: sitemap and debt-learning journey publish one crawlable canonical loan route with current freshness',
   (loanSitemap.match(/<loc>https:\/\/carrowmont\.com\/loan-calculator\/<\/loc>/g)||[]).length===1 &&
   /<loc>https:\/\/carrowmont\.com\/loan-calculator\/<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(loanSitemap) &&
-  (loanSitemap.match(/<loc>/g)||[]).length===105 && loanDebtGuide.includes('href="/loan-calculator/"')
+  (loanSitemap.match(/<loc>/g)||[]).length===106 && loanDebtGuide.includes('href="/loan-calculator/"')
 );
 add('CORE9 loan: central QA registry, live-route preflight and dedicated browser tests protect the calculator',
   loanQaConfig.includes("key: 'loan-calculator'") && loanQaConfig.includes("path: '/loan-calculator/'") &&
@@ -3654,7 +3654,7 @@ const loanRegressionQa = [
   fs.readFileSync(new URL('../tests/28-mcr1-batch2-bond-equities-gold.spec.js', import.meta.url), 'utf8')
 ].join('\n');
 add('CORE9 loan: legacy browser invariants are migrated from CORE8 counts before staged QA',
-  loanRegressionQa.includes("'loan'") && loanRegressionQa.includes('toHaveCount(17)') &&
+  loanRegressionQa.includes("'loan'") && loanRegressionQa.includes('toHaveCount(18)') &&
   loanRegressionQa.includes('nine-core homepage') && loanRegressionQa.includes('[data-core-tool-count="9"]') &&
   !loanRegressionQa.includes('[data-core-tool-count="8"]') && !loanRegressionQa.includes('toHaveCount(16)')
 );
@@ -3760,6 +3760,157 @@ add('PRIVACY2: browser QA protects consent, path-only GA, event allow-list, poli
   privacyFiQa.includes('without putting financial values in the URL') &&
   privacyFiQa.includes("cm_handoff=fi_spending_v2") &&
   !privacyFiQa.includes("spendingMonthly=125000")
+);
+
+
+// RETIRE1 Retirement Withdrawal / Drawdown / SWP Calculator - Snapshot 80 production implementation - 2026-10-17.
+const retire1Spec = read('draw004.github.io/docs/CARROWMONT_RETIRE1_RETIREMENT_WITHDRAWAL_DRAWDOWN_SWP_CALCULATOR_SPEC_FINAL.md');
+const retire1Html = read('retirement-calculator/withdrawal-calculator.html');
+const retire1Css = read('retirement-calculator/withdrawal-calculator.css');
+const retire1Core = read('retirement-calculator/withdrawal-core.js');
+const retire1App = read('retirement-calculator/withdrawal-calculator.js');
+const retire1Pdf = read('retirement-calculator/withdrawal-pdf-renderer.js');
+const retire1PlannerHtml = read('retirement-calculator/planner.html');
+const retire1PlannerApp = read('retirement-calculator/app.js');
+const retire1ToolSitemap = read('retirement-calculator/sitemap.xml');
+const retire1MainSitemap = read('draw004.github.io/sitemap.xml');
+const retire1Tools = read('draw004.github.io/tools.html');
+const retire1MainJs = read('draw004.github.io/site.js');
+const retire1LongevityLearn = read('draw004.github.io/how-long-will-retirement-savings-last.html');
+const retire1SequenceLearn = read('draw004.github.io/sequence-of-returns-risk.html');
+const retire1Qa = fs.readFileSync(new URL('../tests/32-retirement-withdrawal-drawdown.spec.js', import.meta.url), 'utf8');
+const retire1SmokeQa = fs.readFileSync(new URL('../tests/01-smoke.spec.js', import.meta.url), 'utf8');
+const retire1MortgageQa = fs.readFileSync(new URL('../tests/23-mortgage-localization-shared-plan-hotfix.spec.js', import.meta.url), 'utf8');
+const retire1Helper = fs.readFileSync(new URL('../helpers/common.js', import.meta.url), 'utf8');
+const retire1Workflow = readQa('.github/workflows/carrowmont-qa.yml');
+
+let Retire1Core = null;
+try {
+  const sandbox={window:{}}; vm.createContext(sandbox); vm.runInContext(retire1Core,sandbox); Retire1Core=sandbox.window.CarrowmontWithdrawalCore;
+} catch {}
+const retire1Zero = Retire1Core?.calculate?.({mode:'runway',startingBalance:12000,startingWithdrawal:1000,annualReturn:0,inflationLinked:false,withdrawalGrowth:0,timing:'beginning',maxMonths:1200,startAge:60,useAge:false,targetMonths:360,targetEndingBalance:0});
+const retire1Support = Retire1Core?.calculate?.({mode:'support',startingBalance:120000,startingWithdrawal:0,annualReturn:0,inflationLinked:false,withdrawalGrowth:0,timing:'beginning',targetMonths:120,startAge:60,useAge:false,targetEndingBalance:0});
+const retire1Step = Retire1Core?.simulate?.({mode:'runway',startingBalance:50000,startingWithdrawal:1000,annualReturn:0,inflationLinked:true,withdrawalGrowth:10,timing:'beginning',maxMonths:24,startAge:60,horizonMonths:24});
+const retire1Preserve = Retire1Core?.calculate?.({mode:'support',startingBalance:1000000,startingWithdrawal:0,annualReturn:6,inflationLinked:false,withdrawalGrowth:0,timing:'beginning',targetMonths:360,startAge:60,useAge:false,targetEndingBalance:250000});
+
+add('RETIRE1: approved specification and one canonical indexable retirement-family calculator are present',
+  retire1Spec.includes('CARROWMONT RETIRE1') && retire1Spec.includes('withdrawal-calculator.html') &&
+  retire1Html.includes('<title>Retirement Withdrawal &amp; Drawdown Calculator | Carrowmont</title>') &&
+  retire1Html.includes('<link rel="canonical" href="https://carrowmont.com/retirement-calculator/withdrawal-calculator.html"') &&
+  retire1Html.includes('<meta name="robots" content="index,follow"') &&
+  (retire1Html.match(/<h1\b/g)||[]).length===1 && Boolean(jsonLdNode(retire1Html,'WebApplication'))
+);
+add('RETIRE1: deterministic monthly engine protects zero-return runway, reverse solve, annual withdrawal steps and target ending balance',
+  Boolean(Retire1Core) && retire1Core.includes('Math.pow(1 + annual, 1 / 12) - 1') &&
+  retire1Zero?.ok===true && retire1Zero.result?.depletionMonth===12 && Math.abs(retire1Zero.result?.totalWithdrawals-12000)<0.001 &&
+  retire1Support?.ok===true && Math.abs(retire1Support.startingWithdrawal-1000)<0.001 &&
+  Math.abs(retire1Step?.schedule?.[11]?.plannedWithdrawal-1000)<0.001 && Math.abs(retire1Step?.schedule?.[12]?.plannedWithdrawal-1100)<0.001 &&
+  retire1Preserve?.ok===true && Math.abs(retire1Preserve.result?.endingBalance-250000)<0.01 &&
+  retire1Core.includes('for (let i = 0; i < 96; i += 1)')
+);
+add('RETIRE1: UI owns two focused solve modes, sensitivity, chart, annual schedule, CSV, Copy Summary and report actions',
+  retire1Html.includes('id="runwayModeBtn"') && retire1Html.includes('id="supportModeBtn"') &&
+  retire1Html.includes('id="withdrawalBalanceChart"') && retire1Html.includes('Return sensitivity — not a forecast') &&
+  retire1Html.includes('id="annualScheduleBody"') && retire1Html.includes('id="copyBtn"') && retire1Html.includes('id="csvBtn"') && retire1Html.includes('id="reportBtn"') &&
+  retire1App.includes('function buildSummary()') && retire1App.includes('function downloadCsv()') && retire1App.includes('function generateReport()')
+);
+add('RETIRE1: country-aware terminology uses SWP, withdrawal and drawdown without changing the calculation engine',
+  retire1App.includes("if (code === 'IN') return { title:'Retirement SWP / Withdrawal Calculator'") &&
+  retire1App.includes("if (code === 'GB' || code === 'IE') return { title:'Retirement Drawdown Calculator'") &&
+  retire1App.includes("if (code === 'US' || code === 'CA') return { title:'Retirement Withdrawal Calculator'") &&
+  retire1App.includes("if (code === 'AU' || code === 'NZ') return { title:'Retirement Withdrawal Calculator'") &&
+  retire1App.includes("title:'Retirement Withdrawal & Drawdown Calculator'") &&
+  !/\bregion\b|\bcurrency\b/.test(retire1Core.match(/function simulate[\s\S]*?function annualSummary/)?.[0] || '')
+);
+add('RETIRE1: retirement-planner handoff is explicit, one-time, reviewable and keeps financial values out of the URL',
+  retire1PlannerHtml.includes('id="withdrawalPlannerBtn"') && retire1PlannerHtml.includes('href="withdrawal-calculator.html"') &&
+  retire1PlannerApp.includes("sessionStorage.setItem('carrowmont_retirement_withdrawal_handoff_v1'") &&
+  retire1PlannerApp.includes("window.location.href = 'withdrawal-calculator.html'") &&
+  retire1App.includes("const HANDOFF_KEY = 'carrowmont_retirement_withdrawal_handoff_v1';") &&
+  retire1App.includes('sessionStorage.removeItem(HANDOFF_KEY)') &&
+  retire1Html.includes('id="useProjectedImport"') && retire1Html.includes('id="useTargetImport"') && retire1Html.includes('id="dismissImport"') &&
+  !retire1PlannerApp.includes('withdrawal-calculator.html?')
+);
+add('RETIRE1: report is driven from the calculator result and includes chart/sensitivity, full schedule, methodology and Continue Planning',
+  retire1Pdf.includes("header(ctx,model,'Annual Withdrawal Schedule')") && retire1Pdf.includes('Return sensitivity — not a forecast') &&
+  retire1Pdf.includes("S().guidePage({reportTitle:'Retirement Withdrawal Report'") &&
+  retire1Pdf.includes("S().continuePlanningPage({currentTool:'retirement'") &&
+  retire1Pdf.includes('return [summaryPage(model),chartPage(model),...schedulePages(model),guidePage(model),continuePage()]') &&
+  retire1Html.indexOf('report-standard.js') < retire1Html.indexOf('withdrawal-pdf-renderer.js')
+);
+add('RETIRE1: Tools Hub and retirement Learn journeys expose the live secondary tool without adding another homepage core card',
+  retire1Tools.includes('id="retirement-income-tools"') && retire1Tools.includes('data-secondary-tool="retirement-withdrawal"') &&
+  retire1Tools.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
+  /"numberOfItems"\s*:\s*18/.test(retire1Tools) && (retire1Tools.match(/class="directory-tool-card/g)||[]).length===18 &&
+  retire1MainJs.includes('function retirementWithdrawalIdentity(') &&
+  retire1LongevityLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
+  retire1SequenceLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
+  mainHome.includes('data-core-tool-count="9"') && (mainHome.match(/data-tool-id=/g)||[]).length===9 && !mainHome.includes('data-tool-id="retirement-withdrawal"')
+);
+add('RETIRE1: both retirement and main sitemaps publish exactly one current canonical route and changed public discovery pages are fresh',
+  (retire1ToolSitemap.match(/<loc>https:\/\/carrowmont\.com\/retirement-calculator\/withdrawal-calculator\.html<\/loc>/g)||[]).length===1 &&
+  (retire1MainSitemap.match(/<loc>https:\/\/carrowmont\.com\/retirement-calculator\/withdrawal-calculator\.html<\/loc>/g)||[]).length===1 &&
+  /<loc>https:\/\/carrowmont\.com\/retirement-calculator\/withdrawal-calculator\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(retire1MainSitemap) &&
+  /<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(retire1MainSitemap) &&
+  /<loc>https:\/\/carrowmont\.com\/how-long-will-retirement-savings-last\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(retire1MainSitemap) &&
+  /<loc>https:\/\/carrowmont\.com\/sequence-of-returns-risk\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(retire1MainSitemap) &&
+  (retire1MainSitemap.match(/<loc>/g)||[]).length===106
+);
+
+const retire1FooterRepos = [
+  'draw004.github.io','sip-calculator','goal-planner','financial-independence','inflation-calculator',
+  'retirement-calculator','budget-cash-flow-planner','mortgage-payoff-calculator','compound-interest-calculator','loan-calculator'
+];
+const retire1FooterLocales = retire1FooterRepos.map(dir => read(`${dir}/locale.js`));
+add('RETIRE1: permanent compact footer runtime is shared across every public calculator surface and capped at five gateway links',
+  retire1FooterLocales.length===10 && retire1FooterLocales.every(src =>
+    src.includes('Carrowmont compact footer gateways - RETIRE1') &&
+    src.includes("region === 'IN' || region === 'AU' || region === 'NZ'") && src.includes("region === 'US' || region === 'CA' || region === 'GB' || region === 'IE'") &&
+    src.includes("['/tools.html','All financial tools','footer-all-tools']") && src.includes("['/retirement-calculator/','Retirement Planner','footer-retirement-link']") &&
+    src.includes("['/budget-cash-flow-planner/','Budget & Cash Flow Planner','footer-budget-link']") &&
+    src.includes("col.dataset.cmCompactTools = '1'") && src.includes('col.appendChild(a)')
+  )
+);
+add('RETIRE1: dedicated browser QA protects formulas, localization, explicit handoff, privacy-safe URLs, report, discovery, footer and 1280/390/360 layout',
+  retire1Qa.includes('monthly engine handles zero return') && retire1Qa.includes('reverse solve reuses forward engine') &&
+  retire1Qa.includes('country controls SWP, drawdown and withdrawal terminology') &&
+  retire1Qa.includes('keeps financial values out of the URL') && retire1Qa.includes('five-page PDF report') &&
+  retire1Qa.includes('Tools Hub, Learn journeys and sitemap') && retire1Qa.includes('compact footer stays at five localized gateways') &&
+  retire1Qa.includes('[1280, 390, 360]')
+);
+add('RETIRE1: Publisher regression locks migrate legacy footer, Learn, mortgage and privacy browser expectations',
+  retire1SmokeQa.includes('permanent five gateway links') &&
+  retire1SmokeQa.includes("['/tools.html','/sip-calculator/','/retirement-calculator/','/mortgage-payoff-calculator/','/budget-cash-flow-planner/']") &&
+  retire1MortgageQa.includes(".site-footer .footer-housing-gateway") &&
+  retire1LongevityLearn.includes('class="guide-action-first"') && retire1LongevityLearn.includes('href="/retirement-calculator/"') &&
+  retire1LongevityLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
+  retire1Css.includes('.withdrawal-page [hidden]{display:none!important}') &&
+  retire1Qa.includes("toHaveTitle('Retirement Withdrawal & Drawdown Calculator | Carrowmont')") &&
+  (retire1Qa.match(/getByRole\('heading', \{ name: 'Return sensitivity — not a forecast', exact: true \}\)/g)||[]).length===2 &&
+  !retire1Qa.includes("getByText('Return sensitivity — not a forecast', { exact: true })") &&
+  retire1Qa.includes("getByText('Constant-return illustration, not a forecast.', { exact: true })") &&
+  retire1Qa.includes("expect(url.pathname).toBe('/retirement-calculator/withdrawal-calculator.html')") &&
+  retire1Qa.includes("expect(url.search).toBe('')") && retire1Qa.includes("expect(url.hash).toBe('')")
+);
+add('RETIRE1: QA storage isolation preserves the one-time retirement handoff across the planner-to-withdrawal navigation',
+  retire1Helper.includes("const retirementHandoffKey = 'carrowmont_retirement_withdrawal_handoff_v1';") &&
+  retire1Helper.includes('const retirementHandoff = sessionStorage.getItem(retirementHandoffKey);') &&
+  retire1Helper.includes('if (retirementHandoff) sessionStorage.setItem(retirementHandoffKey, retirementHandoff);') &&
+  retire1Helper.includes("const privacyHandoffKey = 'carrowmont_fi_spending_handoff_v2';")
+);
+add('RETIRE1: handoff browser QA creates a valid calculated Planner state before expecting staged balances',
+  retire1Qa.includes("await setLocale(page, 'US', 'USD');") &&
+  retire1Qa.includes("await setInput(page, '#currentSavings', 500000);") &&
+  retire1Qa.includes("await setInput(page, '#currentMonthlyInvestment', 2000);") &&
+  retire1Qa.includes("await setInput(page, '#quickMonthlyExpense', 6000);") &&
+  retire1Qa.includes("await expect(page.locator('#projectedCorpus')).not.toHaveText('—');") &&
+  retire1Qa.includes("await expect(page.locator('#requiredCorpus')).not.toHaveText('—');")
+);
+add('RETIRE1: visitor runtime remains deterministic and privacy-first with no live market API, tax engine or regulated safe-withdrawal claim',
+  !/fetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon\s*\(/.test(retire1Core+retire1App+retire1Pdf) &&
+  !/guaranteed safe|safe withdrawal guarantee|tax engine|pension provider api/i.test(retire1Core+retire1App) &&
+  retire1App.includes('Constant-return assumptions do not predict real market paths') &&
+  retire1App.includes('does not calculate pension tax') && retire1App.includes('does not automatically apply statutory pension')
 );
 
 console.log('\nCarrowmont source contract check\n');

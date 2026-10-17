@@ -40,7 +40,7 @@ test.describe('Mortgage / home-loan localization and shared-plan hotfix',()=>{
     await expect(page.locator('[data-mortgage-copy="nextDecision"]')).toHaveText('NEXT HOME LOAN DECISION');
     await expect(page.locator('[data-mortgage-copy="payoffDecisionLink"]')).toHaveText('Open Home Loan Decision Centre →');
     await expect(page.locator('[data-mortgage-copy="payoffExtraFaq"]')).toContainText('home loan payments');
-    await expect(page.locator('[data-mortgage-copy="payoffFamilyLabel"]')).toHaveText('Home Loan Payoff / Prepayment');
+    await expect(page.locator('.site-footer .footer-housing-gateway')).toHaveText('Home Loan');
   });
 
   test('[AUTO] India MDC1A, MDC1B and MDC1C localize saved-detail, privacy, footer and journey wording',async({page})=>{
