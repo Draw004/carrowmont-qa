@@ -42,8 +42,11 @@ export async function gotoClean(page, targetPath) {
   await isolateThirdPartyAnalyticsForQa(page);
   await page.addInitScript(() => {
     try {
+      const privacyHandoffKey = 'carrowmont_fi_spending_handoff_v2';
+      const privacyHandoff = sessionStorage.getItem(privacyHandoffKey);
       localStorage.clear();
       sessionStorage.clear();
+      if (privacyHandoff) sessionStorage.setItem(privacyHandoffKey, privacyHandoff);
     } catch (_) {}
   });
   const response = await page.goto(targetPath, { waitUntil: 'domcontentloaded' });
