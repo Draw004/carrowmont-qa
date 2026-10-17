@@ -87,6 +87,17 @@ test.describe('PDF report generation and download standard', () => {
         expect(compoundText).toContain('Monthly');
       }
 
+
+      if (tool.key === 'loan-calculator') {
+        const loanText = canvasText.replace(/\s+/g, ' ').trim();
+        expect(loanText).toContain('Loan / EMI Planning Report');
+        expect(loanText).toContain('MONTHLY PAYMENT / EMI');
+        expect(loanText).toContain('Total interest');
+        expect(loanText).toContain('Entered fees');
+        expect(loanText).toContain('Fees');
+        expect(loanText).toContain('Annual Amortization Summary');
+      }
+
       if (tool.key === 'goal-planner') {
         expect(canvasText).toContain('Pay frequency');
         expect(canvasText).toContain('Savings / contribution frequency');
@@ -150,14 +161,15 @@ test.describe('PDF report generation and download standard', () => {
       if (tool.requiresToolsReportPage) {
         expect(canvasText).toContain('Continue planning with Carrowmont');
         const expectedOtherTools = {
-          'financial-independence': ['SIP Calculator', 'Compound Interest Calculator', 'Retirement Planner', 'Goal Planner', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
-          'goal-planner': ['SIP Calculator', 'Compound Interest Calculator', 'Retirement Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
-          'inflation-calculator': ['SIP Calculator', 'Compound Interest Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
-          'retirement-planner': ['SIP Calculator', 'Compound Interest Calculator', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
-          'sip-calculator': ['Compound Interest Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
-          'budget-cash-flow-planner': ['SIP Calculator', 'Compound Interest Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Home Loan Prepayment'],
-          'mortgage-payoff-calculator': ['SIP Calculator', 'Compound Interest Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
-          'compound-interest-calculator': ['SIP Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment']
+          'financial-independence': ['SIP Calculator', 'Compound Interest Calculator', 'EMI Calculator', 'Retirement Planner', 'Goal Planner', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'goal-planner': ['SIP Calculator', 'Compound Interest Calculator', 'EMI Calculator', 'Retirement Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'inflation-calculator': ['SIP Calculator', 'Compound Interest Calculator', 'EMI Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'retirement-planner': ['SIP Calculator', 'Compound Interest Calculator', 'EMI Calculator', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'sip-calculator': ['Compound Interest Calculator', 'EMI Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'budget-cash-flow-planner': ['SIP Calculator', 'Compound Interest Calculator', 'EMI Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Home Loan Prepayment'],
+          'mortgage-payoff-calculator': ['SIP Calculator', 'Compound Interest Calculator', 'EMI Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner'],
+          'compound-interest-calculator': ['SIP Calculator', 'EMI Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment'],
+          'loan-calculator': ['SIP Calculator', 'Compound Interest Calculator', 'Retirement Planner', 'Goal Planner', 'Financial Independence', 'Inflation Calculator', 'Budget & Cash Flow Planner', 'Home Loan Prepayment']
         }[tool.key] || [];
         for (const title of expectedOtherTools) expect(canvasText, `${tool.name} report missing ${title}`).toContain(title);
       }

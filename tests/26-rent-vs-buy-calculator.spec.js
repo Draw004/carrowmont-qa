@@ -92,7 +92,7 @@ test.describe('RENT1 Rent vs Buy Calculator',()=>{
   test('[AUTO] Tool, Learn, Tools Hub and sitemap form the intended discovery path',async({page})=>{
     await gotoClean(page,TOOL); expect(await page.locator('a[href="/rent-vs-buy-home.html"]').count()).toBeGreaterThanOrEqual(1);
     await gotoClean(page,LEARN); await expect(page.locator('.guide-action-first a[href="/mortgage-payoff-calculator/rent-vs-buy-calculator.html"]')).toBeVisible(); await expect(page.locator('.guide-action-first a[href="/goal-planner/"]')).toContainText('Use Goal Planner separately');
-    await gotoClean(page,TOOLS); await expect(page.locator('[data-secondary-tool="rent-vs-buy"] a')).toHaveAttribute('href','/mortgage-payoff-calculator/rent-vs-buy-calculator.html'); await expect(page.locator('.directory-tool-card')).toHaveCount(16);
+    await gotoClean(page,TOOLS); await expect(page.locator('[data-secondary-tool="rent-vs-buy"] a')).toHaveAttribute('href','/mortgage-payoff-calculator/rent-vs-buy-calculator.html'); await expect(page.locator('.directory-tool-card')).toHaveCount(17);
     const xml=await page.evaluate(async()=>fetch('/sitemap.xml').then(r=>r.text())); expect(xml).toContain('https://carrowmont.com/mortgage-payoff-calculator/rent-vs-buy-calculator.html'); expect(xml).toContain('<lastmod>2026-10-15</lastmod>');
   });
 
@@ -108,8 +108,8 @@ test.describe('RENT1 Rent vs Buy Calculator',()=>{
     await gotoClean(page,LEARN); const ld=JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent()); expect(ld['@graph'].map(x=>x['@type'])).toContain('Article'); const text=await page.locator('.guide-action-first').innerText(); expect(text).not.toContain('will use a dedicated Rent vs Buy Calculator'); expect(text).toContain('Open the Rent vs Buy Calculator');
   });
 
-  test('[AUTO] eight-core homepage and four-module Mortgage / Home Loan Decision Centre remain unchanged',async({page})=>{
-    await gotoClean(page,HOME); await expect(page.locator('[data-homepage-core-grid] [data-tool-id]')).toHaveCount(8); await expect(page.locator('[data-tool-id="rent-vs-buy"]')).toHaveCount(0);
+  test('[AUTO] nine-core homepage and four-module Mortgage / Home Loan Decision Centre remain unchanged',async({page})=>{
+    await gotoClean(page,HOME); await expect(page.locator('[data-homepage-core-grid] [data-tool-id]')).toHaveCount(9); await expect(page.locator('[data-tool-id="rent-vs-buy"]')).toHaveCount(0);
     await gotoClean(page,CENTRE); await expect(page.locator('.decision-card')).toHaveCount(4); await expect(page.getByText('Rent vs Buy Calculator',{exact:true})).toHaveCount(0);
   });
 

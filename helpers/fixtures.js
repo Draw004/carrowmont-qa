@@ -202,5 +202,22 @@ export async function prepareToolForQa(page, toolKey) {
     await expect(page.locator('#reportBtn')).toBeEnabled({ timeout: 10000 });
   }
 
+
+  if (toolKey === 'loan-calculator') {
+    const paymentMode = page.locator('#paymentModeBtn');
+    if (await paymentMode.count()) await paymentMode.click();
+    await setInput(page, '#principal', 500000);
+    await setInput(page, '#annualRate', 10);
+    await setInput(page, '#termYears', 5);
+    await setInput(page, '#termMonths', 0);
+    const advanced = page.locator('#advancedAssumptions');
+    if (await advanced.count() && !(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
+    await setInput(page, '#fixedFee', 0);
+    await setInput(page, '#percentageFee', 0);
+    await setInput(page, '#extraMonthly', 0);
+    await setInput(page, '#oneTimeExtra', 0);
+    await expect(page.locator('#reportBtn')).toBeEnabled({ timeout: 10000 });
+  }
+
   await page.waitForTimeout(250);
 }

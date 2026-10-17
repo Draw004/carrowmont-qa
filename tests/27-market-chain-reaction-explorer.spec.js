@@ -85,10 +85,10 @@ test.describe('MCR1 Market Chain Reaction Explorer',()=>{
     for(const [path,h1] of ARTICLES){const errors=monitorPageErrors(page);await gotoClean(page,path);expect(errors).toEqual([]);await expect(page.locator('h1')).toHaveText(h1);await expect(page.locator('h1')).toHaveCount(1);await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://carrowmont.com'+path);await expect(page.locator('.guide-answer')).toHaveCount(1);await expect(page.locator('h2')).toHaveCount(9);await expect(page.locator('text=Frequently asked questions')).toBeVisible();await expect(page.locator('.guide-action-first a[href^="/market-chain-reaction-explorer.html#"]')).toBeVisible();await expect(page.locator('.learn-tool-return')).toHaveCount(1);const text=(await page.locator('main').innerText()).replace(/\s+/g,' ');expect(text).toMatch(/chain breaker/i);expect(text).not.toMatch(/₹|\blakhs?\b|\bcrores?\b/i);expect(text.split(' ').length).toBeGreaterThan(1000);}
   });
 
-  test('[AUTO] Learn hub, Tools directory and sitemap publish the MCR1 discovery network without changing the eight-core homepage',async({page,request})=>{
+  test('[AUTO] Learn hub, Tools directory and sitemap publish the MCR1 discovery network without changing the nine-core homepage',async({page,request})=>{
     await gotoClean(page,'/learn.html');await expect(page.locator('[data-category="macro"]')).toBeVisible();await expect(page.locator('[data-category="macro"] .category-tool-link[href="/market-chain-reaction-explorer.html"]')).toBeVisible();for(const [path] of ARTICLES)await expect(page.locator(`a[href="${path}"]`).first()).toBeVisible();
-    await gotoClean(page,'/tools.html');await expect(page.locator('.directory-tool-card')).toHaveCount(16);await expect(page.locator('[data-secondary-tool="market-chain-reaction"] a')).toHaveAttribute('href','/market-chain-reaction-explorer.html');
-    await gotoClean(page,'/');await expect(page.locator('[data-core-tool-count="8"]')).toHaveCount(1);await expect(page.locator('[data-tool-id="market-chain-reaction"]')).toHaveCount(0);
+    await gotoClean(page,'/tools.html');await expect(page.locator('.directory-tool-card')).toHaveCount(17);await expect(page.locator('[data-secondary-tool="market-chain-reaction"] a')).toHaveAttribute('href','/market-chain-reaction-explorer.html');
+    await gotoClean(page,'/');await expect(page.locator('[data-core-tool-count="9"]')).toHaveCount(1);await expect(page.locator('[data-tool-id="market-chain-reaction"]')).toHaveCount(0);
     const xml=await (await request.get('/sitemap.xml')).text();for(const u of [PAGE,...ARTICLES.map(x=>x[0])])expect(xml).toContain(`<loc>https://carrowmont.com${u}</loc><lastmod>2026-10-15</lastmod>`);
   });
 
