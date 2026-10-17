@@ -4,10 +4,10 @@ import { gotoClean, assertNoHorizontalOverflow, assertInsideParent, saveReferenc
 import { prepareToolForQa } from '../helpers/fixtures.js';
 
 test.describe('Layout and responsive guardrails', () => {
-  test('[AUTO] Retirement and Inflation headers align with the SIP header standard', async ({ page }) => {
+  test('[AUTO] Core tool headers align with the SIP header standard', async ({ page }) => {
     const metric = async path => {
       await gotoClean(page, path);
-      return page.locator('.site-header .container').evaluate(el => {
+      return page.locator('.site-header > .container.header-inner').evaluate(el => {
         const r = el.getBoundingClientRect();
         return { left: r.left, right: r.right, width: r.width };
       });
@@ -15,18 +15,20 @@ test.describe('Layout and responsive guardrails', () => {
     const sip = await metric('/sip-calculator/');
     const retirement = await metric('/retirement-calculator/planner.html');
     const inflation = await metric('/inflation-calculator/');
-    for (const [name, current] of [['Retirement', retirement], ['Inflation', inflation]]) {
+    const compound = await metric('/compound-interest-calculator/');
+    const loan = await metric('/loan-calculator/');
+    for (const [name, current] of [['Retirement', retirement], ['Inflation', inflation], ['Compound Interest', compound], ['Loan / EMI', loan]]) {
       expect(Math.abs(current.left - sip.left), `${name} header left edge`).toBeLessThan(2);
       expect(Math.abs(current.right - sip.right), `${name} header right edge`).toBeLessThan(2);
       expect(Math.abs(current.width - sip.width), `${name} header width`).toBeLessThan(2);
     }
   });
 
-  test('[AUTO] Shared locale pill geometry is identical across all seven tools', async ({ page }, testInfo) => {
+  test('[AUTO] Shared header and locale geometry is identical across all nine core tools', async ({ page }, testInfo) => {
     const metric = async path => {
       await gotoClean(page, path);
       return page.evaluate(() => {
-        const header = document.querySelector('.site-header .container');
+        const header = document.querySelector('.site-header > .container.header-inner');
         const summary = document.querySelector('#localeSummary');
         const popover = document.querySelector('.locale-popover');
         const brand = document.querySelector('.site-header .brand');
@@ -45,7 +47,8 @@ test.describe('Layout and responsive guardrails', () => {
     };
     const paths = {
       SIP:'/sip-calculator/', Goal:'/goal-planner/', FI:'/financial-independence/', Inflation:'/inflation-calculator/',
-      Retirement:'/retirement-calculator/planner.html', Budget:'/budget-cash-flow-planner/', Mortgage:'/mortgage-payoff-calculator/'
+      Retirement:'/retirement-calculator/planner.html', Budget:'/budget-cash-flow-planner/', Mortgage:'/mortgage-payoff-calculator/',
+      Compound:'/compound-interest-calculator/', Loan:'/loan-calculator/'
     };
     const values = {};
     for (const [name,path] of Object.entries(paths)) values[name] = await metric(path);
@@ -56,7 +59,7 @@ test.describe('Layout and responsive guardrails', () => {
       expect(current.summaryBoxSizing, `${name} locale pill should use border-box sizing`).toBe('border-box');
     }
     const sip = values.SIP;
-    for (const name of ['Budget','Mortgage']) {
+    for (const name of ['Budget','Mortgage','Compound','Loan']) {
       const current = values[name];
       expect(Math.abs(current.left - sip.left), `${name} header left edge`).toBeLessThan(2);
       expect(Math.abs(current.right - sip.right), `${name} header right edge`).toBeLessThan(2);

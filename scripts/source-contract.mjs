@@ -1322,6 +1322,8 @@ add('CORE7 mortgage: approved merged specification and dedicated QA protect the 
 );
 
 
+const sharedLayoutQa = fs.readFileSync(new URL('../tests/02-layout.spec.js', import.meta.url), 'utf8');
+
 // CORE8 Compound Interest Calculator - Snapshot 72 implementation - 2026-10-16.
 const compoundSpec = read('draw004.github.io/docs/CARROWMONT_CORE8_COMPOUND_INTEREST_CALCULATOR_SPEC_FINAL.md');
 const compoundHtml = read('compound-interest-calculator/index.html');
@@ -1358,6 +1360,17 @@ add('CORE8 compound: optional contributions, inflation context, chart, annual ta
   compoundHtml.includes('id="growthChart"') && compoundHtml.includes('id="annualTableBody"') &&
   compoundApp.includes('carrowmont-compound-interest-growth.csv') && compoundApp.includes('effectiveAnnualRate') &&
   !/fetch\s*\(|XMLHttpRequest|WebSocket\s*\(|sendBeacon\s*\(/.test(compoundCore + compoundApp + compoundPdf)
+);
+add('CORE8 compound: shared header uses the SIP-aligned desktop/mobile geometry and is protected by central layout QA',
+  compoundStyles.includes('Carrowmont shared tool-header alignment polish - Snapshot 77') &&
+  compoundStyles.includes('.site-header .container{width:min(1480px,calc(100% - 64px));margin:auto}') &&
+  compoundStyles.includes('.site-header #localeSummary{box-sizing:border-box;height:44px;min-height:44px;max-height:44px}') &&
+  compoundStyles.includes('.site-header .locale-menu summary{appearance:none;-webkit-appearance:none;list-style:none;border:1px solid #c8dae4;border-radius:999px') &&
+  sharedLayoutQa.includes("const compound = await metric('/compound-interest-calculator/');") &&
+  sharedLayoutQa.includes("Compound:'/compound-interest-calculator/'") &&
+  sharedLayoutQa.includes("page.locator('.site-header > .container.header-inner').evaluate") &&
+  sharedLayoutQa.includes("document.querySelector('.site-header > .container.header-inner')") &&
+  !sharedLayoutQa.includes("page.locator('.site-header .container').evaluate")
 );
 add('CORE8 compound: shared footer, currency-label and narrow-screen contracts match the established suite',
   sharedFooterToolHrefs.every(href => footerToolsBlock(compoundHtml).includes(`href="${href}"`)) &&
@@ -3572,6 +3585,17 @@ add('CORE9 loan: UI supports payment/reverse modes, fees, extras, chart, amortiz
   ['fixedFee','percentageFee','extraMonthly','oneTimeExtra','oneTimeMonth','balanceChart','amortizationTableBody','copySummaryBtn','csvBtn','reportBtn'].every(id=>loanHtml.includes(`id="${id}"`)) &&
   loanApp.includes('function renderChart(') && loanApp.includes('function summaryText()') && loanApp.includes('carrowmont-loan-amortization.csv') &&
   loanApp.includes('window.CarrowmontLoanPdf.download(lastResult')
+);
+add('CORE9 loan: shared header uses the SIP-aligned desktop/mobile geometry and is protected by central layout QA',
+  loanStyles.includes('Carrowmont shared tool-header alignment polish - Snapshot 77') &&
+  loanStyles.includes('.site-header .container{width:min(1480px,calc(100% - 64px));margin:auto}') &&
+  loanStyles.includes('.site-header #localeSummary{box-sizing:border-box;height:44px;min-height:44px;max-height:44px}') &&
+  loanStyles.includes('.site-header .locale-menu summary{appearance:none;-webkit-appearance:none;list-style:none;border:1px solid #c8dae4;border-radius:999px') &&
+  sharedLayoutQa.includes("const loan = await metric('/loan-calculator/');") &&
+  sharedLayoutQa.includes("Loan:'/loan-calculator/'") &&
+  sharedLayoutQa.includes("page.locator('.site-header > .container.header-inner').evaluate") &&
+  sharedLayoutQa.includes("document.querySelector('.site-header > .container.header-inner')") &&
+  !sharedLayoutQa.includes("page.locator('.site-header .container').evaluate")
 );
 add('CORE9 loan: visitor runtime avoids lender APIs, eligibility logic and regulated-APR claims',
   !/fetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon\s*\(/.test(loanCore+loanApp+loanPdf) &&
