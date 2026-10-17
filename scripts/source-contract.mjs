@@ -1812,10 +1812,10 @@ add('main site: FI Number by Spending route and refreshed FI guides remain in si
 );
 add('financial-independence: SEO3B handoff is explicit, validated and keeps the approved FI core separate',
   fiHtml.includes('id="seo3bHandoffNotice"') &&
-  fiJs.includes("params.get('cm_handoff')!=='fi_spending_v1'") &&
+  fiJs.includes("if(handoff==='fi_spending_v2')") && fiJs.includes("else if(handoff==='fi_spending_v1')") &&
   fiJs.includes("els.spendingPct.value='100'") && fiJs.includes("els.monthlyIncome.value='0'") &&
   fiJs.includes('applySeo3bHandoff()') &&
-  !fiCore.includes('fi_spending_v1')
+  !fiCore.includes('fi_spending_v1') && !fiCore.includes('fi_spending_v2')
 );
 add('main site: SEO3B specification and implementation preserve no-login access, full-planner progression and engine separation',
   fiSpendSpec.includes('Financial Independence Number by Spending') &&
@@ -3657,6 +3657,109 @@ add('CORE9 loan: legacy browser invariants are migrated from CORE8 counts before
   loanRegressionQa.includes("'loan'") && loanRegressionQa.includes('toHaveCount(17)') &&
   loanRegressionQa.includes('nine-core homepage') && loanRegressionQa.includes('[data-core-tool-count="9"]') &&
   !loanRegressionQa.includes('[data-core-tool-count="8"]') && !loanRegressionQa.includes('toHaveCount(16)')
+);
+
+
+// PRIVACY2: Analytics trust, financial-value isolation and future-account separation - Snapshot 78.
+const privacyAnalyticsRepos = [
+  'budget-cash-flow-planner',
+  'compound-interest-calculator',
+  'financial-independence',
+  'goal-planner',
+  'inflation-calculator',
+  'loan-calculator',
+  'mortgage-payoff-calculator',
+  'retirement-calculator',
+  'sip-calculator'
+];
+const privacyAnalyticsCopies = privacyAnalyticsRepos.map(dir => read(`${dir}/analytics.js`));
+const privacyAnalytics = privacyAnalyticsCopies[0];
+const privacyPolicyHtml = read('draw004.github.io/privacy.html');
+const privacyMainSiteJs = read('draw004.github.io/site.js');
+const privacyFiGuideJs = read('draw004.github.io/financial-independence-number-by-spending.js');
+const privacyFiApp = read('financial-independence/app.js');
+const privacyInflationSite = read('inflation-calculator/site.js');
+const privacyRetirementSite = read('retirement-calculator/site.js');
+const privacyInflationConfig = read('inflation-calculator/site-config.js');
+const privacyRetirementConfig = read('retirement-calculator/site-config.js');
+const privacyHelper = fs.readFileSync(new URL('../helpers/common.js', import.meta.url), 'utf8');
+const privacyQa = fs.readFileSync(new URL('../tests/31-privacy-analytics-trust.spec.js', import.meta.url), 'utf8');
+const privacyFiQa = fs.readFileSync(new URL('../tests/09-fi-number-by-spending.spec.js', import.meta.url), 'utf8');
+
+add('PRIVACY2: all nine tool repositories share one analytics implementation with the same privacy contract',
+  privacyAnalyticsCopies.length===9 && privacyAnalyticsCopies.every(x=>x===privacyAnalytics) &&
+  privacyAnalytics.includes('Your calculator numbers stay private from analytics') &&
+  privacyAnalytics.includes('Continue without Google Analytics') &&
+  privacyAnalytics.includes('Allow Google Analytics') &&
+  privacyAnalytics.includes('page_location: analyticsPageLocation()') &&
+  privacyAnalytics.includes('page_referrer: analyticsReferrer()') &&
+  privacyAnalytics.includes('const ALLOWED_EVENT_PARAMS = Object.freeze({') &&
+  privacyAnalytics.includes('script.referrerPolicy = "origin"') &&
+  !privacyAnalytics.includes('does not intentionally send')
+);
+add('PRIVACY2: tool analytics allow only approved non-financial event fields',
+  privacyAnalytics.includes('country_change: ["selected_region", "selected_currency"]') &&
+  privacyAnalytics.includes('calculator_mode_change: ["mode"]') &&
+  privacyAnalytics.includes('const clean = cleanEventParams(eventName, params);') &&
+  privacyAnalytics.includes('if (!clean) return;') &&
+  !/loan_amount|balance|income|spending|contribution|interest_rate|withdrawalRate|annualReturn/.test(
+    privacyAnalytics.match(/const ALLOWED_EVENT_PARAMS[\s\S]*?\}\);/)?.[0] || ''
+  )
+);
+add('PRIVACY2: main-site consent copy and Google Analytics page location follow the same privacy-first rules',
+  privacyMainSiteJs.includes('Your calculator numbers stay private from analytics') &&
+  privacyMainSiteJs.includes('Continue without Google Analytics') &&
+  privacyMainSiteJs.includes('Allow Google Analytics') &&
+  privacyMainSiteJs.includes('page_location: analyticsPageLocation()') &&
+  privacyMainSiteJs.includes('page_referrer: analyticsReferrer()') &&
+  privacyMainSiteJs.includes('script.referrerPolicy = "origin"') &&
+  !privacyMainSiteJs.includes('does not intentionally send')
+);
+add('PRIVACY2: privacy policy clearly separates calculator data, analytics and future account or cloud choices',
+  privacyPolicyHtml.includes('Analytics and your financial data') &&
+  privacyPolicyHtml.includes('Accounts and saved financial information') &&
+  privacyPolicyHtml.includes('Financial values you enter into calculators are kept separate from website analytics.') &&
+  privacyPolicyHtml.includes('Allowing Google Analytics will not, by itself, give permission to upload calculator inputs or use saved financial information as analytics data.') &&
+  privacyPolicyHtml.includes('Last updated: October 2026') &&
+  !privacyPolicyHtml.includes('does not intentionally send')
+);
+add('PRIVACY2: legacy inflation and retirement loaders cannot bypass the shared consent gate',
+  !privacyInflationSite.includes('googletagmanager.com') && !privacyInflationSite.includes('GA_MEASUREMENT_ID') &&
+  !privacyRetirementSite.includes('googletagmanager.com') && !privacyRetirementSite.includes('GA_MEASUREMENT_ID') &&
+  /GA_MEASUREMENT_ID:\s*""/.test(privacyInflationConfig) && /GA_MEASUREMENT_ID:\s*""/.test(privacyRetirementConfig) &&
+  privacyInflationSite.includes('Analytics is handled only by analytics.js') &&
+  privacyRetirementSite.includes('Analytics is handled only by analytics.js')
+);
+add('PRIVACY2: FI handoff no longer puts spending, rate or inflation values in newly generated URLs',
+  privacyFiGuideJs.includes("const FI_HANDOFF_KEY = 'carrowmont_fi_spending_handoff_v2';") &&
+  privacyFiGuideJs.includes("const href = '/financial-independence/?cm_handoff=fi_spending_v2';") &&
+  privacyFiGuideJs.includes('window.sessionStorage.setItem(FI_HANDOFF_KEY, JSON.stringify(payload))') &&
+  !privacyFiGuideJs.includes("const params = new URLSearchParams({") &&
+  !privacyFiGuideJs.includes("spendingMonthly: String(monthly)")
+);
+add('PRIVACY2: FI planner consumes V2 local handoff and scrubs legacy V1 financial query values before analytics initializes',
+  privacyFiApp.includes("const FI_SPENDING_HANDOFF_KEY='carrowmont_fi_spending_handoff_v2';") &&
+  privacyFiApp.includes("if(handoff==='fi_spending_v2')") &&
+  privacyFiApp.includes("window.sessionStorage.removeItem(FI_SPENDING_HANDOFF_KEY)") &&
+  privacyFiApp.includes("else if(handoff==='fi_spending_v1')") &&
+  privacyFiApp.includes('scrubFinancialHandoffUrl();') &&
+  privacyFiApp.includes("window.history.replaceState(window.history.state,'',clean)")
+);
+add('PRIVACY2: QA preserves the ephemeral FI handoff while still clearing unrelated browser storage',
+  privacyHelper.includes("const privacyHandoffKey = 'carrowmont_fi_spending_handoff_v2';") &&
+  privacyHelper.includes('const privacyHandoff = sessionStorage.getItem(privacyHandoffKey);') &&
+  privacyHelper.includes('if (privacyHandoff) sessionStorage.setItem(privacyHandoffKey, privacyHandoff);')
+);
+add('PRIVACY2: browser QA protects consent, path-only GA, event allow-list, policy wording, legacy handoff scrubbing and mobile layout',
+  privacyQa.includes('first visit keeps Google Analytics off') &&
+  privacyQa.includes('path-only page location') &&
+  privacyQa.includes("window.CarrowmontAnalytics.track('financial_value'") &&
+  privacyQa.includes('privacy policy separates analytics from calculator data and future account choices') &&
+  privacyQa.includes('legacy FI query handoff is consumed and scrubbed') &&
+  privacyQa.includes('360px and 390px') &&
+  privacyFiQa.includes('without putting financial values in the URL') &&
+  privacyFiQa.includes("cm_handoff=fi_spending_v2") &&
+  !privacyFiQa.includes("spendingMonthly=125000")
 );
 
 console.log('\nCarrowmont source contract check\n');

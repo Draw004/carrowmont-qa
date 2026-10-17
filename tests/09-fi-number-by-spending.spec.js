@@ -205,18 +205,18 @@ test.describe('FI Number by Spending', () => {
     expect(csv).toContain('Spending sensitivity');
   });
 
-  test('[AUTO] primary CTA hands compatible values into the full FI Planner without changing its calculation engine contract', async ({ page }) => {
+  test('[AUTO] primary CTA hands compatible values into the full FI Planner without putting financial values in the URL', async ({ page }) => {
     await gotoClean(page, PAGE);
     await setInput(page, '#portfolioSpending', 125000);
     await setInput(page, '#withdrawalRate', 3.5);
     await setInput(page, '#inflationRate', 6);
     const href = await page.locator('#fullPlannerCta').getAttribute('href');
-    expect(href).toContain('cm_handoff=fi_spending_v1');
-    expect(href).toContain('spendingMonthly=125000');
-    expect(href).toContain('withdrawalRate=3.5');
-    expect(href).toContain('inflation=6');
+    expect(href).toContain('cm_handoff=fi_spending_v2');
+    expect(href).not.toContain('spendingMonthly');
+    expect(href).not.toContain('withdrawalRate');
+    expect(href).not.toContain('inflation=');
     await page.locator('#fullPlannerCta').click();
-    await page.waitForURL(/\/financial-independence\/\?cm_handoff=fi_spending_v1/);
+    await page.waitForURL(url => url.pathname === '/financial-independence/' && !url.search, { timeout: 10000 });
     await expect(page.locator('#monthlySpending')).toHaveValue('125000');
     await expect(page.locator('#withdrawalRate')).toHaveValue('3.5');
     await expect(page.locator('#inflation')).toHaveValue('6');
@@ -224,6 +224,7 @@ test.describe('FI Number by Spending', () => {
     await expect(page.locator('#monthlyIncome')).toHaveValue('0');
     await expect(page.locator('#seo3bHandoffNotice')).toBeVisible();
     await expect(page.locator('#seo3bHandoffNotice')).toContainText('Inputs carried into the full planner');
+    expect(await page.evaluate(() => sessionStorage.getItem('carrowmont_fi_spending_handoff_v2'))).toBeNull();
   });
 
   test('[AUTO] 360px and 390px layouts have no page-level horizontal overflow and keep actions usable', async ({ page }) => {
