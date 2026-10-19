@@ -890,8 +890,8 @@ if (mainHome || mainSiteJs) {
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
     /"@type"\s*:\s*"CollectionPage"/.test(toolsDirectory) && /"@type"\s*:\s*"ItemList"/.test(toolsDirectory) &&
-    /"numberOfItems"\s*:\s*18/.test(toolsDirectory) &&
-    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 18
+    /"numberOfItems"\s*:\s*19/.test(toolsDirectory) &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 19
   );
   add('main site: CORE9 directory keeps nine core tools while focused secondary tools expand safely',
     toolsDirectory.includes('id="core-planning-tools"') &&
@@ -1389,7 +1389,7 @@ add('CORE8 compound: report uses standardized guide and Continue Planning pages 
 add('CORE8 compound: homepage, tools directory, sitemap and Learn cluster integrate the canonical calculator',
   mainHome.includes('data-tool-id="compound"') && mainHome.includes('href="/compound-interest-calculator/"') &&
   core7ToolsDirectory.includes('data-directory-tool="compound"') && core7ToolsDirectory.includes('href="/compound-interest-calculator/"') &&
-  /"numberOfItems"\s*:\s*18/.test(core7ToolsDirectory) && core7Sitemap.includes('https://carrowmont.com/compound-interest-calculator/') &&
+  /"numberOfItems"\s*:\s*19/.test(core7ToolsDirectory) && core7Sitemap.includes('https://carrowmont.com/compound-interest-calculator/') &&
   read('draw004.github.io/compounding-and-time.html').includes('href="/compound-interest-calculator/"') &&
   read('draw004.github.io/compound-interest-monthly-contributions.html').includes('href="/compound-interest-calculator/"')
 );
@@ -3353,7 +3353,7 @@ add('RENT1: tool and existing Learn guide form a bidirectional live journey whil
 add('RENT1: Tools Hub keeps Rent vs Buy live while CORE8 expands the primary suite without changing the four-module Decision Centre',
   rent1Tools.includes('data-secondary-tool="rent-vs-buy"') &&
   rent1Tools.includes('/mortgage-payoff-calculator/rent-vs-buy-calculator.html') &&
-  /"numberOfItems"\s*:\s*18/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===18 &&
+  /"numberOfItems"\s*:\s*19/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===19 &&
   rent1Home.includes('data-core-tool-count="9"') && (rent1Home.match(/data-tool-id=/g)||[]).length===9 &&
   !rent1Home.includes('data-tool-id="rent-vs-buy"') && (rent1Centre.match(/class="decision-card"/g)||[]).length===4 &&
   !rent1Centre.includes('Rent vs Buy Calculator')
@@ -3472,7 +3472,7 @@ add('MCR1: Learn hub and Tools directory expose the macro network without promot
   mcrHub.includes('data-category="macro"') && mcrHub.includes('class="category-tool-link" href="/market-chain-reaction-explorer.html"') &&
   mcrLearnNames.every(name=>mcrHub.includes(`href="/${name}"`)) &&
   mcrTools.includes('data-secondary-tool="market-chain-reaction"') && mcrTools.includes('href="/market-chain-reaction-explorer.html"') &&
-  /"numberOfItems"\s*:\s*18/.test(mcrTools) && (mcrTools.match(/class="directory-tool-card/g)||[]).length===18 &&
+  /"numberOfItems"\s*:\s*19/.test(mcrTools) && (mcrTools.match(/class="directory-tool-card/g)||[]).length===19 &&
   mcrHome.includes('data-core-tool-count="9"') && !mcrHome.includes('data-tool-id="market-chain-reaction"')
 );
 add('MCR1: existing Gold, Silver and U.S. debt authority assets link into the new explanation layer',
@@ -3631,12 +3631,12 @@ add('CORE9 loan: shared report, plan-state and bridge files remain byte-identica
   sharedStateCopies.length===9 && sharedStateCopies.every(x=>x===loanState) &&
   sharedBridgeCopies.length===9 && sharedBridgeCopies.every(x=>x===loanBridge)
 );
-add('CORE9 loan: homepage and Tools Hub expose nine core tools while the directory contains eighteen total tools',
+add('CORE9 loan: homepage and Tools Hub expose nine core tools while the directory contains nineteen total tools',
   mainHome.includes('data-core-tool-count="9"') && mainHome.includes('data-tool-id="loan"') && mainHome.includes('href="/loan-calculator/"') &&
   (mainHome.match(/data-tool-id=/g)||[]).length===9 &&
   loanTools.includes('data-directory-tool="loan"') && loanTools.includes('href="/loan-calculator/"') &&
-  (loanTools.match(/data-directory-tool=/g)||[]).length===9 && (loanTools.match(/class="directory-tool-card/g)||[]).length===18 &&
-  /"numberOfItems"\s*:\s*18/.test(loanTools)
+  (loanTools.match(/data-directory-tool=/g)||[]).length===9 && (loanTools.match(/class="directory-tool-card/g)||[]).length===19 &&
+  /"numberOfItems"\s*:\s*19/.test(loanTools)
 );
 add('CORE9 loan: country-demand profiles contain nine unique core IDs and loan terminology is country-aware without changing math',
   ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11'].every(profile=>{
@@ -3672,7 +3672,7 @@ const loanRegressionQa = [
   fs.readFileSync(new URL('../tests/28-mcr1-batch2-bond-equities-gold.spec.js', import.meta.url), 'utf8')
 ].join('\n');
 add('CORE9 loan: legacy browser invariants are migrated from CORE8 counts before staged QA',
-  loanRegressionQa.includes("'loan'") && loanRegressionQa.includes('toHaveCount(18)') &&
+  loanRegressionQa.includes("'loan'") && loanRegressionQa.includes('toHaveCount(19)') &&
   loanRegressionQa.includes('nine-core homepage') && loanRegressionQa.includes('[data-core-tool-count="9"]') &&
   !loanRegressionQa.includes('[data-core-tool-count="8"]') && !loanRegressionQa.includes('toHaveCount(16)')
 );
@@ -3817,8 +3817,8 @@ const gseo2aToolChecks = gseo2aToolItems.map(item => {
       gseo2aH1Count(html) === 1 && gseo2aSitemap.includes(`<loc>${url}</loc>`)
   };
 });
-add('GSEO2A search: all 18 Tools Hub destinations have crawlable title, description, canonical, robots, one H1 and sitemap coverage',
-  gseo2aToolItems.length === 18 && gseo2aToolChecks.every(x=>x.ok),
+add('GSEO2A search: all 19 Tools Hub destinations have crawlable title, description, canonical, robots, one H1 and sitemap coverage',
+  gseo2aToolItems.length === 19 && gseo2aToolChecks.every(x=>x.ok),
   gseo2aToolChecks.filter(x=>!x.ok).map(x=>`${x.url} -> ${x.file}`).join('; ')
 );
 
@@ -3835,7 +3835,7 @@ const gseo2aInboundCounts = gseo2aToolItems.map(item => {
   return { url, count: sources.length, sources };
 });
 add('GSEO2A search: every live Tools Hub destination has at least five contextual main-site discovery paths',
-  gseo2aInboundCounts.length === 18 && gseo2aInboundCounts.every(x => x.count >= 5),
+  gseo2aInboundCounts.length === 19 && gseo2aInboundCounts.every(x => x.count >= 5),
   gseo2aInboundCounts.filter(x => x.count < 5).map(x => `${x.url}=${x.count}`).join('; ')
 );
 const gseo2aLearnFiles = fs.readdirSync(gseo2aMainDir).filter(name => name.endsWith('.html')).filter(name => {
@@ -3860,7 +3860,7 @@ const gseo2aLearnChecks = gseo2aLearnFiles.map(name => {
 const gseo2aLearnTitles = gseo2aLearnChecks.map(x=>x.title.toLowerCase());
 const gseo2aLearnCanonicals = gseo2aLearnChecks.map(x=>x.canonical);
 add('GSEO2A search: every Learn article is indexable, independently useful, linked from Learn hub and covered by sitemap',
-  gseo2aLearnFiles.length >= 72 && gseo2aLearnChecks.every(x=>x.ok) &&
+  gseo2aLearnFiles.length >= 75 && gseo2aLearnChecks.every(x=>x.ok) &&
   new Set(gseo2aLearnTitles).size === gseo2aLearnTitles.length &&
   new Set(gseo2aLearnCanonicals).size === gseo2aLearnCanonicals.length,
   gseo2aLearnChecks.filter(x=>!x.ok).map(x=>x.name).join(', ')
@@ -3881,10 +3881,10 @@ add('GSEO2A search: SIP, SWP, retirement and loan intents remain explicit while 
 
 const gseo2aToolsHubQa = fs.readFileSync(new URL('../tests/12-tools-hub.spec.js', import.meta.url), 'utf8');
 const gseo2aSearchQa = fs.readFileSync(new URL('../tests/33-gseo2a-sitewide-search-visibility.spec.js', import.meta.url), 'utf8');
-add('GSEO2A regression: Publisher browser expectations are migrated for 18 tools, current sitemap freshness, duplicate contextual CTAs and repeated Learn-hub viewport checks',
-  gseo2aToolsHubQa.includes('exposes eighteen live tools') &&
+add('GSEO2A regression: Publisher browser expectations are migrated for 19 tools, current sitemap freshness, duplicate contextual CTAs and repeated Learn-hub viewport checks',
+  gseo2aToolsHubQa.includes('exposes nineteen live tools') &&
   gseo2aToolsHubQa.includes("'/retirement-calculator/withdrawal-calculator.html'") &&
-  gseo2aToolsHubQa.includes('itemListElement).toHaveLength(18)') &&
+  gseo2aToolsHubQa.includes('itemListElement).toHaveLength(19)') &&
   gseo2aToolsHubQa.includes("match[1] >= '2026-10-19'") &&
   !gseo2aToolsHubQa.includes('itemListElement).toHaveLength(17)') &&
   (gseo2aSearchQa.match(/\.first\(\)\)\.toBeVisible\(\);/g)||[]).length >= 2 &&
@@ -3976,7 +3976,7 @@ add('RETIRE1: report is driven from the calculator result and includes chart/sen
 add('RETIRE1: Tools Hub and retirement Learn journeys expose the live secondary tool without adding another homepage core card',
   retire1Tools.includes('id="retirement-income-tools"') && retire1Tools.includes('data-secondary-tool="retirement-withdrawal"') &&
   retire1Tools.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
-  /"numberOfItems"\s*:\s*18/.test(retire1Tools) && (retire1Tools.match(/class="directory-tool-card/g)||[]).length===18 &&
+  /"numberOfItems"\s*:\s*19/.test(retire1Tools) && (retire1Tools.match(/class="directory-tool-card/g)||[]).length===19 &&
   retire1MainJs.includes('function retirementWithdrawalIdentity(') &&
   retire1LongevityLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
   retire1LongevityLearn.includes('href="/what-is-swp-systematic-withdrawal-plan.html"') &&
@@ -4072,6 +4072,102 @@ add('RETIRE1: visitor runtime remains deterministic and privacy-first with no li
   !/guaranteed safe|safe withdrawal guarantee|tax engine|pension provider api/i.test(retire1Core+retire1App) &&
   retire1App.includes('Constant-return assumptions do not predict real market paths') &&
   retire1App.includes('does not calculate pension tax') && retire1App.includes('does not automatically apply statutory pension')
+);
+
+
+// HOME1 Home Affordability / Mortgage Borrowing Power Calculator - Snapshot 86 production implementation - 2026-10-19.
+const home1Html = read('draw004.github.io/home-affordability-calculator.html');
+const home1Css = read('draw004.github.io/home-affordability-calculator.css');
+const home1Core = read('draw004.github.io/home-affordability-calculator-core.js');
+const home1App = read('draw004.github.io/home-affordability-calculator.js');
+const home1PdfExport = read('draw004.github.io/home-affordability-calculator-pdf-export.js');
+const home1PdfRenderer = read('draw004.github.io/home-affordability-calculator-pdf-renderer.js');
+const home1Tools = read('draw004.github.io/tools.html');
+const home1LearnHub = read('draw004.github.io/learn.html');
+const home1Sitemap = read('draw004.github.io/sitemap.xml');
+const home1SiteJs = read('draw004.github.io/site.js');
+const home1Qa = readQa('tests/34-home-affordability-calculator.spec.js');
+const home1QaConfig = readQa('qa.config.js');
+const home1LearnNames = ['how-much-home-can-i-afford.html','mortgage-affordability-vs-lender-approval.html','how-deposit-and-interest-rates-affect-home-affordability.html'];
+const home1Learns = home1LearnNames.map(name => read(`draw004.github.io/${name}`));
+const home1Impl = read('draw004.github.io/docs/CARROWMONT_HOME1_HOME_AFFORDABILITY_IMPLEMENTATION.md');
+
+add('HOME1: canonical calculator is indexable with one H1, stable static search identity and WebApplication structured data',
+  home1Html.includes('<title>Home Affordability Calculator | Carrowmont</title>') &&
+  home1Html.includes('content="index,follow" name="robots"') || home1Html.includes('name="robots" content="index,follow"')
+);
+const home1CanonicalOk = /<link[^>]+rel=["']canonical["'][^>]+href=["']https:\/\/carrowmont\.com\/home-affordability-calculator\.html["']|<link[^>]+href=["']https:\/\/carrowmont\.com\/home-affordability-calculator\.html["'][^>]+rel=["']canonical["']/.test(home1Html);
+add('HOME1: canonical, crawlable search language and explicit lender-approval separation are present',
+  home1CanonicalOk && (home1Html.match(/<h1\b/gi)||[]).length===1 &&
+  home1Html.includes('mortgage affordability calculator') && home1Html.includes('home-loan affordability calculator') && home1Html.includes('borrowing power calculator') &&
+  home1Html.includes('Lender approval: not estimated') && home1Html.includes('No lender approval claim') &&
+  jsonLdNodes(home1Html).some(node => node?.['@type']==='WebApplication' && node?.url==='https://carrowmont.com/home-affordability-calculator.html')
+);
+
+let home1CoreApi = null;
+try {
+  const sandbox = { module:{exports:{}}, exports:{}, console, globalThis:null };
+  sandbox.globalThis=sandbox;
+  vm.runInNewContext(home1Core, sandbox, { filename:'home-affordability-calculator-core.js' });
+  home1CoreApi=sandbox.module.exports;
+} catch {}
+const home1Fixture = home1CoreApi?.calculate?.({mode:'budget',takeHomeIncome:10000,essentialSpending:3000,existingDebt:500,protectedSavings:1000,freeBuffer:1000,deposit:20000,annualRate:6,termYears:20,ownershipCosts:500,targetHomePrice:100000,higherRateEnabled:true,higherRate:8,grossAnnualIncome:120000});
+const home1Zero = home1CoreApi?.calculate?.({mode:'budget',takeHomeIncome:10000,essentialSpending:3000,existingDebt:500,protectedSavings:1000,freeBuffer:1000,deposit:20000,annualRate:0,termYears:1,ownershipCosts:500,higherRateEnabled:false,grossAnnualIncome:0});
+const home1Target = home1CoreApi?.calculate?.({mode:'target',takeHomeIncome:10000,essentialSpending:3000,existingDebt:500,protectedSavings:1000,freeBuffer:1000,deposit:20000,targetHomePrice:300000,annualRate:6,termYears:20,ownershipCosts:500,higherRateEnabled:false,grossAnnualIncome:0});
+add('HOME1: deterministic cash-flow-first engine supports reverse affordability, target-price checks, zero interest and higher-rate sensitivity',
+  home1CoreApi?.METHODOLOGY_VERSION==='home-affordability-v1.0' && home1Fixture?.ok &&
+  Math.abs(home1Fixture.base.paymentBudget-4000)<1e-8 && home1Fixture.base.homePrice>home1Fixture.base.loanAmount &&
+  home1Fixture.higherRate?.homePrice < home1Fixture.base.homePrice && home1Zero?.ok && Math.abs(home1Zero.base.loanAmount-48000)<1e-8 &&
+  home1Target?.ok && Math.abs(home1Target.base.loanAmount-280000)<1e-8 && home1Fixture.lenderApproval==='Not estimated by Carrowmont'
+);
+add('HOME1: calculator never substitutes a country-specific lender ratio for household cash flow',
+  home1Core.includes('takeHomeIncome - a.essentialSpending - a.existingDebt - a.protectedSavings') &&
+  home1Core.includes('a.freeBuffer - a.ownershipCosts') && home1Core.includes('incomeMultiple: a.grossAnnualIncome > 0') &&
+  !/debt.?to.?income|loan.?to.?value|lender.?ratio|approval.?ratio/i.test(home1Core)
+);
+add('HOME1: visitor runtime keeps financial values local with no fetch/XHR/beacon, URL financial handoff or browser-value persistence',
+  !/fetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon\s*\(/.test(home1Core+home1App+home1PdfRenderer) &&
+  !/localStorage\.setItem|sessionStorage\.setItem|URLSearchParams|location\.search/.test(home1App) &&
+  home1Html.includes('Carrowmont does not send the financial amounts you enter to website analytics.')
+);
+add('HOME1: country terminology is localized while the static title and canonical remain global',
+  home1App.includes("Home Loan Affordability Calculator") && home1App.includes("Home Affordability Calculator") &&
+  home1App.includes("Mortgage Affordability Calculator — How Much Can I Borrow?") && home1App.includes("Home Loan Borrowing Power Calculator") &&
+  home1SiteJs.includes('function homeAffordabilityIdentity(regionCode)') && home1SiteJs.includes('applyHomeAffordabilityTerminology(regionCode)')
+);
+add('HOME1: tools directory grows to nineteen without changing the nine-core homepage architecture or compact footer',
+  /"numberOfItems"\s*:\s*19/.test(home1Tools) && (home1Tools.match(/class="directory-tool-card/g)||[]).length===19 &&
+  home1Tools.includes('data-secondary-tool="home-affordability"') && home1Tools.includes('href="/home-affordability-calculator.html"') &&
+  !read('draw004.github.io/index.html').includes('data-tool-id="home-affordability"') &&
+  !home1Html.includes('footer-home-affordability')
+);
+add('HOME1: all three Learn guides are substantive, indexable, direct-answer pages with Article schema and bidirectional calculator links',
+  home1Learns.length===3 && home1Learns.every((html,i) => {
+    const url=`https://carrowmont.com/${home1LearnNames[i]}`;
+    const article=jsonLdNode(html,'Article');
+    const text=(html.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[a-z0-9#]+;/gi,' ').match(/\b[\w’'-]+\b/g)||[]);
+    return html.includes('data-cm-learn-article="1"') && html.includes('guide-answer') && html.includes('href="/home-affordability-calculator.html"') &&
+      gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase().includes('index') && article?.mainEntityOfPage===url &&
+      text.length>1000 && home1LearnHub.includes(`href="/${home1LearnNames[i]}"`) && home1Sitemap.includes(`<loc>${url}</loc>`);
+  })
+);
+add('HOME1: calculator and three Learn canonicals are in sitemap and the new tool has at least five contextual main-site discovery sources',
+  ['home-affordability-calculator.html',...home1LearnNames].every(name=>home1Sitemap.includes(`<loc>https://carrowmont.com/${name}</loc>`)) &&
+  fs.readdirSync(path.join(root,'draw004.github.io')).filter(name=>name.endsWith('.html')).filter(name=>read(`draw004.github.io/${name}`).includes('href="/home-affordability-calculator.html"')).length>=5
+);
+add('HOME1: exact four-page report is generated from the same deterministic result object without a second financial engine',
+  home1PdfExport.includes('window.CarrowmontHomeAffordabilityPdfExport') && home1PdfRenderer.includes("filename:'carrowmont-home-affordability-report.pdf'") &&
+  home1PdfRenderer.includes('const canvases=[summaryPage(result,opt),cashFlowPage(result,opt),ratePage(result,opt),nextPage(result,opt)]') &&
+  !/principalForPayment|paymentForPrincipal|Math\.pow\(1\+/.test(home1PdfRenderer)
+);
+add('HOME1: browser QA protects formulas, localization, privacy, exports, discovery and 1280/390/360 mobile safety',
+  home1Qa.includes('cash-flow-first engine handles reverse affordability') && home1Qa.includes('financial inputs remain local') &&
+  home1Qa.includes('exact four-page PDF') && home1Qa.includes('Tools Hub, Learn cluster, sitemap') && home1Qa.includes('[1280,390,360]') &&
+  home1QaConfig.includes("path: '/home-affordability-calculator.html'") && home1QaConfig.includes("path: '/how-much-home-can-i-afford.html'")
+);
+add('HOME1: implementation record locks Snapshot 86, current privacy architecture and two-repository release scope',
+  home1Impl.includes('Snapshot 86') && home1Impl.includes('No Google Analytics') && home1Impl.includes('No analytics popup') &&
+  home1Impl.includes('draw004.github.io') && home1Impl.includes('carrowmont-qa') && home1Impl.includes('standalone first')
 );
 
 console.log('\nCarrowmont source contract check\n');
