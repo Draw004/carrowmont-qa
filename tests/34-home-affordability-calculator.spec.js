@@ -73,11 +73,12 @@ test.describe('HOME1 Home Affordability / Mortgage Borrowing Power',()=>{
   });
 
   test('[AUTO] financial inputs remain local and never enter URL or browser storage',async({page})=>{
-    const requests=[];page.on('request',r=>{if(['fetch','xhr'].includes(r.resourceType()))requests.push(r.url());});
+    const requests=[];page.on('request',r=>{if(['fetch','xhr'].includes(r.resourceType()))requests.push({url:r.url(),body:r.postData()||''});});
     await gotoClean(page,PATH);await setInput(page,'#takeHomeIncome',9876543);await setInput(page,'#deposit',7654321);await page.locator('#calculateBtn').click();
     expect(page.url()).not.toMatch(/9876543|7654321/);
     const storage=await page.evaluate(()=>JSON.stringify({local:{...localStorage},session:{...sessionStorage}}));expect(storage).not.toContain('9876543');expect(storage).not.toContain('7654321');
-    const origin=new URL(page.url()).origin;expect(requests.filter(u=>!u.startsWith(origin))).toEqual([]);
+    for(const request of requests){const payload=`${request.url}\n${request.body}`;expect(payload).not.toMatch(/9876543|7654321/);}
+    const origin=new URL(page.url()).origin;const unexpectedExternal=requests.map(r=>r.url).filter(u=>!u.startsWith(origin)&&!/^https:\/\/cloudflareinsights\.com\/cdn-cgi\/rum(?:[/?#]|$)/i.test(u));expect(unexpectedExternal).toEqual([]);
   });
 
   test('[AUTO] Copy Summary, CSV and exact four-page PDF use the current result',async({page,context})=>{
