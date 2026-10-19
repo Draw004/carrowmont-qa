@@ -45,7 +45,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
         // The same calculator is intentionally localized by country/currency:
         // India/INR uses SIP terminology; international views use Recurring Investment terminology.
         await chooseUnitedStatesLocale(page);
-        await expect(page).toHaveTitle('Investment Calculator & Recurring Investment Calculator | Carrowmont');
+        await expect(page).toHaveTitle('SIP Calculator & Recurring Investment Calculator | Carrowmont');
         await expect(page.locator('.product-label')).toHaveText('Recurring Investment Calculator');
         await expect(page.locator('#contributionFrequency')).toHaveValue('biweekly');
         await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Biweekly (Every 2 Weeks)');
@@ -55,7 +55,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
         if (await indiaBadgeInternational.count()) await expect(indiaBadgeInternational).toBeHidden();
 
         await chooseIndiaLocale(page);
-        await expect(page).toHaveTitle('Investment Calculator & SIP Calculator | Carrowmont');
+        await expect(page).toHaveTitle('SIP Calculator & Recurring Investment Calculator | Carrowmont');
         await expect(page.locator('.product-label')).toHaveText('SIP Calculator');
         await expect(page.locator('#contributionFrequency')).toHaveValue('monthly');
         await expect(page.locator('#contributionFrequency option[value="biweekly"]')).toHaveText('Every 2 Weeks');
@@ -228,9 +228,9 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('main h1')).toHaveText('See how spending and saving may shape your path to financial independence.');
 
     await gotoClean(page, '/retirement-calculator/');
-    await expect(page).toHaveTitle('Carrowmont Retirement Planner | Expense-Aware Retirement Planning');
-    await gotoClean(page, '/retirement-calculator/planner.html');
     await expect(page).toHaveTitle('Retirement Calculator & Retirement Planner | Carrowmont');
+    await gotoClean(page, '/retirement-calculator/planner.html');
+    await expect(page).toHaveTitle('Detailed Retirement Planner | Carrowmont');
     await expect(page.locator('.product-label')).toHaveText('Retirement Planner');
     await expect(page.locator('main h1')).toHaveText('Your retirement plan should reflect how your expenses actually change.');
 
@@ -271,11 +271,11 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('main a[href="/contact.html"]')).toBeVisible();
 
     const apps = [
-      ['/sip-calculator/', 'Carrowmont Investment & SIP Calculator'],
+      ['/sip-calculator/', 'Carrowmont SIP Calculator & Recurring Investment Calculator'],
       ['/goal-planner/', 'Carrowmont Savings Goal Calculator & Financial Goal Planner'],
       ['/financial-independence/', 'Carrowmont Financial Independence & FIRE Calculator'],
       ['/inflation-calculator/', 'Carrowmont Inflation & Purchasing Power Calculator'],
-      ['/retirement-calculator/planner.html', 'Carrowmont Retirement Calculator & Planner'],
+      ['/retirement-calculator/planner.html', 'Carrowmont Detailed Retirement Planner'],
       ['/budget-cash-flow-planner/', 'Carrowmont Budget Calculator & Monthly Cash Flow Planner'],
       ['/mortgage-payoff-calculator/', 'Carrowmont Mortgage Payoff & Home Loan Prepayment Calculator']
     ];
@@ -584,7 +584,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)', { timeout: 10000 });
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('₹1 crore', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('₹10,000', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['investment', 'assets', 'home', 'macro', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
+    await expectLearnCategoryOrder(page, ['investment', 'assets', 'home', 'loans', 'macro', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
 
     // United States + USD: international terminology, USD examples and international order.
     await setLearnLocaleDirect(page, 'US', 'USD');
@@ -592,14 +592,14 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500', { timeout: 10000 });
     await expect(page.locator('#investmentCategoryTitle')).not.toContainText('SIP', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['retirement', 'assets', 'home', 'macro', 'budget', 'goals', 'investment', 'fi', 'inflation', 'foundation']);
+    await expectLearnCategoryOrder(page, ['retirement', 'assets', 'home', 'loans', 'macro', 'budget', 'goals', 'investment', 'fi', 'inflation', 'foundation']);
 
     // India + USD: country still controls SIP terminology/order; currency controls money examples.
     await setLearnLocaleDirect(page, 'IN', 'USD');
     await expect(page.locator('#investmentCategoryTitle')).toHaveText('Monthly Investment (SIP)', { timeout: 10000 });
     await expect(page.locator('#investmentTargetTopicTitle')).toContainText('$1 million', { timeout: 10000 });
     await expect(page.locator('#investmentMonthlyTopicTitle')).toContainText('$500', { timeout: 10000 });
-    await expectLearnCategoryOrder(page, ['investment', 'assets', 'home', 'macro', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
+    await expectLearnCategoryOrder(page, ['investment', 'assets', 'home', 'loans', 'macro', 'retirement', 'budget', 'goals', 'fi', 'inflation', 'foundation']);
 
     expect(errors, `Learn hub browser errors:
 ${errors.join('\n')}`).toEqual([]);

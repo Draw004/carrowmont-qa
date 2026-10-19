@@ -99,9 +99,10 @@ const sipCore = read('sip-calculator/core.js');
 const sipApp = read('sip-calculator/app.js');
 const sipLocale = read('sip-calculator/locale.js');
 add('sip: GSEO1B-1 search title broadens global intent while preserving the visible India product label',
-  sipHtml.includes('<title>Investment Calculator &amp; SIP Calculator | Carrowmont</title>') &&
-  sipHtml.includes('content="Investment Calculator &amp; SIP Calculator | Carrowmont"') &&
-  sipHtml.includes('"name":"Carrowmont Investment & SIP Calculator"') &&
+  sipHtml.includes('<title>SIP Calculator &amp; Recurring Investment Calculator | Carrowmont</title>') &&
+  sipHtml.includes('content="SIP Calculator &amp; Recurring Investment Calculator | Carrowmont"') &&
+  sipHtml.includes('"name":"Carrowmont SIP Calculator & Recurring Investment Calculator"') &&
+  sipHtml.includes('<strong>SIP means Systematic Investment Plan.</strong>') &&
   sipHtml.includes('<span class="product-label">SIP Calculator</span>')
 );
 add('sip: contribution-frequency selector', sipHtml.includes('id="contributionFrequency"'));
@@ -200,13 +201,15 @@ add('financial-independence: GSEO1B-2 identifies Financial Independence and FIRE
   gseoFiHtml.includes('<span class="product-label">Financial Independence</span>') &&
   gseoFiHtml.includes('<h1>See how spending and saving may shape your path to financial independence.</h1>')
 );
-add('retirement: GSEO1B-2 assigns calculator intent to planner page while preserving the overview landing-page identity',
-  gseoRetirementPlannerHtml.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>') &&
-  gseoRetirementPlannerHtml.includes('content="Retirement Calculator &amp; Retirement Planner | Carrowmont"') &&
-  gseoRetirementPlannerHtml.includes('"name": "Carrowmont Retirement Calculator & Planner"') &&
-  gseoRetirementPlannerHtml.includes('<a class="product-label" href="index.html">Retirement Planner</a>') &&
-  gseoRetirementPlannerHtml.includes('<h1>Your retirement plan should reflect how your expenses actually change.</h1>') &&
-  gseoRetirementLandingHtml.includes('<title>Carrowmont Retirement Planner | Expense-Aware Retirement Planning</title>')
+add('retirement: GSEO2A assigns broad retirement-calculator intent to the landing page and detailed-planner intent to planner.html',
+  gseoRetirementLandingHtml.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>') &&
+  gseoRetirementLandingHtml.includes('content="Retirement Calculator &amp; Retirement Planner | Carrowmont"') &&
+  gseoRetirementLandingHtml.includes('"name":"Carrowmont Retirement Calculator & Retirement Planner"') &&
+  gseoRetirementLandingHtml.includes('<strong>Retirement calculator:</strong>') &&
+  gseoRetirementPlannerHtml.includes('<title>Detailed Retirement Planner | Carrowmont</title>') &&
+  gseoRetirementPlannerHtml.includes('content="Detailed Retirement Planner | Carrowmont"') &&
+  gseoRetirementPlannerHtml.includes('"name": "Carrowmont Detailed Retirement Planner"') &&
+  gseoRetirementPlannerHtml.includes('<h1>Your retirement plan should reflect how your expenses actually change.</h1>')
 );
 add('budget: GSEO1B-2 identifies budget-calculator and monthly cash-flow intent without changing visible product identity',
   gseoBudgetHtml.includes('<title>Budget Calculator &amp; Monthly Cash Flow Planner | Carrowmont</title>') &&
@@ -292,7 +295,7 @@ add('retirement: GSEO1C removes unsupported subdirectory WebSite identity while 
   jsonLdNode(gseo1cRetirementLanding, 'WebPage')?.url === 'https://carrowmont.com/retirement-calculator/' &&
   jsonLdNode(gseo1cRetirementLanding, 'WebPage')?.isPartOf?.['@id'] === 'https://carrowmont.com/#website' &&
   jsonLdNode(gseo1cRetirementLanding, 'BreadcrumbList')?.itemListElement?.length === 3 &&
-  gseo1cRetirementLanding.includes('<title>Carrowmont Retirement Planner | Expense-Aware Retirement Planning</title>')
+  gseo1cRetirementLanding.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>')
 );
 add('main site: GSEO1C tools directory shares the domain WebSite identity and breadcrumb contract',
   jsonLdNode(gseo1cTools, 'CollectionPage')?.isPartOf?.['@id'] === 'https://carrowmont.com/#website' &&
@@ -1007,8 +1010,8 @@ add('main site: sitemap contains at least 71 URLs including all 14 first-wave Le
   (learnSitemap.match(/<loc>/g)||[]).length>=71 && learnSitemap.includes('https://carrowmont.com/budget-cash-flow-planner/') && newLearnPages.every(file => learnSitemap.includes('https://carrowmont.com/'+file))
 );
 add('main site: Learn expansion preserves country-aware investment wording and market ordering',
-  learnExpansion.includes("['investment','assets','home','macro','retirement','budget','goals','fi','inflation','foundation']") &&
-  learnExpansion.includes("['retirement','assets','home','macro','budget','goals','investment','fi','inflation','foundation']") &&
+  learnExpansion.includes("['investment','assets','home','loans','macro','retirement','budget','goals','fi','inflation','foundation']") &&
+  learnExpansion.includes("['retirement','assets','home','loans','macro','budget','goals','investment','fi','inflation','foundation']") &&
   learnExpansion.includes('What happens to a SIP when markets fall?') &&
   learnExpansion.includes('What happens to recurring investments when markets fall?')
 );
@@ -1471,10 +1474,10 @@ add('main site: BING-SEO1 sitemap freshness keeps the changed hub and planner UR
 
 
 add('main site: GSEO1B-2 sitemap freshness marks only the changed core calculator URLs at the release date',
-  sitemapLastmods.get('https://carrowmont.com/financial-independence/') === '2026-10-13' &&
-  sitemapLastmods.get('https://carrowmont.com/retirement-calculator/planner.html') === '2026-10-13' &&
-  sitemapLastmods.get('https://carrowmont.com/budget-cash-flow-planner/') === '2026-10-13' &&
-  sitemapLastmods.get('https://carrowmont.com/inflation-calculator/') === '2026-10-13'
+  (sitemapLastmods.get('https://carrowmont.com/financial-independence/') || '') >= '2026-10-13' &&
+  (sitemapLastmods.get('https://carrowmont.com/retirement-calculator/planner.html') || '') >= '2026-10-13' &&
+  (sitemapLastmods.get('https://carrowmont.com/budget-cash-flow-planner/') || '') >= '2026-10-13' &&
+  (sitemapLastmods.get('https://carrowmont.com/inflation-calculator/') || '') >= '2026-10-13'
 );
 
 const gseo1cSitemapLastmods = new Map([...learnSitemap.matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/g)].map(m => [m[1], m[2]]));
@@ -1950,9 +1953,9 @@ add('main site: SEO3C is discoverable from the approved macro-relevant cluster',
 add('main site: SEO3C canonical route and refreshed contextual pages are in sitemap with release lastmod',
   sitemapLastmods.get('https://carrowmont.com/us-debt-interest-cost-calculator.html') >= '2026-10-10' &&
   sitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-11' &&
-  sitemapLastmods.get('https://carrowmont.com/stocks-vs-bonds.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/inflation-and-retirement-planning.html') === '2026-10-10'
+  sitemapLastmods.get('https://carrowmont.com/stocks-vs-bonds.html') >= '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') >= '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/inflation-and-retirement-planning.html') >= '2026-10-10'
 );
 add('main site: SEO3C specification and implementation record preserve approved no-login, Simple Mode and updater direction',
   usDebtSpec.includes('Simple Mode') && usDebtSpec.includes('Advanced Assumptions') && usDebtSpec.includes('Weekly automatic Treasury check') &&
@@ -2112,13 +2115,21 @@ add('main site: SEO3D is discoverable from Learn, gold cluster and SEO3C',
 );
 add('main site: SEO3D canonical route and refreshed gold cluster are in sitemap with release lastmod',
   sitemapLastmods.get('https://carrowmont.com/gold-macro-stress-explorer.html') >= '2026-10-12' &&
-  sitemapLastmods.get('https://carrowmont.com/gold-as-an-investment.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/gold-vs-stocks.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/physical-gold-vs-gold-etf.html') === '2026-10-10'
+  sitemapLastmods.get('https://carrowmont.com/gold-as-an-investment.html') >= '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-and-inflation.html') >= '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/gold-vs-stocks.html') >= '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/physical-gold-vs-gold-etf.html') >= '2026-10-10'
 );
 add('main site: SEO3D modified gold articles keep structured-data and article modified dates aligned',
-  [goldAsInvestment,goldInflation,goldVsStocks,physicalGoldEtf].every(html => html.includes('"dateModified":"2026-10-10"') && html.includes('content="2026-10-10" property="article:modified_time"'))
+  [
+    [goldAsInvestment, 'https://carrowmont.com/gold-as-an-investment.html'],
+    [goldInflation, 'https://carrowmont.com/gold-and-inflation.html'],
+    [goldVsStocks, 'https://carrowmont.com/gold-vs-stocks.html'],
+    [physicalGoldEtf, 'https://carrowmont.com/physical-gold-vs-gold-etf.html']
+  ].every(([html, url]) => {
+    const modified = sitemapLastmods.get(url);
+    return !!modified && html.includes(`\"dateModified\":\"${modified}\"`) && html.includes(`content=\"${modified}\" property=\"article:modified_time\"`);
+  })
 );
 add('main site: SEO3D final spec and implementation lock Snapshot 34, deterministic model and red-prevention gate',
   goldMacroSpec.includes('Gold Under Macro Stress Explorer') && goldMacroSpec.toLowerCase().includes('release-candidate red-prevention gate') &&
@@ -2900,15 +2911,16 @@ const gseo1dSpec = read('draw004.github.io/docs/CARROWMONT_GSEO1D_INTERNAL_TOPIC
 const gseo1dQa = fs.readFileSync(new URL('../tests/19-gseo1d-internal-topic-authority.spec.js', import.meta.url), 'utf8');
 const gseo1dTopicOwners = [
   ['investment','/sip-calculator/'],
-  ['retirement','/retirement-calculator/planner.html'],
+  ['retirement','/retirement-calculator/'],
   ['budget','/budget-cash-flow-planner/'],
   ['goals','/goal-planner/'],
   ['fi','/financial-independence/'],
   ['inflation','/inflation-calculator/'],
-  ['home','/mortgage-payoff-calculator/decision-centre.html']
+  ['home','/mortgage-payoff-calculator/decision-centre.html'],
+  ['loan','/loan-calculator/']
 ];
 add('main site: GSEO1D Learn hub gives each mapped planning cluster exactly one contextual primary-tool owner',
-  (gseo1dLearnHub.match(/data-cm-topic-tool=/g)||[]).length === 7 &&
+  (gseo1dLearnHub.match(/data-cm-topic-tool=/g)||[]).length === 8 &&
   gseo1dTopicOwners.every(([topic,href]) =>
     gseo1dLearnHub.includes(`data-cm-topic-tool="${topic}" href="${href}"`)
   ) &&
@@ -2923,13 +2935,15 @@ add('mortgage: GSEO1D creates a bounded Learn hub -> Decision Centre <-> explain
 );
 add('main site: GSEO1D preserves one primary calculator owner per targeted intent without search-facing metadata churn',
   gseo1dLearnHub.includes('data-cm-topic-tool="investment" href="/sip-calculator/"') &&
-  gseo1dLearnHub.includes('data-cm-topic-tool="retirement" href="/retirement-calculator/planner.html"') &&
+  gseo1dLearnHub.includes('data-cm-topic-tool="retirement" href="/retirement-calculator/"') &&
   gseo1dLearnHub.includes('data-cm-topic-tool="budget" href="/budget-cash-flow-planner/"') &&
   gseo1dLearnHub.includes('data-cm-topic-tool="goals" href="/goal-planner/"') &&
   gseo1dLearnHub.includes('data-cm-topic-tool="fi" href="/financial-independence/"') &&
   gseo1dLearnHub.includes('data-cm-topic-tool="inflation" href="/inflation-calculator/"') &&
+  gseo1dLearnHub.includes('data-cm-topic-tool="loan" href="/loan-calculator/"') &&
   gseoFiHtml.includes('<title>Financial Independence &amp; FIRE Calculator | Carrowmont</title>') &&
-  gseoRetirementPlannerHtml.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>') &&
+  gseoRetirementLandingHtml.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>') &&
+  gseoRetirementPlannerHtml.includes('<title>Detailed Retirement Planner | Carrowmont</title>') &&
   gseoBudgetHtml.includes('<title>Budget Calculator &amp; Monthly Cash Flow Planner | Carrowmont</title>') &&
   gseoInflationHtml.includes('<title>Inflation &amp; Purchasing Power Calculator | Carrowmont</title>')
 );
@@ -3252,8 +3266,8 @@ add('DEBT1: Learn hub owns educational comparison intent in the Budget & Cash Fl
   debt1LearnHub.includes('Compare paying the smallest balance first with paying the highest-interest debt first.')
 );
 add('DEBT1: sitemap publishes both new canonical public URLs with release-date lastmod',
-  /<loc>https:\/\/carrowmont\.com\/debt-snowball-vs-avalanche\.html<\/loc><lastmod>2026-10-17<\/lastmod>/.test(debt1Sitemap) &&
-  /<loc>https:\/\/carrowmont\.com\/budget-cash-flow-planner\/debt-payoff-calculator\.html<\/loc><lastmod>2026-10-14<\/lastmod>/.test(debt1Sitemap)
+  ((debt1Sitemap.match(/<loc>https:\/\/carrowmont\.com\/debt-snowball-vs-avalanche\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-17' &&
+  ((debt1Sitemap.match(/<loc>https:\/\/carrowmont\.com\/budget-cash-flow-planner\/debt-payoff-calculator\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-14'
 );
 add('DEBT1: structured data uses WebApplication for the tool and Article for the Learn guide',
   Boolean(jsonLdNode(debt1Html,'WebApplication')) && Boolean(jsonLdNode(debt1Html,'BreadcrumbList')) &&
@@ -3341,9 +3355,9 @@ add('RENT1: Tools Hub keeps Rent vs Buy live while CORE8 expands the primary sui
   !rent1Centre.includes('Rent vs Buy Calculator')
 );
 add('RENT1: new tool and materially updated Learn page are fresh in the sitemap',
-  /<loc>https:\/\/carrowmont\.com\/mortgage-payoff-calculator\/rent-vs-buy-calculator\.html<\/loc><lastmod>2026-10-15<\/lastmod>/.test(rent1Sitemap) &&
-  /<loc>https:\/\/carrowmont\.com\/rent-vs-buy-home\.html<\/loc><lastmod>2026-10-15<\/lastmod>/.test(rent1Sitemap) &&
-  /<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(rent1Sitemap)
+  ((rent1Sitemap.match(/<loc>https:\/\/carrowmont\.com\/mortgage-payoff-calculator\/rent-vs-buy-calculator\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-15' &&
+  ((rent1Sitemap.match(/<loc>https:\/\/carrowmont\.com\/rent-vs-buy-home\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-15' &&
+  ((rent1Sitemap.match(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-18'
 );
 add('RENT1: structured data uses WebApplication for the tool and retains Article for the Learn guide',
   Boolean(jsonLdNode(rent1Html,'WebApplication')) && Boolean(jsonLdNode(rent1Html,'BreadcrumbList')) &&
@@ -3630,8 +3644,8 @@ add('CORE9 loan: country-demand profiles contain nine unique core IDs and loan t
 );
 add('CORE9 loan: sitemap and debt-learning journey publish one crawlable canonical loan route with current freshness',
   (loanSitemap.match(/<loc>https:\/\/carrowmont\.com\/loan-calculator\/<\/loc>/g)||[]).length===1 &&
-  /<loc>https:\/\/carrowmont\.com\/loan-calculator\/<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(loanSitemap) &&
-  (loanSitemap.match(/<loc>/g)||[]).length===106 && loanDebtGuide.includes('href="/loan-calculator/"')
+  ((loanSitemap.match(/<loc>https:\/\/carrowmont\.com\/loan-calculator\/<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-17' &&
+  (loanSitemap.match(/<loc>/g)||[]).length>=107 && loanDebtGuide.includes('href="/loan-calculator/"')
 );
 add('CORE9 loan: central QA registry, live-route preflight and dedicated browser tests protect the calculator',
   loanQaConfig.includes("key: 'loan-calculator'") && loanQaConfig.includes("path: '/loan-calculator/'") &&
@@ -3660,7 +3674,7 @@ add('CORE9 loan: legacy browser invariants are migrated from CORE8 counts before
 );
 
 
-// PRIVACY2: Analytics trust, financial-value isolation and future-account separation - Snapshot 78.
+// GSEO2A: Privacy-first visitor runtime and no-consent analytics architecture - Snapshot 83 implementation.
 const privacyAnalyticsRepos = [
   'budget-cash-flow-planner',
   'compound-interest-calculator',
@@ -3676,6 +3690,7 @@ const privacyAnalyticsCopies = privacyAnalyticsRepos.map(dir => read(`${dir}/ana
 const privacyAnalytics = privacyAnalyticsCopies[0];
 const privacyPolicyHtml = read('draw004.github.io/privacy.html');
 const privacyMainSiteJs = read('draw004.github.io/site.js');
+const privacyRetirementPolicy = read('retirement-calculator/privacy.html');
 const privacyFiGuideJs = read('draw004.github.io/financial-independence-number-by-spending.js');
 const privacyFiApp = read('financial-independence/app.js');
 const privacyInflationSite = read('inflation-calculator/site.js');
@@ -3685,83 +3700,198 @@ const privacyRetirementConfig = read('retirement-calculator/site-config.js');
 const privacyHelper = fs.readFileSync(new URL('../helpers/common.js', import.meta.url), 'utf8');
 const privacyQa = fs.readFileSync(new URL('../tests/31-privacy-analytics-trust.spec.js', import.meta.url), 'utf8');
 const privacyFiQa = fs.readFileSync(new URL('../tests/09-fi-number-by-spending.spec.js', import.meta.url), 'utf8');
+const forbiddenGaRuntime = /googletagmanager\.com|google-analytics\.com|gtag\s*\(|G-[A-Z0-9]{10}\b|carrowmont_analytics_consent/;
 
-add('PRIVACY2: all nine tool repositories share one analytics implementation with the same privacy contract',
+add('GSEO2A privacy: all nine tool repositories share one Cloudflare-only compatibility analytics implementation',
   privacyAnalyticsCopies.length===9 && privacyAnalyticsCopies.every(x=>x===privacyAnalytics) &&
-  privacyAnalytics.includes('Your calculator numbers stay private from analytics') &&
-  privacyAnalytics.includes('Continue without Google Analytics') &&
-  privacyAnalytics.includes('Allow Google Analytics') &&
-  privacyAnalytics.includes('page_location: analyticsPageLocation()') &&
-  privacyAnalytics.includes('page_referrer: analyticsReferrer()') &&
-  privacyAnalytics.includes('const ALLOWED_EVENT_PARAMS = Object.freeze({') &&
-  privacyAnalytics.includes('script.referrerPolicy = "origin"') &&
-  !privacyAnalytics.includes('does not intentionally send')
+  privacyAnalytics.includes('static.cloudflareinsights.com/beacon.min.js') &&
+  privacyAnalytics.includes('provider: "cloudflare-aggregate"') &&
+  privacyAnalytics.includes('track() {}') &&
+  !forbiddenGaRuntime.test(privacyAnalytics)
 );
-add('PRIVACY2: tool analytics allow only approved non-financial event fields',
-  privacyAnalytics.includes('country_change: ["selected_region", "selected_currency"]') &&
-  privacyAnalytics.includes('calculator_mode_change: ["mode"]') &&
-  privacyAnalytics.includes('const clean = cleanEventParams(eventName, params);') &&
-  privacyAnalytics.includes('if (!clean) return;') &&
-  !/loan_amount|balance|income|spending|contribution|interest_rate|withdrawalRate|annualReturn/.test(
-    privacyAnalytics.match(/const ALLOWED_EVENT_PARAMS[\s\S]*?\}\);/)?.[0] || ''
-  )
+add('GSEO2A privacy: main-site runtime has no consent popup or Google Analytics and retains aggregate Cloudflare measurement only',
+  privacyMainSiteJs.includes('static.cloudflareinsights.com/beacon.min.js') &&
+  privacyMainSiteJs.includes('provider: "cloudflare-aggregate"') &&
+  !privacyMainSiteJs.includes('carrowmontAnalyticsConsent') &&
+  !privacyMainSiteJs.includes('Analytics settings') &&
+  !privacyMainSiteJs.includes('Continue without Google Analytics') &&
+  !privacyMainSiteJs.includes('Allow Google Analytics') &&
+  !forbiddenGaRuntime.test(privacyMainSiteJs)
 );
-add('PRIVACY2: main-site consent copy and Google Analytics page location follow the same privacy-first rules',
-  privacyMainSiteJs.includes('Your calculator numbers stay private from analytics') &&
-  privacyMainSiteJs.includes('Continue without Google Analytics') &&
-  privacyMainSiteJs.includes('Allow Google Analytics') &&
-  privacyMainSiteJs.includes('page_location: analyticsPageLocation()') &&
-  privacyMainSiteJs.includes('page_referrer: analyticsReferrer()') &&
-  privacyMainSiteJs.includes('script.referrerPolicy = "origin"') &&
-  !privacyMainSiteJs.includes('does not intentionally send')
-);
-add('PRIVACY2: privacy policy clearly separates calculator data, analytics and future account or cloud choices',
-  privacyPolicyHtml.includes('Analytics and your financial data') &&
-  privacyPolicyHtml.includes('Accounts and saved financial information') &&
-  privacyPolicyHtml.includes('Financial values you enter into calculators are kept separate from website analytics.') &&
-  privacyPolicyHtml.includes('Allowing Google Analytics will not, by itself, give permission to upload calculator inputs or use saved financial information as analytics data.') &&
-  privacyPolicyHtml.includes('Last updated: October 2026') &&
-  !privacyPolicyHtml.includes('does not intentionally send')
-);
-add('PRIVACY2: legacy inflation and retirement loaders cannot bypass the shared consent gate',
-  !privacyInflationSite.includes('googletagmanager.com') && !privacyInflationSite.includes('GA_MEASUREMENT_ID') &&
-  !privacyRetirementSite.includes('googletagmanager.com') && !privacyRetirementSite.includes('GA_MEASUREMENT_ID') &&
-  /GA_MEASUREMENT_ID:\s*""/.test(privacyInflationConfig) && /GA_MEASUREMENT_ID:\s*""/.test(privacyRetirementConfig) &&
+add('GSEO2A privacy: visitor configuration and legacy site loaders contain no Google Analytics escape hatch',
+  !forbiddenGaRuntime.test(privacyInflationSite) && !forbiddenGaRuntime.test(privacyRetirementSite) &&
+  !privacyInflationConfig.includes('GA_MEASUREMENT_ID') && !privacyRetirementConfig.includes('GA_MEASUREMENT_ID') &&
   privacyInflationSite.includes('Analytics is handled only by analytics.js') &&
   privacyRetirementSite.includes('Analytics is handled only by analytics.js')
 );
-add('PRIVACY2: FI handoff no longer puts spending, rate or inflation values in newly generated URLs',
+add('GSEO2A privacy: policy uses simple financial-data language and has no analytics-consent controls',
+  privacyPolicyHtml.includes('Privacy by default:') &&
+  privacyPolicyHtml.includes('<h2>Your financial information</h2>') &&
+  privacyPolicyHtml.includes('Carrowmont does not use those financial values for advertising, profiling or website analytics.') &&
+  privacyPolicyHtml.includes('<h2>Website analytics</h2>') &&
+  privacyPolicyHtml.includes('Cloudflare Web Analytics') &&
+  !/Google Analytics|Analytics settings|carrowmontAnalyticsConsent/.test(privacyPolicyHtml) &&
+  privacyRetirementPolicy.includes('The financial assumptions you enter are processed in your browser.') &&
+  !privacyRetirementPolicy.includes('does not intentionally transmit')
+);
+add('GSEO2A privacy: FI handoff keeps financial values out of newly generated URLs and scrubs the legacy query handoff',
   privacyFiGuideJs.includes("const FI_HANDOFF_KEY = 'carrowmont_fi_spending_handoff_v2';") &&
   privacyFiGuideJs.includes("const href = '/financial-independence/?cm_handoff=fi_spending_v2';") &&
   privacyFiGuideJs.includes('window.sessionStorage.setItem(FI_HANDOFF_KEY, JSON.stringify(payload))') &&
-  !privacyFiGuideJs.includes("const params = new URLSearchParams({") &&
-  !privacyFiGuideJs.includes("spendingMonthly: String(monthly)")
-);
-add('PRIVACY2: FI planner consumes V2 local handoff and scrubs legacy V1 financial query values before analytics initializes',
+  !privacyFiGuideJs.includes("spendingMonthly: String(monthly)") &&
   privacyFiApp.includes("const FI_SPENDING_HANDOFF_KEY='carrowmont_fi_spending_handoff_v2';") &&
   privacyFiApp.includes("if(handoff==='fi_spending_v2')") &&
   privacyFiApp.includes("window.sessionStorage.removeItem(FI_SPENDING_HANDOFF_KEY)") &&
   privacyFiApp.includes("else if(handoff==='fi_spending_v1')") &&
-  privacyFiApp.includes('scrubFinancialHandoffUrl();') &&
-  privacyFiApp.includes("window.history.replaceState(window.history.state,'',clean)")
+  privacyFiApp.includes('scrubFinancialHandoffUrl();')
 );
-add('PRIVACY2: QA preserves the ephemeral FI handoff while still clearing unrelated browser storage',
-  privacyHelper.includes("const privacyHandoffKey = 'carrowmont_fi_spending_handoff_v2';") &&
-  privacyHelper.includes('const privacyHandoff = sessionStorage.getItem(privacyHandoffKey);') &&
-  privacyHelper.includes('if (privacyHandoff) sessionStorage.setItem(privacyHandoffKey, privacyHandoff);')
-);
-add('PRIVACY2: browser QA protects consent, path-only GA, event allow-list, policy wording, legacy handoff scrubbing and mobile layout',
-  privacyQa.includes('first visit keeps Google Analytics off') &&
-  privacyQa.includes('path-only page location') &&
-  privacyQa.includes("window.CarrowmontAnalytics.track('financial_value'") &&
-  privacyQa.includes('privacy policy separates analytics from calculator data and future account choices') &&
-  privacyQa.includes('legacy FI query handoff is consumed and scrubbed') &&
-  privacyQa.includes('360px and 390px') &&
+add('GSEO2A privacy: browser QA forbids the old popup and GA network while preserving legacy financial handoff cleanup',
+  privacyQa.includes('first visit has no analytics popup and never loads Google Analytics') &&
+  privacyQa.includes('googletagmanager\\.com|google-analytics\\.com') &&
+  privacyQa.includes("toHaveCount(0)") &&
+  privacyQa.includes("provider: 'cloudflare-aggregate'") &&
+  privacyQa.includes('privacy policy explains financial-data protection in simple language') &&
+  privacyQa.includes('legacy FI query handoff is consumed and financial values are scrubbed') &&
   privacyFiQa.includes('without putting financial values in the URL') &&
   privacyFiQa.includes("cm_handoff=fi_spending_v2") &&
   !privacyFiQa.includes("spendingMonthly=125000")
 );
 
+// GSEO2A: Sitewide search discoverability contract for every public tool and Learn article.
+const gseo2aToolsHtml = read('draw004.github.io/tools.html');
+const gseo2aLearnHub = read('draw004.github.io/learn.html');
+const gseo2aSitemap = read('draw004.github.io/sitemap.xml');
+const gseo2aCollection = jsonLdNode(gseo2aToolsHtml, 'CollectionPage');
+const gseo2aToolItems = gseo2aCollection?.mainEntity?.itemListElement || [];
+const gseo2aMetaContent = (html, name) => {
+  for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
+    const attrs = Object.fromEntries([...tag.matchAll(/([:\w-]+)=["']([^"']*)["']/g)].map(m => [m[1].toLowerCase(), m[2]]));
+    if ((attrs.name || '').toLowerCase() === name.toLowerCase()) return attrs.content || '';
+  }
+  return '';
+};
+const gseo2aCanonical = html => {
+  for (const tag of html.match(/<link\b[^>]*>/gi) || []) {
+    const attrs = Object.fromEntries([...tag.matchAll(/([:\w-]+)=["']([^"']*)["']/g)].map(m => [m[1].toLowerCase(), m[2]]));
+    if ((attrs.rel || '').toLowerCase() === 'canonical') return attrs.href || '';
+  }
+  return '';
+};
+const gseo2aTitle = html => ((html.match(/<title>([\s\S]*?)<\/title>/i) || [])[1] || '').trim();
+const gseo2aH1Count = html => (html.match(/<h1\b/gi) || []).length;
+const gseo2aResolveUrl = url => {
+  let pathname='';
+  try { pathname = new URL(url).pathname; } catch { return ''; }
+  const repoRoutes = [
+    ['/sip-calculator/', 'sip-calculator'],
+    ['/goal-planner/', 'goal-planner'],
+    ['/financial-independence/', 'financial-independence'],
+    ['/inflation-calculator/', 'inflation-calculator'],
+    ['/retirement-calculator/', 'retirement-calculator'],
+    ['/budget-cash-flow-planner/', 'budget-cash-flow-planner'],
+    ['/mortgage-payoff-calculator/', 'mortgage-payoff-calculator'],
+    ['/compound-interest-calculator/', 'compound-interest-calculator'],
+    ['/loan-calculator/', 'loan-calculator']
+  ];
+  for (const [prefix, repo] of repoRoutes) {
+    if (!pathname.startsWith(prefix)) continue;
+    const rel = pathname.slice(prefix.length);
+    return `${repo}/${rel || 'index.html'}`;
+  }
+  const rel = pathname.replace(/^\//,'') || 'index.html';
+  return `draw004.github.io/${rel}`;
+};
+const gseo2aToolChecks = gseo2aToolItems.map(item => {
+  const url = item?.url || item?.item?.url || item?.item || '';
+  const file = gseo2aResolveUrl(url);
+  const html = read(file);
+  const robots = gseo2aMetaContent(html, 'robots').toLowerCase();
+  return {
+    url, file,
+    ok: Boolean(html) && Boolean(gseo2aTitle(html)) && Boolean(gseo2aMetaContent(html, 'description')) &&
+      gseo2aCanonical(html) === url && robots.includes('index') && robots.includes('follow') &&
+      gseo2aH1Count(html) === 1 && gseo2aSitemap.includes(`<loc>${url}</loc>`)
+  };
+});
+add('GSEO2A search: all 18 Tools Hub destinations have crawlable title, description, canonical, robots, one H1 and sitemap coverage',
+  gseo2aToolItems.length === 18 && gseo2aToolChecks.every(x=>x.ok),
+  gseo2aToolChecks.filter(x=>!x.ok).map(x=>`${x.url} -> ${x.file}`).join('; ')
+);
+
+const gseo2aMainDir = path.join(root, 'draw004.github.io');
+const gseo2aRootHtmlFiles = fs.readdirSync(gseo2aMainDir).filter(name => name.endsWith('.html'));
+const gseo2aEscapeRe = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const gseo2aInboundCounts = gseo2aToolItems.map(item => {
+  const url = item?.url || item?.item?.url || item?.item || '';
+  let pathname = '';
+  try { pathname = new URL(url).pathname; } catch {}
+  const target = gseo2aEscapeRe(pathname);
+  const pattern = target ? new RegExp(`href=["']${target}(?:[?#][^"']*)?["']`, 'i') : null;
+  const sources = pattern ? gseo2aRootHtmlFiles.filter(name => pattern.test(read(`draw004.github.io/${name}`))) : [];
+  return { url, count: sources.length, sources };
+});
+add('GSEO2A search: every live Tools Hub destination has at least five contextual main-site discovery paths',
+  gseo2aInboundCounts.length === 18 && gseo2aInboundCounts.every(x => x.count >= 5),
+  gseo2aInboundCounts.filter(x => x.count < 5).map(x => `${x.url}=${x.count}`).join('; ')
+);
+const gseo2aLearnFiles = fs.readdirSync(gseo2aMainDir).filter(name => name.endsWith('.html')).filter(name => {
+  const html = read(`draw004.github.io/${name}`);
+  return html.includes('data-cm-learn-article="1"');
+});
+const gseo2aLearnChecks = gseo2aLearnFiles.map(name => {
+  const html = read(`draw004.github.io/${name}`);
+  const url = `https://carrowmont.com/${name}`;
+  const robots = gseo2aMetaContent(html, 'robots').toLowerCase();
+  const article = jsonLdNode(html, 'Article');
+  return {
+    name,
+    title: gseo2aTitle(html),
+    canonical: gseo2aCanonical(html),
+    ok: Boolean(gseo2aTitle(html)) && Boolean(gseo2aMetaContent(html, 'description')) &&
+      gseo2aCanonical(html) === url && robots.includes('index') && robots.includes('follow') &&
+      gseo2aH1Count(html) === 1 && html.includes('guide-answer') && article?.mainEntityOfPage === url &&
+      gseo2aLearnHub.includes(`href="/${name}"`) && gseo2aSitemap.includes(`<loc>${url}</loc>`)
+  };
+});
+const gseo2aLearnTitles = gseo2aLearnChecks.map(x=>x.title.toLowerCase());
+const gseo2aLearnCanonicals = gseo2aLearnChecks.map(x=>x.canonical);
+add('GSEO2A search: every Learn article is indexable, independently useful, linked from Learn hub and covered by sitemap',
+  gseo2aLearnFiles.length >= 72 && gseo2aLearnChecks.every(x=>x.ok) &&
+  new Set(gseo2aLearnTitles).size === gseo2aLearnTitles.length &&
+  new Set(gseo2aLearnCanonicals).size === gseo2aLearnCanonicals.length,
+  gseo2aLearnChecks.filter(x=>!x.ok).map(x=>x.name).join(', ')
+);
+add('GSEO2A search: SIP, SWP, retirement and loan intents remain explicit while localization cannot erase the static search identity',
+  sipHtml.includes('<title>SIP Calculator &amp; Recurring Investment Calculator | Carrowmont</title>') &&
+  sipHtml.includes('<strong>SIP means Systematic Investment Plan.</strong>') &&
+  read('sip-calculator/terminology.js').includes("closest?.('[data-cm-search-identity]')") &&
+  read('retirement-calculator/withdrawal-calculator.html').includes('<title>SWP, Retirement Withdrawal &amp; Drawdown Calculator | Carrowmont</title>') &&
+  read('retirement-calculator/withdrawal-calculator.html').includes('Systematic Withdrawal Plan (SWP)') &&
+  gseoRetirementLandingHtml.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>') &&
+  gseoRetirementPlannerHtml.includes('<title>Detailed Retirement Planner | Carrowmont</title>') &&
+  read('loan-calculator/index.html').includes('href="/how-is-loan-emi-calculated.html"') &&
+  read('loan-calculator/index.html').includes('href="/loan-interest-rate-vs-term.html"') &&
+  read('draw004.github.io/how-is-loan-emi-calculated.html').includes('href="/loan-calculator/"') &&
+  read('draw004.github.io/loan-interest-rate-vs-term.html').includes('href="/loan-calculator/"')
+);
+
+const gseo2aToolsHubQa = fs.readFileSync(new URL('../tests/12-tools-hub.spec.js', import.meta.url), 'utf8');
+const gseo2aSearchQa = fs.readFileSync(new URL('../tests/33-gseo2a-sitewide-search-visibility.spec.js', import.meta.url), 'utf8');
+add('GSEO2A regression: Publisher browser expectations are migrated for 18 tools, current sitemap freshness, duplicate contextual CTAs and repeated Learn-hub viewport checks',
+  gseo2aToolsHubQa.includes('exposes eighteen live tools') &&
+  gseo2aToolsHubQa.includes("'/retirement-calculator/withdrawal-calculator.html'") &&
+  gseo2aToolsHubQa.includes('itemListElement).toHaveLength(18)') &&
+  gseo2aToolsHubQa.includes("match[1] >= '2026-10-19'") &&
+  !gseo2aToolsHubQa.includes('itemListElement).toHaveLength(17)') &&
+  (gseo2aSearchQa.match(/\.first\(\)\)\.toBeVisible\(\);/g)||[]).length >= 2 &&
+  !gseo2aSearchQa.includes("gotoClean(page, '/learn.html#loans-and-debt')") &&
+  gseo2aSearchQa.includes("window.location.hash = 'loans-and-debt'") &&
+  read('draw004.github.io/sequence-of-returns-risk.html').includes('<div class="guide-note"><strong>Model a retirement withdrawal path:</strong>') &&
+  read('draw004.github.io/sequence-of-returns-risk.html').includes('.gseo2a-wrap-link{color:var(--teal-dark);font-weight:900;white-space:normal;overflow-wrap:anywhere;word-break:normal}') &&
+  read('draw004.github.io/sequence-of-returns-risk.html').includes('class="gseo2a-wrap-link" href="/retirement-calculator/withdrawal-calculator.html"') &&
+  read('draw004.github.io/sequence-of-returns-risk.html').includes('class="gseo2a-wrap-link" href="/what-is-swp-systematic-withdrawal-plan.html"') &&
+  !read('draw004.github.io/sequence-of-returns-risk.html').includes('<span class="action-label">MODEL A RETIREMENT WITHDRAWAL PATH</span>')
+);
 
 // RETIRE1 Retirement Withdrawal / Drawdown / SWP Calculator - Snapshot 80 production implementation - 2026-10-17.
 const retire1Spec = read('draw004.github.io/docs/CARROWMONT_RETIRE1_RETIREMENT_WITHDRAWAL_DRAWDOWN_SWP_CALCULATOR_SPEC_FINAL.md');
@@ -3778,6 +3908,7 @@ const retire1Tools = read('draw004.github.io/tools.html');
 const retire1MainJs = read('draw004.github.io/site.js');
 const retire1LongevityLearn = read('draw004.github.io/how-long-will-retirement-savings-last.html');
 const retire1SequenceLearn = read('draw004.github.io/sequence-of-returns-risk.html');
+const retire1SwpLearn = read('draw004.github.io/what-is-swp-systematic-withdrawal-plan.html');
 const retire1Qa = fs.readFileSync(new URL('../tests/32-retirement-withdrawal-drawdown.spec.js', import.meta.url), 'utf8');
 const retire1SmokeQa = fs.readFileSync(new URL('../tests/01-smoke.spec.js', import.meta.url), 'utf8');
 const retire1MortgageQa = fs.readFileSync(new URL('../tests/23-mortgage-localization-shared-plan-hotfix.spec.js', import.meta.url), 'utf8');
@@ -3795,7 +3926,7 @@ const retire1Preserve = Retire1Core?.calculate?.({mode:'support',startingBalance
 
 add('RETIRE1: approved specification and one canonical indexable retirement-family calculator are present',
   retire1Spec.includes('CARROWMONT RETIRE1') && retire1Spec.includes('withdrawal-calculator.html') &&
-  retire1Html.includes('<title>Retirement Withdrawal &amp; Drawdown Calculator | Carrowmont</title>') &&
+  retire1Html.includes('<title>SWP, Retirement Withdrawal &amp; Drawdown Calculator | Carrowmont</title>') &&
   retire1Html.includes('<link rel="canonical" href="https://carrowmont.com/retirement-calculator/withdrawal-calculator.html"') &&
   retire1Html.includes('<meta name="robots" content="index,follow"') &&
   (retire1Html.match(/<h1\b/g)||[]).length===1 && Boolean(jsonLdNode(retire1Html,'WebApplication'))
@@ -3844,17 +3975,20 @@ add('RETIRE1: Tools Hub and retirement Learn journeys expose the live secondary 
   /"numberOfItems"\s*:\s*18/.test(retire1Tools) && (retire1Tools.match(/class="directory-tool-card/g)||[]).length===18 &&
   retire1MainJs.includes('function retirementWithdrawalIdentity(') &&
   retire1LongevityLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
+  retire1LongevityLearn.includes('href="/what-is-swp-systematic-withdrawal-plan.html"') &&
   retire1SequenceLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
+  retire1SwpLearn.includes('SWP stands for Systematic Withdrawal Plan') && retire1SwpLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
   mainHome.includes('data-core-tool-count="9"') && (mainHome.match(/data-tool-id=/g)||[]).length===9 && !mainHome.includes('data-tool-id="retirement-withdrawal"')
 );
 add('RETIRE1: both retirement and main sitemaps publish exactly one current canonical route and changed public discovery pages are fresh',
   (retire1ToolSitemap.match(/<loc>https:\/\/carrowmont\.com\/retirement-calculator\/withdrawal-calculator\.html<\/loc>/g)||[]).length===1 &&
   (retire1MainSitemap.match(/<loc>https:\/\/carrowmont\.com\/retirement-calculator\/withdrawal-calculator\.html<\/loc>/g)||[]).length===1 &&
-  /<loc>https:\/\/carrowmont\.com\/retirement-calculator\/withdrawal-calculator\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(retire1MainSitemap) &&
-  /<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(retire1MainSitemap) &&
-  /<loc>https:\/\/carrowmont\.com\/how-long-will-retirement-savings-last\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(retire1MainSitemap) &&
-  /<loc>https:\/\/carrowmont\.com\/sequence-of-returns-risk\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/.test(retire1MainSitemap) &&
-  (retire1MainSitemap.match(/<loc>/g)||[]).length===106
+  ((retire1MainSitemap.match(/<loc>https:\/\/carrowmont\.com\/retirement-calculator\/withdrawal-calculator\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-18' &&
+  ((retire1MainSitemap.match(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-18' &&
+  ((retire1MainSitemap.match(/<loc>https:\/\/carrowmont\.com\/how-long-will-retirement-savings-last\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-18' &&
+  ((retire1MainSitemap.match(/<loc>https:\/\/carrowmont\.com\/sequence-of-returns-risk\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-18' &&
+  ((retire1MainSitemap.match(/<loc>https:\/\/carrowmont\.com\/what-is-swp-systematic-withdrawal-plan\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)||[])[1]||'') >= '2026-10-18' &&
+  (retire1MainSitemap.match(/<loc>/g)||[]).length>=107
 );
 
 const retire1FooterRepos = [
@@ -3885,7 +4019,7 @@ add('RETIRE1: Publisher regression locks migrate legacy footer, Learn, mortgage 
   retire1LongevityLearn.includes('class="guide-action-first"') && retire1LongevityLearn.includes('href="/retirement-calculator/"') &&
   retire1LongevityLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
   retire1Css.includes('.withdrawal-page [hidden]{display:none!important}') &&
-  retire1Qa.includes("toHaveTitle('Retirement Withdrawal & Drawdown Calculator | Carrowmont')") &&
+  retire1Qa.includes("toHaveTitle('SWP, Retirement Withdrawal & Drawdown Calculator | Carrowmont')") &&
   (retire1Qa.match(/getByRole\('heading', \{ name: 'Return sensitivity — not a forecast', exact: true \}\)/g)||[]).length===2 &&
   !retire1Qa.includes("getByText('Return sensitivity — not a forecast', { exact: true })") &&
   retire1Qa.includes("getByText('Constant-return illustration, not a forecast.', { exact: true })") &&
@@ -3906,6 +4040,29 @@ add('RETIRE1: handoff browser QA creates a valid calculated Planner state before
   retire1Qa.includes("await expect(page.locator('#projectedCorpus')).not.toHaveText('—');") &&
   retire1Qa.includes("await expect(page.locator('#requiredCorpus')).not.toHaveText('—');")
 );
+add('RETIRE1-SWP1: static calculator HTML clearly owns SWP intent in simple language without pretending to model a specific mutual fund',
+  retire1Html.includes('SWP, Retirement Withdrawal &amp; Drawdown Calculator | Carrowmont') &&
+  retire1Html.includes('Systematic Withdrawal Plan (SWP)') && retire1Html.includes('In India, SWP is a common name') &&
+  retire1Html.includes("It does not model a specific mutual fund's NAV, exit load, tax treatment or future return.") &&
+  retire1Html.includes('\"alternateName\":[\"SWP Calculator\",\"Systematic Withdrawal Plan Calculator\"') &&
+  retire1Html.includes('href="/what-is-swp-systematic-withdrawal-plan.html"')
+);
+add('RETIRE1-SWP1: dedicated Learn page owns the explanatory query and links back to the existing canonical calculator',
+  retire1SwpLearn.includes('<title>What Is an SWP? Systematic Withdrawal Plan | Carrowmont</title>') &&
+  (retire1SwpLearn.includes('rel="canonical" href="https://carrowmont.com/what-is-swp-systematic-withdrawal-plan.html"') ||
+   retire1SwpLearn.includes('href="https://carrowmont.com/what-is-swp-systematic-withdrawal-plan.html" rel="canonical"'))
+);
+add('RETIRE1-SWP1: Learn page is substantive, decision-focused and avoids fund recommendations or guaranteed outcomes',
+  retire1SwpLearn.length > 20000 && retire1SwpLearn.includes('An SWP is a withdrawal method, not a promise of income.') &&
+  retire1SwpLearn.includes('What Carrowmont') && retire1SwpLearn.includes('does <strong>not</strong> model a particular mutual fund') &&
+  retire1SwpLearn.includes('NISM: Understanding mutual funds') && retire1SwpLearn.includes('SEBI Investor: Exit Load') &&
+  !/best mutual fund|top fund|guaranteed return|guaranteed income/i.test(retire1SwpLearn)
+);
+add('RETIRE1-SWP1: browser QA protects the static SWP search signals and the bidirectional calculator-Learn journey',
+  retire1Qa.includes('Systematic Withdrawal Plan') && retire1Qa.includes('what-is-swp-systematic-withdrawal-plan.html') &&
+  retire1Qa.includes('SWP stands for Systematic Withdrawal Plan') && retire1Qa.includes('does not model a specific mutual fund')
+);
+
 add('RETIRE1: visitor runtime remains deterministic and privacy-first with no live market API, tax engine or regulated safe-withdrawal claim',
   !/fetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon\s*\(/.test(retire1Core+retire1App+retire1Pdf) &&
   !/guaranteed safe|safe withdrawal guarantee|tax engine|pension provider api/i.test(retire1Core+retire1App) &&

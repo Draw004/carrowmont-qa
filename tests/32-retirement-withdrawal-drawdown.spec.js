@@ -57,10 +57,13 @@ test.describe('RETIRE1 Retirement Withdrawal / Drawdown / SWP Calculator', () =>
     await gotoClean(page, PATH);
 
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toHaveText('See how withdrawals, returns and inflation can change how long retirement savings may last.');
+    await expect(page.locator('h1')).toHaveText('Plan regular withdrawals or an SWP and see how long your retirement savings may last.');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com/retirement-calculator/withdrawal-calculator.html');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
-    await expect(page).toHaveTitle('Retirement Withdrawal & Drawdown Calculator | Carrowmont');
+    await expect(page).toHaveTitle('SWP, Retirement Withdrawal & Drawdown Calculator | Carrowmont');
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /Systematic Withdrawal Plan \(SWP\)/);
+    await expect(page.getByText(/In India, SWP is a common name for taking money from an invested corpus at regular intervals\./)).toBeVisible();
+    await expect(page.getByText(/does not model a specific mutual fund's NAV, exit load, tax treatment or future return\./)).toBeVisible();
 
     for (const selector of [
       '#runwayModeBtn','#supportModeBtn','#startingBalance','#startingWithdrawal','#annualReturn',
@@ -272,8 +275,15 @@ test.describe('RETIRE1 Retirement Withdrawal / Drawdown / SWP Calculator', () =>
     await gotoClean(page, '/sequence-of-returns-risk.html');
     await expect(page.locator(`a[href="${PATH}"]`).first()).toBeVisible();
 
+    await gotoClean(page, '/what-is-swp-systematic-withdrawal-plan.html');
+    await expect(page).toHaveTitle('What Is an SWP? Systematic Withdrawal Plan | Carrowmont');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com/what-is-swp-systematic-withdrawal-plan.html');
+    await expect(page.locator('.guide-answer')).toContainText('SWP stands for Systematic Withdrawal Plan');
+    await expect(page.locator(`a[href="${PATH}"]`).first()).toBeVisible();
+
     const sitemap = await (await request.get('/sitemap.xml')).text();
     expect((sitemap.match(/https:\/\/carrowmont\.com\/retirement-calculator\/withdrawal-calculator\.html/g) || []).length).toBe(1);
+    expect((sitemap.match(/https:\/\/carrowmont\.com\/what-is-swp-systematic-withdrawal-plan\.html/g) || []).length).toBe(1);
   });
 
   test('[AUTO] compact footer stays at five localized gateways instead of growing with every calculator', async ({ page }) => {

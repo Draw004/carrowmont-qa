@@ -3,18 +3,19 @@ import { gotoClean, assertNoHorizontalOverflow } from '../helpers/common.js';
 
 const TOPIC_TOOL_CASES = [
   { category: 'investment', href: '/sip-calculator/' },
-  { category: 'retirement', href: '/retirement-calculator/planner.html' },
+  { category: 'retirement', href: '/retirement-calculator/' },
   { category: 'budget', href: '/budget-cash-flow-planner/' },
   { category: 'goals', href: '/goal-planner/' },
   { category: 'fi', href: '/financial-independence/' },
   { category: 'inflation', href: '/inflation-calculator/' },
-  { category: 'home', href: '/mortgage-payoff-calculator/decision-centre.html' }
+  { category: 'home', href: '/mortgage-payoff-calculator/decision-centre.html' },
+  { category: 'loans', href: '/loan-calculator/' }
 ];
 
 test.describe('GSEO1D internal topic authority', () => {
   test('[AUTO] Learn hub exposes exactly one contextual primary-tool path for each mapped planning cluster', async ({ page }) => {
     await gotoClean(page, '/learn.html');
-    await expect(page.locator('[data-cm-topic-tool]')).toHaveCount(7);
+    await expect(page.locator('[data-cm-topic-tool]')).toHaveCount(8);
 
     for (const item of TOPIC_TOOL_CASES) {
       const category = page.locator(`[data-category="${item.category}"]`);
@@ -43,7 +44,7 @@ test.describe('GSEO1D internal topic authority', () => {
       await page.setViewportSize({ width, height: 900 });
       await gotoClean(page, '/learn.html');
       await assertNoHorizontalOverflow(page, `${width}px GSEO1D Learn hub topic owners`);
-      await expect(page.locator('[data-cm-topic-tool]')).toHaveCount(7);
+      await expect(page.locator('[data-cm-topic-tool]')).toHaveCount(8);
 
       await gotoClean(page, '/mortgage-payoff-calculator/decision-centre.html');
       await assertNoHorizontalOverflow(page, `${width}px GSEO1D Mortgage Decision Centre Learn link`);

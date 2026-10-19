@@ -147,5 +147,8 @@ export const mainSitePages = [
   { key: 'market-chain-reaction-explorer', path: '/market-chain-reaction-explorer.html', text: 'What Happens When Markets Change?' },
   { key: 'mortgage-payoff-calculator-page', path: '/mortgage-payoff-calculator/', text: 'part-prepayments' },
   { key: 'compound-interest-calculator-page', path: '/compound-interest-calculator/', text: 'See how compounding can change your money over time.' },
-  { key: 'loan-calculator-page', path: '/loan-calculator/', text: 'See what a loan could cost each month.' }
+  { key: 'loan-calculator-page', path: '/loan-calculator/', text: 'See what a loan could cost each month.' },
+  { key: 'loan-emi-learn', path: '/how-is-loan-emi-calculated.html', text: 'How is a loan EMI or monthly payment calculated?' },
+  { key: 'loan-rate-term-learn', path: '/loan-interest-rate-vs-term.html', text: 'How do interest rate and loan term change what a loan costs?' },
+  { key: 'swp-learn', path: '/what-is-swp-systematic-withdrawal-plan.html', text: 'What is an SWP' }
 ];
