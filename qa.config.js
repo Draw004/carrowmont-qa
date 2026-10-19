@@ -148,6 +148,10 @@ export const mainSitePages = [
   { key: 'mortgage-payoff-calculator-page', path: '/mortgage-payoff-calculator/', text: 'part-prepayments' },
   { key: 'compound-interest-calculator-page', path: '/compound-interest-calculator/', text: 'See how compounding can change your money over time.' },
   { key: 'loan-calculator-page', path: '/loan-calculator/', text: 'See what a loan could cost each month.' },
+  { key: 'home-affordability-calculator-page', path: '/home-affordability-calculator.html', text: 'See what home price may fit your budget without squeezing everything else.' },
+  { key: 'home-affordability-learn', path: '/how-much-home-can-i-afford.html', text: 'How much home can I afford?' },
+  { key: 'mortgage-affordability-vs-approval-learn', path: '/mortgage-affordability-vs-lender-approval.html', text: 'Mortgage affordability vs lender approval' },
+  { key: 'deposit-rate-affordability-learn', path: '/how-deposit-and-interest-rates-affect-home-affordability.html', text: 'How do deposit and interest rates affect home affordability?' },
   { key: 'loan-emi-learn', path: '/how-is-loan-emi-calculated.html', text: 'How is a loan EMI or monthly payment calculated?' },
   { key: 'loan-rate-term-learn', path: '/loan-interest-rate-vs-term.html', text: 'How do interest rate and loan term change what a loan costs?' },
   { key: 'swp-learn', path: '/what-is-swp-systematic-withdrawal-plan.html', text: 'What is an SWP' }
