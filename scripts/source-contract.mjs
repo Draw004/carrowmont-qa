@@ -1897,11 +1897,15 @@ add('main site: SEO3C keeps U.S. federal debt in fixed USD context without FX re
 );
 let usDebtReference = null;
 try { usDebtReference = JSON.parse(usDebtReferenceRaw); } catch (_) {}
-add('main site: SEO3C release-time Treasury reference is dated, validated and matches the 2026-10-08 official snapshot',
-  !!usDebtReference && usDebtReference.schemaVersion === 1 && usDebtReference.asOfDate === '2026-10-08' &&
-  usDebtReference.debtHeldByPublic === 32454086117711.32 && usDebtReference.totalPublicDebtOutstanding === 40305316210829.72 &&
-  usDebtReference.totalPublicDebtOutstanding >= usDebtReference.debtHeldByPublic &&
-  /Debt to the Penny/.test(usDebtReference.sourceName || '') && /fiscaldata\.treasury\.gov/.test(usDebtReference.sourceUrl || '')
+add('main site: SEO3C Treasury reference is dated, validated, monotonic-ready and bound to the approved official source',
+  !!usDebtReference && usDebtReference.schemaVersion === 1 && usDebtReference.dataset === 'Debt to the Penny' &&
+  /^\d{4}-\d{2}-\d{2}$/.test(usDebtReference.asOfDate || '') && usDebtReference.asOfDate >= '2026-10-08' &&
+  Number.isFinite(usDebtReference.debtHeldByPublic) && usDebtReference.debtHeldByPublic > 0 &&
+  Number.isFinite(usDebtReference.totalPublicDebtOutstanding) && usDebtReference.totalPublicDebtOutstanding >= usDebtReference.debtHeldByPublic &&
+  /U\.S\. Treasury FiscalData/.test(usDebtReference.sourceName || '') && /Debt to the Penny/.test(usDebtReference.sourceName || '') &&
+  /fiscaldata\.treasury\.gov\/datasets\/debt-to-the-penny\/?/.test(usDebtReference.sourceUrl || '') &&
+  /api\.fiscaldata\.treasury\.gov\/services\/api\/fiscal_service\/v2\/accounting\/od\/debt_to_penny/.test(usDebtReference.apiUrl || '') &&
+  !Number.isNaN(Date.parse(usDebtReference.retrievedAt || '')) && (usDebtReference.retrievedAt || '').slice(0, 10) >= usDebtReference.asOfDate
 );
 add('main site: SEO3C reference provenance is explicit and never marketed as live data',
   usDebtHtml.includes('U.S. Treasury reference') && usDebtHtml.includes('validated U.S. Treasury reference snapshot') &&
