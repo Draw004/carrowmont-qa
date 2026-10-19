@@ -21,7 +21,8 @@ const ALL_TOOL_PATHS = [
   '/silver-supply-demand-macro-stress-explorer.html',
   '/budget-cash-flow-planner/debt-payoff-calculator.html',
   '/mortgage-payoff-calculator/rent-vs-buy-calculator.html',
-  '/market-chain-reaction-explorer.html'
+  '/market-chain-reaction-explorer.html',
+  '/retirement-calculator/withdrawal-calculator.html'
 ];
 const HOMEPAGE_AUTHORITY_PATHS = ['/4-percent-rule-stress-test.html','/financial-independence-number-by-spending.html','/us-debt-interest-cost-calculator.html','/gold-macro-stress-explorer.html'];
 
@@ -60,7 +61,7 @@ async function expectHomepageOrder(page, expected) {
 }
 
 test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
-  test('[AUTO] canonical tools directory exposes seventeen live tools in three meaningful categories', async ({ page }) => {
+  test('[AUTO] canonical tools directory exposes eighteen live tools in three meaningful categories', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, DIRECTORY);
     await dismissAnalytics(page);
@@ -89,7 +90,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     expect(collectionPage).toBeTruthy();
     expect(collectionPage.mainEntity?.['@type']).toBe('ItemList');
     expect(collectionPage.mainEntity?.numberOfItems).toBe(18);
-    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(17);
+    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(18);
     expect(errors).toEqual([]);
   });
 
@@ -202,7 +203,9 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     expect(response.ok()).toBeTruthy();
     const xml = await response.text();
     expect(xml).toContain('<loc>https://carrowmont.com/tools.html</loc>');
-    expect(xml).toMatch(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>2026-10-17<\/lastmod>/);
+    const match = xml.match(/<loc>https:\/\/carrowmont\.com\/tools\.html<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+    expect(match, 'tools.html should have a sitemap lastmod').not.toBeNull();
+    expect(match[1] >= '2026-10-19', `tools.html lastmod should be 2026-10-19 or later, got ${match[1]}`).toBe(true);
   });
 
   test('[AUTO] homepage and directory avoid horizontal overflow at 1440px, 390px and 360px', async ({ page }) => {
