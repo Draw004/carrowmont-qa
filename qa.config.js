@@ -159,5 +159,9 @@ export const mainSitePages = [
   { key: 'how-to-make-a-budget', path: '/how-to-make-a-budget.html', text: 'How to make a budget that fits your real life' },
   { key: 'investing-for-beginners', path: '/investing-for-beginners.html', text: 'Investing for beginners: understand the basics before choosing a product' },
   { key: 'what-is-an-etf', path: '/what-is-an-etf.html', text: 'What is an ETF, and how does it work?' },
-  { key: 'index-funds-explained', path: '/index-funds-explained.html', text: 'What is an index fund, and what does it actually track?' }
+  { key: 'index-funds-explained', path: '/index-funds-explained.html', text: 'What is an index fund, and what does it actually track?' },
+  { key: 'credit-score-explained', path: '/credit-score-explained.html', text: 'What is a credit score, and what can affect it?' },
+  { key: 'debt-consolidation-explained', path: '/debt-consolidation-explained.html', text: 'What is debt consolidation, and can a lower payment cost more?' },
+  { key: 'credit-card-interest', path: '/how-credit-card-interest-works.html', text: 'How does credit-card interest build up?' },
+  { key: 'apr-vs-interest-rate', path: '/apr-vs-interest-rate.html', text: 'APR vs interest rate: why the cheaper-looking loan may not be cheaper' }
 ];

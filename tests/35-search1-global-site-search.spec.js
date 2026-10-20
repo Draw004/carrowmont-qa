@@ -36,7 +36,7 @@ test.describe('SEARCH1 global site search', () => {
     expect(indexResponse.ok()).toBeTruthy();
     const index = await indexResponse.json();
     expect(index.schema_version).toBe(1);
-    expect(index.entries.length).toBe(117);
+    expect(index.entries.length).toBe(121);
     expect(new Set(index.entries.map(entry => entry.url)).size).toBe(index.entries.length);
     for (const entry of index.entries) {
       expect(entry.url).toMatch(/^\//);
@@ -145,7 +145,14 @@ test.describe('SEARCH1 global site search', () => {
       for (const path of [SEARCH, '/learn.html', '/tools.html']) {
         await gotoClean(page, path);
         await assertNoHorizontalOverflow(page, `${width}px ${path}`);
-        await expect(page.locator('[data-cm-search-input]').first()).toBeVisible();
+        const searchInput = page.locator('[data-cm-search-input]').first();
+        await expect(searchInput).toBeVisible();
+        if (path === SEARCH) {
+          const box = await searchInput.boundingBox();
+          expect(box, `${width}px search input bounding box`).not.toBeNull();
+          expect(box.y + box.height, `${width}px search action should be visible above the fold`).toBeLessThan(900);
+          expect(box.y, `${width}px search action should sit high enough on the page`).toBeLessThan(width === 1280 ? 650 : 760);
+        }
       }
     }
   });

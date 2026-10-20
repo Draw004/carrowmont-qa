@@ -84,7 +84,7 @@ test.describe('LEARN2A-1 evergreen money and investing foundations', () => {
     }
 
     const index = await (await request.get('/data/carrowmont-search-index.json')).json();
-    expect(index.entries).toHaveLength(117);
+    expect(index.entries).toHaveLength(121);
     for (const item of PAGES) expect(index.entries.filter(entry => entry.url === item.path)).toHaveLength(1);
 
     await gotoClean(page, '/search.html');
