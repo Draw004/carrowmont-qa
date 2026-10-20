@@ -169,5 +169,11 @@ export const mainSitePages = [
   { key: 'budget-irregular-income', path: '/budgeting-with-irregular-income.html', text: 'How do you budget when your income changes every month?' },
   { key: 'cash-flow-vs-income', path: '/cash-flow-vs-income.html', text: 'Cash flow vs income: Why earning more does not always mean saving more' },
   { key: 'zero-based-budgeting', path: '/zero-based-budgeting.html', text: 'What is zero-based budgeting and how does it work?' },
-  { key: 'pay-yourself-first', path: '/pay-yourself-first-budgeting.html', text: 'What does pay yourself first mean in a budget?' }
+  { key: 'pay-yourself-first', path: '/pay-yourself-first-budgeting.html', text: 'What does pay yourself first mean in a budget?' },
+  { key: 'emergency-fund-how-much', path: '/emergency-fund-how-much.html', text: 'How much emergency fund should you have?' },
+  { key: 'emergency-savings', path: '/emergency-savings.html', text: 'Emergency savings has a different job from long-term investing.' },
+  { key: 'sinking-fund-vs-emergency-fund', path: '/sinking-fund-vs-emergency-fund.html', text: 'Sinking fund vs emergency fund: What is the difference?' },
+  { key: 'savings-goal-planning', path: '/savings-goal-planning.html', text: 'How do you plan a savings goal and work backward from the target?' },
+  { key: 'lifestyle-inflation', path: '/lifestyle-inflation.html', text: 'What is lifestyle inflation and how can it slow financial progress?' },
+  { key: 'debt-snowball-vs-avalanche', path: '/debt-snowball-vs-avalanche.html', text: 'Debt snowball vs avalanche: Which debt gets paid first?' }
 ];

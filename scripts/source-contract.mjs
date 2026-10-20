@@ -2377,7 +2377,7 @@ add('main site: LEARN-LOCALE1 updates all content-changed Learn sitemap entries 
   !/\/in\/|\/us\/|\?country=/.test(learnLocaleSitemap)
 );
 add('main site: LEARN-LOCALE1 cache-busts the shared localization/CSS assets and keeps long related-guide links mobile-safe',
-  learnLocalePages.every(file => /learn-localization\.js\?v=(?:20261010-global1|20261014-mortgage-learn2|20261014-housing3|20261020-learn3b1)/.test(read('draw004.github.io/'+file))) &&
+  learnLocalePages.every(file => /learn-localization\.js\?v=(?:20261010-global1|20261014-mortgage-learn2|20261014-housing3|20261020-learn3b1|20261020-learn3b2)/.test(read('draw004.github.io/'+file))) &&
   standardizedLearnPages.every(({page}) => page.includes('learn-article.css?v=20261010-global1')) &&
   learnArticleCss.includes('.seo-related-guides .text-link') && learnArticleCss.includes('white-space:normal')
 );
@@ -3158,7 +3158,7 @@ add('main Learn: sitewide Learn housing copy uses reversible country localizatio
   mortgageLearnHotfixLocalization.includes("body.dataset.cmLearnArticle==='1'") &&
   mortgageLearnHotfixLocalization.includes("parent.closest('script,style,code,pre,.reference-note')") &&
   housingLearnAuditPages.length === 18 &&
-  housingLearnAuditPages.every(src=>/learn-localization\.js\?v=(?:20261014-housing3|20261020-learn3b1)/.test(src))
+  housingLearnAuditPages.every(src=>/learn-localization\.js\?v=(?:20261014-housing3|20261020-learn3b1|20261020-learn3b2)/.test(src))
 );
 add('main Learn: mortgage guide hero/back-link/footer wording follows country without changing canonical URLs',
   mortgageLearnHotfixRuntime.includes('function articleTitle') &&
@@ -3253,7 +3253,7 @@ add('DEBT1: Copy Summary and exact three-page PDF are driven from the determinis
 );
 add('DEBT1: Tool and Learn guide form a bidirectional plain-language journey',
   debt1Html.includes('href="/debt-snowball-vs-avalanche.html"') &&
-  debt1Learn.includes('Debt snowball vs avalanche: which debt gets paid first?') &&
+  debt1Learn.includes('Debt snowball vs avalanche: Which debt gets paid first?') &&
   debt1Learn.includes('href="/budget-cash-flow-planner/debt-payoff-calculator.html"') &&
   debt1Learn.includes('Snowball') && debt1Learn.includes('Avalanche')
 );
@@ -4242,7 +4242,7 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
   search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  (search1FixtureScript.match(/\{ name:/g)||[]).length === 22 &&
+  (search1FixtureScript.match(/\{ name:/g)||[]).length === 28 &&
   search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
   search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
@@ -4637,6 +4637,119 @@ add('LEARN3B-1: implementation record preserves global localization, stable URLs
   learn3b1Impl.includes('No unrelated sitemap date is refreshed') && learn3b1Impl.includes('does not guarantee crawling, indexing, ranking') &&
   learn3b1Impl.includes('does not change') && learn3b1Impl.includes('calculator formulas') && learn3b1Impl.includes('SEARCH1 query privacy') &&
   learn3b1Impl.includes('LEARN3B-1 does not rewrite the six LEARN3B-2 pages')
+);
+
+
+// LEARN3B-2 financial resilience, savings and debt - Snapshot 94.
+const learn3b2Names = [
+  'emergency-fund-how-much.html',
+  'emergency-savings.html',
+  'sinking-fund-vs-emergency-fund.html',
+  'savings-goal-planning.html',
+  'lifestyle-inflation.html',
+  'debt-snowball-vs-avalanche.html'
+];
+const learn3b2Titles = [
+  'How Much Emergency Fund Should You Have? | Carrowmont',
+  'Emergency Savings: Why Liquidity Matters | Carrowmont',
+  'Sinking Fund vs Emergency Fund: Key Differences | Carrowmont',
+  'How to Plan a Savings Goal | Carrowmont',
+  'Lifestyle Inflation: How Spending Rises | Carrowmont',
+  'Debt Snowball vs Avalanche: Compare Methods | Carrowmont'
+];
+const learn3b2H1s = [
+  'How much emergency fund should you have?',
+  'Emergency savings has a different job from long-term investing.',
+  'Sinking fund vs emergency fund: What is the difference?',
+  'How do you plan a savings goal and work backward from the target?',
+  'What is lifestyle inflation and how can it slow financial progress?',
+  'Debt snowball vs avalanche: Which debt gets paid first?'
+];
+const learn3b2Published = ['2026-09-23','2026-09-20','2026-09-27','2026-09-23','2026-09-27','2026-10-14'];
+const learn3b2Pages = learn3b2Names.map(name => read(`draw004.github.io/${name}`));
+const learn3b2Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3B2_FINANCIAL_RESILIENCE_SAVINGS_DEBT_IMPLEMENTATION.md');
+const learn3b2Qa = readQa('tests/39-learn3b-financial-resilience-savings-debt.spec.js');
+const learn3b2QaConfig = readQa('qa.config.js');
+const learn3b2SearchInventory = read('draw004.github.io/data/carrowmont-search-pages.json');
+const learn3b2SearchFixtures = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3b2Localization = read('draw004.github.io/learn-localization.js');
+const learn3b2Count = (html, pattern) => (html.match(pattern) || []).length;
+const learn3b2Ctas = ['/goal-planner/','/goal-planner/','/budget-cash-flow-planner/','/goal-planner/','/budget-cash-flow-planner/','/budget-cash-flow-planner/debt-payoff-calculator.html'];
+
+add('LEARN3B-2: six established guides retain stable indexable identities, honest freshness and useful depth',
+  learn3b2Pages.every((html, index) => {
+    const h1s = [...html.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/gi)];
+    const article = jsonLdNode(html,'Article');
+    const breadcrumb = jsonLdNode(html,'BreadcrumbList');
+    const url = `https://carrowmont.com/${learn3b2Names[index]}`;
+    const description = gseo2aMetaContent(html,'description');
+    return gseo2aTitle(html) === learn3b2Titles[index] && h1s.length === 1 && h1s[0][1].replace(/<[^>]+>/g,'').trim() === learn3b2H1s[index] &&
+      description.length >= 110 && description.length <= 160 && gseo2aCanonical(html) === url && gseo2aMetaContent(html,'robots').toLowerCase() === 'index,follow' &&
+      article?.mainEntityOfPage === url && article?.datePublished === learn3b2Published[index] && article?.dateModified === '2026-10-20' && Boolean(breadcrumb) &&
+      html.includes('Reviewed 20 October 2026') && html.includes('href="/editorial-policy.html"') &&
+      html.includes('class="guide-answer"') && html.includes('class="guide-action-first"') && html.includes(`href="${learn3b2Ctas[index]}"`) &&
+      html.includes('Checklist:') && learn3b2Count(html,/class="guide-table-wrap"/g) >= 2 && learn3b2Count(html,/data-cm-money-inr=/g) >= 6 &&
+      learn3b2Count(html,/<li><a href="https?:\/\//g) >= 4 && learn2a2VisibleWords(html) > 1050 &&
+      html.includes('learn-localization.js?v=20261020-learn3b2');
+  })
+);
+add('LEARN3B-2: page-specific lessons preserve distinct search intent and practical decision value',
+  learn3b2Pages[0].includes('Three or six months can be useful reference points, but they are not commands') && learn3b2Pages[0].includes('One cost base, three different risk profiles') && learn3b2Pages[0].includes('Insurance does not remove the need for cash') &&
+  learn3b2Pages[1].includes('What does liquidity mean?') && learn3b2Pages[1].includes('An urgent repair during a market decline') && learn3b2Pages[1].includes('Where should emergency money be kept?') &&
+  learn3b2Pages[2].includes('The key difference is predictability') && learn3b2Pages[2].includes('Monthly amount = Expected cost') && learn3b2Pages[2].includes('Several costs can arrive at the same time') &&
+  learn3b2Pages[3].includes('Today’s money and future money are not the same') && learn3b2Pages[3].includes('Use a funded ratio') && learn3b2Pages[3].includes('Test more than one scenario') &&
+  learn3b2Pages[4].includes('One-time enjoyment and permanent cost are different') && learn3b2Pages[4].includes('Track the fixed-cost ratio') && learn3b2Pages[4].includes('Look at the trend, not one expensive month') &&
+  learn3b2Pages[5].includes('Keep the monthly amount the same') && learn3b2Pages[5].includes('Month 5') && learn3b2Pages[5].includes('Month 12') && learn3b2Pages[5].includes('Interest savings and motivation are different benefits')
+);
+add('LEARN3B-2: examples use established money localization and reviewed debt-payment terminology',
+  learn3b2Pages.every(html => html.includes('data-cm-money-inr=') && html.includes('data-cm-money-basis=')) &&
+  learn3b2Pages[5].includes('data-cm-term="debt-payment-phrase"') &&
+  learn3b2Localization.includes("if(key==='debt-payment-phrase')") &&
+  learn3b2Localization.includes("return 'debt EMI / repayment'") &&
+  learn3b2Localization.includes("return 'debt repayment'") &&
+  learn3b2Localization.includes("return 'debt payment'")
+);
+add('LEARN3B-2: sitemap and SEARCH1 preserve 121 canonical public pages with accurate material-change dates and query ownership',
+  learn3b2Names.every(name => {
+    const loc = `<loc>https://carrowmont.com/${name}</loc>`;
+    return new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
+      search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
+  }) && search1Entries.length === 121 &&
+  search1Result('how much emergency fund','CA')[0]?.url === '/emergency-fund-how-much.html' &&
+  search1Result('emergency liquidity','GB')[0]?.url === '/emergency-savings.html' &&
+  search1Result('sinking fund','AU')[0]?.url === '/sinking-fund-vs-emergency-fund.html' &&
+  search1Result('savings goal','OTHER')[0]?.url === '/savings-goal-planning.html' &&
+  search1Result('lifestyle creep','US')[0]?.url === '/lifestyle-inflation.html' &&
+  search1Result('debt snowball vs avalanche','IN')[0]?.url === '/debt-snowball-vs-avalanche.html' &&
+  learn3b2SearchInventory.includes('lifestyle creep') && learn3b2SearchInventory.includes('emergency liquidity') &&
+  learn3b2SearchFixtures.includes('debt snowball vs avalanche finds the method comparison')
+);
+let learn3b2DebtResult = null;
+try {
+  const sandbox={window:{}}; vm.createContext(sandbox); vm.runInContext(debt1Core,sandbox);
+  learn3b2DebtResult=sandbox.window.CarrowmontDebtPayoffCore.comparePlans([
+    {id:'small',balance:30000,annualRatePct:12,minimumPayment:1500},
+    {id:'card',balance:80000,annualRatePct:28,minimumPayment:3000},
+    {id:'large',balance:200000,annualRatePct:9,minimumPayment:4500}
+  ],5000);
+} catch {}
+add('LEARN3B-2: debt worked example remains aligned with the deterministic production engine and proportional locale scaling',
+  learn3b2DebtResult?.snowball?.firstPayoff?.month === 5 && learn3b2DebtResult?.avalanche?.firstPayoff?.month === 12 &&
+  learn3b2DebtResult?.snowball?.months === 26 && learn3b2DebtResult?.avalanche?.months === 26 &&
+  Math.round(learn3b2DebtResult?.snowball?.totalInterest || 0) === 44176 && Math.round(learn3b2DebtResult?.avalanche?.totalInterest || 0) === 40751 &&
+  Math.round(((learn3b2DebtResult?.snowball?.totalInterest || 0) - (learn3b2DebtResult?.avalanche?.totalInterest || 0))) === 3425 &&
+  ['9000','5000','14000','1500','3000','4500'].every(value => learn3b2Pages[5].includes(`data-cm-money-basis="target" data-cm-money-inr="${value}"`)) &&
+  learn3b2Pages[5].includes('fixed rates, fixed minimums, no fees and no new borrowing')
+);
+add('LEARN3B-2: central browser QA protects identity, localization, search ownership, internal journeys and 1280/390/360 layouts',
+  learn3b2Qa.includes('six rewritten guides retain stable identities') && learn3b2Qa.includes('country-aware money and debt terminology adapt') &&
+  learn3b2Qa.includes('worked debt example remains aligned') && learn3b2Qa.includes('each rewritten guide keeps the approved internal journey') && learn3b2Qa.includes('[1280, 390, 360]') &&
+  learn3b2Names.every(name => learn3b2QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3B-2: implementation record preserves global localization, stable URLs, truthful indexing signals and product boundaries',
+  learn3b2Impl.includes('Source Snapshot 94') && learn3b2Impl.includes('one universal educational core') &&
+  learn3b2Impl.includes('No unrelated sitemap date is refreshed') && learn3b2Impl.includes('does not guarantee crawling, indexing, ranking') &&
+  learn3b2Impl.includes('calculator formulas') && learn3b2Impl.includes('SEARCH1 query privacy') && learn3b2Impl.includes('workflow files')
 );
 
 console.log('\nCarrowmont source contract check\n');
