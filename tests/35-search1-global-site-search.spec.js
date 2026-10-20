@@ -126,6 +126,10 @@ test.describe('SEARCH1 global site search', () => {
       await gotoClean(page, path);
       await expect(page.locator('.desktop-nav a[href="/search.html"]')).toHaveCount(1);
       await expect(page.locator('.mobile-nav a[href="/search.html"]')).toHaveCount(1);
+      if (path === '/tools.html' || path === SEARCH) {
+        await expect(page.locator('.desktop-nav a[href="/"]')).toHaveCount(1);
+        await expect(page.locator('.mobile-nav a[href="/"]')).toHaveCount(1);
+      }
     }
 
     await gotoClean(page, SEARCH);

@@ -23,7 +23,7 @@ const PAGES = [
   {
     path: '/apr-vs-interest-rate.html',
     title: 'APR vs Interest Rate: The Difference | Carrowmont',
-    h1: 'APR vs interest rate: why the cheaper-looking loan may not be cheaper',
+    h1: 'APR vs interest rate: Why the cheaper-looking loan may not be cheaper',
     tool: '/loan-calculator/'
   }
 ];

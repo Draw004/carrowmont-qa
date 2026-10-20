@@ -3435,7 +3435,7 @@ add('MCR1: event/cause/outcome library has 12 events, 25 targets and exactly 73 
 );
 add('MCR1: every exposed relationship uses controlled terminology, evidence and a mandatory Chain Breaker',
   mcrRelationsOk && mcrCore.includes('Missing relationship') && mcrCore.includes('has no Chain Breaker') &&
-  mcrHtml.includes('Chain Breaker: what could make the opposite happen?')
+  mcrHtml.includes('Chain Breaker: What could make the opposite happen?')
 );
 add('MCR1: cause-specific logic protects the central rule that why the market moved changes the answer',
   (mcrRelationMap.get('yields-rise__broad-stocks')?.causeOverrides?.growth?.directAnswer || '').length>20 &&
@@ -4290,7 +4290,7 @@ const learn2a1Titles = [
 ];
 const learn2a1H1s = [
   'How to make a budget that fits your real life',
-  'Investing for beginners: understand the basics before choosing a product',
+  'Investing for beginners: Understand the basics before choosing a product',
   'What is an ETF, and how does it work?',
   'What is an index fund, and what does it actually track?'
 ];
@@ -4398,7 +4398,7 @@ const learn2a2H1s = [
   'What is a credit score, and what can affect it?',
   'What is debt consolidation, and can a lower payment cost more?',
   'How does credit-card interest build up?',
-  'APR vs interest rate: why the cheaper-looking loan may not be cheaper'
+  'APR vs interest rate: Why the cheaper-looking loan may not be cheaper'
 ];
 const learn2a2Pages = learn2a2Names.map(name => read(`draw004.github.io/${name}`));
 const learn2a2Qa = readQa('tests/37-learn2a-evergreen-finance-batch2.spec.js');
@@ -4481,6 +4481,67 @@ add('LEARN2A-2: browser QA and implementation record protect identity, localizat
   learn2a2Impl.includes('draw004.github.io') && learn2a2Impl.includes('carrowmont-qa') &&
   learn2a2Impl.includes('No external search API') && learn2a2Impl.includes('does not implement LEARN2B') &&
   learn2a2Impl.includes('does not') && learn2a2Impl.includes('calculator formula')
+);
+
+
+// LEARN3A UI, house-style and full-library audit - Snapshot 91.
+const learn3Audit = read('draw004.github.io/docs/CARROWMONT_LEARN3_LIBRARY_QUALITY_AUDIT_SNAPSHOT91.md');
+const learn3Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3A_UI_HOUSE_STYLE_AND_LIBRARY_AUDIT_IMPLEMENTATION.md');
+const learn3Standard = read('draw004.github.io/.github/LEARN-ARTICLE-STANDARD.md');
+const learn3UiStandard = read('draw004.github.io/docs/CARROWMONT_SHARED_UI_STANDARD.md');
+const learn3GuideEntries = search1Entries.filter(entry => entry.type === 'guide' && /^\/[^/]+\.html$/.test(entry.url));
+const learn3HeadingColonFailures = [];
+for (const entry of learn3GuideEntries) {
+  const html = read(`draw004.github.io${entry.url}`);
+  const publicHeadings = [
+    ...html.matchAll(/<title>([\s\S]*?)<\/title>/gi),
+    ...html.matchAll(/<h[1-6]\b[^>]*>([\s\S]*?)<\/h[1-6]>/gi)
+  ].map(match => match[1]);
+  for (const heading of publicHeadings) {
+    if (/:\s*(?:<[^>]+>\s*)*[a-z]/.test(heading)) learn3HeadingColonFailures.push(`${entry.url}: ${heading}`);
+  }
+}
+add('LEARN3A: Tools and Search expose explicit Home links on desktop and mobile navigation',
+  /<nav class="desktop-nav"[\s\S]*?<a href="\/">Home<\/a>[\s\S]*?<\/nav>/.test(search1Tools) &&
+  /<div class="mobile-nav-panel">[\s\S]*?<a href="\/">Home<\/a>[\s\S]*?<\/div>/.test(search1Tools) &&
+  /<nav class="desktop-nav"[\s\S]*?<a href="\/">Home<\/a>[\s\S]*?<\/nav>/.test(search1Html) &&
+  /<div class="mobile-nav-panel">[\s\S]*?<a href="\/">Home<\/a>[\s\S]*?<\/div>/.test(search1Html)
+);
+add('LEARN3A: Tools hero is compact and embedded search is pulled upward without decorative filler',
+  search1SiteCss.includes('.tools-directory-hero .page-hero-inner{max-width:1220px;padding:50px 0 62px}') &&
+  search1SiteCss.includes('body[data-cm-page="tools-directory"] .search-discovery-section{position:relative;z-index:2;margin-top:-36px') &&
+  search1SiteCss.includes('.tools-directory-hero .page-hero-inner{padding:18px 0 22px}') &&
+  search1SiteCss.includes('.tools-directory-hero-actions{display:none}') &&
+  search1SiteCss.includes('body[data-cm-page="tools-directory"] .search-discovery-section{margin-top:-28px') &&
+  search1SiteCss.includes('.cm-search-heading h2{margin-bottom:5px;font-size:21px;line-height:1.16}') &&
+  search1Tools.includes('/carrowmont.css?v=20261020-learn3a-fix1') &&
+  !search1Tools.includes('decorative-search') &&
+  readQa('tests/12-tools-hub.spec.js').includes('tools search should appear above the fold')
+);
+add('LEARN3A: every current Learn title and H1-H6 heading follows colon capitalization',
+  learn3GuideEntries.length === 83 && learn3HeadingColonFailures.length === 0,
+  learn3HeadingColonFailures.slice(0,3).join(' | ')
+);
+add('LEARN3A: shared standards define colon capitalization without corrupting ordinary prose',
+  learn3Standard.includes('Heading and title capitalization after a colon') &&
+  learn3Standard.includes('must **not** force unnatural capitalization inside ordinary paragraph prose') &&
+  learn3Standard.includes('current 83-guide library') &&
+  learn3UiStandard.includes('Colon capitalization in public headings') &&
+  learn3UiStandard.includes('Normal sentence grammar remains authoritative')
+);
+add('LEARN3A: complete 83-guide audit records practical quality gaps and controlled topic batches',
+  learn3Audit.includes('**83** Learn articles were audited') &&
+  learn3Audit.includes('worked-example') &&
+  learn3Audit.includes('decision/checklist') &&
+  learn3Audit.includes('LEARN3B') && learn3Audit.includes('LEARN3C') && learn3Audit.includes('LEARN3D') && learn3Audit.includes('LEARN3E') && learn3Audit.includes('LEARN3F') &&
+  (learn3Audit.match(/^\| `[^`]+\.html` \|/gm) || []).length === 83
+);
+add('LEARN3A: implementation record keeps mass rewrites, calculators, search privacy and workflows out of scope',
+  learn3Impl.includes('does not automatically rewrite all 83 Learn articles') &&
+  learn3Impl.includes('No calculator formula') &&
+  learn3Impl.includes('search privacy behavior') &&
+  learn3Impl.includes('workflow file') &&
+  readQa('tests/35-search1-global-site-search.spec.js').includes("path === '/tools.html' || path === SEARCH")
 );
 
 console.log('\nCarrowmont source contract check\n');

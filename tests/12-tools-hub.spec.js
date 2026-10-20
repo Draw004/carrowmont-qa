@@ -62,6 +62,21 @@ async function expectHomepageOrder(page, expected) {
 }
 
 test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
+  test('[AUTO] Tools directory exposes Home navigation and keeps search high in the first viewport', async ({ page }) => {
+    for (const width of [1280, 390, 360]) {
+      await page.setViewportSize({ width, height: 900 });
+      await gotoClean(page, DIRECTORY);
+      await expect(page.locator('.desktop-nav a[href="/"]')).toHaveCount(1);
+      await expect(page.locator('.mobile-nav a[href="/"]')).toHaveCount(1);
+      await assertNoHorizontalOverflow(page, `${width}px tools directory compact hero`);
+      const search = page.locator('[data-cm-search-input]').first();
+      await expect(search).toBeVisible();
+      const box = await search.boundingBox();
+      expect(box, `${width}px tools search box`).not.toBeNull();
+      expect(box.y + box.height, `${width}px tools search should appear above the fold`).toBeLessThan(900);
+      expect(box.y, `${width}px tools search should be pulled upward`).toBeLessThan(width === 1280 ? 640 : 760);
+    }
+  });
   test('[AUTO] canonical tools directory exposes nineteen live tools in three meaningful categories', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, DIRECTORY);
