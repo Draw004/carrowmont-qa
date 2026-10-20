@@ -1123,8 +1123,9 @@ add('main site: all Learn Article pages meet the v2 content-depth contract',
     const words = text ? text.split(' ').filter(Boolean).length : 0;
     const h2Count = (guide.match(/<h2\b/gi)||[]).length;
     const sourceLinks = ((guide.match(/<details[^>]*class="reference-note"[\s\S]*?<\/details>/i)||[])[0]||'').match(/<a\b[^>]*href=/gi)||[];
-    return page.includes('data-cm-rich="1"') &&
-      page.includes('data-cm-depth="1"') &&
+    const legacyDepth = page.includes('data-cm-rich="1"') && page.includes('data-cm-depth="1"');
+    const editorialDepth = page.includes('Checklist:') && (page.match(/class="guide-table-wrap"/g)||[]).length >= 2 && page.includes('href="/editorial-policy.html"');
+    return (legacyDepth || editorialDepth) &&
       page.includes('class="guide-answer"') &&
       page.includes('Frequently asked questions') &&
       h2Count >= 8 &&
@@ -2376,7 +2377,7 @@ add('main site: LEARN-LOCALE1 updates all content-changed Learn sitemap entries 
   !/\/in\/|\/us\/|\?country=/.test(learnLocaleSitemap)
 );
 add('main site: LEARN-LOCALE1 cache-busts the shared localization/CSS assets and keeps long related-guide links mobile-safe',
-  learnLocalePages.every(file => /learn-localization\.js\?v=(?:20261010-global1|20261014-mortgage-learn2|20261014-housing3)/.test(read('draw004.github.io/'+file))) &&
+  learnLocalePages.every(file => /learn-localization\.js\?v=(?:20261010-global1|20261014-mortgage-learn2|20261014-housing3|20261020-learn3b1)/.test(read('draw004.github.io/'+file))) &&
   standardizedLearnPages.every(({page}) => page.includes('learn-article.css?v=20261010-global1')) &&
   learnArticleCss.includes('.seo-related-guides .text-link') && learnArticleCss.includes('white-space:normal')
 );
@@ -3157,7 +3158,7 @@ add('main Learn: sitewide Learn housing copy uses reversible country localizatio
   mortgageLearnHotfixLocalization.includes("body.dataset.cmLearnArticle==='1'") &&
   mortgageLearnHotfixLocalization.includes("parent.closest('script,style,code,pre,.reference-note')") &&
   housingLearnAuditPages.length === 18 &&
-  housingLearnAuditPages.every(src=>src.includes('learn-localization.js?v=20261014-housing3'))
+  housingLearnAuditPages.every(src=>/learn-localization\.js\?v=(?:20261014-housing3|20261020-learn3b1)/.test(src))
 );
 add('main Learn: mortgage guide hero/back-link/footer wording follows country without changing canonical URLs',
   mortgageLearnHotfixRuntime.includes('function articleTitle') &&
@@ -4241,7 +4242,7 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
   search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  (search1FixtureScript.match(/\{ name:/g)||[]).length === 16 &&
+  (search1FixtureScript.match(/\{ name:/g)||[]).length === 22 &&
   search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
   search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
@@ -4542,6 +4543,100 @@ add('LEARN3A: implementation record keeps mass rewrites, calculators, search pri
   learn3Impl.includes('search privacy behavior') &&
   learn3Impl.includes('workflow file') &&
   readQa('tests/35-search1-global-site-search.spec.js').includes("path === '/tools.html' || path === SEARCH")
+);
+
+
+// LEARN3B-1 budget systems, pay cycles and cash flow - Snapshot 93.
+const learn3b1Names = [
+  '50-30-20-budget-rule.html',
+  'budgeting-by-pay-frequency.html',
+  'budgeting-with-irregular-income.html',
+  'cash-flow-vs-income.html',
+  'zero-based-budgeting.html',
+  'pay-yourself-first-budgeting.html'
+];
+const learn3b1Titles = [
+  '50/30/20 Budget Rule: How It Works | Carrowmont',
+  'Budgeting by Pay Frequency: Weekly to Monthly | Carrowmont',
+  'How to Budget With Irregular Income | Carrowmont',
+  'Cash Flow vs Income: Why the Difference Matters | Carrowmont',
+  'Zero-Based Budgeting: How It Works | Carrowmont',
+  'Pay Yourself First: What It Means in a Budget | Carrowmont'
+];
+const learn3b1H1s = [
+  'What is the 50/30/20 budget rule, and when should you adjust it?',
+  'How do weekly, biweekly, fortnightly and monthly pay cycles change budgeting?',
+  'How do you budget when your income changes every month?',
+  'Cash flow vs income: Why earning more does not always mean saving more',
+  'What is zero-based budgeting and how does it work?',
+  'What does pay yourself first mean in a budget?'
+];
+const learn3b1Pages = learn3b1Names.map(name => read(`draw004.github.io/${name}`));
+const learn3b1Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3B1_BUDGET_SYSTEMS_PAY_CYCLES_CASH_FLOW_IMPLEMENTATION.md');
+const learn3b1Qa = readQa('tests/38-learn3b-budget-systems-cash-flow.spec.js');
+const learn3b1QaConfig = readQa('qa.config.js');
+const learn3b1SearchInventory = read('draw004.github.io/data/carrowmont-search-pages.json');
+const learn3b1SearchFixtures = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3b1Localization = read('draw004.github.io/learn-localization.js');
+const learn3b1Count = (html, pattern) => (html.match(pattern) || []).length;
+
+add('LEARN3B-1: six established guides retain stable indexable identities, honest freshness and useful depth',
+  learn3b1Pages.every((html, index) => {
+    const h1s = [...html.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/gi)];
+    const article = jsonLdNode(html,'Article');
+    const breadcrumb = jsonLdNode(html,'BreadcrumbList');
+    const url = `https://carrowmont.com/${learn3b1Names[index]}`;
+    const description = gseo2aMetaContent(html,'description');
+    return gseo2aTitle(html) === learn3b1Titles[index] && h1s.length === 1 && h1s[0][1].replace(/<[^>]+>/g,'').trim() === learn3b1H1s[index] &&
+      description.length >= 110 && description.length <= 160 && gseo2aCanonical(html) === url && gseo2aMetaContent(html,'robots').toLowerCase() === 'index,follow' &&
+      article?.mainEntityOfPage === url && article?.datePublished === '2026-09-27' && article?.dateModified === '2026-10-20' && Boolean(breadcrumb) &&
+      html.includes('Published 27 September 2026 · Reviewed 20 October 2026') && html.includes('href="/editorial-policy.html"') &&
+      html.includes('class="guide-answer"') && html.includes('class="guide-action-first"') && html.includes('href="/budget-cash-flow-planner/"') &&
+      html.includes('Checklist:') && learn3b1Count(html,/class="guide-table-wrap"/g) >= 2 && learn3b1Count(html,/data-cm-money-inr=/g) >= 8 &&
+      learn3b1Count(html,/<li><a href="https?:\/\//g) >= 4 && learn2a2VisibleWords(html) > 1000 &&
+      html.includes('learn-localization.js?v=20261020-learn3b1');
+  })
+);
+add('LEARN3B-1: page-specific lessons answer the approved practical questions without collapsing distinct search intent',
+  learn3b1Pages[0].includes('starting framework, not a pass-or-fail test') && learn3b1Pages[0].includes('Textbook 50/30/20') && learn3b1Pages[0].includes('Give the 20% bucket more than one job') &&
+  learn3b1Pages[1].includes('data-cm-term="two-week-pay-label"') && learn3b1Pages[1].includes('Typical pay periods in a year') && learn3b1Pages[1].includes('Assigning one month across two paydays') &&
+  learn3b1Pages[2].includes('Use three income numbers') && learn3b1Pages[2].includes('Six-month average') && /tax (?:or|and) business obligations/i.test(learn3b1Pages[2]) &&
+  learn3b1Pages[3].includes('Amount and timing are separate questions') && learn3b1Pages[3].includes('Credit is not liquidity') && learn3b1Pages[3].includes('Same income, very different cash flow') &&
+  learn3b1Pages[4].includes('It does not mean spending everything or ending the month with a zero bank balance') && learn3b1Pages[4].includes('A complete zero-based month') && learn3b1Pages[4].includes('Use rollover rules') &&
+  learn3b1Pages[5].includes('Priority is different from literal payment order') && learn3b1Pages[5].includes('A safe cash-flow waterfall') && learn3b1Pages[5].includes('data-cm-term="sip-calculator"')
+);
+add('LEARN3B-1: examples use the established money-localization layer and reviewed payday terminology',
+  learn3b1Pages.every(html => html.includes('data-cm-money-inr=') && html.includes('data-cm-money-basis="monthly"')) &&
+  learn3b1Localization.includes("if(key==='two-week-pay-label')") &&
+  learn3b1Localization.includes("['US','CA'].includes(s.region)") && learn3b1Localization.includes("return 'Biweekly'") &&
+  learn3b1Localization.includes("['GB','IE','AU','NZ'].includes(s.region)") && learn3b1Localization.includes("return 'Fortnightly'") &&
+  learn3b1Localization.includes("return 'Every two weeks'")
+);
+add('LEARN3B-1: sitemap and SEARCH1 preserve 121 canonical public pages with accurate material-change dates and query ownership',
+  learn3b1Names.every(name => {
+    const loc = `<loc>https://carrowmont.com/${name}</loc>`;
+    return new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
+      search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
+  }) && search1Entries.length === 121 &&
+  search1Result('50 30 20 budget','US')[0]?.url === '/50-30-20-budget-rule.html' &&
+  search1Result('payday budget','US')[0]?.url === '/budgeting-by-pay-frequency.html' &&
+  search1Result('variable income budget','CA')[0]?.url === '/budgeting-with-irregular-income.html' &&
+  search1Result('cash flow vs income','OTHER')[0]?.url === '/cash-flow-vs-income.html' &&
+  search1Result('every dollar budget','US')[0]?.url === '/zero-based-budgeting.html' &&
+  search1Result('pay yourself first','AU')[0]?.url === '/pay-yourself-first-budgeting.html' &&
+  learn3b1SearchInventory.includes('payday budget') && learn3b1SearchInventory.includes('variable income budget') &&
+  learn3b1SearchFixtures.includes('payday budget finds pay-frequency planning')
+);
+add('LEARN3B-1: central browser QA protects identity, localization, search ownership, internal journeys and 1280/390/360 layouts',
+  learn3b1Qa.includes('six rewritten guides retain stable identities') && learn3b1Qa.includes('country-aware money, payday and recurring-investment language adapt') &&
+  learn3b1Qa.includes('each rewritten guide keeps the approved internal journey') && learn3b1Qa.includes('[1280, 390, 360]') &&
+  learn3b1Names.every(name => learn3b1QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3B-1: implementation record preserves global localization, stable URLs, truthful indexing signals and the LEARN3B-2 boundary',
+  learn3b1Impl.includes('Source Snapshot 93') && learn3b1Impl.includes('one universal educational core') &&
+  learn3b1Impl.includes('No unrelated sitemap date is refreshed') && learn3b1Impl.includes('does not guarantee crawling, indexing, ranking') &&
+  learn3b1Impl.includes('does not change') && learn3b1Impl.includes('calculator formulas') && learn3b1Impl.includes('SEARCH1 query privacy') &&
+  learn3b1Impl.includes('LEARN3B-1 does not rewrite the six LEARN3B-2 pages')
 );
 
 console.log('\nCarrowmont source contract check\n');

@@ -163,5 +163,11 @@ export const mainSitePages = [
   { key: 'credit-score-explained', path: '/credit-score-explained.html', text: 'What is a credit score, and what can affect it?' },
   { key: 'debt-consolidation-explained', path: '/debt-consolidation-explained.html', text: 'What is debt consolidation, and can a lower payment cost more?' },
   { key: 'credit-card-interest', path: '/how-credit-card-interest-works.html', text: 'How does credit-card interest build up?' },
-  { key: 'apr-vs-interest-rate', path: '/apr-vs-interest-rate.html', text: 'APR vs interest rate: Why the cheaper-looking loan may not be cheaper' }
+  { key: 'apr-vs-interest-rate', path: '/apr-vs-interest-rate.html', text: 'APR vs interest rate: Why the cheaper-looking loan may not be cheaper' },
+  { key: 'budget-50-30-20', path: '/50-30-20-budget-rule.html', text: 'What is the 50/30/20 budget rule, and when should you adjust it?' },
+  { key: 'budget-pay-frequency', path: '/budgeting-by-pay-frequency.html', text: 'How do weekly, biweekly, fortnightly and monthly pay cycles change budgeting?' },
+  { key: 'budget-irregular-income', path: '/budgeting-with-irregular-income.html', text: 'How do you budget when your income changes every month?' },
+  { key: 'cash-flow-vs-income', path: '/cash-flow-vs-income.html', text: 'Cash flow vs income: Why earning more does not always mean saving more' },
+  { key: 'zero-based-budgeting', path: '/zero-based-budgeting.html', text: 'What is zero-based budgeting and how does it work?' },
+  { key: 'pay-yourself-first', path: '/pay-yourself-first-budgeting.html', text: 'What does pay yourself first mean in a budget?' }
 ];
