@@ -11,7 +11,7 @@ const PAGES = [
   {
     path: '/investing-for-beginners.html',
     title: 'Investing for Beginners: Simple Guide | Carrowmont',
-    h1: 'Investing for beginners: understand the basics before choosing a product',
+    h1: 'Investing for beginners: Understand the basics before choosing a product',
     tool: '/sip-calculator/'
   },
   {
