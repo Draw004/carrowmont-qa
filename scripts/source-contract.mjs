@@ -4204,7 +4204,7 @@ add('SEARCH1: noindex utility page has one stable canonical and no query-bearing
 );
 add('SEARCH1: reviewed index and alias library are valid, deterministic and below the 250 KB V1 target',
   search1Index?.schema_version === 1 && search1Pages?.schema_version === 1 && search1Aliases?.schema_version === 1 &&
-  search1Entries.length === 117 && new Set(search1EntryPaths).size === search1Entries.length &&
+  search1Entries.length === 121 && new Set(search1EntryPaths).size === search1Entries.length &&
   search1Entries.every(entry => entry && /^\//.test(entry.url) && entry.title && entry.description && ['tool','guide','carrowmont'].includes(entry.type) && entry.category && Number.isInteger(entry.priority)) &&
   Buffer.byteLength(read('draw004.github.io/data/carrowmont-search-index.json'), 'utf8') < 250 * 1024 &&
   Array.isArray(search1Aliases?.groups) && search1Aliases.groups.length >= 10 &&
@@ -4235,9 +4235,15 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('investing for beginners','US')[0]?.url === '/investing-for-beginners.html' &&
   search1Result('etf','US')[0]?.url === '/what-is-an-etf.html' &&
   search1Result('index fund','US')[0]?.url === '/index-funds-explained.html' &&
+  search1Result('credit score','US')[0]?.url === '/credit-score-explained.html' &&
+  search1Result('credit rating','AU')[0]?.url === '/credit-score-explained.html' &&
+  search1Result('debt consolidation','CA')[0]?.url === '/debt-consolidation-explained.html' &&
+  search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
+  search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  search1FixtureScript.includes('12 SEARCH1 deterministic fixtures PASS') === false &&
+  (search1FixtureScript.match(/\{ name:/g)||[]).length === 16 &&
   search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
+  search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
 );
 add('SEARCH1: search words remain memory-only and are never placed in URLs, browser storage, cookies or analytics calls',
@@ -4353,7 +4359,7 @@ add('LEARN2A-1: sitemap and SEARCH1 contain the four canonicals exactly once wit
     return (learn2a1Sitemap.match(new RegExp(loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length === 1 &&
       new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
       search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
-  }) && search1Entries.length === 117 &&
+  }) && search1Entries.length === 121 &&
   search1Result('how to make a budget','US')[0]?.url === '/how-to-make-a-budget.html' &&
   search1Result('investing for beginners','US')[0]?.url === '/investing-for-beginners.html' &&
   search1Result('etf','US')[0]?.url === '/what-is-an-etf.html' &&
@@ -4371,6 +4377,110 @@ add('LEARN2A-1: implementation record locks Snapshot 89, simple language, two-re
   learn2a1Impl.includes('Source Snapshot 89') && learn2a1Impl.includes('simple language') &&
   learn2a1Impl.includes('draw004.github.io') && learn2a1Impl.includes('carrowmont-qa') &&
   learn2a1Impl.includes('does not implement LEARN2A-2') && learn2a1Impl.includes('No calculator formula')
+);
+
+
+
+// LEARN2A-2 evergreen credit and borrowing foundations plus SEARCH1 layout refinement - Snapshot 90 implementation.
+const learn2a2Names = [
+  'credit-score-explained.html',
+  'debt-consolidation-explained.html',
+  'how-credit-card-interest-works.html',
+  'apr-vs-interest-rate.html'
+];
+const learn2a2Titles = [
+  'Credit Score Explained: What Affects It | Carrowmont',
+  'Debt Consolidation Explained | Carrowmont',
+  'How Credit-Card Interest Works | Carrowmont',
+  'APR vs Interest Rate: The Difference | Carrowmont'
+];
+const learn2a2H1s = [
+  'What is a credit score, and what can affect it?',
+  'What is debt consolidation, and can a lower payment cost more?',
+  'How does credit-card interest build up?',
+  'APR vs interest rate: why the cheaper-looking loan may not be cheaper'
+];
+const learn2a2Pages = learn2a2Names.map(name => read(`draw004.github.io/${name}`));
+const learn2a2Qa = readQa('tests/37-learn2a-evergreen-finance-batch2.spec.js');
+const learn2a2Impl = read('draw004.github.io/docs/CARROWMONT_LEARN2A2_CREDIT_BORROWING_SEARCH_LAYOUT_IMPLEMENTATION.md');
+const learn2a2VisibleWords = html => (html
+  .replace(/<script[\s\S]*?<\/script>/gi,' ')
+  .replace(/<style[\s\S]*?<\/style>/gi,' ')
+  .replace(/<[^>]+>/g,' ')
+  .replace(/&[a-z0-9#]+;/gi,' ')
+  .match(/\b[\w’'-]+\b/g) || []).length;
+const learn2a2InboundCount = publicPath => learn2a1MainHtmlNames
+  .filter(name => !learn2a2Names.includes(name) && name !== 'learn.html')
+  .filter(name => read(`draw004.github.io/${name}`).includes(`href="/${publicPath}"`)).length;
+
+add('LEARN2A-2: four evergreen credit and borrowing guides are substantive, indexable Article pages with direct answers and accurate identities',
+  learn2a2Pages.length === 4 && learn2a2Pages.every((html,index) => {
+    const url = `https://carrowmont.com/${learn2a2Names[index]}`;
+    const title = (html.match(/<title>([^<]*)<\/title>/i)||[])[1] || '';
+    const h1s = [...html.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/gi)];
+    const description = gseo2aMetaContent(html,'description');
+    const article = jsonLdNode(html,'Article');
+    const breadcrumb = jsonLdNode(html,'BreadcrumbList');
+    return title === learn2a2Titles[index] && h1s.length === 1 && h1s[0][1].replace(/<[^>]+>/g,'').trim() === learn2a2H1s[index] &&
+      description.length >= 110 && description.length <= 160 && gseo2aCanonical(html) === url && gseo2aMetaContent(html,'robots').toLowerCase() === 'index,follow' &&
+      article?.mainEntityOfPage === url && article?.datePublished === '2026-10-20' && article?.dateModified === '2026-10-20' &&
+      Boolean(breadcrumb) && html.includes('class="guide-answer"') && learn2a2VisibleWords(html) > 1000;
+  })
+);
+add('LEARN2A-2: every guide teaches in simple language with a worked comparison, questions, trusted sources, editorial policy and relevant loan journey',
+  learn2a2Pages.every(html =>
+    html.includes('class="guide-action-first"') && html.includes('href="/loan-calculator/"') &&
+    html.includes('class="guide-table-wrap"') && html.includes('class="guide-steps"') && html.includes('Questions to ask') &&
+    html.includes('class="reference-note"') && (html.match(/class="source-list"[\s\S]*?<\/ul>/i)?.[0].match(/<a\s/gi)||[]).length >= 3 &&
+    html.includes('href="/editorial-policy.html"') && html.includes('Educational information only.')
+  ) &&
+  learn2a2Pages[0].includes('different information or formulas') && learn2a2Pages[0].includes('never guarantees approval') &&
+  learn2a2Pages[1].includes('a lower payment can result from a longer term') && learn2a2Pages[2].includes('minimum payment') &&
+  learn2a2Pages[3].includes('exact legal calculation differs by country')
+);
+add('LEARN2A-2: examples and cautions use the established localization layer without pretending credit or disclosure rules are universal',
+  learn2a2Pages.slice(1).every(html => html.includes('data-cm-money-inr=') && html.includes('data-cm-money-basis="monthly"')) &&
+  learn2a2Pages.every(html => html.includes('locale.js?v=20261014-housing3') && html.includes('learn-localization.js?v=20261014-housing3')) &&
+  learn2a2Pages[0].includes('score ranges, access rights and dispute procedures differ by country') &&
+  learn2a2Pages[1].includes('insolvency and secured borrowing differs by country') &&
+  learn2a2Pages[2].includes('differ by issuer and country') && learn2a2Pages[3].includes('local disclosure rules') &&
+  learn2a2Names.every(name => !/\/(?:in|us|uk|ca|au|nz)\//i.test(name))
+);
+add('LEARN2A-2: Learn hub and contextual article network provide at least four natural inbound paths beyond the hub per guide',
+  learn2a1Hub.includes('data-category="loans"') && learn2a1Hub.includes('<h2>Credit, Loans &amp; Debt</h2>') &&
+  learn2a2Names.every(name => learn2a1Hub.includes(`href="/${name}"`) && learn2a2InboundCount(name) >= 4)
+);
+add('LEARN2A-2: sitemap and SEARCH1 contain 121 reviewed public pages and give the new guides correct informational ownership',
+  learn2a2Names.every(name => {
+    const loc = `<loc>https://carrowmont.com/${name}</loc>`;
+    return (learn2a1Sitemap.match(new RegExp(loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length === 1 &&
+      new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
+      search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
+  }) && search1Entries.length === 121 &&
+  search1Result('credit score','US')[0]?.url === '/credit-score-explained.html' &&
+  search1Result('credit rating','AU')[0]?.url === '/credit-score-explained.html' &&
+  search1Result('debt consolidation','CA')[0]?.url === '/debt-consolidation-explained.html' &&
+  search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
+  search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html'
+);
+add('SEARCH1 layout refinement: compact hero places the primary search action above the fold while preserving responsive and privacy boundaries',
+  search1Css.includes('.cm-search-page-hero .page-hero-inner{padding:46px 0 94px') &&
+  search1Css.includes('.cm-search-page-section{position:relative;z-index:2;margin-top:-64px') &&
+  search1Css.includes('.cm-search-page-section{margin-top:-48px;padding-bottom:54px}') &&
+  search1Html.includes('search.css?v=20261020-learn2a2') && search1Learn.includes('search.css?v=20261020-learn2a2') && search1Tools.includes('search.css?v=20261020-learn2a2') &&
+  search1Qa.includes('search action should be visible above the fold') && search1Qa.includes('[1280, 390, 360]') &&
+  !/localStorage|sessionStorage|URLSearchParams/.test(search1Js)
+);
+add('LEARN2A-2: browser QA and implementation record protect identity, localization, discovery, layout and Snapshot 90 release boundaries',
+  learn2a2Qa.includes('four guides have unique indexable identities') &&
+  learn2a2Qa.includes('country-aware money examples change') &&
+  learn2a2Qa.includes('at least four contextual inbound pages') &&
+  learn2a2Qa.includes('[1280, 390, 360]') &&
+  learn2a1QaConfig.includes("path: '/credit-score-explained.html'") && learn2a1QaConfig.includes("path: '/apr-vs-interest-rate.html'") &&
+  learn2a2Impl.includes('Source Snapshot 90') && learn2a2Impl.includes('simple language') &&
+  learn2a2Impl.includes('draw004.github.io') && learn2a2Impl.includes('carrowmont-qa') &&
+  learn2a2Impl.includes('No external search API') && learn2a2Impl.includes('does not implement LEARN2B') &&
+  learn2a2Impl.includes('does not') && learn2a2Impl.includes('calculator formula')
 );
 
 console.log('\nCarrowmont source contract check\n');
