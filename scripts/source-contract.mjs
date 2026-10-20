@@ -4170,6 +4170,98 @@ add('HOME1: implementation record locks Snapshot 86, current privacy architectur
   home1Impl.includes('draw004.github.io') && home1Impl.includes('carrowmont-qa') && home1Impl.includes('standalone first')
 );
 
+
+// SEARCH1 global site search contract - Snapshot 88 implementation.
+const search1Html = read('draw004.github.io/search.html');
+const search1Js = read('draw004.github.io/search.js');
+const search1Core = read('draw004.github.io/search-core.js');
+const search1Css = read('draw004.github.io/search.css');
+const search1SiteJs = read('draw004.github.io/site.js');
+const search1SiteCss = read('draw004.github.io/carrowmont.css');
+const search1Learn = read('draw004.github.io/learn.html');
+const search1Tools = read('draw004.github.io/tools.html');
+const search1Privacy = read('draw004.github.io/privacy.html');
+const search1Sitemap = read('draw004.github.io/sitemap.xml');
+const search1Build = read('draw004.github.io/scripts/build-search-index.mjs');
+const search1FixtureScript = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const search1Qa = readQa('tests/35-search1-global-site-search.spec.js');
+const search1QaConfig = readQa('qa.config.js');
+const search1Impl = read('draw004.github.io/docs/CARROWMONT_SEARCH1_GLOBAL_SITE_SEARCH_IMPLEMENTATION.md');
+let search1Index = null;
+let search1Pages = null;
+let search1Aliases = null;
+try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-index.json')); } catch {}
+try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
+try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
+const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
+const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
+const search1EntryPaths = search1Entries.map(entry => entry?.url);
+add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
+  search1Html.includes('<meta name="robots" content="noindex,follow">') &&
+  search1Html.includes('<link rel="canonical" href="https://carrowmont.com/search.html">') &&
+  !search1Sitemap.includes('https://carrowmont.com/search.html') &&
+  !/search\.html\?q=|URLSearchParams|location\.search|location\.hash/.test(search1Html + search1Js)
+);
+add('SEARCH1: reviewed index and alias library are valid, deterministic and below the 250 KB V1 target',
+  search1Index?.schema_version === 1 && search1Pages?.schema_version === 1 && search1Aliases?.schema_version === 1 &&
+  search1Entries.length === 113 && new Set(search1EntryPaths).size === search1Entries.length &&
+  search1Entries.every(entry => entry && /^\//.test(entry.url) && entry.title && entry.description && ['tool','guide','carrowmont'].includes(entry.type) && entry.category && Number.isInteger(entry.priority)) &&
+  Buffer.byteLength(read('draw004.github.io/data/carrowmont-search-index.json'), 'utf8') < 250 * 1024 &&
+  Array.isArray(search1Aliases?.groups) && search1Aliases.groups.length >= 10 &&
+  search1Build.includes('SEARCH1 index check PASS') && search1Build.includes('duplicate canonical URL') && search1Build.includes('committed search index is stale')
+);
+add('SEARCH1: every sitemap URL is searchable exactly once and no internal/release path enters the index',
+  search1SitemapPaths.length === search1Entries.length &&
+  search1SitemapPaths.every(url => search1EntryPaths.includes(url)) &&
+  search1EntryPaths.every(url => search1SitemapPaths.includes(url)) &&
+  search1EntryPaths.every(url => !/\.(?:zip|md|json|ya?ml)$/i.test(url) && !url.includes('/docs/') && !url.includes('/.github/'))
+);
+let search1CoreApi = null;
+try {
+  const sandbox = { globalThis:null };
+  sandbox.globalThis = sandbox;
+  vm.runInNewContext(search1Core, sandbox, { filename:'search-core.js' });
+  search1CoreApi = sandbox.CarrowmontSearchCore;
+} catch {}
+const search1Result = (query, region='OTHER') => search1CoreApi?.search?.(search1Entries, search1Aliases, query, { region, limit:12 }) || [];
+add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-loan and empty-state behavior',
+  search1CoreApi?.version === '1.0.0' &&
+  search1Result('sip','IN')[0]?.url === '/sip-calculator/' &&
+  search1Result('emi','IN')[0]?.url === '/loan-calculator/' &&
+  search1Result('remortgage','GB')[0]?.url === '/mortgage-payoff-calculator/refinance-break-even.html' &&
+  search1Result('swp','IN')[0]?.url === '/retirement-calculator/withdrawal-calculator.html' &&
+  search1Result('home loan','IN').some(entry => entry.url === '/home-affordability-calculator.html') &&
+  search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
+  search1FixtureScript.includes('const fixtures = [') && search1FixtureScript.includes('nonsense returns no misleading match')
+);
+add('SEARCH1: search words remain memory-only and are never placed in URLs, browser storage, cookies or analytics calls',
+  !/localStorage|sessionStorage|document\.cookie|URLSearchParams|history\.(?:pushState|replaceState)|location\.(?:search|hash)/.test(search1Js) &&
+  !/sendBeacon|XMLHttpRequest|WebSocket/.test(search1Js) &&
+  search1Js.includes("fetch(INDEX_URL, { credentials: 'same-origin'") && search1Js.includes("fetch(ALIASES_URL, { credentials: 'same-origin'") &&
+  !/https?:\/\//.test(search1Js) &&
+  !/name=["'](?:q|query|search)["']/.test(search1Html + search1Learn + search1Tools) &&
+  search1Privacy.includes('not added to the page URL') && search1Privacy.includes('not sent to an external search provider')
+);
+add('SEARCH1: header, Learn and Tools expose one consistent search path without replacing crawlable browse links',
+  search1SiteJs.includes("href = '/search.html'") && search1SiteJs.includes('data-cm-search-link') &&
+  search1SiteCss.includes('.desktop-nav .site-search-link') &&
+  search1Learn.includes('id="learnSearchInput"') && search1Learn.includes('class="planning-categories"') &&
+  search1Tools.includes('id="toolsSearchInput"') && search1Tools.includes('id="core-planning-tools"') &&
+  search1Learn.includes('search-core.js?v=20261020-search1') && search1Tools.includes('search-core.js?v=20261020-search1') &&
+  search1Css.includes('@media(max-width:760px)') && search1Css.includes('grid-template-columns:1fr')
+);
+add('SEARCH1: central QA protects index, aliases, privacy, navigation, embedded discovery and 1280/390/360 layouts',
+  search1Qa.includes('deterministic aliases find tools and guides') &&
+  search1Qa.includes('never enter URL, browser storage, cookies or network requests') &&
+  search1Qa.includes('Learn and Tools keep their browse structure') &&
+  search1Qa.includes('[1280, 390, 360]') &&
+  search1QaConfig.includes("key: 'search', path: '/search.html'")
+);
+add('SEARCH1: implementation record locks Snapshot 88, two-repository scope and the Learn-first follow-up boundary',
+  search1Impl.includes('Snapshot 88') && search1Impl.includes('draw004.github.io') && search1Impl.includes('carrowmont-qa') &&
+  search1Impl.includes('No external search API') && search1Impl.includes('LEARN2A')
+);
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);

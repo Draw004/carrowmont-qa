@@ -136,6 +136,7 @@ export const mainSitePages = [
   { key: 'tools-directory', path: '/tools.html', text: 'Financial calculators, planners and scenario tools' },
   { key: 'about', path: '/about.html', text: 'About Carrowmont' },
   { key: 'learn', path: '/learn.html', text: 'PLANNING TOPICS' },
+  { key: 'search', path: '/search.html', text: 'Search Carrowmont' },
   { key: 'methodology', path: '/methodology.html', text: 'Methodology' },
   { key: 'editorial-policy', path: '/editorial-policy.html', text: 'Clear standards for how Carrowmont publishes financial information.' },
   { key: 'four-percent-rule-stress-test', path: '/4-percent-rule-stress-test.html', text: '4% Rule Stress Test' },
