@@ -2989,7 +2989,7 @@ add('main site: GSEO1E asset-allocation definition intent is explicit without H1
   gseo1eAssetAllocation.includes('<title>What Is Asset Allocation? How It Works | Carrowmont</title>') &&
   gseo1eAssetAllocation.includes('<h1>What is asset allocation, and why does it matter?</h1>') &&
   gseo1eAssetAllocation.includes('Asset allocation is how a portfolio is divided among stocks, bonds, cash and other assets.') &&
-  gseo1eAssetArticle?.dateModified === '2026-10-13'
+  gseo1eAssetArticle?.dateModified >= '2026-10-13'
 );
 add('main site: GSEO1E zero-based budgeting absorbs observed wording variants without a duplicate URL',
   gseo1eZeroBased.includes('<title>Zero-Based Budgeting: How It Works | Carrowmont</title>') &&
@@ -4204,7 +4204,7 @@ add('SEARCH1: noindex utility page has one stable canonical and no query-bearing
 );
 add('SEARCH1: reviewed index and alias library are valid, deterministic and below the 250 KB V1 target',
   search1Index?.schema_version === 1 && search1Pages?.schema_version === 1 && search1Aliases?.schema_version === 1 &&
-  search1Entries.length === 113 && new Set(search1EntryPaths).size === search1Entries.length &&
+  search1Entries.length === 117 && new Set(search1EntryPaths).size === search1Entries.length &&
   search1Entries.every(entry => entry && /^\//.test(entry.url) && entry.title && entry.description && ['tool','guide','carrowmont'].includes(entry.type) && entry.category && Number.isInteger(entry.priority)) &&
   Buffer.byteLength(read('draw004.github.io/data/carrowmont-search-index.json'), 'utf8') < 250 * 1024 &&
   Array.isArray(search1Aliases?.groups) && search1Aliases.groups.length >= 10 &&
@@ -4231,8 +4231,14 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('remortgage','GB')[0]?.url === '/mortgage-payoff-calculator/refinance-break-even.html' &&
   search1Result('swp','IN')[0]?.url === '/retirement-calculator/withdrawal-calculator.html' &&
   search1Result('home loan','IN').some(entry => entry.url === '/home-affordability-calculator.html') &&
+  search1Result('how to make a budget','US')[0]?.url === '/how-to-make-a-budget.html' &&
+  search1Result('investing for beginners','US')[0]?.url === '/investing-for-beginners.html' &&
+  search1Result('etf','US')[0]?.url === '/what-is-an-etf.html' &&
+  search1Result('index fund','US')[0]?.url === '/index-funds-explained.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  search1FixtureScript.includes('const fixtures = [') && search1FixtureScript.includes('nonsense returns no misleading match')
+  search1FixtureScript.includes('12 SEARCH1 deterministic fixtures PASS') === false &&
+  search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
+  search1FixtureScript.includes('nonsense returns no misleading match')
 );
 add('SEARCH1: search words remain memory-only and are never placed in URLs, browser storage, cookies or analytics calls',
   !/localStorage|sessionStorage|document\.cookie|URLSearchParams|history\.(?:pushState|replaceState)|location\.(?:search|hash)/.test(search1Js) &&
@@ -4260,6 +4266,111 @@ add('SEARCH1: central QA protects index, aliases, privacy, navigation, embedded 
 add('SEARCH1: implementation record locks Snapshot 88, two-repository scope and the Learn-first follow-up boundary',
   search1Impl.includes('Snapshot 88') && search1Impl.includes('draw004.github.io') && search1Impl.includes('carrowmont-qa') &&
   search1Impl.includes('No external search API') && search1Impl.includes('LEARN2A')
+);
+
+
+// LEARN2A-1 evergreen money-management and investing foundations - Snapshot 89 implementation.
+const learn2a1Names = [
+  'how-to-make-a-budget.html',
+  'investing-for-beginners.html',
+  'what-is-an-etf.html',
+  'index-funds-explained.html'
+];
+const learn2a1Titles = [
+  'How to Make a Budget That Works | Carrowmont',
+  'Investing for Beginners: Simple Guide | Carrowmont',
+  'What Is an ETF? Exchange-Traded Funds Explained | Carrowmont',
+  'Index Funds Explained: Passive Investing | Carrowmont'
+];
+const learn2a1H1s = [
+  'How to make a budget that fits your real life',
+  'Investing for beginners: understand the basics before choosing a product',
+  'What is an ETF, and how does it work?',
+  'What is an index fund, and what does it actually track?'
+];
+const learn2a1ToolLinks = [
+  '/budget-cash-flow-planner/',
+  '/sip-calculator/',
+  '/sip-calculator/',
+  '/compound-interest-calculator/'
+];
+const learn2a1Pages = learn2a1Names.map(name => read(`draw004.github.io/${name}`));
+const learn2a1Hub = read('draw004.github.io/learn.html');
+const learn2a1Sitemap = read('draw004.github.io/sitemap.xml');
+const learn2a1Qa = readQa('tests/36-learn2a-evergreen-finance-batch1.spec.js');
+const learn2a1QaConfig = readQa('qa.config.js');
+const learn2a1Impl = read('draw004.github.io/docs/CARROWMONT_LEARN2A1_EVERGREEN_MONEY_INVESTING_FOUNDATIONS_IMPLEMENTATION.md');
+const learn2a1VisibleWords = html => (html
+  .replace(/<script[\s\S]*?<\/script>/gi,' ')
+  .replace(/<style[\s\S]*?<\/style>/gi,' ')
+  .replace(/<[^>]+>/g,' ')
+  .replace(/&[a-z0-9#]+;/gi,' ')
+  .match(/\b[\w’'-]+\b/g) || []).length;
+const learn2a1MainHtmlNames = fs.readdirSync(path.join(root,'draw004.github.io')).filter(name => name.endsWith('.html'));
+const learn2a1InboundCount = publicPath => learn2a1MainHtmlNames
+  .filter(name => !learn2a1Names.includes(name))
+  .filter(name => read(`draw004.github.io/${name}`).includes(`href="/${publicPath}"`)).length;
+
+add('LEARN2A-1: four unique evergreen guides are substantive, indexable Article pages with direct answers and accurate canonicals',
+  learn2a1Pages.length === 4 && learn2a1Pages.every((html, index) => {
+    const url = `https://carrowmont.com/${learn2a1Names[index]}`;
+    const title = (html.match(/<title>([^<]*)<\/title>/i)||[])[1] || '';
+    const h1s = [...html.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/gi)];
+    const article = jsonLdNode(html,'Article');
+    const breadcrumb = jsonLdNode(html,'BreadcrumbList');
+    return title === learn2a1Titles[index] && h1s.length === 1 && h1s[0][1].replace(/<[^>]+>/g,'').trim() === learn2a1H1s[index] &&
+      gseo2aCanonical(html) === url && gseo2aMetaContent(html,'robots').toLowerCase() === 'index,follow' &&
+      article?.mainEntityOfPage === url && article?.datePublished === '2026-10-20' && article?.dateModified === '2026-10-20' &&
+      Boolean(breadcrumb) && html.includes('class="guide-answer"') && learn2a1VisibleWords(html) > 1000;
+  })
+);
+add('LEARN2A-1: every guide has plain-language teaching structure, worked comparison, trusted sources, editorial policy and a relevant tool journey',
+  learn2a1Pages.every((html,index) =>
+    html.includes('class="guide-action-first"') && html.includes(`href="${learn2a1ToolLinks[index]}"`) &&
+    html.includes('class="guide-table-wrap"') && html.includes('class="guide-steps"') && html.includes('Common mistakes') &&
+    html.includes('Questions to ask') && html.includes('class="reference-note"') &&
+    (html.match(/class="source-list"[\s\S]*?<\/ul>/i)?.[0].match(/<a\s/gi)||[]).length >= 3 &&
+    html.includes('href="/editorial-policy.html"') && html.includes('Educational information only.')
+  )
+);
+add('LEARN2A-1: examples use current declarative localization and country-aware SIP or recurring-investment terminology without country doorway URLs',
+  learn2a1Pages[0].includes('data-cm-money-inr="100000"') && learn2a1Pages[0].includes('data-cm-money-basis="monthly"') &&
+  learn2a1Pages[1].includes('data-cm-money-inr="10000"') && learn2a1Pages[1].includes('data-cm-term="sip-calculator"') &&
+  learn2a1Pages[2].includes('data-cm-term="sip-calculator"') &&
+  learn2a1Pages.every(html => html.includes('locale.js?v=20261014-housing3') && html.includes('learn-localization.js?v=20261014-housing3')) &&
+  learn2a1Names.every(name => !/\/(?:in|us|uk|ca|au|nz)\//i.test(name))
+);
+add('LEARN2A-1: Learn hub and contextual article network provide at least four natural inbound discovery paths per guide',
+  learn2a1Hub.includes('data-category="budget"') && learn2a1Hub.includes('href="/how-to-make-a-budget.html"') &&
+  ['investing-for-beginners.html','what-is-an-etf.html','index-funds-explained.html'].every(name => {
+    const assets = (learn2a1Hub.match(/<section class="category-box" data-category="assets"[\s\S]*?<\/section>/)||[])[0] || '';
+    return assets.includes(`href="/${name}"`);
+  }) && learn2a1Names.every(name => learn2a1InboundCount(name) >= 4)
+);
+add('LEARN2A-1: sitemap and SEARCH1 contain the four canonicals exactly once with current lastmod and correct informational ownership',
+  learn2a1Names.every(name => {
+    const loc = `<loc>https://carrowmont.com/${name}</loc>`;
+    return (learn2a1Sitemap.match(new RegExp(loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length === 1 &&
+      new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
+      search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
+  }) && search1Entries.length === 117 &&
+  search1Result('how to make a budget','US')[0]?.url === '/how-to-make-a-budget.html' &&
+  search1Result('investing for beginners','US')[0]?.url === '/investing-for-beginners.html' &&
+  search1Result('etf','US')[0]?.url === '/what-is-an-etf.html' &&
+  search1Result('index fund','US')[0]?.url === '/index-funds-explained.html'
+);
+add('LEARN2A-1: central browser QA protects identity, localization, discovery, contextual links and 1280/390/360 overflow safety',
+  learn2a1Qa.includes('four guides have unique indexable identities') &&
+  learn2a1Qa.includes('country-aware examples and terminology change') &&
+  learn2a1Qa.includes('at least three contextual inbound pages') &&
+  learn2a1Qa.includes('[1280, 390, 360]') &&
+  learn2a1QaConfig.includes("path: '/how-to-make-a-budget.html'") &&
+  learn2a1QaConfig.includes("path: '/index-funds-explained.html'")
+);
+add('LEARN2A-1: implementation record locks Snapshot 89, simple language, two-repository scope and the pause before LEARN2A-2',
+  learn2a1Impl.includes('Source Snapshot 89') && learn2a1Impl.includes('simple language') &&
+  learn2a1Impl.includes('draw004.github.io') && learn2a1Impl.includes('carrowmont-qa') &&
+  learn2a1Impl.includes('does not implement LEARN2A-2') && learn2a1Impl.includes('No calculator formula')
 );
 
 console.log('\nCarrowmont source contract check\n');

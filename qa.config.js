@@ -155,5 +155,9 @@ export const mainSitePages = [
   { key: 'deposit-rate-affordability-learn', path: '/how-deposit-and-interest-rates-affect-home-affordability.html', text: 'How do deposit and interest rates affect home affordability?' },
   { key: 'loan-emi-learn', path: '/how-is-loan-emi-calculated.html', text: 'How is a loan EMI or monthly payment calculated?' },
   { key: 'loan-rate-term-learn', path: '/loan-interest-rate-vs-term.html', text: 'How do interest rate and loan term change what a loan costs?' },
-  { key: 'swp-learn', path: '/what-is-swp-systematic-withdrawal-plan.html', text: 'What is an SWP' }
+  { key: 'swp-learn', path: '/what-is-swp-systematic-withdrawal-plan.html', text: 'What is an SWP' },
+  { key: 'how-to-make-a-budget', path: '/how-to-make-a-budget.html', text: 'How to make a budget that fits your real life' },
+  { key: 'investing-for-beginners', path: '/investing-for-beginners.html', text: 'Investing for beginners: understand the basics before choosing a product' },
+  { key: 'what-is-an-etf', path: '/what-is-an-etf.html', text: 'What is an ETF, and how does it work?' },
+  { key: 'index-funds-explained', path: '/index-funds-explained.html', text: 'What is an index fund, and what does it actually track?' }
 ];

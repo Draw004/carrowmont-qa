@@ -36,7 +36,7 @@ test.describe('SEARCH1 global site search', () => {
     expect(indexResponse.ok()).toBeTruthy();
     const index = await indexResponse.json();
     expect(index.schema_version).toBe(1);
-    expect(index.entries.length).toBe(113);
+    expect(index.entries.length).toBe(117);
     expect(new Set(index.entries.map(entry => entry.url)).size).toBe(index.entries.length);
     for (const entry of index.entries) {
       expect(entry.url).toMatch(/^\//);
@@ -67,8 +67,10 @@ test.describe('SEARCH1 global site search', () => {
     expect((await runSearch(page, 'remortgage'))[0]).toBe('/mortgage-payoff-calculator/refinance-break-even.html');
 
     await setLocale(page, 'US', 'USD');
-    expect((await runSearch(page, 'how to make a budget'))[0]).toBe('/budget-cash-flow-planner/');
-    expect((await runSearch(page, 'etf'))[0]).toBe('/physical-gold-vs-gold-etf.html');
+    expect((await runSearch(page, 'how to make a budget'))[0]).toBe('/how-to-make-a-budget.html');
+    expect((await runSearch(page, 'etf'))[0]).toBe('/what-is-an-etf.html');
+    expect((await runSearch(page, 'index fund'))[0]).toBe('/index-funds-explained.html');
+    expect((await runSearch(page, 'investing for beginners'))[0]).toBe('/investing-for-beginners.html');
 
     const nonsense = await runSearch(page, 'zzzzxyqnotatopic');
     expect(nonsense).toEqual([]);
