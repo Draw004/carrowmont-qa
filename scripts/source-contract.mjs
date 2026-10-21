@@ -5238,6 +5238,78 @@ add('LEARN3E-1: implementation record preserves people-first content, localizati
   learn3e1Impl.includes('LEARN3E-2 property-investment foundations remain outside this release')
 );
 
+
+
+// LEARN3E-2 property investment foundations and comparisons - Snapshot 103.
+const learn3e2Names = [
+  'rental-yield-explained.html','reit-vs-direct-property.html','what-is-a-reit.html','real-estate-vs-stocks.html'
+];
+const learn3e2Titles = [
+  'Rental Yield: Meaning and Calculation | Carrowmont',
+  'REIT vs Direct Property: Key Differences | Carrowmont',
+  'What Is a REIT? How It Works | Carrowmont',
+  'Real Estate vs Stocks: Key Trade-Offs | Carrowmont'
+];
+const learn3e2Tools = ['/goal-planner/','/goal-planner/','/retirement-calculator/','/financial-independence/'];
+const learn3e2Pages = learn3e2Names.map(name => read(`draw004.github.io/${name}`));
+const learn3e2Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3E2_PROPERTY_INVESTMENT_FOUNDATIONS_IMPLEMENTATION.md');
+const learn3e2Qa = readQa('tests/45-learn3e2-property-investment-foundations.spec.js');
+const learn3e2QaConfig = readQa('qa.config.js');
+const learn3e2SearchFixtures = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3e2Count = (html, pattern) => (html.match(pattern) || []).length;
+
+add('LEARN3E-2: four established property guides keep stable indexable identities and truthful freshness',
+  learn3e2Pages.every((html,index) => {
+    const article=jsonLdNode(html,'Article');
+    const breadcrumb=jsonLdNode(html,'BreadcrumbList');
+    const url=`https://carrowmont.com/${learn3e2Names[index]}`;
+    const description=gseo2aMetaContent(html,'description');
+    return gseo2aTitle(html)===learn3e2Titles[index] && description.length>=110 && description.length<=160 &&
+      gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase()==='index,follow' &&
+      article?.mainEntityOfPage===url && article?.dateModified==='2026-10-22' && Boolean(breadcrumb) &&
+      html.includes('Updated 22 October 2026') &&
+      learn3e2Count(html,/data-cm-learn3e2="1"/g)===1 && learn3e2Count(html,/data-cm-depth="1"/g)===1 &&
+      learn3e2Count(html,/data-cm-rich="1"/g)===1 && html.includes('Worked example:') && html.includes('Checklist:') &&
+      learn3e2Count(html,/<li><a href="https?:\/\//g)>=3;
+  })
+);
+add('LEARN3E-2: property lessons distinguish yield, leverage, liquidity and total-return mechanics',
+  ['5000000','300000','15000','18000','42000','225000'].every(value => learn3e2Pages[0].includes(`data-cm-money-inr="${value}"`)) &&
+  learn3e2Pages[0].includes('cash-on-cash return') && learn3e2Pages[0].includes('no single universal definition of “net rental yield”') &&
+  ['2000000','8000000','6000000','400000','100000'].every(value => learn3e2Pages[1].includes(`data-cm-money-inr="${value}"`)) &&
+  learn3e2Pages[1].includes('REIT itself may also carry debt inside the entity') &&
+  ['5000000','2000000','750000','250000','1500000','500000'].every(value => learn3e2Pages[2].includes(`data-cm-money-inr="${value}"`)) &&
+  learn3e2Pages[2].includes('not a guaranteed yield') && learn3e2Pages[2].includes('publicly traded, non-traded or private') &&
+  ['2000000','8000000','6000000','400000','100000'].every(value => learn3e2Pages[3].includes(`data-cm-money-inr="${value}"`)) &&
+  learn3e2Pages[3].includes('The difference is leverage') && learn3e2Pages[3].includes('diversification across asset classes')
+);
+add('LEARN3E-2: older property Tool-to-Learn journeys remain authoritative',
+  learn3e2Pages.every((html,index) => html.includes('class="guide-action-first"') && html.includes(`href="${learn3e2Tools[index]}"`))
+);
+add('LEARN3E-2: sitemap and SEARCH1 preserve 121 public pages with four reviewed property intents',
+  learn3e2Names.every(name => sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-22' && search1Entries.filter(entry => entry.url===`/${name}`).length===1) &&
+  search1Entries.length===121 &&
+  search1Result('gross rental yield','AU')[0]?.url==='/rental-yield-explained.html' &&
+  search1Result('reit vs rental property','US')[0]?.url==='/reit-vs-direct-property.html' &&
+  search1Result('reit meaning','GB')[0]?.url==='/what-is-a-reit.html' &&
+  search1Result('property vs shares','IN')[0]?.url==='/real-estate-vs-stocks.html' &&
+  learn3e2SearchFixtures.includes('gross rental yield finds the yield guide') &&
+  learn3e2SearchFixtures.includes('property vs shares finds the property-equity comparison')
+);
+add('LEARN3E-2: central browser QA protects arithmetic, old journeys, localization and 1280/390/360 layouts',
+  learn3e2Qa.includes('worked examples recalculate from the stated assumptions') &&
+  learn3e2Qa.includes('older property Tool-to-Learn journeys remain authoritative') &&
+  learn3e2Qa.includes('money examples localize coherently') && learn3e2Qa.includes('[1280,390,360]') &&
+  learn3e2Names.every(name => learn3e2QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3E-2: implementation record preserves people-first content, truthful indexing and product boundaries',
+  learn3e2Impl.includes('Source Snapshot 103') && learn3e2Impl.includes('existing Carrowmont declarative localization bindings') &&
+  learn3e2Impl.includes('No newer editorial recommendation silently overrides an older architectural contract') &&
+  learn3e2Impl.includes('does not guarantee crawling, indexing, ranking') && learn3e2Impl.includes('SEARCH1 query privacy') &&
+  learn3e2Impl.includes('calculator formulas') && learn3e2Impl.includes('workflow files') &&
+  learn3e2Impl.includes('next planned library phase is LEARN3F')
+);
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);
