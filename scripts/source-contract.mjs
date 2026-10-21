@@ -4242,7 +4242,7 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
   search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  (search1FixtureScript.match(/\{ name:/g)||[]).length === 41 &&
+  (search1FixtureScript.match(/\{ name:/g)||[]).length === 49 &&
   search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
   search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
@@ -4955,6 +4955,103 @@ add('LEARN3C-2: implementation record preserves people-first content, global loc
   learn3c2Impl.includes('No newer editorial recommendation silently overrides an older architectural contract') &&
   learn3c2Impl.includes('does not guarantee crawling, indexing, ranking') && learn3c2Impl.includes('SEARCH1 query privacy') &&
   learn3c2Impl.includes('calculator formulas') && learn3c2Impl.includes('workflow files')
+);
+
+
+
+// LEARN3D-1 retirement readiness, income and withdrawal risk - Snapshot 99.
+const learn3d1Names = [
+  'retirement-savings-by-age.html','retirement-monthly-income-needed.html','retirement-expenses.html',
+  'inflation-and-retirement-planning.html','how-long-will-retirement-savings-last.html','4-percent-rule-retirement.html',
+  'sequence-of-returns-risk.html','longevity-risk-retirement.html'
+];
+const learn3d1Titles = [
+  'Retirement Savings by Age: 30, 40, 50 and 60 | Carrowmont',
+  'Monthly Income Needed in Retirement | Carrowmont',
+  'How retirement expenses may change | Carrowmont',
+  'Inflation and Retirement Planning | Carrowmont',
+  'How long could your retirement savings last? | Carrowmont',
+  'The 4% Rule in Retirement: Meaning and Limits | Carrowmont',
+  'Sequence-of-Returns Risk in Retirement | Carrowmont',
+  'Longevity Risk in Retirement: Why Time Matters | Carrowmont'
+];
+const learn3d1Pages = learn3d1Names.map(name => read(`draw004.github.io/${name}`));
+const learn3d1Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3D1_RETIREMENT_READINESS_INCOME_WITHDRAWAL_RISK_IMPLEMENTATION.md');
+const learn3d1Qa = readQa('tests/42-learn3d1-retirement-readiness-income-withdrawal-risk.spec.js');
+const learn3d1QaConfig = readQa('qa.config.js');
+const learn3d1SearchFixtures = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3d1Count = (html, pattern) => (html.match(pattern) || []).length;
+
+add('LEARN3D-1: eight established retirement guides keep stable indexable identities and truthful freshness',
+  learn3d1Pages.every((html,index) => {
+    const article=jsonLdNode(html,'Article');
+    const breadcrumb=jsonLdNode(html,'BreadcrumbList');
+    const url=`https://carrowmont.com/${learn3d1Names[index]}`;
+    const description=gseo2aMetaContent(html,'description');
+    return gseo2aTitle(html)===learn3d1Titles[index] && description.length>=110 && description.length<=160 &&
+      gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase()==='index,follow' &&
+      article?.mainEntityOfPage===url && article?.dateModified==='2026-10-21' && Boolean(breadcrumb) &&
+      html.includes('Updated 21 October 2026') &&
+      learn3d1Count(html,/data-cm-learn3d1="1"/g)===1 && learn3d1Count(html,/data-cm-depth="1"/g)===1 &&
+      html.includes('Worked example:') && html.includes('Checklist:') &&
+      learn3d1Count(html,/class="guide-table-wrap"/g)>=1 && learn3d1Count(html,/<li><a href="https?:\/\//g)>=4;
+  })
+);
+add('LEARN3D-1: each rewritten guide preserves exactly one legacy depth marker and one LEARN3D-1 enhancement marker',
+  learn3d1Pages.every(html => learn3d1Count(html,/data-cm-depth="1"/g)===1 && learn3d1Count(html,/data-cm-learn3d1="1"/g)===1)
+);
+add('LEARN3D-1: page-specific retirement lessons are practical, distinct and non-promissory',
+  learn3d1Pages[0].includes('A benchmark can point one way while the personal plan points another') &&
+  learn3d1Pages[1].includes('Build the monthly need from the bottom up') &&
+  learn3d1Pages[2].includes('Four expenses can move in four different directions') &&
+  learn3d1Pages[3].includes('Inflation acts before and after retirement') && learn3d1Pages[3].includes('Nominal return and real return answer different questions') &&
+  learn3d1Pages[4].includes('Start with a transparent runway, then add uncertainty') &&
+  learn3d1Pages[5].includes('The rule starts with the opening portfolio, not each year') &&
+  learn3d1Pages[6].includes('The same five returns, reversed') &&
+  learn3d1Pages[7].includes('A longer horizon changes the amount of time the plan must support') &&
+  learn3d1Pages[5].includes('not a promise that 4% is always safe') &&
+  learn3d1Pages[7].includes('It is not a prediction that you will live to a specific age') &&
+  learn3d1Pages[4].includes('illustration, not a prediction')
+);
+add('LEARN3D-1: older Tool-to-Learn and withdrawal discovery contracts remain authoritative',
+  [2,3,4].every(index => learn3d1Pages[index].includes('class="guide-action-first"') && learn3d1Pages[index].includes('href="/retirement-calculator/"')) &&
+  learn3d1Pages[7].includes('class="guide-action-first"') && learn3d1Pages[7].includes('href="/financial-independence/"') &&
+  learn3d1Pages[5].includes('class="guide-action-first"') && learn3d1Pages[5].includes('href="/4-percent-rule-stress-test.html"') &&
+  learn3d1Pages[6].includes('class="guide-action-first"') && learn3d1Pages[6].includes('href="/4-percent-rule-stress-test.html"') &&
+  learn3d1Pages[4].includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
+  learn3d1Pages[5].includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
+  learn3d1Pages[6].includes('href="/retirement-calculator/withdrawal-calculator.html"')
+);
+add('LEARN3D-1: localized monetary illustrations keep one proportional teaching basis inside each scenario',
+  ['120000','55000','30000','18000','22000','10000','135000','35000','100000'].every(value => learn3d1Pages[1].includes(`data-cm-money-inr="${value}" data-cm-money-basis="monthly"`)) &&
+  ['100000','162889','218915'].every(value => learn3d1Pages[3].includes(`data-cm-money-inr="${value}" data-cm-money-basis="monthly"`)) &&
+  ['10000000','400000','420000'].every(value => learn3d1Pages[5].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`)) &&
+  ['10000000','500000','8677240','10106240'].every(value => learn3d1Pages[6].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`))
+);
+add('LEARN3D-1: sitemap and SEARCH1 preserve 121 public pages with eight reviewed retirement intents',
+  learn3d1Names.every(name => sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-21' && search1Entries.filter(entry => entry.url===`/${name}`).length===1) &&
+  search1Entries.length===121 &&
+  search1Result('retirement savings benchmark by age','US')[0]?.url==='/retirement-savings-by-age.html' &&
+  search1Result('retirement monthly income','CA')[0]?.url==='/retirement-monthly-income-needed.html' &&
+  search1Result('retirement expense checklist','GB')[0]?.url==='/retirement-expenses.html' &&
+  search1Result('retirement inflation','AU')[0]?.url==='/inflation-and-retirement-planning.html' &&
+  search1Result('how long will my retirement money last','OTHER')[0]?.url==='/how-long-will-retirement-savings-last.html' &&
+  search1Result('retirement 4 percent rule','US')[0]?.url==='/4-percent-rule-retirement.html' &&
+  search1Result('retirement sequence risk','US')[0]?.url==='/sequence-of-returns-risk.html' &&
+  search1Result('retirement longevity risk','GB')[0]?.url==='/longevity-risk-retirement.html' &&
+  learn3d1SearchFixtures.includes('49 SEARCH1 deterministic fixtures PASS')===false &&
+  learn3d1SearchFixtures.includes('retirement longevity risk finds the longevity guide')
+);
+add('LEARN3D-1: central browser QA protects static SEO, old journeys, localization and 1280/390/360 layouts',
+  learn3d1Qa.includes('eight guides keep stable search identities') && learn3d1Qa.includes('older Tool-to-Learn and withdrawal journeys remain intact') &&
+  learn3d1Qa.includes('representative money examples localize coherently') && learn3d1Qa.includes('[1280,390,360]') &&
+  learn3d1Names.every(name => learn3d1QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3D-1: implementation record preserves people-first content, localization, truthful indexing and product boundaries',
+  learn3d1Impl.includes('Source Snapshot 99') && learn3d1Impl.includes('one universal educational core') &&
+  learn3d1Impl.includes('No newer editorial recommendation silently overrides an older architectural contract') &&
+  learn3d1Impl.includes('does not guarantee crawling, indexing, ranking') && learn3d1Impl.includes('SEARCH1 query privacy') &&
+  learn3d1Impl.includes('calculator formulas') && learn3d1Impl.includes('workflow files') && learn3d1Impl.includes('LEARN3D-2 remains outside this release')
 );
 
 console.log('\nCarrowmont source contract check\n');

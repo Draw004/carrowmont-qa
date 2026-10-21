@@ -188,5 +188,13 @@ export const mainSitePages = [
   { key: 'asset-allocation-explained', path: '/asset-allocation-explained.html', text: 'What is asset allocation, and why does it matter?' },
   { key: 'diversification-across-asset-classes', path: '/diversification-across-asset-classes.html', text: 'What does diversification across asset classes actually mean?' },
   { key: 'stocks-vs-bonds', path: '/stocks-vs-bonds.html', text: 'Stocks vs bonds: What is the difference?' },
-  { key: 'how-much-invest-monthly', path: '/how-much-should-i-invest-each-month.html', text: 'How much should you invest each month to reach a financial goal?' }
+  { key: 'how-much-invest-monthly', path: '/how-much-should-i-invest-each-month.html', text: 'How much should you invest each month to reach a financial goal?' },
+  { key: 'retirement-savings-by-age', path: '/retirement-savings-by-age.html', text: 'How much should you have saved for retirement by 30, 40, 50 and 60?' },
+  { key: 'retirement-monthly-income-needed', path: '/retirement-monthly-income-needed.html', text: 'How much monthly income will you need in retirement?' },
+  { key: 'retirement-expenses-learn3d1', path: '/retirement-expenses.html', text: "Retirement spending is not simply today's budget plus inflation." },
+  { key: 'inflation-retirement-planning-learn3d1', path: '/inflation-and-retirement-planning.html', text: 'How does inflation change the retirement amount you need?' },
+  { key: 'retirement-savings-runway-learn3d1', path: '/how-long-will-retirement-savings-last.html', text: 'How long could your retirement savings last?' },
+  { key: 'four-percent-rule-retirement-learn3d1', path: '/4-percent-rule-retirement.html', text: 'What is the 4% rule in retirement, and what are its limits?' },
+  { key: 'sequence-risk-retirement-learn3d1', path: '/sequence-of-returns-risk.html', text: 'What is sequence-of-returns risk in retirement?' },
+  { key: 'longevity-risk-retirement-learn3d1', path: '/longevity-risk-retirement.html', text: 'What is longevity risk and why does retirement length matter?' }
 ];
