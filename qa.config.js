@@ -196,5 +196,13 @@ export const mainSitePages = [
   { key: 'retirement-savings-runway-learn3d1', path: '/how-long-will-retirement-savings-last.html', text: 'How long could your retirement savings last?' },
   { key: 'four-percent-rule-retirement-learn3d1', path: '/4-percent-rule-retirement.html', text: 'What is the 4% rule in retirement, and what are its limits?' },
   { key: 'sequence-risk-retirement-learn3d1', path: '/sequence-of-returns-risk.html', text: 'What is sequence-of-returns risk in retirement?' },
-  { key: 'longevity-risk-retirement-learn3d1', path: '/longevity-risk-retirement.html', text: 'What is longevity risk and why does retirement length matter?' }
+  { key: 'longevity-risk-retirement-learn3d1', path: '/longevity-risk-retirement.html', text: 'What is longevity risk and why does retirement length matter?' },
+  { key: 'financial-independence-number-learn3d2', path: '/financial-independence-number.html', text: 'What is your financial independence number?' },
+  { key: 'financial-independence-timeline-learn3d2', path: '/when-can-i-reach-financial-independence.html', text: 'When could you reach financial independence?' },
+  { key: 'coast-fire-learn3d2', path: '/coast-fire-explained.html', text: 'What is Coast FIRE and how is it different from full financial independence?' },
+  { key: 'inflation-value-money-learn3d2', path: '/inflation-value-of-money-over-time.html', text: 'What will your money be worth in 10, 20 and 30 years?' },
+  { key: 'future-cost-expenses-learn3d2', path: '/future-cost-of-expenses.html', text: 'How much will today’s monthly expenses cost in 10, 20 and 30 years?' },
+  { key: 'inflation-savings-learn3d2', path: '/inflation-purchasing-power-savings.html', text: 'How much purchasing power can inflation take from your savings?' },
+  { key: 'inflation-foundation-learn3d2', path: '/inflation-purchasing-power.html', text: 'Inflation changes both future prices and what money can buy.' },
+  { key: 'todays-vs-future-money-learn3d2', path: '/todays-money-vs-future-money.html', text: "Today's money and future money answer different questions." }
 ];

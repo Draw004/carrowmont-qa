@@ -1810,8 +1810,8 @@ add('main site: FI Number by Spending is discoverable across the approved FI aut
 );
 add('main site: FI Number by Spending route and refreshed FI guides remain in sitemap with current content lastmods',
   sitemapLastmods.get('https://carrowmont.com/financial-independence-number-by-spending.html') === '2026-10-09' &&
-  sitemapLastmods.get('https://carrowmont.com/financial-independence-number.html') === '2026-10-10' &&
-  sitemapLastmods.get('https://carrowmont.com/when-can-i-reach-financial-independence.html') === '2026-10-10' &&
+  sitemapLastmods.get('https://carrowmont.com/financial-independence-number.html') === '2026-10-21' &&
+  sitemapLastmods.get('https://carrowmont.com/when-can-i-reach-financial-independence.html') === '2026-10-21' &&
   sitemapLastmods.get('https://carrowmont.com/financial-independence/') === '2026-10-13'
 );
 add('financial-independence: SEO3B handoff is explicit, validated and keeps the approved FI core separate',
@@ -4242,7 +4242,7 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
   search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  (search1FixtureScript.match(/\{ name:/g)||[]).length === 49 &&
+  (search1FixtureScript.match(/\{ name:/g)||[]).length === 57 &&
   search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
   search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
@@ -5052,6 +5052,104 @@ add('LEARN3D-1: implementation record preserves people-first content, localizati
   learn3d1Impl.includes('No newer editorial recommendation silently overrides an older architectural contract') &&
   learn3d1Impl.includes('does not guarantee crawling, indexing, ranking') && learn3d1Impl.includes('SEARCH1 query privacy') &&
   learn3d1Impl.includes('calculator formulas') && learn3d1Impl.includes('workflow files') && learn3d1Impl.includes('LEARN3D-2 remains outside this release')
+);
+
+// LEARN3D-2 financial independence and inflation foundations - Snapshot 100.
+const learn3d2Names = [
+  'financial-independence-number.html','when-can-i-reach-financial-independence.html','coast-fire-explained.html',
+  'inflation-value-of-money-over-time.html','future-cost-of-expenses.html','inflation-purchasing-power-savings.html',
+  'inflation-purchasing-power.html','todays-money-vs-future-money.html'
+];
+const learn3d2Titles = [
+  'What is your financial independence number? | Carrowmont',
+  'When could you reach financial independence? | Carrowmont',
+  'Coast FIRE Explained | Carrowmont',
+  'Future Value of Money After Inflation | Carrowmont',
+  'Future Cost of Monthly Expenses | Carrowmont',
+  'How Inflation Reduces Purchasing Power | Carrowmont',
+  'Inflation &amp; purchasing power | Carrowmont',
+  "Today's money vs future money | Carrowmont"
+];
+const learn3d2Pages = learn3d2Names.map(name => read(`draw004.github.io/${name}`));
+const learn3d2Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3D2_FINANCIAL_INDEPENDENCE_INFLATION_FOUNDATIONS_IMPLEMENTATION.md');
+const learn3d2Qa = readQa('tests/43-learn3d2-financial-independence-inflation-foundations.spec.js');
+const learn3d2QaConfig = readQa('qa.config.js');
+const learn3d2SearchFixtures = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3d2Count = (html, pattern) => (html.match(pattern) || []).length;
+const learn3d2MetaDescription = html => {
+  for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
+    const attrs = Object.fromEntries([...tag.matchAll(/([:\w-]+)=(["'])(.*?)\2/g)].map(m => [m[1].toLowerCase(), m[3]]));
+    if ((attrs.name || '').toLowerCase() === 'description') return attrs.content || '';
+  }
+  return '';
+};
+
+add('LEARN3D-2: eight established FI and inflation guides keep stable indexable identities and truthful freshness',
+  learn3d2Pages.every((html,index) => {
+    const article=jsonLdNode(html,'Article');
+    const breadcrumb=jsonLdNode(html,'BreadcrumbList');
+    const url=`https://carrowmont.com/${learn3d2Names[index]}`;
+    const description=learn3d2MetaDescription(html);
+    return gseo2aTitle(html)===learn3d2Titles[index] && description.length>=110 && description.length<=160 &&
+      gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase()==='index,follow' &&
+      article?.mainEntityOfPage===url && article?.dateModified==='2026-10-21' && Boolean(breadcrumb) &&
+      html.includes('Updated 21 October 2026') &&
+      learn3d2Count(html,/data-cm-learn3d2="1"/g)===1 && learn3d2Count(html,/data-cm-depth="1"/g)===1 &&
+      html.includes('Worked example:') && html.includes('Checklist:') &&
+      learn3d2Count(html,/class="guide-table-wrap"/g)>=1 && learn3d2Count(html,/<li><a href="https?:\/\//g)>=3;
+  })
+);
+add('LEARN3D-2: page-specific FI and inflation lessons stay distinct and avoid false precision',
+  learn3d2Pages[0].includes('Separate lifestyle spending from portfolio-funded spending') && learn3d2Pages[0].includes('does not identify the date') &&
+  learn3d2Pages[1].includes('The modeled FI date can move even when the target stays the same') && learn3d2Pages[1].includes('planning milestone, not a promised date') &&
+  learn3d2Pages[2].includes('A Coast FIRE number is the present value of a future target') && learn3d2Pages[2].includes('does not automatically mean someone can stop all saving') &&
+  learn3d2Pages[3].includes('A fixed nominal amount buys less as the price level rises') && learn3d2Pages[3].includes('not a forecast of CPI') &&
+  learn3d2Pages[4].includes('The same expense can produce very different future nominal costs') &&
+  learn3d2Pages[5].includes('A savings balance can rise while its real purchasing power falls') &&
+  learn3d2Pages[6].includes('Inflation is the rate of change, not the price level itself') &&
+  learn3d2Pages[7].includes('One lifestyle can be expressed in two valid money bases') && learn3d2Pages[7].includes('The error is to mix them')
+);
+add('LEARN3D-2: older Tool-to-Learn journeys remain authoritative',
+  [1,2].every(index => learn3d2Pages[index].includes('class="guide-action-first"') && learn3d2Pages[index].includes('href="/financial-independence/"')) &&
+  [3,4,5,6,7].every(index => learn3d2Pages[index].includes('class="guide-action-first"') && learn3d2Pages[index].includes('href="/inflation-calculator/"')) &&
+  learn3d2Pages[0].includes('class="guide-action-first"') && learn3d2Pages[0].includes('href="/financial-independence-number-by-spending.html"')
+);
+add('LEARN3D-2: localized worked examples use the established proportional teaching basis',
+  ['1440000','240000','1200000','30000000','34285714','40000000'].every(value => learn3d2Pages[0].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`)) &&
+  ['30000000','8000000','1200000','900000'].every(value => learn3d2Pages[1].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`)) &&
+  ['100000','134392','162889','180611','265330','242726','432194'].every(value => learn3d2Pages[4].includes(`data-cm-money-inr="${value}" data-cm-money-basis="monthly"`)) &&
+  ['1000000','1218994','823509'].every(value => learn3d2Pages[5].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`))
+);
+add('LEARN3D-2: sitemap and SEARCH1 preserve 121 public pages with eight reviewed FI/inflation intents',
+  learn3d2Names.every(name => sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-21' && search1Entries.filter(entry => entry.url===`/${name}`).length===1) &&
+  search1Entries.length===121 &&
+  search1Result('fi number','US')[0]?.url==='/financial-independence-number.html' &&
+  search1Result('financial independence timeline','CA')[0]?.url==='/when-can-i-reach-financial-independence.html' &&
+  search1Result('coast fi number','AU')[0]?.url==='/coast-fire-explained.html' &&
+  search1Result('future purchasing power','GB')[0]?.url==='/inflation-value-of-money-over-time.html' &&
+  search1Result('future expense cost','OTHER')[0]?.url==='/future-cost-of-expenses.html' &&
+  search1Result('purchasing power of savings','US')[0]?.url==='/inflation-purchasing-power-savings.html' &&
+  search1Result('price level vs inflation','GB')[0]?.url==='/inflation-purchasing-power.html' &&
+  search1Result('real terms vs nominal terms','AU')[0]?.url==='/todays-money-vs-future-money.html' &&
+  learn3d2SearchFixtures.includes('real terms vs nominal terms finds the money-basis guide')
+);
+add('LEARN3D-2: contextual discovery connects target, timing, Coast FIRE and inflation concepts without creating new URLs',
+  learn3d2Pages[0].includes('href="/when-can-i-reach-financial-independence.html"') && learn3d2Pages[0].includes('href="/coast-fire-explained.html"') &&
+  learn3d2Pages[1].includes('href="/financial-independence-number.html"') && learn3d2Pages[2].includes('href="/financial-independence-number.html"') &&
+  learn3d2Pages[3].includes('href="/future-cost-of-expenses.html"') && learn3d2Pages[4].includes('href="/inflation-value-of-money-over-time.html"') &&
+  learn3d2Pages[5].includes('href="/inflation-purchasing-power.html"') && learn3d2Pages[6].includes('href="/future-cost-of-expenses.html"') &&
+  learn3d2Pages[7].includes('href="/inflation-value-of-money-over-time.html"')
+);
+add('LEARN3D-2: central browser QA protects static SEO, old journeys, localization and 1280/390/360 layouts',
+  learn3d2Qa.includes('eight guides keep stable identities') && learn3d2Qa.includes('older Financial Independence and Inflation Tool-to-Learn journeys remain authoritative') &&
+  learn3d2Qa.includes('money examples localize coherently') && learn3d2Qa.includes('[1280,390,360]') &&
+  learn3d2Names.every(name => learn3d2QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3D-2: implementation record preserves people-first content, localization, truthful indexing and product boundaries',
+  learn3d2Impl.includes('Source Snapshot 100') && learn3d2Impl.includes('existing Carrowmont declarative localization bindings') &&
+  learn3d2Impl.includes('No newer editorial recommendation silently overrides an older architectural contract') &&
+  learn3d2Impl.includes('does not guarantee crawling, indexing, ranking') && learn3d2Impl.includes('SEARCH1 query privacy') &&
+  learn3d2Impl.includes('calculator formulas') && learn3d2Impl.includes('workflow files')
 );
 
 console.log('\nCarrowmont source contract check\n');
