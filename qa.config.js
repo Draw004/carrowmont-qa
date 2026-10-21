@@ -175,5 +175,12 @@ export const mainSitePages = [
   { key: 'sinking-fund-vs-emergency-fund', path: '/sinking-fund-vs-emergency-fund.html', text: 'Sinking fund vs emergency fund: What is the difference?' },
   { key: 'savings-goal-planning', path: '/savings-goal-planning.html', text: 'How do you plan a savings goal and work backward from the target?' },
   { key: 'lifestyle-inflation', path: '/lifestyle-inflation.html', text: 'What is lifestyle inflation and how can it slow financial progress?' },
-  { key: 'debt-snowball-vs-avalanche', path: '/debt-snowball-vs-avalanche.html', text: 'Debt snowball vs avalanche: Which debt gets paid first?' }
+  { key: 'debt-snowball-vs-avalanche', path: '/debt-snowball-vs-avalanche.html', text: 'Debt snowball vs avalanche: Which debt gets paid first?' },
+  { key: 'monthly-investment-growth', path: '/10000-sip-returns.html', text: 'Monthly Investment for 10, 15, 20 and 25 years: What could it grow to?' },
+  { key: 'monthly-investment-target', path: '/sip-for-1-crore.html', text: 'How much Monthly Investment is needed to build' },
+  { key: 'step-up-vs-fixed', path: '/step-up-sip-vs-regular-sip.html', text: 'Increasing Monthly Investment vs Fixed Monthly Investment: What changes?' },
+  { key: 'compound-monthly-contributions', path: '/compound-interest-monthly-contributions.html', text: 'How does compound interest work with monthly contributions?' },
+  { key: 'investment-time-target', path: '/investment-time-to-target.html', text: 'How long could it take to reach your investment target?' },
+  { key: 'starting-investing-earlier', path: '/starting-investing-earlier.html', text: 'How much difference can starting 5 or 10 years earlier make?' },
+  { key: 'investing-market-fall', path: '/sip-during-market-fall.html', text: 'What happens to recurring investments when markets fall?' }
 ];
