@@ -2414,7 +2414,7 @@ add('Mortgage Learn V1: all five universal guides exist, inherit the article sta
 add('Mortgage Learn V1: new guides use the shared mortgage-localization layer and shared bottom tool-return pattern',
   mortgageLearnScript.includes("IN:{kicker:'HOME LOAN PREPAYMENT GUIDE'") && mortgageLearnScript.includes("GB:{kicker:'MORTGAGE OVERPAYMENT GUIDE'") &&
   mortgageLearnArticleJs.includes("'/mortgage-payoff-calculator/': 'Mortgage / Home Loan Payoff Calculator'") &&
-  mortgageLearnFiles.every(file => read('draw004.github.io/'+file).includes('mortgage-learn.js?v=20261014-mortgage-learn2'))
+  mortgageLearnFiles.every(file => read('draw004.github.io/'+file).includes('mortgage-learn.js?v=20261021-learn3e1-fix2'))
 );
 add('Mortgage Learn V1: new guides preserve the shared single-content-wrapper and one-direct-answer article structure',
   mortgageLearnFiles.every(file => {
@@ -2700,7 +2700,7 @@ add('MDC1B: sitemap/discovery publish both new routes and refresh the changed hu
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') === '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-14' &&
-  mdc1bSitemapLastmods.get('https://carrowmont.com/one-extra-mortgage-payment-a-year.html') === '2026-10-14'
+  mdc1bSitemapLastmods.get('https://carrowmont.com/one-extra-mortgage-payment-a-year.html') >= '2026-10-14'
 );
 add('MDC1B: core homepage keeps MDC1B outside the approved primary suite while MDC1C becomes a separate live Decision Centre route',
   mainHome.includes('data-core-tool-count="9"') &&
@@ -3165,8 +3165,15 @@ add('main Learn: mortgage guide hero/back-link/footer wording follows country wi
   mortgageLearnHotfixRuntime.includes('function updateVisibleFrame') &&
   mortgageLearnHotfixRuntime.includes("'← Back to '+t.learnGuides") &&
   mortgageLearnHotfixRuntime.includes('.footer-col a[href="/mortgage-payoff-calculator/"]') &&
-  mortgageLearnHotfixPages.every(src=>src.includes('mortgage-learn.js?v=20261014-mortgage-learn2')) &&
+  mortgageLearnHotfixPages.every(src=>src.includes('mortgage-learn.js?v=20261021-learn3e1-fix2')) &&
   mortgageLearnHotfixPages.every(src=>src.includes('locale.js?v=20261014-housing3'))
+);
+add('LEARN3E-1 FIX1: runtime-localized mortgage Learn H1s preserve the established capitalization-after-colon rule',
+  mortgageLearnHotfixRuntime.includes('function capitalizeAfterColon') &&
+  mortgageLearnHotfixRuntime.includes('title.textContent=capitalizeAfterColon(localizedTitle)') &&
+  mortgageLearnHotfixRuntime.includes("payment a year: How much time and interest could it save?") &&
+  mortgageLearnHotfixRuntime.includes("one annual lump sum: Which pays off a " ) &&
+  mortgageLearnHotfixRuntime.includes("payments: Where do the savings actually come from?")
 );
 add('main Learn: Rent vs Buy keeps Goal Planner limited to down-payment planning and routes comparison intent to RENT1',
   mortgageLearnHotfixRentBuy.includes('COMPARE THE TWO PATHS') &&
@@ -4242,7 +4249,7 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
   search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  (search1FixtureScript.match(/\{ name:/g)||[]).length === 57 &&
+  (search1FixtureScript.match(/\{ name:/g)||[]).length >= 57 &&
   search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
   search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
@@ -5150,6 +5157,85 @@ add('LEARN3D-2: implementation record preserves people-first content, localizati
   learn3d2Impl.includes('No newer editorial recommendation silently overrides an older architectural contract') &&
   learn3d2Impl.includes('does not guarantee crawling, indexing, ranking') && learn3d2Impl.includes('SEARCH1 query privacy') &&
   learn3d2Impl.includes('calculator formulas') && learn3d2Impl.includes('workflow files')
+);
+
+
+// LEARN3E-1 mortgage overpayment, repayment frequency and payoff timing - Snapshot 102.
+const learn3e1Names = [
+  'biweekly-fortnightly-mortgage-payments.html','extra-mortgage-payments-early-vs-late.html',
+  'monthly-extra-vs-annual-lump-sum-mortgage.html','one-extra-mortgage-payment-a-year.html',
+  'pay-off-mortgage-five-years-early.html'
+];
+const learn3e1Titles = [
+  'Biweekly vs Monthly Mortgage Payments | Carrowmont',
+  'Extra Mortgage Payments: Early vs Late | Carrowmont',
+  'Monthly Extra vs Annual Lump Sum Mortgage | Carrowmont',
+  'One Extra Mortgage Payment a Year | Carrowmont',
+  'Pay Off a Mortgage 5 Years Earlier | Carrowmont'
+];
+const learn3e1Pages = learn3e1Names.map(name => read(`draw004.github.io/${name}`));
+const learn3e1Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3E1_MORTGAGE_OVERPAYMENT_PAYOFF_TIMING_IMPLEMENTATION.md');
+const learn3e1Qa = readQa('tests/44-learn3e1-mortgage-overpayment-payoff-timing.spec.js');
+const learn3e1QaConfig = readQa('qa.config.js');
+const learn3e1SearchFixtures = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3e1Count = (html, pattern) => (html.match(pattern) || []).length;
+
+add('LEARN3E-1: five established mortgage guides keep stable indexable identities and truthful freshness',
+  learn3e1Pages.every((html,index) => {
+    const article=jsonLdNode(html,'Article');
+    const breadcrumb=jsonLdNode(html,'BreadcrumbList');
+    const url=`https://carrowmont.com/${learn3e1Names[index]}`;
+    const description=gseo2aMetaContent(html,'description');
+    return gseo2aTitle(html)===learn3e1Titles[index] && description.length>=110 && description.length<=160 &&
+      gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase()==='index,follow' &&
+      article?.mainEntityOfPage===url && article?.dateModified==='2026-10-21' && Boolean(breadcrumb) &&
+      html.includes('Updated 21 Oct 2026') &&
+      learn3e1Count(html,/data-cm-learn3e1="1"/g)===1 && learn3e1Count(html,/data-cm-depth="1"/g)===1 &&
+      learn3e1Count(html,/data-cm-rich="1"/g)===1 && html.includes('Worked example:') && html.includes('Checklist:') &&
+      learn3e1Count(html,/<li><a href="https?:\/\//g)>=3;
+  })
+);
+add('LEARN3E-1: page-specific mortgage lessons stay distinct and preserve lender-contract caveats',
+  learn3e1Pages[0].includes('26 half-payments') && learn3e1Pages[0].includes('24') && learn3e1Pages[0].includes('principal-only') &&
+  learn3e1Pages[1].includes('same total extra cash') && learn3e1Pages[1].includes('href="/mortgage-prepayment-vs-investing.html"') &&
+  learn3e1Pages[2].includes('One beginning-of-year lump sum') && learn3e1Pages[2].includes('data-cm-money-inr="177085.83"') && learn3e1Pages[2].includes('same total annual extra cash') &&
+  learn3e1Pages[3].includes('genuinely extra principal') && learn3e1Pages[3].includes('href="/monthly-extra-vs-annual-lump-sum-mortgage.html"') &&
+  learn3e1Pages[4].includes('planning target, not a requirement') && learn3e1Pages[4].includes('higher-cost debts')
+);
+add('LEARN3E-1: existing Mortgage Tool-to-Learn journey remains authoritative',
+  learn3e1Pages.every(html => html.includes('class="guide-action-first"') && html.includes('href="/mortgage-payoff-calculator/"')) &&
+  mortgageLearnFiles.every(file => learn3e1Names.includes(file) ? read(`draw004.github.io/${file}`).includes('learn-article.js?v=20261011-mortgage1') : true)
+);
+add('LEARN3E-1: localized teaching values and timing examples retain the approved deterministic basis',
+  ['1000000','6443.01','3221.51','171964.26'].every(value => learn3e1Pages[0].includes(`data-cm-money-inr="${value}"`)) &&
+  ['1000000','6443.01','32215.05','83384.81','32598.13','50786.67'].every(value => learn3e1Pages[1].includes(`data-cm-money-inr="${value}"`)) &&
+  ['1000000','6443.01','536.92','169596.17','162188.10','177085.83'].every(value => learn3e1Pages[2].includes(`data-cm-money-inr="${value}"`)) &&
+  ['5278.37','6443.01','7718.16','77450.51','162188.10','293076.80'].every(value => learn3e1Pages[3].includes(`data-cm-money-inr="${value}"`)) &&
+  ['5278.37','6059.80','781.43','6443.01','7164.31','721.30','7718.16','8364.40','646.24'].every(value => learn3e1Pages[4].includes(`data-cm-money-inr="${value}"`))
+);
+add('LEARN3E-1: sitemap and SEARCH1 preserve 121 public pages with five reviewed mortgage intents',
+  learn3e1Names.every(name => sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-21' && search1Entries.filter(entry => entry.url===`/${name}`).length===1) &&
+  search1Entries.length===121 &&
+  search1Result('every two weeks mortgage','US')[0]?.url==='/biweekly-fortnightly-mortgage-payments.html' &&
+  search1Result('mortgage prepayment early vs late','GB')[0]?.url==='/extra-mortgage-payments-early-vs-late.html' &&
+  search1Result('monthly extra payment vs lump sum mortgage','CA')[0]?.url==='/monthly-extra-vs-annual-lump-sum-mortgage.html' &&
+  search1Result('13th mortgage payment','US')[0]?.url==='/one-extra-mortgage-payment-a-year.html' &&
+  search1Result('mortgage payoff target five years','AU')[0]?.url==='/pay-off-mortgage-five-years-early.html' &&
+  learn3e1SearchFixtures.includes('every two weeks mortgage finds the cadence guide') &&
+  learn3e1SearchFixtures.includes('mortgage payoff target five years finds the target-payoff guide')
+);
+add('LEARN3E-1: central browser QA protects deterministic maths, old journeys, localization and 1280/390/360 layouts',
+  learn3e1Qa.includes('worked examples recalculate from the stated assumptions') && learn3e1Qa.includes('older Mortgage Tool-to-Learn journey remains authoritative') &&
+  learn3e1Qa.includes('country-aware without changing the universal maths') && learn3e1Qa.includes('[1280,390,360]') &&
+  learn3e1Qa.includes('177085.83') && learn3e1Qa.includes('83384.81') && learn3e1Qa.includes('32598.13') &&
+  learn3e1Names.every(name => learn3e1QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3E-1: implementation record preserves people-first content, localization, truthful indexing and product boundaries',
+  learn3e1Impl.includes('Source Snapshot 102') && learn3e1Impl.includes('one universal educational core') &&
+  learn3e1Impl.includes('No newer editorial recommendation silently overrides an older architectural contract') &&
+  learn3e1Impl.includes('does not guarantee crawling, indexing, ranking') && learn3e1Impl.includes('SEARCH1 query privacy') &&
+  learn3e1Impl.includes('calculator formulas') && learn3e1Impl.includes('workflow files') &&
+  learn3e1Impl.includes('LEARN3E-2 property-investment foundations remain outside this release')
 );
 
 console.log('\nCarrowmont source contract check\n');
