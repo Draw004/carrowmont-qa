@@ -204,5 +204,10 @@ export const mainSitePages = [
   { key: 'future-cost-expenses-learn3d2', path: '/future-cost-of-expenses.html', text: 'How much will today’s monthly expenses cost in 10, 20 and 30 years?' },
   { key: 'inflation-savings-learn3d2', path: '/inflation-purchasing-power-savings.html', text: 'How much purchasing power can inflation take from your savings?' },
   { key: 'inflation-foundation-learn3d2', path: '/inflation-purchasing-power.html', text: 'Inflation changes both future prices and what money can buy.' },
-  { key: 'todays-vs-future-money-learn3d2', path: '/todays-money-vs-future-money.html', text: "Today's money and future money answer different questions." }
+  { key: 'todays-vs-future-money-learn3d2', path: '/todays-money-vs-future-money.html', text: "Today's money and future money answer different questions." },
+  { key: 'biweekly-fortnightly-mortgage-learn3e1', path: '/biweekly-fortnightly-mortgage-payments.html', text: 'Biweekly or fortnightly mortgage payments: Where do the savings actually come from?' },
+  { key: 'extra-mortgage-early-late-learn3e1', path: '/extra-mortgage-payments-early-vs-late.html', text: 'Why extra mortgage payments made earlier can save more' },
+  { key: 'monthly-extra-lump-sum-learn3e1', path: '/monthly-extra-vs-annual-lump-sum-mortgage.html', text: 'Monthly extra vs one annual lump sum: Which pays off a mortgage faster?' },
+  { key: 'one-extra-mortgage-payment-learn3e1', path: '/one-extra-mortgage-payment-a-year.html', text: 'One extra mortgage payment a year: How much time and interest could it save?' },
+  { key: 'mortgage-five-years-early-learn3e1', path: '/pay-off-mortgage-five-years-early.html', text: 'How much extra do you need to pay to clear a mortgage five years earlier?' }
 ];
