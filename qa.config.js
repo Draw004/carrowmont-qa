@@ -209,5 +209,9 @@ export const mainSitePages = [
   { key: 'extra-mortgage-early-late-learn3e1', path: '/extra-mortgage-payments-early-vs-late.html', text: 'Why extra mortgage payments made earlier can save more' },
   { key: 'monthly-extra-lump-sum-learn3e1', path: '/monthly-extra-vs-annual-lump-sum-mortgage.html', text: 'Monthly extra vs one annual lump sum: Which pays off a mortgage faster?' },
   { key: 'one-extra-mortgage-payment-learn3e1', path: '/one-extra-mortgage-payment-a-year.html', text: 'One extra mortgage payment a year: How much time and interest could it save?' },
-  { key: 'mortgage-five-years-early-learn3e1', path: '/pay-off-mortgage-five-years-early.html', text: 'How much extra do you need to pay to clear a mortgage five years earlier?' }
+  { key: 'mortgage-five-years-early-learn3e1', path: '/pay-off-mortgage-five-years-early.html', text: 'How much extra do you need to pay to clear a mortgage five years earlier?' },
+  { key: 'rental-yield-learn3e2', path: '/rental-yield-explained.html', text: 'What is rental yield, and how do you calculate it?' },
+  { key: 'reit-vs-property-learn3e2', path: '/reit-vs-direct-property.html', text: 'REIT vs direct property: What are the key differences?' },
+  { key: 'what-is-reit-learn3e2', path: '/what-is-a-reit.html', text: 'What is a REIT, and how does real-estate investing through one work?' },
+  { key: 'real-estate-vs-stocks-learn3e2', path: '/real-estate-vs-stocks.html', text: 'Real estate vs stocks: How are the investment trade-offs different?' }
 ];
