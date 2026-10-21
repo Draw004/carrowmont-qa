@@ -4242,7 +4242,7 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
   search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  (search1FixtureScript.match(/\{ name:/g)||[]).length === 28 &&
+  (search1FixtureScript.match(/\{ name:/g)||[]).length === 35 &&
   search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
   search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
@@ -4750,6 +4750,111 @@ add('LEARN3B-2: implementation record preserves global localization, stable URLs
   learn3b2Impl.includes('Source Snapshot 94') && learn3b2Impl.includes('one universal educational core') &&
   learn3b2Impl.includes('No unrelated sitemap date is refreshed') && learn3b2Impl.includes('does not guarantee crawling, indexing, ranking') &&
   learn3b2Impl.includes('calculator formulas') && learn3b2Impl.includes('SEARCH1 query privacy') && learn3b2Impl.includes('workflow files')
+);
+
+
+
+// LEARN3C-1 recurring investing, compounding and target timing - Snapshot 96.
+const learn3c1Names = [
+  '10000-sip-returns.html','sip-for-1-crore.html','step-up-sip-vs-regular-sip.html',
+  'compound-interest-monthly-contributions.html','investment-time-to-target.html',
+  'starting-investing-earlier.html','sip-during-market-fall.html'
+];
+const learn3c1Titles = [
+  'Monthly Investment Growth Over Time | Carrowmont',
+  'Monthly Investment for a Long-Term Target | Carrowmont',
+  'Increasing vs Fixed Monthly Investing | Carrowmont',
+  'Compound Interest With Monthly Contributions | Carrowmont',
+  'How Long to Reach an Investment Target | Carrowmont',
+  'Why Starting to Invest Earlier Matters | Carrowmont',
+  'Recurring Investing During a Market Fall | Carrowmont'
+];
+const learn3c1Pages = learn3c1Names.map(name => read(`draw004.github.io/${name}`));
+const learn3c1Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3C1_RECURRING_INVESTING_COMPOUNDING_TARGET_TIMING_IMPLEMENTATION.md');
+const learn3c1Qa = readQa('tests/40-learn3c-recurring-investing-compounding-target.spec.js');
+const learn3c1QaConfig = readQa('qa.config.js');
+const learn3c1SearchFixtures = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3c1Count = (html, pattern) => (html.match(pattern) || []).length;
+
+add('LEARN3C-1: seven established investing guides keep stable indexable identities and honest freshness',
+  learn3c1Pages.every((html,index) => {
+    const article=jsonLdNode(html,'Article');
+    const breadcrumb=jsonLdNode(html,'BreadcrumbList');
+    const url=`https://carrowmont.com/${learn3c1Names[index]}`;
+    const description=gseo2aMetaContent(html,'description');
+    return gseo2aTitle(html)===learn3c1Titles[index] && description.length>=110 && description.length<=160 &&
+      gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase()==='index,follow' &&
+      article?.mainEntityOfPage===url && article?.dateModified==='2026-10-21' && Boolean(breadcrumb) &&
+      html.includes('Reviewed 21 October 2026') && html.includes('href="/editorial-policy.html"') &&
+      html.includes('data-cm-learn3c1="1"') && html.includes('Checklist:') &&
+      learn3c1Count(html,/class="guide-table-wrap"/g)>=1 && learn3c1Count(html,/<li><a href="https?:\/\//g)>=4;
+  })
+);
+add('LEARN3C-1: page-specific improvements keep distinct investing search intent and practical decision value',
+  learn3c1Pages[0].includes('Read the projection in three layers') && learn3c1Pages[0].includes('Real purchasing power') &&
+  learn3c1Pages[1].includes('Work backward from the goal instead of choosing a convenient return') && learn3c1Pages[1].includes('Do not simply raise the return assumption') &&
+  learn3c1Pages[2].includes('The larger ending value comes from a larger contribution path') && learn3c1Pages[2].includes('same in a fair comparison') &&
+  learn3c1Pages[3].includes('Contribution timing and return convention are different inputs') && learn3c1Pages[3].includes('Beginning or end of each period') &&
+  learn3c1Pages[4].includes('A target date is a scenario result, not a countdown clock') && learn3c1Pages[4].includes('Usually within your control?') &&
+  learn3c1Pages[5].includes('Use two comparisons so time is not confused with extra contributions') && learn3c1Pages[5].includes('Same total contribution') &&
+  learn3c1Pages[6].includes('Lower prices change purchase mechanics, not the quality of the investment') && learn3c1Pages[6].includes('Cost averaging is a purchase pattern')
+);
+add('LEARN3C-1: each rewritten guide keeps its approved primary calculator journey',
+  learn3c1Pages[0].includes('class="guide-action-first"') && learn3c1Pages[0].includes('href="/sip-calculator/"') &&
+  learn3c1Pages[1].includes('class="guide-action-first"') && learn3c1Pages[1].includes('href="/sip-calculator/"') &&
+  learn3c1Pages[2].includes('class="guide-action-first"') && learn3c1Pages[2].includes('href="/sip-calculator/"') &&
+  learn3c1Pages[3].includes('class="guide-action-first"') && learn3c1Pages[3].includes('href="/sip-calculator/"') && learn3c1Pages[3].includes('href="/compound-interest-calculator/"') &&
+  learn3c1Pages[4].includes('class="guide-action-first"') && learn3c1Pages[4].includes('href="/sip-calculator/"') &&
+  learn3c1Pages[5].includes('class="guide-action-first"') && learn3c1Pages[5].includes('href="/sip-calculator/"') &&
+  learn3c1Pages[6].includes('class="guide-action-first"') && learn3c1Pages[6].includes('href="/sip-calculator/"')
+);
+add('LEARN3C-1: sitemap and SEARCH1 preserve 121 public pages with accurate material-change dates and reviewed query ownership',
+  learn3c1Names.every(name => {
+    const loc=`<loc>https://carrowmont.com/${name}</loc>`;
+    return new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-21<\\/lastmod>`).test(learn2a1Sitemap) &&
+      search1Entries.filter(entry => entry.url===`/${name}`).length===1;
+  }) && search1Entries.length===121 &&
+  search1Result('monthly investment growth','US')[0]?.url==='/10000-sip-returns.html' &&
+  search1Result('investment needed for target','OTHER')[0]?.url==='/sip-for-1-crore.html' &&
+  search1Result('step up sip vs regular sip','IN')[0]?.url==='/step-up-sip-vs-regular-sip.html' &&
+  search1Result('compound interest monthly contributions','US')[0]?.url==='/compound-interest-monthly-contributions.html' &&
+  search1Result('time to investment target','CA')[0]?.url==='/investment-time-to-target.html' &&
+  search1Result('start investing early','AU')[0]?.url==='/starting-investing-earlier.html' &&
+  search1Result('investing during downturn','GB')[0]?.url==='/sip-during-market-fall.html' &&
+  learn3c1SearchFixtures.includes('35 SEARCH1 deterministic fixtures PASS') === false &&
+  learn3c1SearchFixtures.includes('investing during downturn finds the market-fall guide')
+);
+add('LEARN3C-1: static search metadata is the SEO contract while runtime localization remains presentation-only',
+  learn3c1Pages.every(html => {
+    const description=gseo2aMetaContent(html,'description');
+    return description.length>=110 && description.length<=160;
+  }) &&
+  learnExpansion.includes('What happens to a SIP when markets fall?') &&
+  learnExpansion.includes('What happens to recurring investments when markets fall?') &&
+  learn3c1Qa.includes('static meta description should stay within 160 characters') &&
+  !learn3c1Qa.includes('runtime meta description should stay within 160 characters')
+);
+add('LEARN3C-1: central browser QA protects trust, localization and 1280/390/360 layouts',
+  learn3c1Qa.includes('seven guides keep stable identities') &&
+  learn3c1Qa.includes('static search title should remain stable') &&
+  learn3c1Qa.includes('runtime title colon capitalization') && learn3c1Qa.includes('runtime H1 colon capitalization') &&
+  learn3c1Qa.includes('investment localization remains global while SIP stays available for India') &&
+  learn3c1Qa.includes('[1280,390,360]') &&
+  learn3c1Names.every(name => learn3c1QaConfig.includes(`path: '/${name}'`)) &&
+  learn3c1QaConfig.includes("Monthly Investment for 10, 15, 20 and 25 years: What could it grow to?") &&
+  learn3c1QaConfig.includes("How much Monthly Investment is needed to build") &&
+  learn3c1QaConfig.includes("Increasing Monthly Investment vs Fixed Monthly Investment: What changes?") &&
+  learn3c1QaConfig.includes("What happens to recurring investments when markets fall?") &&
+  learnLocaleJs.includes("for 10, 15, 20 and 25 years: What could it grow to?") &&
+  learnLocaleJs.includes("vs '+s.fixedTerm+': What changes?") &&
+  mainSiteJs.includes("for 10, 15, 20 and 25 years: What could it grow to?") &&
+  mainSiteJs.includes("vs '+s.fixedTerm+': What changes?")
+);
+add('LEARN3C-1: implementation record preserves localization, truthful search signals and product boundaries',
+  learn3c1Impl.includes('Source Snapshot 96') && learn3c1Impl.includes('one universal educational core') &&
+  learn3c1Impl.includes('No unrelated page is refreshed') && learn3c1Impl.includes('does not guarantee crawling, indexing, ranking') &&
+  learn3c1Impl.includes('calculator formulas') && learn3c1Impl.includes('SEARCH1 query privacy') &&
+  learn3c1Impl.includes('LEARN3C-2 remains outside this release')
 );
 
 console.log('\nCarrowmont source contract check\n');
