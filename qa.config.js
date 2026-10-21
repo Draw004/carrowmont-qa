@@ -182,5 +182,11 @@ export const mainSitePages = [
   { key: 'compound-monthly-contributions', path: '/compound-interest-monthly-contributions.html', text: 'How does compound interest work with monthly contributions?' },
   { key: 'investment-time-target', path: '/investment-time-to-target.html', text: 'How long could it take to reach your investment target?' },
   { key: 'starting-investing-earlier', path: '/starting-investing-earlier.html', text: 'How much difference can starting 5 or 10 years earlier make?' },
-  { key: 'investing-market-fall', path: '/sip-during-market-fall.html', text: 'What happens to recurring investments when markets fall?' }
+  { key: 'investing-market-fall', path: '/sip-during-market-fall.html', text: 'What happens to recurring investments when markets fall?' },
+  { key: 'lump-sum-vs-monthly-investing', path: '/lump-sum-vs-monthly-investing.html', text: 'Lump sum vs monthly investing: How does timing change the maths?' },
+  { key: 'compounding-and-time', path: '/compounding-and-time.html', text: 'Compounding makes time an important part of every long-term projection.' },
+  { key: 'asset-allocation-explained', path: '/asset-allocation-explained.html', text: 'What is asset allocation, and why does it matter?' },
+  { key: 'diversification-across-asset-classes', path: '/diversification-across-asset-classes.html', text: 'What does diversification across asset classes actually mean?' },
+  { key: 'stocks-vs-bonds', path: '/stocks-vs-bonds.html', text: 'Stocks vs bonds: What is the difference?' },
+  { key: 'how-much-invest-monthly', path: '/how-much-should-i-invest-each-month.html', text: 'How much should you invest each month to reach a financial goal?' }
 ];

@@ -4242,7 +4242,7 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
   search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html' &&
   search1Result('zzzzxyqnotatopic','OTHER').length === 0 &&
-  (search1FixtureScript.match(/\{ name:/g)||[]).length === 35 &&
+  (search1FixtureScript.match(/\{ name:/g)||[]).length === 41 &&
   search1FixtureScript.includes('investing for beginners finds the foundation guide') &&
   search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
@@ -4855,6 +4855,106 @@ add('LEARN3C-1: implementation record preserves localization, truthful search si
   learn3c1Impl.includes('No unrelated page is refreshed') && learn3c1Impl.includes('does not guarantee crawling, indexing, ranking') &&
   learn3c1Impl.includes('calculator formulas') && learn3c1Impl.includes('SEARCH1 query privacy') &&
   learn3c1Impl.includes('LEARN3C-2 remains outside this release')
+);
+
+
+
+// LEARN3C-2 portfolio decisions and investment planning - Snapshot 97.
+const learn3c2Names = [
+  'lump-sum-vs-monthly-investing.html','compounding-and-time.html','asset-allocation-explained.html',
+  'diversification-across-asset-classes.html','stocks-vs-bonds.html','how-much-should-i-invest-each-month.html'
+];
+const learn3c2Titles = [
+  'Lump Sum vs Monthly Investing | Carrowmont',
+  'Compounding &amp; time | Carrowmont',
+  'What Is Asset Allocation? How It Works | Carrowmont',
+  'Diversification Across Asset Classes | Carrowmont',
+  'Stocks vs bonds: What is the difference? | Carrowmont',
+  'How Much Should You Invest Each Month? | Carrowmont'
+];
+const learn3c2Pages = learn3c2Names.map(name => read(`draw004.github.io/${name}`));
+const learn3c2Impl = read('draw004.github.io/docs/CARROWMONT_LEARN3C2_PORTFOLIO_DECISIONS_INVESTMENT_PLANNING_IMPLEMENTATION.md');
+const learn3c2Qa = readQa('tests/41-learn3c2-portfolio-decisions-investment-planning.spec.js');
+const learn3c2QaConfig = readQa('qa.config.js');
+const learn3c2SearchFixtures = read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3c2Count = (html, pattern) => (html.match(pattern) || []).length;
+
+add('LEARN3C-2: six established investing guides keep stable indexable identities, trust signals and honest freshness',
+  learn3c2Pages.every((html,index) => {
+    const article=jsonLdNode(html,'Article');
+    const breadcrumb=jsonLdNode(html,'BreadcrumbList');
+    const url=`https://carrowmont.com/${learn3c2Names[index]}`;
+    const description=gseo2aMetaContent(html,'description');
+    return gseo2aTitle(html)===learn3c2Titles[index] && description.length>=110 && description.length<=160 &&
+      gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase()==='index,follow' &&
+      article?.mainEntityOfPage===url && article?.dateModified==='2026-10-21' && Boolean(breadcrumb) &&
+      html.includes('Reviewed 21 October 2026') && html.includes('href="/editorial-policy.html"') &&
+      html.includes('data-cm-learn3c2="1"') && html.includes('Checklist:') &&
+      learn3c2Count(html,/class="guide-table-wrap"/g)>=1 && learn3c2Count(html,/<li><a href="https?:\/\//g)>=4;
+  })
+);
+add('LEARN3C-2: page-specific lessons remain distinct, practical and non-prescriptive',
+  learn3c2Pages[0].includes('First ask whether the cash already exists') && learn3c2Pages[0].includes('Two market paths can produce opposite timing outcomes') &&
+  learn3c2Pages[1].includes('Compounding means growth on earlier growth') && learn3c2Pages[1].includes('Fees compound too') &&
+  learn3c2Pages[2].includes('Risk tolerance and risk capacity are not the same') && learn3c2Pages[2].includes('Rebalancing is maintenance, not a market forecast') &&
+  learn3c2Pages[3].includes('The number of holdings can be misleading') && learn3c2Pages[3].includes('Diversification cannot remove market-wide risk') &&
+  learn3c2Pages[4].includes('Duration is a useful measure of interest-rate sensitivity') && learn3c2Pages[4].includes('Stocks and bonds can fall together') &&
+  learn3c2Pages[5].includes('The monthly amount is an output, not the starting point') && learn3c2Pages[5].includes('Three levers solve most funding gaps') &&
+  learn3c2Pages.every(html => !/\b(?:buy now|sell now|will definitely outperform)\b/i.test(html))
+);
+add('LEARN3C-2: established Tool-to-Learn journeys are reconciled before the new editorial layer',
+  learn3c2Pages[0].includes('class="guide-action-first"') && learn3c2Pages[0].includes('href="/sip-calculator/"') &&
+  learn3c2Pages[1].includes('class="guide-action-first"') && learn3c2Pages[1].includes('href="/compound-interest-calculator/"') &&
+  learn3c2Pages[2].includes('class="guide-action-first"') && learn3c2Pages[2].includes('href="/retirement-calculator/"') &&
+  learn3c2Pages[3].includes('class="guide-action-first"') && learn3c2Pages[3].includes('href="/financial-independence/"') &&
+  learn3c2Pages[4].includes('class="guide-action-first"') && learn3c2Pages[4].includes('href="/retirement-calculator/"') &&
+  learn3c2Pages[5].includes('class="guide-action-first"') && learn3c2Pages[5].includes('href="/goal-planner/"') &&
+  learn3c2Pages[4].includes('href="/why-do-stocks-fall-when-bond-yields-rise.html"') &&
+  learn3c2Pages[3].includes('href="/asset-allocation-explained.html"')
+);
+add('LEARN3C-2: localized monetary examples use one proportional teaching basis inside each worked scenario',
+  ['1200000','300000','1440000','1343173','1341667'].every(value => learn3c2Pages[0].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`)) &&
+  ['100000','179085','320714','574349','761225','1624734','424734'].every(value => learn3c2Pages[1].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`)) &&
+  ['2500000','500000','11916','9704','7599','7017'].every(value => learn3c2Pages[5].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`))
+);
+add('LEARN3C-2: sitemap and SEARCH1 preserve 121 public pages, truthful freshness and six reviewed intents',
+  learn3c2Names.every(name => {
+    const loc=`<loc>https://carrowmont.com/${name}</loc>`;
+    return new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-21<\\/lastmod>`).test(learn2a1Sitemap) &&
+      search1Entries.filter(entry => entry.url===`/${name}`).length===1;
+  }) && search1Entries.length===121 &&
+  sitemapLastmods.get('https://carrowmont.com/investing-for-beginners.html')==='2026-10-20' &&
+  search1Result('lump sum vs staged investing','US')[0]?.url==='/lump-sum-vs-monthly-investing.html' &&
+  search1Result('compound interest over time','CA')[0]?.url==='/compounding-and-time.html' &&
+  search1Result('portfolio allocation','AU')[0]?.url==='/asset-allocation-explained.html' &&
+  search1Result('portfolio diversification','GB')[0]?.url==='/diversification-across-asset-classes.html' &&
+  search1Result('stocks vs fixed income','US')[0]?.url==='/stocks-vs-bonds.html' &&
+  search1Result('how much to invest monthly','OTHER')[0]?.url==='/how-much-should-i-invest-each-month.html' &&
+  learn3c2SearchFixtures.includes('lump sum vs staged investing finds the timing guide') &&
+  learn3c2SearchFixtures.includes('how much to invest monthly finds the goal-funding guide')
+);
+add('LEARN3C-2: internal discovery is contextual rather than link-dumped',
+  read('draw004.github.io/investing-for-beginners.html').includes('href="/lump-sum-vs-monthly-investing.html"') &&
+  learn3c2Names.every(name => {
+    const href=`href="/${name}"`;
+    let inbound=0;
+    for (const candidate of search1Entries.filter(entry => entry.url.endsWith('.html'))) {
+      if (candidate.url===`/${name}`) continue;
+      try { if (read(`draw004.github.io${candidate.url}`).includes(href)) inbound += 1; } catch (_) {}
+    }
+    return inbound>=3;
+  })
+);
+add('LEARN3C-2: central browser QA protects static SEO, localization, established journeys and 1280/390/360 layouts',
+  learn3c2Qa.includes('six guides keep stable search identities') && learn3c2Qa.includes('older protected Carrowmont journeys') &&
+  learn3c2Qa.includes('localized worked examples remain coherent') && learn3c2Qa.includes('[1280,390,360]') &&
+  learn3c2Names.every(name => learn3c2QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3C-2: implementation record preserves people-first content, global localization, truthful indexing and product boundaries',
+  learn3c2Impl.includes('Source Snapshot 97') && learn3c2Impl.includes('one universal educational core') &&
+  learn3c2Impl.includes('No newer editorial recommendation silently overrides an older architectural contract') &&
+  learn3c2Impl.includes('does not guarantee crawling, indexing, ranking') && learn3c2Impl.includes('SEARCH1 query privacy') &&
+  learn3c2Impl.includes('calculator formulas') && learn3c2Impl.includes('workflow files')
 );
 
 console.log('\nCarrowmont source contract check\n');

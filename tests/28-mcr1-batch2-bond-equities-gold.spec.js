@@ -40,7 +40,7 @@ test.describe('MCR1 Batch 2 bond yields, equities and gold search cluster',()=>{
     await gotoClean(page,'/what-happens-when-bond-yields-rise.html');await expect(page.locator('a[href="/why-do-stocks-fall-when-bond-yields-rise.html"]')).toBeVisible();await expect(page.locator('a[href="/what-happens-to-gold-when-interest-rates-rise.html"]')).toBeVisible();
     await gotoClean(page,'/what-happens-when-dollar-strengthens.html');await expect(page.locator('a[href="/what-happens-to-gold-when-dollar-rises.html"]')).toBeVisible();
     await gotoClean(page,'/gold-macro-stress-explorer.html');await expect(page.locator('a[href="/what-happens-to-gold-when-interest-rates-rise.html"]')).toBeVisible();await expect(page.locator('a[href="/what-happens-to-gold-when-dollar-rises.html"]')).toBeVisible();
-    await gotoClean(page,'/stocks-vs-bonds.html');await expect(page.locator('a[href="/why-do-stocks-fall-when-bond-yields-rise.html"]')).toBeVisible();
+    await gotoClean(page,'/stocks-vs-bonds.html');await expect(page.locator('a[href="/why-do-stocks-fall-when-bond-yields-rise.html"]').first()).toBeVisible();
     await gotoClean(page,'/gold-as-an-investment.html');await expect(page.locator('a[href="/what-happens-to-gold-when-interest-rates-rise.html"]')).toBeVisible();
     await gotoClean(page,'/');await expect(page.locator('[data-core-tool-count="9"]')).toHaveCount(1);await expect(page.locator('[data-tool-id="market-chain-reaction"]')).toHaveCount(0);
   });
