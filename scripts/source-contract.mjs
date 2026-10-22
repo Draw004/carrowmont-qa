@@ -4202,6 +4202,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 125;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
@@ -4212,7 +4213,7 @@ add('SEARCH1: noindex utility page has one stable canonical and no query-bearing
 );
 add('SEARCH1: reviewed index and alias library are valid, deterministic and below the 250 KB V1 target',
   search1Index?.schema_version === 1 && search1Pages?.schema_version === 1 && search1Aliases?.schema_version === 1 &&
-  search1Entries.length === 121 && new Set(search1EntryPaths).size === search1Entries.length &&
+  search1Entries.length === SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && new Set(search1EntryPaths).size === search1Entries.length &&
   search1Entries.every(entry => entry && /^\//.test(entry.url) && entry.title && entry.description && ['tool','guide','carrowmont'].includes(entry.type) && entry.category && Number.isInteger(entry.priority)) &&
   Buffer.byteLength(read('draw004.github.io/data/carrowmont-search-index.json'), 'utf8') < 250 * 1024 &&
   Array.isArray(search1Aliases?.groups) && search1Aliases.groups.length >= 10 &&
@@ -4223,6 +4224,17 @@ add('SEARCH1: every sitemap URL is searchable exactly once and no internal/relea
   search1SitemapPaths.every(url => search1EntryPaths.includes(url)) &&
   search1EntryPaths.every(url => search1SitemapPaths.includes(url)) &&
   search1EntryPaths.every(url => !/\.(?:zip|md|json|ya?ml)$/i.test(url) && !url.includes('/docs/') && !url.includes('/.github/'))
+);
+const search1InventoryBrowserQa = [
+  'tests/35-search1-global-site-search.spec.js',
+  'tests/36-learn2a-evergreen-finance-batch1.spec.js',
+  'tests/37-learn2a-evergreen-finance-batch2.spec.js',
+  'tests/38-learn3b-budget-systems-cash-flow.spec.js',
+  'tests/39-learn3b-financial-resilience-savings-debt.spec.js'
+].map(readQa);
+add('SEARCH1: browser inventory tests share one reviewed public-page-count contract',
+  search1QaConfig.includes(`export const search1ExpectedPublicPages = ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT};`) &&
+  search1InventoryBrowserQa.every(source => source.includes('search1ExpectedPublicPages') && !/to(?:Be|HaveLength)\(121\)/.test(source))
 );
 let search1CoreApi = null;
 try {
@@ -4367,7 +4379,7 @@ add('LEARN2A-1: sitemap and SEARCH1 contain the four canonicals exactly once wit
     return (learn2a1Sitemap.match(new RegExp(loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length === 1 &&
       new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
       search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
-  }) && search1Entries.length === 121 &&
+  }) && search1Entries.length === SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('how to make a budget','US')[0]?.url === '/how-to-make-a-budget.html' &&
   search1Result('investing for beginners','US')[0]?.url === '/investing-for-beginners.html' &&
   search1Result('etf','US')[0]?.url === '/what-is-an-etf.html' &&
@@ -4458,13 +4470,13 @@ add('LEARN2A-2: Learn hub and contextual article network provide at least four n
   learn2a1Hub.includes('data-category="loans"') && learn2a1Hub.includes('<h2>Credit, Loans &amp; Debt</h2>') &&
   learn2a2Names.every(name => learn2a1Hub.includes(`href="/${name}"`) && learn2a2InboundCount(name) >= 4)
 );
-add('LEARN2A-2: sitemap and SEARCH1 contain 121 reviewed public pages and give the new guides correct informational ownership',
+add(`LEARN2A-2: sitemap and SEARCH1 contain ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} reviewed public pages and give the new guides correct informational ownership`,
   learn2a2Names.every(name => {
     const loc = `<loc>https://carrowmont.com/${name}</loc>`;
     return (learn2a1Sitemap.match(new RegExp(loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length === 1 &&
       new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
       search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
-  }) && search1Entries.length === 121 &&
+  }) && search1Entries.length === SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('credit score','US')[0]?.url === '/credit-score-explained.html' &&
   search1Result('credit rating','AU')[0]?.url === '/credit-score-explained.html' &&
   search1Result('debt consolidation','CA')[0]?.url === '/debt-consolidation-explained.html' &&
@@ -4527,7 +4539,7 @@ add('LEARN3A: Tools hero is compact and embedded search is pulled upward without
   readQa('tests/12-tools-hub.spec.js').includes('tools search should appear above the fold')
 );
 add('LEARN3A: every current Learn title and H1-H6 heading follows colon capitalization',
-  learn3GuideEntries.length === 83 && learn3HeadingColonFailures.length === 0,
+  learn3GuideEntries.length === 87 && learn3HeadingColonFailures.length === 0,
   learn3HeadingColonFailures.slice(0,3).join(' | ')
 );
 add('LEARN3A: shared standards define colon capitalization without corrupting ordinary prose',
@@ -4619,12 +4631,12 @@ add('LEARN3B-1: examples use the established money-localization layer and review
   learn3b1Localization.includes("['GB','IE','AU','NZ'].includes(s.region)") && learn3b1Localization.includes("return 'Fortnightly'") &&
   learn3b1Localization.includes("return 'Every two weeks'")
 );
-add('LEARN3B-1: sitemap and SEARCH1 preserve 121 canonical public pages with accurate material-change dates and query ownership',
+add(`LEARN3B-1: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} canonical public pages with accurate material-change dates and query ownership`,
   learn3b1Names.every(name => {
     const loc = `<loc>https://carrowmont.com/${name}</loc>`;
     return new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
       search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
-  }) && search1Entries.length === 121 &&
+  }) && search1Entries.length === SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('50 30 20 budget','US')[0]?.url === '/50-30-20-budget-rule.html' &&
   search1Result('payday budget','US')[0]?.url === '/budgeting-by-pay-frequency.html' &&
   search1Result('variable income budget','CA')[0]?.url === '/budgeting-with-irregular-income.html' &&
@@ -4716,12 +4728,12 @@ add('LEARN3B-2: examples use established money localization and reviewed debt-pa
   learn3b2Localization.includes("return 'debt repayment'") &&
   learn3b2Localization.includes("return 'debt payment'")
 );
-add('LEARN3B-2: sitemap and SEARCH1 preserve 121 canonical public pages with accurate material-change dates and query ownership',
+add(`LEARN3B-2: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} canonical public pages with accurate material-change dates and query ownership`,
   learn3b2Names.every(name => {
     const loc = `<loc>https://carrowmont.com/${name}</loc>`;
     return new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-20<\\/lastmod>`).test(learn2a1Sitemap) &&
       search1Entries.filter(entry => entry.url === `/${name}`).length === 1;
-  }) && search1Entries.length === 121 &&
+  }) && search1Entries.length === SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('how much emergency fund','CA')[0]?.url === '/emergency-fund-how-much.html' &&
   search1Result('emergency liquidity','GB')[0]?.url === '/emergency-savings.html' &&
   search1Result('sinking fund','AU')[0]?.url === '/sinking-fund-vs-emergency-fund.html' &&
@@ -4815,12 +4827,12 @@ add('LEARN3C-1: each rewritten guide keeps its approved primary calculator journ
   learn3c1Pages[5].includes('class="guide-action-first"') && learn3c1Pages[5].includes('href="/sip-calculator/"') &&
   learn3c1Pages[6].includes('class="guide-action-first"') && learn3c1Pages[6].includes('href="/sip-calculator/"')
 );
-add('LEARN3C-1: sitemap and SEARCH1 preserve 121 public pages with accurate material-change dates and reviewed query ownership',
+add(`LEARN3C-1: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} public pages with accurate material-change dates and reviewed query ownership`,
   learn3c1Names.every(name => {
     const loc=`<loc>https://carrowmont.com/${name}</loc>`;
     return new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-21<\\/lastmod>`).test(learn2a1Sitemap) &&
       search1Entries.filter(entry => entry.url===`/${name}`).length===1;
-  }) && search1Entries.length===121 &&
+  }) && search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('monthly investment growth','US')[0]?.url==='/10000-sip-returns.html' &&
   search1Result('investment needed for target','OTHER')[0]?.url==='/sip-for-1-crore.html' &&
   search1Result('step up sip vs regular sip','IN')[0]?.url==='/step-up-sip-vs-regular-sip.html' &&
@@ -4924,12 +4936,12 @@ add('LEARN3C-2: localized monetary examples use one proportional teaching basis 
   ['100000','179085','320714','574349','761225','1624734','424734'].every(value => learn3c2Pages[1].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`)) &&
   ['2500000','500000','11916','9704','7599','7017'].every(value => learn3c2Pages[5].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`))
 );
-add('LEARN3C-2: sitemap and SEARCH1 preserve 121 public pages, truthful freshness and six reviewed intents',
+add(`LEARN3C-2: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} public pages, truthful freshness and six reviewed intents`,
   learn3c2Names.every(name => {
     const loc=`<loc>https://carrowmont.com/${name}</loc>`;
     return new RegExp(`${loc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s*<lastmod>2026-10-21<\\/lastmod>`).test(learn2a1Sitemap) &&
       search1Entries.filter(entry => entry.url===`/${name}`).length===1;
-  }) && search1Entries.length===121 &&
+  }) && search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   sitemapLastmods.get('https://carrowmont.com/investing-for-beginners.html')==='2026-10-20' &&
   search1Result('lump sum vs staged investing','US')[0]?.url==='/lump-sum-vs-monthly-investing.html' &&
   search1Result('compound interest over time','CA')[0]?.url==='/compounding-and-time.html' &&
@@ -5035,9 +5047,9 @@ add('LEARN3D-1: localized monetary illustrations keep one proportional teaching 
   ['10000000','400000','420000'].every(value => learn3d1Pages[5].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`)) &&
   ['10000000','500000','8677240','10106240'].every(value => learn3d1Pages[6].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`))
 );
-add('LEARN3D-1: sitemap and SEARCH1 preserve 121 public pages with eight reviewed retirement intents',
+add(`LEARN3D-1: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} public pages with eight reviewed retirement intents`,
   learn3d1Names.every(name => sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-21' && search1Entries.filter(entry => entry.url===`/${name}`).length===1) &&
-  search1Entries.length===121 &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('retirement savings benchmark by age','US')[0]?.url==='/retirement-savings-by-age.html' &&
   search1Result('retirement monthly income','CA')[0]?.url==='/retirement-monthly-income-needed.html' &&
   search1Result('retirement expense checklist','GB')[0]?.url==='/retirement-expenses.html' &&
@@ -5127,9 +5139,9 @@ add('LEARN3D-2: localized worked examples use the established proportional teach
   ['100000','134392','162889','180611','265330','242726','432194'].every(value => learn3d2Pages[4].includes(`data-cm-money-inr="${value}" data-cm-money-basis="monthly"`)) &&
   ['1000000','1218994','823509'].every(value => learn3d2Pages[5].includes(`data-cm-money-inr="${value}" data-cm-money-basis="target"`))
 );
-add('LEARN3D-2: sitemap and SEARCH1 preserve 121 public pages with eight reviewed FI/inflation intents',
+add(`LEARN3D-2: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} public pages with eight reviewed FI/inflation intents`,
   learn3d2Names.every(name => sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-21' && search1Entries.filter(entry => entry.url===`/${name}`).length===1) &&
-  search1Entries.length===121 &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('fi number','US')[0]?.url==='/financial-independence-number.html' &&
   search1Result('financial independence timeline','CA')[0]?.url==='/when-can-i-reach-financial-independence.html' &&
   search1Result('coast fi number','AU')[0]?.url==='/coast-fire-explained.html' &&
@@ -5213,9 +5225,9 @@ add('LEARN3E-1: localized teaching values and timing examples retain the approve
   ['5278.37','6443.01','7718.16','77450.51','162188.10','293076.80'].every(value => learn3e1Pages[3].includes(`data-cm-money-inr="${value}"`)) &&
   ['5278.37','6059.80','781.43','6443.01','7164.31','721.30','7718.16','8364.40','646.24'].every(value => learn3e1Pages[4].includes(`data-cm-money-inr="${value}"`))
 );
-add('LEARN3E-1: sitemap and SEARCH1 preserve 121 public pages with five reviewed mortgage intents',
+add(`LEARN3E-1: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} public pages with five reviewed mortgage intents`,
   learn3e1Names.every(name => sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-21' && search1Entries.filter(entry => entry.url===`/${name}`).length===1) &&
-  search1Entries.length===121 &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('every two weeks mortgage','US')[0]?.url==='/biweekly-fortnightly-mortgage-payments.html' &&
   search1Result('mortgage prepayment early vs late','GB')[0]?.url==='/extra-mortgage-payments-early-vs-late.html' &&
   search1Result('monthly extra payment vs lump sum mortgage','CA')[0]?.url==='/monthly-extra-vs-annual-lump-sum-mortgage.html' &&
@@ -5286,9 +5298,9 @@ add('LEARN3E-2: property lessons distinguish yield, leverage, liquidity and tota
 add('LEARN3E-2: older property Tool-to-Learn journeys remain authoritative',
   learn3e2Pages.every((html,index) => html.includes('class="guide-action-first"') && html.includes(`href="${learn3e2Tools[index]}"`))
 );
-add('LEARN3E-2: sitemap and SEARCH1 preserve 121 public pages with four reviewed property intents',
+add(`LEARN3E-2: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT} public pages with four reviewed property intents`,
   learn3e2Names.every(name => sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-22' && search1Entries.filter(entry => entry.url===`/${name}`).length===1) &&
-  search1Entries.length===121 &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT &&
   search1Result('gross rental yield','AU')[0]?.url==='/rental-yield-explained.html' &&
   search1Result('reit vs rental property','US')[0]?.url==='/reit-vs-direct-property.html' &&
   search1Result('reit meaning','GB')[0]?.url==='/what-is-a-reit.html' &&
@@ -5308,6 +5320,47 @@ add('LEARN3E-2: implementation record preserves people-first content, truthful i
   learn3e2Impl.includes('does not guarantee crawling, indexing, ranking') && learn3e2Impl.includes('SEARCH1 query privacy') &&
   learn3e2Impl.includes('calculator formulas') && learn3e2Impl.includes('workflow files') &&
   learn3e2Impl.includes('next planned library phase is LEARN3F')
+);
+
+
+
+// LEARN3F-1 rates, debt and reserve-currency foundations - Snapshot 105.
+const learn3f1Names=['real-yields-explained.html','why-us-debt-interest-costs-matter.html','treasury-bills-vs-notes-vs-bonds.html','what-makes-a-global-reserve-currency.html'];
+const learn3f1Titles=['Real Yields Explained: Real vs Nominal Yield | Carrowmont','US Debt Interest Costs: Why They Matter | Carrowmont','Treasury Bills vs Notes vs Bonds | Carrowmont','What Makes a Global Reserve Currency? | Carrowmont'];
+const learn3f1Tools=['/gold-macro-stress-explorer.html','/us-debt-interest-cost-calculator.html','/market-chain-reaction-explorer.html#event=yields-rise&cause=inflation&target=broad-stocks','/market-chain-reaction-explorer.html#event=dollar-strengthens&cause=higher-us-rates&target=gold'];
+const learn3f1Pages=learn3f1Names.map(name=>read(`draw004.github.io/${name}`));
+const learn3f1Qa=readQa('tests/46-learn3f1-rates-debt-reserve-currency.spec.js');
+const learn3f1QaConfig=readQa('qa.config.js');
+const learn3f1SearchFixtures=read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3f1Impl=read('draw004.github.io/docs/CARROWMONT_LEARN3F1_RATES_DEBT_RESERVE_CURRENCY_IMPLEMENTATION.md');
+const learn3f1Count=(html,pattern)=>(html.match(pattern)||[]).length;
+add('LEARN3F-1: four new macro guides keep distinct indexable identities and current publication dates',
+  learn3f1Pages.every((html,index)=>{ const article=jsonLdNode(html,'Article'); const breadcrumb=jsonLdNode(html,'BreadcrumbList'); const url=`https://carrowmont.com/${learn3f1Names[index]}`; const description=gseo2aMetaContent(html,'description'); return gseo2aTitle(html)===learn3f1Titles[index] && description.length>=100 && description.length<=170 && gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase()==='index,follow' && article?.mainEntityOfPage===url && article?.datePublished==='2026-10-22' && article?.dateModified==='2026-10-22' && Boolean(breadcrumb) && html.includes('Published 22 October 2026') && learn3f1Count(html,/data-cm-learn3f1="1"/g)===1 && learn3f1Count(html,/data-cm-depth="1"/g)===1 && learn3f1Count(html,/data-cm-rich="1"/g)===1 && learn3f1Count(html,/<li><a href="https?:\/\//g)>=4 && !/\bfetch\s*\(/.test(html); })
+);
+add('LEARN3F-1: page-specific mechanics preserve real-yield, debt-refinancing, maturity and reserve-currency distinctions',
+  learn3f1Pages[0].includes('exact purchasing-power calculation') && learn3f1Pages[0].includes('Does a positive real yield guarantee gold will fall?') &&
+  learn3f1Pages[1].includes('weighted average rate across the debt stock') && learn3f1Pages[1].includes('Treasury borrowing is not the same thing as “Treasury printing money”') &&
+  learn3f1Pages[2].includes('Price risk vs reinvestment risk') && learn3f1Pages[2].includes('Same issuer does not mean same price risk') &&
+  learn3f1Pages[3].includes('COFER excludes monetary gold') && learn3f1Pages[3].includes('Reserve currency status is more than trade invoicing')
+);
+add('LEARN3F-1: new pages keep approved primary Carrowmont journeys',
+  learn3f1Pages.every((html,index)=>html.includes('class="guide-action-first"') && html.includes(`href="${learn3f1Tools[index]}"`))
+);
+add('LEARN3F-1: sitemap and SEARCH1 expand from 121 to 125 reviewed public pages with distinct intent ownership',
+  learn3f1Names.every(name=>sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-22' && search1Entries.filter(entry=>entry.url===`/${name}`).length===1) &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Result('real yield','US')[0]?.url==='/real-yields-explained.html' && search1Result('us debt interest expense','US')[0]?.url==='/why-us-debt-interest-costs-matter.html' && search1Result('treasury bills notes bonds','US')[0]?.url==='/treasury-bills-vs-notes-vs-bonds.html' && search1Result('reserve currency','OTHER')[0]?.url==='/what-makes-a-global-reserve-currency.html' &&
+  learn3f1SearchFixtures.includes('real yield finds the real-yield foundation guide') && learn3f1SearchFixtures.includes('reserve currency finds the reserve-currency foundation guide')
+);
+add('LEARN3F-1: maintenance-only macro pages gain contextual discovery without artificial freshness changes',
+  read('draw004.github.io/what-happens-to-gold-when-interest-rates-rise.html').includes('href="/real-yields-explained.html"') && sitemapLastmods.get('https://carrowmont.com/what-happens-to-gold-when-interest-rates-rise.html')==='2026-10-15' &&
+  read('draw004.github.io/what-happens-when-bond-yields-rise.html').includes('href="/treasury-bills-vs-notes-vs-bonds.html"') && read('draw004.github.io/what-happens-when-bond-yields-rise.html').includes('href="/why-us-debt-interest-costs-matter.html"') && sitemapLastmods.get('https://carrowmont.com/what-happens-when-bond-yields-rise.html')==='2026-10-15' &&
+  read('draw004.github.io/what-happens-when-dollar-strengthens.html').includes('href="/what-makes-a-global-reserve-currency.html"') && sitemapLastmods.get('https://carrowmont.com/what-happens-when-dollar-strengthens.html')==='2026-10-15'
+);
+add('LEARN3F-1: browser QA protects arithmetic, identities, source transparency and 1280/390/360 layouts',
+  learn3f1Qa.includes('worked illustrations recalculate from stated assumptions') && learn3f1Qa.includes('stable static/runtime identities') && learn3f1Qa.includes('[1280,390,360]') && learn3f1Names.every(name=>learn3f1QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3F-1: implementation record preserves source discipline, privacy and product boundaries',
+  learn3f1Impl.includes('Source Snapshot 105') && learn3f1Impl.includes('COFER') && learn3f1Impl.includes('No browser-side external data API') && learn3f1Impl.includes('SEARCH1 query privacy') && learn3f1Impl.includes('No calculator formulas') && learn3f1Impl.includes('No workflow files') && learn3f1Impl.includes('LEARN3F-2')
 );
 
 console.log('\nCarrowmont source contract check\n');
