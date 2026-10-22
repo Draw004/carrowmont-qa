@@ -1080,7 +1080,7 @@ add('main site: shared Learn article CSS/JS standard exists',
 add('main site: all Learn Article pages inherit the reusable article standard',
   standardizedLearnPages.length >= 57 && standardizedLearnPages.every(({file,page}) =>
     page.includes('data-cm-learn-article="1"') &&
-    page.includes('learn-article.css?v=20261010-global1') &&
+    page.includes('learn-article.css?v=20261022-presentation2') &&
     (page.includes('learn-article.js?v=20260928-standard2') || ((mortgageLearnFiles.includes(file) || file === 'mortgage-prepayment-vs-investing.html') && page.includes('learn-article.js?v=20261011-mortgage1')) || (file === 'mortgage-refinance-break-even.html' && page.includes('learn-article.js?v=20261014-mdc1b1'))) &&
     page.includes('class="article-meta"') &&
     page.includes('class="guide-action-first"') &&
@@ -2378,7 +2378,7 @@ add('main site: LEARN-LOCALE1 updates all content-changed Learn sitemap entries 
 );
 add('main site: LEARN-LOCALE1 cache-busts the shared localization/CSS assets and keeps long related-guide links mobile-safe',
   learnLocalePages.every(file => /learn-localization\.js\?v=(?:20261010-global1|20261014-mortgage-learn2|20261014-housing3|20261020-learn3b1|20261020-learn3b2)/.test(read('draw004.github.io/'+file))) &&
-  standardizedLearnPages.every(({page}) => page.includes('learn-article.css?v=20261010-global1')) &&
+  standardizedLearnPages.every(({page}) => page.includes('learn-article.css?v=20261022-presentation2')) &&
   learnArticleCss.includes('.seo-related-guides .text-link') && learnArticleCss.includes('white-space:normal')
 );
 add('central QA: LEARN-LOCALE1 covers all-currency profiles, FI table, SIP terminology, homepage non-regression and mobile overflow',
@@ -3471,7 +3471,7 @@ add('MCR1: four Batch-1 Learn pages satisfy Carrowmont depth, source, canonical 
   mcrLearnPages.every((page,i) =>
     page.includes('data-cm-learn-article="1"') && page.includes('class="guide-answer"') && page.includes('data-cm-rich="1"') &&
     page.includes('data-cm-depth="1"') && page.includes('Frequently asked questions') && page.includes('class="reference-note"') &&
-    page.includes('href="/market-chain-reaction-explorer.html#') && page.includes('learn-article.css?v=20261010-global1') &&
+    page.includes('href="/market-chain-reaction-explorer.html#') && page.includes('learn-article.css?v=20261022-presentation2') &&
     page.includes('learn-localization.js?v=20261014-housing3') && Boolean(jsonLdNode(page,'Article')) && Boolean(jsonLdNode(page,'BreadcrumbList')) &&
     page.includes(`https://carrowmont.com/${mcrLearnNames[i]}`) && !/₹|\blakhs?\b|\bcrores?\b/i.test(learnMainVisibleText(page))
   ) && mcrLearnCss.includes('data-cm-mcr-learn')
@@ -4455,7 +4455,7 @@ add('LEARN2A-2: every guide teaches in simple language with a worked comparison,
     html.includes('href="/editorial-policy.html"') && html.includes('Educational information only.')
   ) &&
   learn2a2Pages[0].includes('different information or formulas') && learn2a2Pages[0].includes('never guarantees approval') &&
-  learn2a2Pages[1].includes('a lower payment can result from a longer term') && learn2a2Pages[2].includes('minimum payment') &&
+  learn2a2Pages[1].includes('A lower payment can result from a longer term') && learn2a2Pages[2].includes('minimum payment') &&
   learn2a2Pages[3].includes('exact legal calculation differs by country')
 );
 add('LEARN2A-2: examples and cautions use the established localization layer without pretending credit or disclosure rules are universal',
@@ -4542,12 +4542,13 @@ add('LEARN3A: every current Learn title and H1-H6 heading follows colon capitali
   learn3GuideEntries.length === 90 && learn3HeadingColonFailures.length === 0,
   learn3HeadingColonFailures.slice(0,3).join(' | ')
 );
-add('LEARN3A: shared standards define colon capitalization without corrupting ordinary prose',
-  learn3Standard.includes('Heading and title capitalization after a colon') &&
-  learn3Standard.includes('must **not** force unnatural capitalization inside ordinary paragraph prose') &&
+add('LEARN3A: shared standards retain the colon-capitalization rule and its non-content exceptions',
+  learn3Standard.includes('Public-text capitalization after a colon') &&
+  learn3Standard.includes('first alphabetic word after a colon begins with a capital letter') &&
+  learn3Standard.includes('official titles of external sources') &&
   learn3Standard.includes('current 83-guide library') &&
-  learn3UiStandard.includes('Colon capitalization in public headings') &&
-  learn3UiStandard.includes('Normal sentence grammar remains authoritative')
+  learn3UiStandard.includes('Colon capitalization in public text') &&
+  learn3UiStandard.includes('official external-source titles')
 );
 add('LEARN3A: complete 83-guide audit records practical quality gaps and controlled topic batches',
   learn3Audit.includes('**83** Learn articles were audited') &&
@@ -5454,6 +5455,69 @@ add('LEARN-CLOSEOUT1: colon capitalization and SEARCH1 ownership remain intact a
 );
 add('LEARN-CLOSEOUT1: browser QA and implementation record protect the observed defect classes without broadening product scope',
   learnCloseoutQa.includes('all Learn answer callouts use one 30-second-answer label') && learnCloseoutQa.includes('global macro education uses fixed truthful context') && learnCloseoutQa.includes('shared step cards keep sentences together') && learnCloseoutQa.includes('[1280,390,360]') && learnCloseoutImpl.includes('Source Snapshot 107') && learnCloseoutImpl.includes('No search index title, alias or intent ownership is changed') && learnCloseoutImpl.includes('workflow files')
+);
+
+
+// LEARN-PRESENTATION2 owner-reviewed typography, spacing, table and Contact polish - Snapshot 108.
+const learnPresentationCss=read('draw004.github.io/learn-article.css');
+const learnPresentationMacroCss=read('draw004.github.io/market-chain-learn.css');
+const learnPresentationContactCss=read('draw004.github.io/carrowmont.css');
+const learnPresentationContact=read('draw004.github.io/contact.html');
+const learnPresentationRetirement=read('draw004.github.io/how-long-will-retirement-savings-last.html');
+const learnPresentationQa=readQa('tests/49-learn-presentation-polish.spec.js');
+const learnPresentationImpl=read('draw004.github.io/docs/CARROWMONT_LEARN_PRESENTATION_POLISH_IMPLEMENTATION.md');
+function learnAuthoredColonLowercase(html){
+  let main=(html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)||[,''])[1];
+  main=main
+    .replace(/<ul\b[^>]*class=["'][^"']*\bsource-list\b[^"']*["'][^>]*>[\s\S]*?<\/ul>/gi,' ')
+    .replace(/<(?:script|style|code|pre|blockquote)\b[^>]*>[\s\S]*?<\/(?:script|style|code|pre|blockquote)>/gi,' ')
+    .replace(/<[^>]+>/g,' ')
+    .replace(/&nbsp;/gi,' ')
+    .replace(/&amp;/gi,'&')
+    .replace(/\s+/g,' ');
+  return [...main.matchAll(/:\s*["'“”‘’(\[]*([a-z])/g)].map(m=>m[0]);
+}
+const learnPresentationColonFailures=[];
+const learnPresentationAnswerEmphasisFailures=[];
+for(const entry of learn3GuideEntries){
+  const html=read(`draw004.github.io${entry.url}`);
+  const colon=learnAuthoredColonLowercase(html);
+  if(colon.length) learnPresentationColonFailures.push(`${entry.url}: ${colon.slice(0,3).join(', ')}`);
+  const answer=(html.match(/<div class="guide-answer[^>]*>([\s\S]*?)<\/div>/i)||[,''])[1];
+  const strongCount=(answer.match(/<strong\b/gi)||[]).length;
+  if(strongCount>2) learnPresentationAnswerEmphasisFailures.push(`${entry.url}: ${strongCount-1} inline emphases`);
+}
+add('LEARN-PRESENTATION2: 30-second answers use normal body weight with at most one intentional inline emphasis',
+  learnPresentationCss.includes('LEARN-PRESENTATION2') && learnPresentationCss.includes('.guide-answer p{') && learnPresentationCss.includes('font-weight:400;') && learnPresentationCss.includes('.guide-answer p strong{') &&
+  learnPresentationMacroCss.includes('.guide-answer>strong{') && learnPresentationMacroCss.includes('.guide-answer p{margin:0;color:#173b55;font-size:18px;font-weight:400') && !learnPresentationMacroCss.includes('.guide-answer strong{display:block') &&
+  learnPresentationAnswerEmphasisFailures.length===0,
+  learnPresentationAnswerEmphasisFailures.slice(0,3).join(' | ')
+);
+add('LEARN-PRESENTATION2: owner colon-capitalization rule covers all Carrowmont-authored Learn prose while source titles stay exempt',
+  learn3GuideEntries.length===90 && learnPresentationColonFailures.length===0 && learn3Standard.includes('ordinary explanatory prose') && learn3UiStandard.includes('ordinary explanatory prose'),
+  learnPresentationColonFailures.slice(0,3).join(' | ')
+);
+add('LEARN-PRESENTATION2: checklist/question cards use one compact rhythm without stacked grid/item spacing',
+  learnPresentationCss.includes('.guide-steps{\n  display:grid;\n  gap:8px;') && learnPresentationCss.includes('.guide-steps li{\n  display:block;\n  margin:0;') && learnPresentationCss.includes('border-left:3px solid #d4ebe7')
+);
+add('LEARN-PRESENTATION2: shared Learn tables are visually refined and the retirement runway table has a valid two-column Real-markets row',
+  learnPresentationCss.includes('.guide-table tbody tr:nth-child(even) td') && learnPresentationCss.includes('.guide-table-note') &&
+  learnPresentationRetirement.includes('<tr><td>Real markets</td><td><strong>No single lifespan</strong><span class="guide-table-note">Returns, inflation and spending vary; sequence matters.</span></td></tr>') &&
+  !learnPresentationRetirement.includes('<td>No single lifespan</td><td>Returns, inflation and spending vary; sequence matters</td>')
+);
+add('LEARN-PRESENTATION2: Contact hero is compact and exposes the email action earlier without changing contact identity',
+  learnPresentationContact.includes('<body class="contact-page">') && learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') &&
+  learnPresentationContactCss.includes('CONTACT-PRESENTATION2') && learnPresentationContactCss.includes('body.contact-page .page-hero-inner{padding:42px 0 38px}') &&
+  learnPresentationContact.includes('mailto:contact@carrowmont.com')
+);
+add('LEARN-PRESENTATION2: all Learn pages cache-bust the repaired shared CSS and macro pages cache-bust their answer typography layer',
+  learnCloseoutGuidePages.every(html=>html.includes('learn-article.css?v=20261022-presentation2')) &&
+  learnCloseoutMacroNames.every(name=>read(`draw004.github.io/${name}`).includes('market-chain-learn.css?v=20261022-presentation2'))
+);
+add('LEARN-PRESENTATION2: browser QA and implementation record protect typography, spacing, colon, table and contact-hero defects',
+  learnPresentationQa.includes('macro 30-second answer keeps body text normal') && learnPresentationQa.includes('checklist and question cards use compact spacing') &&
+  learnPresentationQa.includes('colon capitalization is visible in authored prose') && learnPresentationQa.includes('contact email action is pulled into the first desktop viewport') &&
+  learnPresentationQa.includes('[1280,390,360]') && learnPresentationImpl.includes('Source Snapshot 108') && learnPresentationImpl.includes('No calculator formula') && learnPresentationImpl.includes('No workflow files')
 );
 
 console.log('\nCarrowmont source contract check\n');
