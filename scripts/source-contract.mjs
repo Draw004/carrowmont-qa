@@ -4202,7 +4202,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 125;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 128;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
@@ -4539,7 +4539,7 @@ add('LEARN3A: Tools hero is compact and embedded search is pulled upward without
   readQa('tests/12-tools-hub.spec.js').includes('tools search should appear above the fold')
 );
 add('LEARN3A: every current Learn title and H1-H6 heading follows colon capitalization',
-  learn3GuideEntries.length === 87 && learn3HeadingColonFailures.length === 0,
+  learn3GuideEntries.length === 90 && learn3HeadingColonFailures.length === 0,
   learn3HeadingColonFailures.slice(0,3).join(' | ')
 );
 add('LEARN3A: shared standards define colon capitalization without corrupting ordinary prose',
@@ -5346,7 +5346,7 @@ add('LEARN3F-1: page-specific mechanics preserve real-yield, debt-refinancing, m
 add('LEARN3F-1: new pages keep approved primary Carrowmont journeys',
   learn3f1Pages.every((html,index)=>html.includes('class="guide-action-first"') && html.includes(`href="${learn3f1Tools[index]}"`))
 );
-add('LEARN3F-1: sitemap and SEARCH1 expand from 121 to 125 reviewed public pages with distinct intent ownership',
+add(`LEARN3F-1: sitemap and SEARCH1 remain represented inside the shared ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT}-page reviewed inventory with distinct intent ownership`,
   learn3f1Names.every(name=>sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-22' && search1Entries.filter(entry=>entry.url===`/${name}`).length===1) &&
   search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Result('real yield','US')[0]?.url==='/real-yields-explained.html' && search1Result('us debt interest expense','US')[0]?.url==='/why-us-debt-interest-costs-matter.html' && search1Result('treasury bills notes bonds','US')[0]?.url==='/treasury-bills-vs-notes-vs-bonds.html' && search1Result('reserve currency','OTHER')[0]?.url==='/what-makes-a-global-reserve-currency.html' &&
   learn3f1SearchFixtures.includes('real yield finds the real-yield foundation guide') && learn3f1SearchFixtures.includes('reserve currency finds the reserve-currency foundation guide')
@@ -5361,6 +5361,59 @@ add('LEARN3F-1: browser QA protects arithmetic, identities, source transparency 
 );
 add('LEARN3F-1: implementation record preserves source discipline, privacy and product boundaries',
   learn3f1Impl.includes('Source Snapshot 105') && learn3f1Impl.includes('COFER') && learn3f1Impl.includes('No browser-side external data API') && learn3f1Impl.includes('SEARCH1 query privacy') && learn3f1Impl.includes('No calculator formulas') && learn3f1Impl.includes('No workflow files') && learn3f1Impl.includes('LEARN3F-2')
+);
+
+
+// LEARN3F-2 central-bank gold and reserve diversification - Snapshot 106.
+const learn3f2Names=['why-central-banks-buy-gold.html','de-dollarisation-explained.html','gold-vs-government-bonds-reserve-assets.html'];
+const learn3f2Titles=['Why Are Central Banks Buying Gold? | Carrowmont','De-Dollarisation Explained: Dollar Reserves | Carrowmont','Gold vs Government Bonds as Reserve Assets | Carrowmont'];
+const learn3f2Pages=learn3f2Names.map(name=>read(`draw004.github.io/${name}`));
+const learn3f2Qa=readQa('tests/47-learn3f2-central-bank-gold-reserve-diversification.spec.js');
+const learn3f2QaConfig=readQa('qa.config.js');
+const learn3f2SearchFixtures=read('draw004.github.io/scripts/search1-fixtures.mjs');
+const learn3f2Impl=read('draw004.github.io/docs/CARROWMONT_LEARN3F2_CENTRAL_BANK_GOLD_RESERVE_DIVERSIFICATION_IMPLEMENTATION.md');
+const learn3f2GoldCsv=read('draw004.github.io/data/learn3f2/central-bank-gold-demand-reference.csv');
+const learn3f2CoferCsv=read('draw004.github.io/data/learn3f2/cofer-reserve-shares-2026q2.csv');
+const learn3f2ReserveCsv=read('draw004.github.io/data/learn3f2/official-reserve-composition-end-2025.csv');
+const learn3f2Count=(html,pattern)=>(html.match(pattern)||[]).length;
+const learn3f2Pngs=['central-bank-gold-demand-reference.png','cofer-reserve-shares-2026q2.png','official-reserve-composition-end-2025.png'];
+add('LEARN3F-2: three new reserve-diversification guides keep distinct indexable identities, current dates and strong source structure',
+  learn3f2Pages.every((html,index)=>{ const article=jsonLdNode(html,'Article'); const breadcrumb=jsonLdNode(html,'BreadcrumbList'); const url=`https://carrowmont.com/${learn3f2Names[index]}`; const description=gseo2aMetaContent(html,'description'); return gseo2aTitle(html)===learn3f2Titles[index] && description.length>=110 && description.length<=170 && gseo2aCanonical(html)===url && gseo2aMetaContent(html,'robots').toLowerCase()==='index,follow' && article?.mainEntityOfPage===url && article?.datePublished==='2026-10-22' && article?.dateModified==='2026-10-22' && Boolean(breadcrumb) && html.includes('Published 22 October 2026') && learn3f2Count(html,/data-cm-learn3f2="1"/g)===1 && learn3f2Count(html,/data-cm-depth="1"/g)===1 && learn3f2Count(html,/data-cm-rich="1"/g)===1 && learn3f2Count(html,/<li><a href="https?:\/\//g)>=4 && !/\bfetch\s*\(/.test(html); })
+);
+add('LEARN3F-2: central-bank gold reference asset preserves publication-vintage demand, survey context, denominator discipline and household boundary',
+  learn3f2Pages[0].includes('463.1') && learn3f2Pages[0].includes('1,135.7') && learn3f2Pages[0].includes('1,037.4') && learn3f2Pages[0].includes('1,044.6') && learn3f2Pages[0].includes('863.3') && learn3f2Pages[0].includes('345') &&
+  learn3f2Pages[0].includes('<strong>89%</strong>') && learn3f2Pages[0].includes('<strong>45%</strong>') && learn3f2Pages[0].includes('COFER') && learn3f2Pages[0].includes('excludes monetary gold') && learn3f2Pages[0].includes('Central-bank objectives are not household objectives')
+);
+add('LEARN3F-2: de-dollarisation guide protects COFER Q2 2026 values, valuation effects, trade-finance context and spelling aliases',
+  ['56.70%','20.60%','2.11%','4.96%'].every(v=>learn3f2Pages[1].includes(v)) && learn3f2Pages[1].includes('COFER excludes monetary gold') && learn3f2Pages[1].includes('Valuation effects can look like active de-dollarisation') && learn3f2Pages[1].includes('more than <strong>80%</strong> of trade finance') && learn3f2Pages[1].includes('de-dollarization') && learn3f2Pages[1].includes('dedollarization')
+);
+add('LEARN3F-2: gold-versus-government-bonds guide compares reserve roles without turning official holdings into household allocation advice',
+  ['yield','liquidity','duration','inflation','collateral','custody','storage'].every(term=>learn3f2Pages[2].toLowerCase().includes(term)) && learn3f2Pages[2].includes('“Government bonds” is not one uniform asset') && learn3f2Pages[2].includes('Central-bank choices do not create a household allocation rule') && learn3f2Pages[2].includes('Different denominator:')
+);
+add('LEARN3F-2: repository-stored chart and CSV assets preserve reviewed values and remain independent of browser-side external APIs',
+  learn3f2Pngs.every(name=>fs.existsSync(path.join(root,'draw004.github.io/assets/learn3f2',name)) && fs.statSync(path.join(root,'draw004.github.io/assets/learn3f2',name)).size>1000) &&
+  learn3f2GoldCsv.includes('2021,463.1') && learn3f2GoldCsv.includes('2025,863.3') && learn3f2GoldCsv.includes('H1 2026,345.0') &&
+  learn3f2CoferCsv.includes('U.S. dollar,57.18,56.7') && learn3f2CoferCsv.includes('Euro,20.04,20.6') && learn3f2CoferCsv.includes('Japanese yen,5.43,4.96') && learn3f2CoferCsv.includes('Chinese renminbi,1.98,2.11') &&
+  learn3f2ReserveCsv.includes('Gold,27,16') && learn3f2ReserveCsv.includes('U.S. Treasuries,22,26') && learn3f2ReserveCsv.includes('Euro assets,15,16') && learn3f2Pages.every(html=>!html.match(/\bfetch\s*\(/))
+);
+add('LEARN3F-2: all three guides keep Gold Macro Stress as the approved primary journey',
+  learn3f2Pages.every(html=>html.includes('class="guide-action-first"') && html.includes('href="/gold-macro-stress-explorer.html"'))
+);
+add(`LEARN3F-2: sitemap and SEARCH1 expand through the shared ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT}-page inventory with three distinct new intents`,
+  learn3f2Names.every(name=>sitemapLastmods.get(`https://carrowmont.com/${name}`)==='2026-10-22' && search1Entries.filter(entry=>entry.url===`/${name}`).length===1) &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Result('central bank gold buying','OTHER')[0]?.url==='/why-central-banks-buy-gold.html' && search1Result('dedollarization','US')[0]?.url==='/de-dollarisation-explained.html' && search1Result('gold vs Treasuries reserves','US')[0]?.url==='/gold-vs-government-bonds-reserve-assets.html' &&
+  learn3f2SearchFixtures.includes('central bank gold buying finds the official-demand guide') && learn3f2SearchFixtures.includes('dedollarization finds the de-dollarisation guide') && learn3f2SearchFixtures.includes('gold vs Treasuries reserves finds the reserve-asset comparison')
+);
+add('LEARN3F-2: maintenance-only macro pages gain contextual discovery without artificial freshness changes',
+  read('draw004.github.io/what-makes-a-global-reserve-currency.html').includes('href="/de-dollarisation-explained.html"') && sitemapLastmods.get('https://carrowmont.com/what-makes-a-global-reserve-currency.html')==='2026-10-22' &&
+  read('draw004.github.io/treasury-bills-vs-notes-vs-bonds.html').includes('href="/gold-vs-government-bonds-reserve-assets.html"') && sitemapLastmods.get('https://carrowmont.com/treasury-bills-vs-notes-vs-bonds.html')==='2026-10-22' &&
+  read('draw004.github.io/gold-as-an-investment.html').includes('href="/why-central-banks-buy-gold.html"') && sitemapLastmods.get('https://carrowmont.com/gold-as-an-investment.html')==='2026-10-10'
+);
+add('LEARN3F-2: browser QA protects downloadable research assets, old/new page identities, Gold Macro Stress journeys and 1280/390/360 layouts',
+  learn3f2Qa.includes('flagship charts and downloadable CSV/PNG assets are present') && learn3f2Qa.includes('page-specific distinctions preserve demand, denominator, valuation and reserve-role boundaries') && learn3f2Qa.includes('[1280,390,360]') && learn3f2Names.every(name=>learn3f2QaConfig.includes(`path: '/${name}'`))
+);
+add('LEARN3F-2: implementation record preserves evidence discipline, privacy, product boundaries and the final-closeout next step',
+  learn3f2Impl.includes('Source Snapshot 106') && learn3f2Impl.includes('COFER excludes monetary gold') && learn3f2Impl.includes('No browser-side external data API') && learn3f2Impl.includes('SEARCH1 query privacy') && learn3f2Impl.includes('no calculator formulas') && learn3f2Impl.includes('No workflow files') && learn3f2Impl.includes('final whole-library closeout')
 );
 
 console.log('\nCarrowmont source contract check\n');
