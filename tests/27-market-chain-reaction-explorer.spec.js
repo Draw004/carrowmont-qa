@@ -22,11 +22,11 @@ async function choose(page,event,cause,target){
 }
 
 test.describe('MCR1 Market Chain Reaction Explorer',()=>{
-  test('[AUTO] Explorer loads cleanly with one H1, shared locale shell and substantial static education',async({page})=>{
+  test('[AUTO] Explorer loads cleanly with one H1, fixed global context and substantial static education',async({page})=>{
     const errors=monitorPageErrors(page);await gotoClean(page,PAGE);await waitReady(page);
     expect(errors).toEqual([]);await expect(page.locator('h1')).toHaveCount(1);await expect(page.locator('h1')).toHaveText('What Happens When Markets Change?');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://carrowmont.com/market-chain-reaction-explorer.html');
-    await expect(page.locator('#mcrEvent option')).toHaveCount(12);await expect(page.locator('#regionSelect option')).not.toHaveCount(0);await expect(page.locator('#currencySelect option')).not.toHaveCount(0);
+    await expect(page.locator('#mcrEvent option')).toHaveCount(12);await expect(page.locator('.mcr-fixed-context')).toContainText('Global Macro');await expect(page.locator('.mcr-fixed-context')).toContainText('Markets');await expect(page.locator('#regionSelect,#currencySelect')).toHaveCount(0);
     const text=(await page.locator('main').innerText()).replace(/\s+/g,' ');expect(text).toContain('Finance terms without the unnecessary fog');expect(text).toContain('Chain Breaker');expect(text).toContain('why did the move happen?');
   });
 

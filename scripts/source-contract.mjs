@@ -4066,7 +4066,7 @@ add('RETIRE1-SWP1: dedicated Learn page owns the explanatory query and links bac
 );
 add('RETIRE1-SWP1: Learn page is substantive, decision-focused and avoids fund recommendations or guaranteed outcomes',
   retire1SwpLearn.length > 20000 && retire1SwpLearn.includes('An SWP is a withdrawal method, not a promise of income.') &&
-  retire1SwpLearn.includes('What Carrowmont') && retire1SwpLearn.includes('does <strong>not</strong> model a particular mutual fund') &&
+  retire1SwpLearn.includes('What Carrowmont') && retire1SwpLearn.includes("does <strong>not</strong> model a particular fund or investment product's price history") &&
   retire1SwpLearn.includes('NISM: Understanding mutual funds') && retire1SwpLearn.includes('SEBI Investor: Exit Load') &&
   !/best mutual fund|top fund|guaranteed return|guaranteed income/i.test(retire1SwpLearn)
 );
@@ -5414,6 +5414,46 @@ add('LEARN3F-2: browser QA protects downloadable research assets, old/new page i
 );
 add('LEARN3F-2: implementation record preserves evidence discipline, privacy, product boundaries and the final-closeout next step',
   learn3f2Impl.includes('Source Snapshot 106') && learn3f2Impl.includes('COFER excludes monetary gold') && learn3f2Impl.includes('No browser-side external data API') && learn3f2Impl.includes('SEARCH1 query privacy') && learn3f2Impl.includes('no calculator formulas') && learn3f2Impl.includes('No workflow files') && learn3f2Impl.includes('final whole-library closeout')
+);
+
+
+// LEARN-CLOSEOUT1 final whole-library consistency closeout - Snapshot 107.
+const learnCloseoutCss=read('draw004.github.io/learn-article.css');
+const learnCloseoutMcrCss=read('draw004.github.io/market-chain-reaction-explorer.css');
+const learnCloseoutMcr=read('draw004.github.io/market-chain-reaction-explorer.html');
+const learnCloseoutSwp=read('draw004.github.io/what-is-swp-systematic-withdrawal-plan.html');
+const learnCloseoutMortgage=read('draw004.github.io/mortgage-affordability-vs-lender-approval.html');
+const learnCloseoutQa=readQa('tests/48-learn-final-consistency-closeout.spec.js');
+const learnCloseoutImpl=read('draw004.github.io/docs/CARROWMONT_LEARN_FINAL_CONSISTENCY_CLOSEOUT_IMPLEMENTATION.md');
+const learnCloseoutMacroNames=['what-happens-when-bond-yields-rise.html','why-do-stocks-fall-when-bond-yields-rise.html','what-happens-to-gold-when-interest-rates-rise.html','how-oil-prices-affect-inflation.html','what-happens-when-fed-cuts-interest-rates.html','what-happens-when-dollar-strengthens.html','what-happens-to-gold-when-dollar-rises.html','real-yields-explained.html','why-us-debt-interest-costs-matter.html','treasury-bills-vs-notes-vs-bonds.html','what-makes-a-global-reserve-currency.html','why-central-banks-buy-gold.html','de-dollarisation-explained.html','gold-vs-government-bonds-reserve-assets.html'];
+const learnCloseoutGuidePages=learn3GuideEntries.map(entry=>read(`draw004.github.io${entry.url}`));
+add('LEARN-CLOSEOUT1: all 90 current Learn guides use one 30-second-answer label',
+  learn3GuideEntries.length===90 && learnCloseoutGuidePages.every(html=>html.includes('<div class="guide-answer') && html.includes('<strong>30-second answer</strong>') && !html.includes('<strong>Direct answer</strong>'))
+);
+add('LEARN-CLOSEOUT1: shared step cards override the legacy two-column grid and preserve strong-label emphasis',
+  learnCloseoutCss.includes('LEARN-CLOSEOUT1') && learnCloseoutCss.includes('.guide-steps li{') && learnCloseoutCss.includes('display:block;') && learnCloseoutCss.includes('grid-template-columns:none;') && learnCloseoutCss.includes('.guide-steps li>strong:first-child')
+);
+add('LEARN-CLOSEOUT1: all seven LEARN3F pages activate the macro presentation modules they already load',
+  [...learn3f1Names,...learn3f2Names].every(name=>{const html=read(`draw004.github.io/${name}`);return html.includes('market-chain-learn.css') && html.includes('data-cm-mcr-learn=\"1\"');}) &&
+  learnCloseoutMcrCss.includes('body[data-cm-page=\"market-chain-reaction-explorer\"] .guide-action-first')
+);
+add('LEARN-CLOSEOUT1: macro guides with no locale-dependent money use fixed context plus mobile navigation instead of currency selectors',
+  learnCloseoutMacroNames.every(name=>{const html=read(`draw004.github.io/${name}`);return html.includes('class="learn-fixed-context"') && html.includes('class="mobile-nav"') && !html.includes('class="locale-menu"') && !html.includes('data-cm-money');})
+);
+add('LEARN-CLOSEOUT1: Market Chain uses fixed Global Macro context without changing deterministic event logic',
+  learnCloseoutMcr.includes('class="mcr-fixed-context"') && learnCloseoutMcr.includes('Global Macro') && learnCloseoutMcr.includes('<strong>Markets</strong>') && !learnCloseoutMcr.includes('id="regionSelect"') && !learnCloseoutMcr.includes('id="currencySelect"') && learnCloseoutMcrCss.includes('.mcr-fixed-context') && mcrCore.includes("const VERSION='MCR1-1.0'")
+);
+add('LEARN-CLOSEOUT1: SWP is global-first while preserving stable identity and truthful product-specific caveats',
+  gseo2aCanonical(learnCloseoutSwp)==='https://carrowmont.com/what-is-swp-systematic-withdrawal-plan.html' && learnCloseoutSwp.includes('scheduled withdrawal approach') && learnCloseoutSwp.includes('Product names and operating rules differ by market') && !learnCloseoutSwp.includes('In India, it usually means') && jsonLdNode(learnCloseoutSwp,'Article')?.dateModified==='2026-10-22' && sitemapLastmods.get('https://carrowmont.com/what-is-swp-systematic-withdrawal-plan.html')==='2026-10-22'
+);
+add('LEARN-CLOSEOUT1: public mortgage guide no longer leaks the HOME1 implementation codename',
+  !learnMainVisibleText(learnCloseoutMortgage).includes('HOME1') && learnCloseoutMortgage.includes('Home Affordability Calculator is designed to help you explore')
+);
+add('LEARN-CLOSEOUT1: colon capitalization and SEARCH1 ownership remain intact after presentation cleanup',
+  learn3HeadingColonFailures.length===0 && search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT===128
+);
+add('LEARN-CLOSEOUT1: browser QA and implementation record protect the observed defect classes without broadening product scope',
+  learnCloseoutQa.includes('all Learn answer callouts use one 30-second-answer label') && learnCloseoutQa.includes('global macro education uses fixed truthful context') && learnCloseoutQa.includes('shared step cards keep sentences together') && learnCloseoutQa.includes('[1280,390,360]') && learnCloseoutImpl.includes('Source Snapshot 107') && learnCloseoutImpl.includes('No search index title, alias or intent ownership is changed') && learnCloseoutImpl.includes('workflow files')
 );
 
 console.log('\nCarrowmont source contract check\n');
