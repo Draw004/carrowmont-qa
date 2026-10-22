@@ -29,7 +29,10 @@ test.describe('GSEO1E Learn search-intent refinement', () => {
     await gotoClean(page, '/diversification-across-asset-classes.html');
     await expect(page).toHaveTitle('Diversification Across Asset Classes | Carrowmont');
     await expect(page.getByRole('heading', { name: 'How is diversification different from asset allocation?' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Asset allocation', exact: true })).toBeVisible();
+    const assetAllocationLinks = page.getByRole('link', { name: 'Asset allocation', exact: true });
+    expect(await assetAllocationLinks.count()).toBeGreaterThanOrEqual(1);
+    await expect(assetAllocationLinks.first()).toBeVisible();
+    await expect(assetAllocationLinks.first()).toHaveAttribute('href', '/asset-allocation-explained.html');
   });
 
   test('[AUTO] emergency-fund question is aligned to the owned should-you-have intent', async ({ page }) => {
