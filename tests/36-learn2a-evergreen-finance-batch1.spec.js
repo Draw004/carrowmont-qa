@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow } from '../helpers/common.js';
+import { search1ExpectedPublicPages } from '../qa.config.js';
 
 const PAGES = [
   {
@@ -84,7 +85,7 @@ test.describe('LEARN2A-1 evergreen money and investing foundations', () => {
     }
 
     const index = await (await request.get('/data/carrowmont-search-index.json')).json();
-    expect(index.entries).toHaveLength(121);
+    expect(index.entries).toHaveLength(search1ExpectedPublicPages);
     for (const item of PAGES) expect(index.entries.filter(entry => entry.url === item.path)).toHaveLength(1);
 
     await gotoClean(page, '/search.html');

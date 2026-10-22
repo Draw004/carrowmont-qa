@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow } from '../helpers/common.js';
+import { search1ExpectedPublicPages } from '../qa.config.js';
 
 const SEARCH = '/search.html';
 
@@ -36,7 +37,7 @@ test.describe('SEARCH1 global site search', () => {
     expect(indexResponse.ok()).toBeTruthy();
     const index = await indexResponse.json();
     expect(index.schema_version).toBe(1);
-    expect(index.entries.length).toBe(121);
+    expect(index.entries.length).toBe(search1ExpectedPublicPages);
     expect(new Set(index.entries.map(entry => entry.url)).size).toBe(index.entries.length);
     for (const entry of index.entries) {
       expect(entry.url).toMatch(/^\//);

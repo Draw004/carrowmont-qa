@@ -1,4 +1,5 @@
 export const standardDownloadMessage = 'Report has been downloaded.';
+export const search1ExpectedPublicPages = 125;
 
 export const tools = [
   {
@@ -146,6 +147,10 @@ export const mainSitePages = [
   { key: 'silver-vs-gold', path: '/silver-vs-gold.html', text: 'Silver vs gold' },
   { key: 'silver-supply-demand-macro-stress', path: '/silver-supply-demand-macro-stress-explorer.html', text: 'See what is driving silver' },
   { key: 'market-chain-reaction-explorer', path: '/market-chain-reaction-explorer.html', text: 'What Happens When Markets Change?' },
+  { key: 'real-yields-learn3f1', path: '/real-yields-explained.html', text: 'What is a real yield, and why does it matter?' },
+  { key: 'us-debt-interest-costs-learn3f1', path: '/why-us-debt-interest-costs-matter.html', text: 'Why do U.S. debt interest costs matter?' },
+  { key: 'treasury-maturity-learn3f1', path: '/treasury-bills-vs-notes-vs-bonds.html', text: 'Treasury bills vs notes vs bonds: What changes with maturity?' },
+  { key: 'reserve-currency-learn3f1', path: '/what-makes-a-global-reserve-currency.html', text: 'What makes a currency a global reserve currency?' },
   { key: 'mortgage-payoff-calculator-page', path: '/mortgage-payoff-calculator/', text: 'part-prepayments' },
   { key: 'compound-interest-calculator-page', path: '/compound-interest-calculator/', text: 'See how compounding can change your money over time.' },
   { key: 'loan-calculator-page', path: '/loan-calculator/', text: 'See what a loan could cost each month.' },

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow } from '../helpers/common.js';
+import { search1ExpectedPublicPages } from '../qa.config.js';
 
 const PAGES = [
   {
@@ -85,10 +86,10 @@ test.describe('LEARN3B-1 budget systems, pay cycles and cash flow', () => {
     }
   });
 
-  test('[AUTO] sitemap and SEARCH1 preserve 121 public pages while giving the six guides clear query ownership', async ({ page, request }) => {
+  test(`[AUTO] sitemap and SEARCH1 preserve ${search1ExpectedPublicPages} public pages while giving the six guides clear query ownership`, async ({ page, request }) => {
     const sitemap = await (await request.get('/sitemap.xml')).text();
     const index = await (await request.get('/data/carrowmont-search-index.json')).json();
-    expect(index.entries).toHaveLength(121);
+    expect(index.entries).toHaveLength(search1ExpectedPublicPages);
     for (const item of PAGES) {
       const escapedPath = item.path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       expect(sitemap).toMatch(new RegExp(`<loc>https://carrowmont\\.com${escapedPath}</loc>\\s*<lastmod>2026-10-20</lastmod>`));
