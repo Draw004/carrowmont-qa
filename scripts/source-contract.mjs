@@ -4202,7 +4202,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 130;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 131;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
@@ -5580,6 +5580,59 @@ add('TRAFFIC1A: browser QA protects data downloads, values, contextual links and
 );
 add('TRAFFIC1A: implementation record preserves product, privacy, freshness and workflow boundaries',
   traffic1aImpl.includes('Source Snapshot 110') && traffic1aImpl.includes('No calculator formulas') && traffic1aImpl.includes('No external data API is called in the browser') && traffic1aImpl.includes('No workflow files') && traffic1aImpl.includes('United States-specific')
+);
+
+
+// TRAFFIC1B Emergency Savings & Income-Loss Resilience Report - Snapshot 111.
+const traffic1bStudy=read('draw004.github.io/research/emergency-savings-resilience.html');
+const traffic1bHub=read('draw004.github.io/research.html');
+const traffic1bJson=JSON.parse(read('draw004.github.io/data/research/emergency-savings-resilience.json'));
+const traffic1bCsv=read('draw004.github.io/data/research/emergency-savings-resilience.csv');
+const traffic1bMethod=read('draw004.github.io/docs/research/emergency-savings-resilience-methodology.md');
+const traffic1bOutreach=read('draw004.github.io/docs/CARROWMONT_TRAFFIC1B_EMERGENCY_SAVINGS_RESILIENCE_OUTREACH_LAUNCH_PACK.md');
+const traffic1bImpl=read('draw004.github.io/docs/CARROWMONT_TRAFFIC1B_EMERGENCY_SAVINGS_RESILIENCE_IMPLEMENTATION.md');
+const traffic1bQa=readQa('tests/51-traffic1b-emergency-savings-resilience.spec.js');
+const traffic1bSearchFixtures=read('draw004.github.io/scripts/search1-fixtures.mjs');
+const traffic1bPngs=['emergency-savings-resilience-runway.png','emergency-savings-resilience-surplus-frequency.png','emergency-savings-resilience-savings-capacity.png','emergency-savings-resilience-three-month-target.png'];
+add('TRAFFIC1B: resilience report has a stable indexable Research identity and is live from the Research hub',
+  gseo2aCanonical(traffic1bStudy)==='https://carrowmont.com/research/emergency-savings-resilience.html' && gseo2aMetaContent(traffic1bStudy,'robots').toLowerCase()==='index,follow' &&
+  traffic1bHub.includes('/research/emergency-savings-resilience.html') && sitemapLastmods.get('https://carrowmont.com/research/emergency-savings-resilience.html')==='2026-10-23' &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Entries.filter(e=>e.url==='/research/emergency-savings-resilience.html').length===1
+);
+add('TRAFFIC1B: Federal Reserve SHED values remain official-data fields and match the locked 2025 report',
+  traffic1bJson.geography==='United States' && traffic1bJson.official_metrics.three_month_fund_pct===55 && traffic1bJson.official_metrics.three_month_other_means_pct===15 &&
+  traffic1bJson.official_metrics.three_month_unable_pct===30 && traffic1bJson.official_metrics.cash_equiv_400_pct===63 && traffic1bJson.official_metrics.unable_400_pct===12 &&
+  traffic1bJson.official_metrics.at_least_500_from_savings_pct===70 && traffic1bJson.official_metrics.major_unexpected_expense_pct===59 &&
+  traffic1bStudy.includes('Federal Reserve household evidence') && traffic1bMethod.includes('Carrowmont does not reinterpret those percentages as probability forecasts')
+);
+add('TRAFFIC1B: Carrowmont runway matrix is finite, deterministic and separate from official survey measures',
+  traffic1bJson.carrowmont_runway_matrix.length===16 && traffic1bJson.carrowmont_runway_matrix.every(x=>Number.isFinite(x.months_runway) && Math.abs(x.months_runway-(x.reserve_usd/x.monthly_cash_shortfall_usd))<0.011) &&
+  traffic1bJson.carrowmont_income_loss_example.scenarios.find(x=>x.income_reduction_pct===50)?.monthly_cash_shortfall_usd===1800 &&
+  Math.abs(traffic1bJson.carrowmont_income_loss_example.scenarios.find(x=>x.income_reduction_pct===50)?.months_runway_on_20000_reserve-11.11)<0.01 &&
+  traffic1bCsv.includes('runway_matrix') && !/NaN|Infinity/.test(traffic1bCsv)
+);
+add('TRAFFIC1B: charts, data downloads, methodology and outreach artifacts are present and reusable',
+  traffic1bPngs.every(name=>fs.existsSync(path.join(root,'draw004.github.io/assets/research',name)) && fs.statSync(path.join(root,'draw004.github.io/assets/research',name)).size>15000) &&
+  traffic1bStudy.includes('/data/research/emergency-savings-resilience.csv') && traffic1bStudy.includes('/data/research/emergency-savings-resilience.json') &&
+  traffic1bStudy.includes('/docs/research/emergency-savings-resilience-methodology.md') && traffic1bOutreach.includes('Suggested neutral citation sentence') && traffic1bOutreach.includes('contact@carrowmont.com')
+);
+add('TRAFFIC1B: SEARCH1 keeps resilience research distinct from evergreen emergency-fund guidance',
+  search1Result('emergency savings resilience report','US')[0]?.url==='/research/emergency-savings-resilience.html' &&
+  search1Result('income loss runway research','US')[0]?.url==='/research/emergency-savings-resilience.html' &&
+  search1Result('how much emergency fund','US')[0]?.url==='/emergency-fund-how-much.html' &&
+  traffic1bSearchFixtures.includes('emergency savings resilience report finds the Research study') && traffic1bSearchFixtures.includes('income loss runway research finds the Research study')
+);
+add('TRAFFIC1B: contextual Learn links do not manufacture freshness and report routes users to planning action',
+  read('draw004.github.io/emergency-fund-how-much.html').includes('/research/emergency-savings-resilience.html') &&
+  read('draw004.github.io/emergency-savings.html').includes('/research/emergency-savings-resilience.html') &&
+  sitemapLastmods.get('https://carrowmont.com/emergency-fund-how-much.html')==='2026-10-20' && sitemapLastmods.get('https://carrowmont.com/emergency-savings.html')==='2026-10-20' &&
+  traffic1bStudy.includes('/budget-cash-flow-planner/') && traffic1bStudy.includes('/budget-cash-flow-planner/debt-payoff-calculator.html')
+);
+add('TRAFFIC1B: browser QA protects official metrics, deterministic data, action links and 1440/1280/390/360 layouts',
+  traffic1bQa.includes('official SHED metrics') && traffic1bQa.includes('deterministic runway matrix') && traffic1bQa.includes('[1440,1280,390,360]') && traffic1bQa.includes('naturalWidth')
+);
+add('TRAFFIC1B: implementation record preserves research, privacy, freshness and workflow boundaries',
+  traffic1bImpl.includes('Source Snapshot 111') && traffic1bImpl.includes('No calculator formulas') && traffic1bImpl.includes('No external data API is called in the browser') && traffic1bImpl.includes('No workflow files') && traffic1bImpl.includes('United States-specific')
 );
 
 console.log('\nCarrowmont source contract check\n');
