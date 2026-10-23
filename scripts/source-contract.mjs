@@ -4202,7 +4202,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 128;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 130;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
@@ -5451,7 +5451,7 @@ add('LEARN-CLOSEOUT1: public mortgage guide no longer leaks the HOME1 implementa
   !learnMainVisibleText(learnCloseoutMortgage).includes('HOME1') && learnCloseoutMortgage.includes('Home Affordability Calculator is designed to help you explore')
 );
 add('LEARN-CLOSEOUT1: colon capitalization and SEARCH1 ownership remain intact after presentation cleanup',
-  learn3HeadingColonFailures.length===0 && search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT===128
+  learn3HeadingColonFailures.length===0 && search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT>=128
 );
 add('LEARN-CLOSEOUT1: browser QA and implementation record protect the observed defect classes without broadening product scope',
   learnCloseoutQa.includes('all Learn answer callouts use one 30-second-answer label') && learnCloseoutQa.includes('global macro education uses fixed truthful context') && learnCloseoutQa.includes('shared step cards keep sentences together') && learnCloseoutQa.includes('[1280,390,360]') && learnCloseoutImpl.includes('Source Snapshot 107') && learnCloseoutImpl.includes('No search index title, alias or intent ownership is changed') && learnCloseoutImpl.includes('workflow files')
@@ -5518,6 +5518,68 @@ add('LEARN-PRESENTATION2: browser QA and implementation record protect typograph
   learnPresentationQa.includes('macro 30-second answer keeps body text normal') && learnPresentationQa.includes('checklist and question cards use compact spacing') &&
   learnPresentationQa.includes('colon capitalization is visible in authored prose') && learnPresentationQa.includes('contact email action is pulled into the first desktop viewport') &&
   learnPresentationQa.includes('[1280,390,360]') && learnPresentationImpl.includes('Source Snapshot 108') && learnPresentationImpl.includes('No calculator formula') && learnPresentationImpl.includes('No workflow files')
+);
+
+
+
+// TRAFFIC1A Research foundation + U.S. Mortgage Affordability Monitor - Snapshot 110.
+const traffic1aHub=read('draw004.github.io/research.html');
+const traffic1aStudy=read('draw004.github.io/research/mortgage-affordability-monitor.html');
+const traffic1aCss=read('draw004.github.io/research.css');
+const traffic1aJson=JSON.parse(read('draw004.github.io/data/research/mortgage-affordability-monitor.json'));
+const traffic1aCsv=read('draw004.github.io/data/research/mortgage-affordability-monitor.csv');
+const traffic1aMethod=read('draw004.github.io/docs/research/mortgage-affordability-monitor-methodology.md');
+const traffic1aOutreach=read('draw004.github.io/docs/CARROWMONT_TRAFFIC1A_MORTGAGE_AFFORDABILITY_OUTREACH_LAUNCH_PACK.md');
+const traffic1aImpl=read('draw004.github.io/docs/CARROWMONT_TRAFFIC1A_RESEARCH_FOUNDATION_MORTGAGE_AFFORDABILITY_IMPLEMENTATION.md');
+const traffic1aQa=readQa('tests/50-traffic1a-research-mortgage-affordability.spec.js');
+const traffic1aSearchFixtures=read('draw004.github.io/scripts/search1-fixtures.mjs');
+const traffic1aPngs=['mortgage-affordability-monitor-payment-pressure.png','mortgage-affordability-monitor-rate-trend.png','mortgage-affordability-monitor-home-price-trend.png'];
+add('TRAFFIC1A: Research hub and Mortgage Affordability Monitor have distinct stable indexable identities',
+  gseo2aCanonical(traffic1aHub)==='https://carrowmont.com/research.html' && gseo2aCanonical(traffic1aStudy)==='https://carrowmont.com/research/mortgage-affordability-monitor.html' &&
+  gseo2aMetaContent(traffic1aHub,'robots').toLowerCase()==='index,follow' && gseo2aMetaContent(traffic1aStudy,'robots').toLowerCase()==='index,follow' &&
+  sitemapLastmods.get('https://carrowmont.com/research.html')==='2026-10-23' && sitemapLastmods.get('https://carrowmont.com/research/mortgage-affordability-monitor.html')==='2026-10-23' &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Entries.filter(e=>e.url==='/research.html').length===1 && search1Entries.filter(e=>e.url==='/research/mortgage-affordability-monitor.html').length===1
+);
+add('TRAFFIC1A: published research data is static, parseable, finite and matches the locked U.S. reference scenario',
+  traffic1aJson.geography==='United States' && traffic1aJson.sources.mortgage_rate.current_30yr_fixed_pct===7.32 && traffic1aJson.sources.mortgage_rate.year_ago_30yr_fixed_pct===6.19 &&
+  traffic1aJson.sources.home_price.median_new_home_price_usd===393700 && traffic1aJson.sources.household_income.median_household_income_usd===87460 &&
+  traffic1aJson.rate_snapshots.length===13 && traffic1aJson.median_new_home_prices.length===12 && traffic1aJson.payment_sensitivity.length===15 &&
+  Number.isFinite(traffic1aJson.headline_metrics.reference_400k_current_monthly_pi_usd) && Math.abs(traffic1aJson.headline_metrics.reference_400k_current_monthly_pi_usd-2747.72)<0.01 &&
+  Math.abs(traffic1aJson.headline_metrics.pi_share_of_gross_median_monthly_income_pct-29.69)<0.02 && traffic1aCsv.includes('2747.72') && !/NaN|Infinity/.test(traffic1aCsv)
+);
+add('TRAFFIC1A: study separates official data, Carrowmont calculations, exclusions and non-lender interpretation',
+  traffic1aStudy.includes('Freddie Mac Primary Mortgage Market Survey') && traffic1aStudy.includes('U.S. Census Bureau / HUD New Residential Sales') && traffic1aStudy.includes('Income in the United States: 2025') &&
+  traffic1aStudy.includes('Carrowmont calculation') && traffic1aStudy.includes('not a lender debt-to-income ratio or qualification threshold') &&
+  traffic1aStudy.includes('property tax') && traffic1aStudy.includes('homeowners insurance') && traffic1aStudy.includes('closing costs') && traffic1aMethod.includes('not a lender quote, approval model or forecast')
+);
+add('TRAFFIC1A: downloadable charts/data and methodology/outreach artifacts are present with editorial-size PNGs',
+  traffic1aPngs.every(name=>fs.existsSync(path.join(root,'draw004.github.io/assets/research',name)) && fs.statSync(path.join(root,'draw004.github.io/assets/research',name)).size>20000) &&
+  traffic1aStudy.includes('/data/research/mortgage-affordability-monitor.csv') && traffic1aStudy.includes('/data/research/mortgage-affordability-monitor.json') && traffic1aStudy.includes('/docs/research/mortgage-affordability-monitor-methodology.md') &&
+  traffic1aOutreach.includes('One-sentence finding') && traffic1aOutreach.includes('Suggested neutral citation sentence') && traffic1aOutreach.includes('contact@carrowmont.com')
+);
+add('TRAFFIC1A: Research links into existing home-affordability journey without changing legacy freshness dates',
+  read('draw004.github.io/home-affordability-calculator.html').includes('/research/mortgage-affordability-monitor.html') &&
+  read('draw004.github.io/how-much-home-can-i-afford.html').includes('/research/mortgage-affordability-monitor.html') &&
+  read('draw004.github.io/mortgage-affordability-vs-lender-approval.html').includes('/research/mortgage-affordability-monitor.html') &&
+  read('draw004.github.io/how-deposit-and-interest-rates-affect-home-affordability.html').includes('/research/mortgage-affordability-monitor.html') &&
+  sitemapLastmods.get('https://carrowmont.com/how-much-home-can-i-afford.html')==='2026-10-19' && sitemapLastmods.get('https://carrowmont.com/mortgage-affordability-vs-lender-approval.html')==='2026-10-19'
+);
+add('TRAFFIC1A: SEARCH1 keeps calculator and research intent distinct',
+  search1Result('mortgage affordability monitor','US')[0]?.url==='/research/mortgage-affordability-monitor.html' &&
+  search1Result('mortgage affordability calculator','US')[0]?.url==='/home-affordability-calculator.html' &&
+  traffic1aSearchFixtures.includes('mortgage affordability monitor finds the Research study') && traffic1aSearchFixtures.includes('mortgage affordability calculator stays owned by the tool')
+);
+add('TRAFFIC1A: shared Research presentation and navigation are reusable without browser-side data fetching',
+  traffic1aCss.includes('TRAFFIC1A') && traffic1aCss.includes('.research-chart') && traffic1aCss.includes('@media(max-width:520px)') &&
+  read('draw004.github.io/site.js').includes('TRAFFIC1A: add Research') && read('draw004.github.io/site.js').includes('TRAFFIC1A-NAV-FIT') &&
+  read('draw004.github.io/site.js').includes('(min-width:1361px) and (max-width:1500px)') && !/\bfetch\s*\(/.test(traffic1aStudy) && !/\bfetch\s*\(/.test(traffic1aHub)
+);
+add('TRAFFIC1A: browser QA protects data downloads, values, contextual links and 1440/1280/390/360 layouts',
+  traffic1aQa.includes('headline values agree with deterministic payment math') && traffic1aQa.includes('research data files parse') && traffic1aQa.includes('[1440,1280,390,360]') &&
+  traffic1aQa.includes('research links preserve calculator intent') && traffic1aQa.includes('toBeGreaterThan(0)')
+);
+add('TRAFFIC1A: implementation record preserves product, privacy, freshness and workflow boundaries',
+  traffic1aImpl.includes('Source Snapshot 110') && traffic1aImpl.includes('No calculator formulas') && traffic1aImpl.includes('No external data API is called in the browser') && traffic1aImpl.includes('No workflow files') && traffic1aImpl.includes('United States-specific')
 );
 
 console.log('\nCarrowmont source contract check\n');
