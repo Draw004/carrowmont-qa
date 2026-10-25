@@ -4202,7 +4202,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 131;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 132;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
@@ -5537,7 +5537,7 @@ const traffic1aPngs=['mortgage-affordability-monitor-payment-pressure.png','mort
 add('TRAFFIC1A: Research hub and Mortgage Affordability Monitor have distinct stable indexable identities',
   gseo2aCanonical(traffic1aHub)==='https://carrowmont.com/research.html' && gseo2aCanonical(traffic1aStudy)==='https://carrowmont.com/research/mortgage-affordability-monitor.html' &&
   gseo2aMetaContent(traffic1aHub,'robots').toLowerCase()==='index,follow' && gseo2aMetaContent(traffic1aStudy,'robots').toLowerCase()==='index,follow' &&
-  sitemapLastmods.get('https://carrowmont.com/research.html')==='2026-10-23' && sitemapLastmods.get('https://carrowmont.com/research/mortgage-affordability-monitor.html')==='2026-10-23' &&
+  sitemapLastmods.get('https://carrowmont.com/research.html')==='2026-10-26' && sitemapLastmods.get('https://carrowmont.com/research/mortgage-affordability-monitor.html')==='2026-10-23' &&
   search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Entries.filter(e=>e.url==='/research.html').length===1 && search1Entries.filter(e=>e.url==='/research/mortgage-affordability-monitor.html').length===1
 );
 add('TRAFFIC1A: published research data is static, parseable, finite and matches the locked U.S. reference scenario',
@@ -5633,6 +5633,62 @@ add('TRAFFIC1B: browser QA protects official metrics, deterministic data, action
 );
 add('TRAFFIC1B: implementation record preserves research, privacy, freshness and workflow boundaries',
   traffic1bImpl.includes('Source Snapshot 111') && traffic1bImpl.includes('No calculator formulas') && traffic1bImpl.includes('No external data API is called in the browser') && traffic1bImpl.includes('No workflow files') && traffic1bImpl.includes('United States-specific')
+);
+
+
+// TRAFFIC1C U.S. Inflation & Purchasing-Power Monitor - Snapshot supplied 2026-10-26.
+const traffic1cStudy=read('draw004.github.io/research/inflation-purchasing-power-monitor.html');
+const traffic1cHub=read('draw004.github.io/research.html');
+const traffic1cJson=JSON.parse(read('draw004.github.io/data/research/inflation-purchasing-power-monitor.json'));
+const traffic1cCsv=read('draw004.github.io/data/research/inflation-purchasing-power-monitor.csv');
+const traffic1cMethod=read('draw004.github.io/docs/research/inflation-purchasing-power-monitor-methodology.md');
+const traffic1cOutreach=read('draw004.github.io/docs/CARROWMONT_TRAFFIC1C_INFLATION_PURCHASING_POWER_OUTREACH_LAUNCH_PACK.md');
+const traffic1cImpl=read('draw004.github.io/docs/CARROWMONT_TRAFFIC1C_INFLATION_PURCHASING_POWER_IMPLEMENTATION.md');
+const traffic1cQa=readQa('tests/52-traffic1c-inflation-purchasing-power.spec.js');
+const traffic1cSearchFixtures=read('draw004.github.io/scripts/search1-fixtures.mjs');
+const traffic1cPngs=['inflation-purchasing-power-major-groups.png','inflation-purchasing-power-erosion.png','inflation-purchasing-power-pressure-points.png'];
+add('TRAFFIC1C: inflation monitor has a stable indexable Research identity and is live from the Research hub',
+  gseo2aCanonical(traffic1cStudy)==='https://carrowmont.com/research/inflation-purchasing-power-monitor.html' && gseo2aMetaContent(traffic1cStudy,'robots').toLowerCase()==='index,follow' &&
+  traffic1cHub.includes('/research/inflation-purchasing-power-monitor.html') && sitemapLastmods.get('https://carrowmont.com/research/inflation-purchasing-power-monitor.html')==='2026-10-26' && sitemapLastmods.get('https://carrowmont.com/research.html')==='2026-10-26' &&
+  search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Entries.filter(e=>e.url==='/research/inflation-purchasing-power-monitor.html').length===1
+);
+add('TRAFFIC1C: official CPI metrics and major-group evidence match the locked September 2026 BLS release',
+  traffic1cJson.geography==='United States' && traffic1cJson.official_metrics.all_items_yoy_nsa_pct===3.7 && traffic1cJson.official_metrics.all_items_monthly_sa_pct===0.6 &&
+  traffic1cJson.official_metrics.core_yoy_nsa_pct===2.6 && traffic1cJson.major_groups.length===8 && Math.abs(traffic1cJson.major_groups.reduce((a,x)=>a+x.relative_importance_pct,0)-100.001)<0.002 &&
+  traffic1cJson.major_groups.find(x=>x.id==='transportation')?.yoy_pct===7.9 && traffic1cJson.major_groups.find(x=>x.id==='medical_care')?.yoy_pct===1.5 &&
+  traffic1cMethod.includes('Carrowmont illustration, not an official personal CPI')
+);
+add('TRAFFIC1C: purchasing-power and personal-basket calculations are finite, deterministic and separate from official data',
+  Math.abs(traffic1cJson.purchasing_power_anchors.find(x=>x.period==='Sep 2016')?.dollars_in_sep_2026_needed_to_match_100_then-139.56)<0.01 &&
+  Math.abs(traffic1cJson.personal_basket_presets.find(x=>x.id==='transport_heavy')?.weighted_inflation_pct-4.37)<0.01 &&
+  traffic1cJson.personal_basket_presets.every(p=>Number.isFinite(p.weighted_inflation_pct)) && !/NaN|Infinity/.test(traffic1cCsv) &&
+  traffic1cStudy.includes('Not a personal CPI') && traffic1cStudy.includes('runs entirely in the browser')
+);
+add('TRAFFIC1C: charts, data downloads, methodology and outreach artifacts are reusable and editorial-size',
+  traffic1cPngs.every(name=>fs.existsSync(path.join(root,'draw004.github.io/assets/research',name)) && fs.statSync(path.join(root,'draw004.github.io/assets/research',name)).size>20000) &&
+  traffic1cStudy.includes('/data/research/inflation-purchasing-power-monitor.csv') && traffic1cStudy.includes('/data/research/inflation-purchasing-power-monitor.json') &&
+  traffic1cStudy.includes('/docs/research/inflation-purchasing-power-monitor-methodology.md') && traffic1cOutreach.includes('Suggested neutral citation sentence') && traffic1cOutreach.includes('contact@carrowmont.com')
+);
+add('TRAFFIC1C: SEARCH1 keeps research, calculator and evergreen purchasing-power intent distinct',
+  search1Result('inflation purchasing power monitor','US')[0]?.url==='/research/inflation-purchasing-power-monitor.html' &&
+  search1Result('personal inflation basket research','US')[0]?.url==='/research/inflation-purchasing-power-monitor.html' &&
+  search1Result('inflation calculator','US')[0]?.url==='/inflation-calculator/' && search1Result('price level vs inflation','GB')[0]?.url==='/inflation-purchasing-power.html' &&
+  traffic1cSearchFixtures.includes('inflation purchasing power monitor finds the Research study') && traffic1cSearchFixtures.includes('personal inflation basket research finds the Research study')
+);
+add('TRAFFIC1C: contextual Learn/tool links preserve calculator math and do not manufacture article freshness',
+  read('draw004.github.io/inflation-purchasing-power-savings.html').includes('/research/inflation-purchasing-power-monitor.html') &&
+  read('draw004.github.io/inflation-value-of-money-over-time.html').includes('/research/inflation-purchasing-power-monitor.html') &&
+  read('draw004.github.io/inflation-purchasing-power.html').includes('/research/inflation-purchasing-power-monitor.html') &&
+  (read('draw004.github.io/how-oil-prices-affect-inflation.html').match(/<h2\b/g)||[]).length===9 &&
+  read('inflation-calculator/index.html').includes('/research/inflation-purchasing-power-monitor.html') &&
+  sitemapLastmods.get('https://carrowmont.com/inflation-purchasing-power-savings.html')==='2026-10-21' &&
+  traffic1cImpl.includes('No Inflation Calculator mathematics')
+);
+add('TRAFFIC1C: browser QA protects official metrics, local basket privacy, search/action links and responsive layouts',
+  traffic1cQa.includes('official CPI metrics') && traffic1cQa.includes('personal basket runs locally') && traffic1cQa.includes('[1440,1280,390,360]') && traffic1cQa.includes('naturalWidth')
+);
+add('TRAFFIC1C: implementation record preserves U.S. scope, privacy, freshness and workflow boundaries',
+  traffic1cImpl.includes('United States-specific') && traffic1cImpl.includes('does not fetch, store or transmit') && traffic1cImpl.includes('No workflow files') && traffic1cImpl.includes('26 October 2026')
 );
 
 console.log('\nCarrowmont source contract check\n');
