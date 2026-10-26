@@ -2084,6 +2084,8 @@ add('main site: SEO3D weekly updater fails closed for core sources, preserves va
   goldMacroUpdater.includes('OFR FSI input missing without an approved availability fallback') &&
   goldMacroUpdater.includes('insufficient five-year history') && goldMacroUpdater.includes('insufficient monthly history') &&
   goldMacroUpdater.includes('source date moved backwards') && goldMacroUpdater.includes('Anomaly guard:') &&
+  goldMacroUpdater.includes("raw==='.'") && goldMacroUpdater.includes('/^(?:NA|ND)$/i') &&
+  goldMacroUpdater.includes('value:r.DTWEXBGS') &&
   goldMacroUpdater.includes('structuredClone(oldRef)') && goldMacroUpdater.includes('preservedReviewed') &&
   goldMacroSpec.includes('fail-closed for Treasury real yields, Broad Dollar, CPI and GPR') &&
   goldMacroSpec.includes('previously validated OFR FSI value, percentile and source date') &&
