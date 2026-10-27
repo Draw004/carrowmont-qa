@@ -2085,6 +2085,7 @@ add('main site: SEO3D weekly updater fails closed for core sources, preserves va
   goldMacroUpdater.includes('insufficient five-year history') && goldMacroUpdater.includes('insufficient monthly history') &&
   goldMacroUpdater.includes('source date moved backwards') && goldMacroUpdater.includes('Anomaly guard:') &&
   goldMacroUpdater.includes("raw==='.'") && goldMacroUpdater.includes('/^(?:NA|ND)$/i') &&
+  goldMacroUpdater.includes('function shiftMonth(month,delta)') && goldMacroUpdater.includes('const prev=shiftMonth(m,-12)') && goldMacroUpdater.includes('shiftMonth(latest.date.slice(0,7),-3)') &&
   goldMacroUpdater.includes('value:r.DTWEXBGS') &&
   goldMacroUpdater.includes('structuredClone(oldRef)') && goldMacroUpdater.includes('preservedReviewed') &&
   goldMacroSpec.includes('fail-closed for Treasury real yields, Broad Dollar, CPI and GPR') &&
