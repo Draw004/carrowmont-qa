@@ -110,11 +110,12 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     expect(errors).toEqual([]);
   });
 
-  test('[AUTO] homepage keeps nine complete visual tool cards, a standout fixed gateway and four authority links', async ({ page }) => {
+  test('[AUTO] homepage preserves nine complete tool cards and switches discovery appropriately on MOBILE1', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, HOME);
     await dismissAnalytics(page);
 
+    const isMobile = (page.viewportSize()?.width || 1280) <= 700;
     const grid = page.locator('[data-homepage-core-grid]');
     await expect(grid).toHaveCount(1);
     await expect(grid.locator('[data-tool-id]')).toHaveCount(9);
@@ -122,26 +123,37 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
 
     for (const id of CORE_IDS) {
       const card = grid.locator(`[data-tool-id="${id}"]`);
-      await expect(card, `${id} card`).toBeVisible();
       await expect(card.locator('.tool-icon'), `${id} card icon`).toHaveCount(1);
-      await expect(card.locator('h3')).toBeVisible();
-      await expect(card.locator('p')).toBeVisible();
-      await expect(card.locator('a[href]')).toBeVisible();
+      await expect(card.locator('h3')).toHaveCount(1);
+      await expect(card.locator('p')).toHaveCount(1);
+      await expect(card.locator('a[href]')).toHaveCount(1);
+      if (isMobile) await expect(card, `${id} card hidden by MOBILE1 compact launcher`).toBeHidden();
+      else await expect(card, `${id} card`).toBeVisible();
     }
 
     const gateway = grid.locator('[data-tools-gateway]');
-    await expect(gateway.getByRole('heading', { name: 'Explore All Tools' })).toBeVisible();
     await expect(gateway.locator('.explore-tools-icon')).toHaveCount(1);
-    await expect(gateway.locator('a[href="/tools.html"]')).toBeVisible();
-    const gatewayStyle = await gateway.evaluate(el => {
-      const css = getComputedStyle(el);
-      return { backgroundImage: css.backgroundImage, color: css.color, position: [...el.parentElement.children].indexOf(el) };
-    });
-    expect(gatewayStyle.backgroundImage).toContain('gradient');
-    expect(gatewayStyle.color).toBe('rgb(255, 255, 255)');
-    expect(gatewayStyle.position).toBe(9);
+    await expect(gateway.locator('a[href="/tools.html"]')).toHaveCount(1);
 
-    await expect(page.locator('a.text-link[href="/tools.html"]').first()).toContainText('View all tools');
+    if (isMobile) {
+      await expect(grid).toBeHidden();
+      await expect(gateway).toBeHidden();
+      const quick = page.locator('[data-mobile1-quick-tools]');
+      await expect(quick).toBeVisible();
+      await expect(quick.getByRole('link', { name: 'See all', exact: true })).toBeVisible();
+    } else {
+      await expect(gateway.getByRole('heading', { name: 'Explore All Tools' })).toBeVisible();
+      await expect(gateway.locator('a[href="/tools.html"]')).toBeVisible();
+      const gatewayStyle = await gateway.evaluate(el => {
+        const css = getComputedStyle(el);
+        return { backgroundImage: css.backgroundImage, color: css.color, position: [...el.parentElement.children].indexOf(el) };
+      });
+      expect(gatewayStyle.backgroundImage).toContain('gradient');
+      expect(gatewayStyle.color).toBe('rgb(255, 255, 255)');
+      expect(gatewayStyle.position).toBe(9);
+      await expect(page.locator('a.text-link[href="/tools.html"]').first()).toContainText('View all tools');
+    }
+
     await expect(page.locator('.authority-tools-grid .authority-tool-card')).toHaveCount(4);
     for (const path of HOMEPAGE_AUTHORITY_PATHS) {
       await expect(page.locator(`.authority-tools-grid a[href="${path}"]`)).toHaveCount(1);

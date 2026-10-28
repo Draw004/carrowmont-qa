@@ -140,23 +140,41 @@ test.describe('LEARN-LOCALE1 global Learn localization', () => {
     }
   });
 
-  test('[AUTO] Learn localization does not change TOOLS-HUB homepage country ordering, visuals or gateway contract', async ({ page }) => {
+  test('[AUTO] Learn localization does not change TOOLS-HUB homepage country ordering, visuals or gateway contract under desktop/MOBILE1', async ({ page }) => {
     await gotoClean(page, '/');
     await dismissAnalytics(page);
     await expect.poll(async () => page.evaluate(() => Boolean(window.CarrowmontToolsHub && window.CarrowmontLocale))).toBe(true);
 
+    const isMobile = (page.viewportSize()?.width || 1280) <= 700;
+    const grid = page.locator('[data-homepage-core-grid]');
+    const gateway = page.locator('[data-tools-gateway]');
+    const quick = page.locator('[data-mobile1-quick-tools]');
+
     await page.evaluate(() => { window.CarrowmontLocale.setLocale('IN','INR'); window.CarrowmontToolsHub.apply(); });
     await expect.poll(() => homepageOrder(page)).toEqual(['investment','compound','loan','housing','retirement','budget','inflation','goals','independence']);
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-title]')).toHaveText('SIP Calculator');
-    await expect(page.locator('[data-homepage-core-grid] > article[data-tool-id] .tool-icon')).toHaveCount(9);
-    await expect(page.locator('[data-tools-gateway] .tool-icon')).toHaveCount(1);
-    await expect(page.locator('[data-tools-gateway]')).toBeVisible();
-    await expect(page.locator('[data-homepage-core-grid] > article').last()).toHaveAttribute('data-tools-gateway', '');
+    await expect(grid.locator('article[data-tool-id] .tool-icon')).toHaveCount(9);
+    await expect(gateway.locator('.tool-icon')).toHaveCount(1);
+    await expect(grid.locator('> article').last()).toHaveAttribute('data-tools-gateway', '');
+    if (isMobile) {
+      await expect(grid).toBeHidden();
+      await expect(gateway).toBeHidden();
+      await expect(quick).toBeVisible();
+      await expect(quick.getByRole('link', { name: 'See all', exact: true })).toBeVisible();
+    } else {
+      await expect(gateway).toBeVisible();
+    }
 
     await page.evaluate(() => { window.CarrowmontLocale.setLocale('US','USD'); window.CarrowmontToolsHub.apply(); });
     await expect.poll(() => homepageOrder(page)).toEqual(['housing','loan','retirement','investment','compound','budget','inflation','goals','independence']);
     await expect(page.locator('[data-tool-id="investment"] [data-cm-investment-title]')).toHaveText('Recurring Investment Calculator');
-    await expect(page.locator('[data-tools-gateway]')).toBeVisible();
+    if (isMobile) {
+      await expect(grid).toBeHidden();
+      await expect(gateway).toBeHidden();
+      await expect(quick).toBeVisible();
+    } else {
+      await expect(gateway).toBeVisible();
+    }
     await expect(page.locator('.authority-tools-grid .authority-tool-card')).toHaveCount(4);
   });
 
