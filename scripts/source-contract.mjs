@@ -5509,7 +5509,7 @@ add('LEARN-PRESENTATION2: shared Learn tables are visually refined and the retir
   !learnPresentationRetirement.includes('<td>No single lifespan</td><td>Returns, inflation and spending vary; sequence matters</td>')
 );
 add('LEARN-PRESENTATION2: Contact hero is compact and exposes the email action earlier without changing contact identity',
-  learnPresentationContact.includes('<body class="contact-page">') && learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') &&
+  learnPresentationContact.includes('<body class="contact-page">') && (learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') || learnPresentationContact.includes('carrowmont.css?v=20261029-social1a')) &&
   learnPresentationContactCss.includes('CONTACT-PRESENTATION2') && learnPresentationContactCss.includes('body.contact-page .page-hero-inner{padding:42px 0 38px}') &&
   learnPresentationContact.includes('mailto:contact@carrowmont.com')
 );

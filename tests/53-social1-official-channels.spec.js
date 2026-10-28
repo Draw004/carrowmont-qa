@@ -28,6 +28,7 @@ test.describe('SOCIAL1 official channels', () => {
       await expect(link).toHaveCount(1);
       await expect(link).toHaveAttribute('target', '_blank');
       await expect(link).toHaveAttribute('rel', /noopener/);
+      await expect(link.locator('.social-platform-icon svg')).toHaveCount(1);
     }
   });
 
@@ -36,7 +37,11 @@ test.describe('SOCIAL1 official channels', () => {
     const footer = page.locator('.site-footer');
     const social = footer.locator('[data-cm-footer-social]');
     await expect(social).toBeVisible();
-    for (const href of CHANNELS) await expect(social.locator(`a[href="${href}"]`)).toHaveCount(1);
+    for (const href of CHANNELS) {
+      const link = social.locator(`a[href="${href}"]`);
+      await expect(link).toHaveCount(1);
+      await expect(link.locator('svg.footer-social-icon')).toHaveCount(1);
+    }
   });
 
   test('About page carries the financial-awareness promise without becoming recommendation copy', async ({ page }) => {
@@ -49,7 +54,11 @@ test.describe('SOCIAL1 official channels', () => {
     await page.goto('/contact.html');
     const panel = page.locator('.contact-social-panel');
     await expect(panel).toBeVisible();
-    for (const href of CHANNELS) await expect(panel.locator(`a[href="${href}"]`)).toHaveCount(1);
+    for (const href of CHANNELS) {
+      const link = panel.locator(`a[href="${href}"]`);
+      await expect(link).toHaveCount(1);
+      await expect(link.locator('.social-platform-icon svg')).toHaveCount(1);
+    }
   });
 
   test('SOCIAL1 homepage and contact page do not create horizontal overflow at 390px', async ({ page }) => {
