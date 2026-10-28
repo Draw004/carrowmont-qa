@@ -230,18 +230,27 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       await gotoClean(page, HOME);
       await dismissAnalytics(page);
       await assertNoHorizontalOverflow(page, `${width}px homepage tools hub`);
-      await expect(page.locator('[data-tools-gateway]')).toBeVisible();
-      const gatewayRect = await page.locator('[data-tools-gateway]').evaluate(el => {
-        const r = el.getBoundingClientRect();
-        return { left: r.left, right: r.right, width: r.width };
-      });
-      expect(gatewayRect.left).toBeGreaterThanOrEqual(0);
-      expect(gatewayRect.right).toBeLessThanOrEqual(width + 1);
-      const firstToolRect = await page.locator('[data-homepage-core-grid] [data-tool-id]').first().evaluate(el => {
-        const r = el.getBoundingClientRect();
-        return { width: r.width };
-      });
-      expect(Math.abs(gatewayRect.width - firstToolRect.width), `${width}px gateway should use the same card width as a core tool`).toBeLessThanOrEqual(2);
+
+      if (width > 700) {
+        await expect(page.locator('[data-tools-gateway]')).toBeVisible();
+        const gatewayRect = await page.locator('[data-tools-gateway]').evaluate(el => {
+          const r = el.getBoundingClientRect();
+          return { left: r.left, right: r.right, width: r.width };
+        });
+        expect(gatewayRect.left).toBeGreaterThanOrEqual(0);
+        expect(gatewayRect.right).toBeLessThanOrEqual(width + 1);
+        const firstToolRect = await page.locator('[data-homepage-core-grid] [data-tool-id]').first().evaluate(el => {
+          const r = el.getBoundingClientRect();
+          return { width: r.width };
+        });
+        expect(Math.abs(gatewayRect.width - firstToolRect.width), `${width}px gateway should use the same card width as a core tool`).toBeLessThanOrEqual(2);
+      } else {
+        // MOBILE1 intentionally replaces the long homepage card wall with a compact launcher.
+        await expect(page.locator('[data-homepage-core-grid]')).toBeHidden();
+        const quick = page.locator('[data-mobile1-quick-tools]');
+        await expect(quick).toBeVisible();
+        await expect(quick.getByRole('link', { name: 'See all', exact: true })).toBeVisible();
+      }
 
       await gotoClean(page, DIRECTORY);
       await dismissAnalytics(page);
