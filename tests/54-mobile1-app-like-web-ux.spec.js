@@ -28,7 +28,7 @@ test.describe('MOBILE1 app-like mobile web UX', () => {
     }
   });
 
-  test('More opens accessible mobile destinations and locale control', async ({ page }) => {
+  test('More opens accessible mobile destinations, locale control and branded social icons', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await page.locator('[data-mobile1-nav="more"]').click();
@@ -37,6 +37,17 @@ test.describe('MOBILE1 app-like mobile web UX', () => {
     for (const label of ['Search', 'About', 'Methodology', 'Contact', 'Country & currency']) {
       await expect(dialog.getByText(label, { exact: true })).toBeVisible();
     }
+
+    const social = dialog.locator('.mobile1-more-social');
+    await expect(social.getByText('LinkedIn', { exact: true })).toBeVisible();
+    await expect(social.getByText('Facebook', { exact: true })).toBeVisible();
+    await expect(social.getByText('Instagram', { exact: true })).toBeVisible();
+    await expect(social.getByText('YouTube', { exact: true })).toBeVisible();
+    await expect(social.locator('.mobile1-social-linkedin')).toHaveCSS('color', 'rgb(10, 102, 194)');
+    await expect(social.locator('.mobile1-social-facebook')).toHaveCSS('color', 'rgb(24, 119, 242)');
+    await expect(social.locator('.mobile1-social-youtube')).toHaveCSS('color', 'rgb(255, 0, 0)');
+    await expect(social.locator('linearGradient#cmInstagramGradientMobile1')).toHaveCount(1);
+    await expect(social.locator('linearGradient#cmInstagramGradientMobile1 stop')).toHaveCount(5);
   });
 
   test('main hubs receive mobile bottom navigation without horizontal overflow', async ({ page }) => {
