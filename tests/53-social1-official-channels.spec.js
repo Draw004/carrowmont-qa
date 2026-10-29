@@ -7,6 +7,27 @@ const CHANNELS = [
   'https://www.youtube.com/@carrowmontfinance'
 ];
 
+
+const BRAND_COLORS = {
+  linkedin: 'rgb(10, 102, 194)',
+  facebook: 'rgb(24, 119, 242)',
+  youtube: 'rgb(255, 0, 0)'
+};
+
+async function expectBrandColourSet(scope, instagramGradientId, footer = false) {
+  const iconClass = footer ? '.footer-social-icon' : '.social-platform-icon svg';
+  const linkedIn = scope.locator(`a[href="${CHANNELS[0]}"] ${iconClass}`);
+  const facebook = scope.locator(`a[href="${CHANNELS[1]}"] ${iconClass}`);
+  const instagram = scope.locator(`a[href="${CHANNELS[2]}"] ${iconClass}`);
+  const youtube = scope.locator(`a[href="${CHANNELS[3]}"] ${iconClass}`);
+
+  await expect(linkedIn).toHaveCSS('color', BRAND_COLORS.linkedin);
+  await expect(facebook).toHaveCSS('color', BRAND_COLORS.facebook);
+  await expect(youtube).toHaveCSS('color', BRAND_COLORS.youtube);
+  await expect(instagram.locator(`linearGradient#${instagramGradientId}`)).toHaveCount(1);
+  await expect(instagram.locator(`linearGradient#${instagramGradientId} stop`)).toHaveCount(5);
+}
+
 test.describe('SOCIAL1 official channels', () => {
   test('homepage publishes the official social identity in Organization schema', async ({ page }) => {
     await page.goto('/');
@@ -30,6 +51,7 @@ test.describe('SOCIAL1 official channels', () => {
       await expect(link).toHaveAttribute('rel', /noopener/);
       await expect(link.locator('.social-platform-icon svg')).toHaveCount(1);
     }
+    await expectBrandColourSet(section, 'cmInstagramGradientHome');
   });
 
   test('shared site footer exposes official social links on a content page', async ({ page }) => {
@@ -42,6 +64,7 @@ test.describe('SOCIAL1 official channels', () => {
       await expect(link).toHaveCount(1);
       await expect(link.locator('svg.footer-social-icon')).toHaveCount(1);
     }
+    await expectBrandColourSet(social, 'cmInstagramGradientFooter', true);
   });
 
   test('About page carries the financial-awareness promise without becoming recommendation copy', async ({ page }) => {
@@ -59,6 +82,7 @@ test.describe('SOCIAL1 official channels', () => {
       await expect(link).toHaveCount(1);
       await expect(link.locator('.social-platform-icon svg')).toHaveCount(1);
     }
+    await expectBrandColourSet(panel, 'cmInstagramGradientContact');
   });
 
   test('SOCIAL1 homepage and contact page do not create horizontal overflow at 390px', async ({ page }) => {
