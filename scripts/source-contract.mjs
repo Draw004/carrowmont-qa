@@ -5719,6 +5719,9 @@ add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculato
 add('NEWSLETTER1: Carrowmont confirmation page is noindex and keeps users inside Tools/Learn/Research',
   newsletter1Confirmed.includes('content="noindex,follow"') && newsletter1Confirmed.includes("You&apos;re subscribed.") && newsletter1Confirmed.includes('/tools.html') && newsletter1Confirmed.includes('/learn.html') && newsletter1Confirmed.includes('/research.html')
 );
+add('NEWSLETTER1C: confirmation page uses the approved three-promise model and removes legacy negative copy',
+  newsletter1Confirmed.includes('Key developments') && newsletter1Confirmed.includes('Real-life impact') && newsletter1Confirmed.includes('Practical next steps') && newsletter1Confirmed.includes('newsletter-confirmed-promise') && !newsletter1Confirmed.includes('No hype.') && !newsletter1Confirmed.includes('No stock tips.')
+);
 add('NEWSLETTER1: browser QA protects homepage, Learn, Research, mobile overflow and privacy behavior',
   newsletter1Qa.includes("[390, 360]") && newsletter1Qa.includes('mock-kit-form') && newsletter1Qa.includes('/4-percent-rule-retirement.html') && newsletter1Qa.includes('/research/inflation-purchasing-power-monitor.html') && newsletter1Qa.includes('/privacy.html') && newsletter1Qa.includes("getByRole('button', { name: 'Get the weekly money briefing' })") && mcrQa.includes("!node.closest('[data-cm-newsletter]')")
 );
