@@ -80,5 +80,11 @@ test.describe('NEWSLETTER1 Carrowmont Money in Real Life', () => {
     await page.goto('/newsletter-confirmed.html');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
     await expect(page.getByRole('heading', { name: "You're subscribed." })).toBeVisible();
+    await expect(page.getByText('Key developments', { exact: true })).toBeVisible();
+    await expect(page.getByText('Real-life impact', { exact: true })).toBeVisible();
+    await expect(page.getByText('Practical next steps', { exact: true })).toBeVisible();
+    await expect(page.locator('.newsletter-confirmed-promise svg')).toHaveCount(3);
+    await expect(page.getByText('No hype', { exact: true })).toHaveCount(0);
+    await expect(page.getByText('No stock tips', { exact: true })).toHaveCount(0);
   });
 });
