@@ -5695,7 +5695,7 @@ add('TRAFFIC1C: implementation record preserves U.S. scope, privacy, freshness a
 );
 
 
-// NEWSLETTER1 optional Carrowmont Money in Real Life signup - Snapshot 2026-10-29T22:17:00Z.
+// NEWSLETTER1/1B optional Carrowmont Money in Real Life signup - Snapshot 2026-10-30T16:39:37Z.
 const newsletter1Site=read('draw004.github.io/site.js');
 const newsletter1Home=read('draw004.github.io/index.html');
 const newsletter1Privacy=read('draw004.github.io/privacy.html');
@@ -5711,7 +5711,7 @@ add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locke
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
 );
 add('NEWSLETTER1: all 90 Learn articles and three Research studies cache-bust shared runtime for immediate rollout',
-  newsletter1LearnPages.length===90 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261030-newsletter1')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261030-newsletter1'))
+  newsletter1LearnPages.length===90 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261030-newsletter1b')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261030-newsletter1b'))
 );
 add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculator-data separation',
   newsletter1Privacy.includes('<h2>Newsletter subscriptions</h2>') && newsletter1Privacy.includes('uses Kit to collect and store your email address') && newsletter1Privacy.includes('confirmation step') && newsletter1Privacy.includes('unsubscribe') && newsletter1Privacy.includes('does not send calculator inputs or calculated financial results to Kit') && newsletter1Privacy.includes('https://kit.com/dpa')
@@ -5724,6 +5724,12 @@ add('NEWSLETTER1: browser QA protects homepage, Learn, Research, mobile overflow
 );
 add('NEWSLETTER1: implementation record preserves calculator and workflow boundaries',
   newsletter1Impl.includes('No calculator formulas') && newsletter1Impl.includes('No automatic email sends') && newsletter1Impl.includes('No subscriber list is exposed') && newsletter1Impl.includes('GitHub workflow files')
+);
+add('NEWSLETTER1B: value row uses three positive promises with matching outline icons',
+  newsletter1Site.includes('Key developments') && newsletter1Site.includes('Real-life impact') && newsletter1Site.includes('Practical next steps') && newsletter1Site.includes('cm-newsletter-promise-icon') && !newsletter1Site.includes('<span>No hype</span>') && !newsletter1Site.includes('<span>No stock tips</span>')
+);
+add('NEWSLETTER1B: browser QA protects promise copy and all three newsletter icons',
+  newsletter1Qa.includes("getByText('Key developments'") && newsletter1Qa.includes("getByText('Real-life impact'") && newsletter1Qa.includes("getByText('Practical next steps'") && newsletter1Qa.includes(".cm-newsletter-promise-icon svg")
 );
 
 console.log('\nCarrowmont source contract check\n');

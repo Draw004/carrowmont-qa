@@ -29,8 +29,12 @@ test.describe('NEWSLETTER1 Carrowmont Money in Real Life', () => {
     await expect(page.getByText('No sign-up required', { exact: true })).toHaveCount(0);
     const section = await revealNewsletter(page);
     await expect(section.getByText('Money explained for real life — once a week.', { exact: true })).toBeVisible();
-    await expect(section.getByText('No hype', { exact: true })).toBeVisible();
-    await expect(section.getByText('No stock tips', { exact: true })).toBeVisible();
+    await expect(section.getByText('Key developments', { exact: true })).toBeVisible();
+    await expect(section.getByText('Real-life impact', { exact: true })).toBeVisible();
+    await expect(section.getByText('Practical next steps', { exact: true })).toBeVisible();
+    await expect(section.locator('.cm-newsletter-promise-icon svg')).toHaveCount(3);
+    await expect(section.getByText('No hype', { exact: true })).toHaveCount(0);
+    await expect(section.getByText('No stock tips', { exact: true })).toHaveCount(0);
     await expect(section.getByText(/No Carrowmont account required/)).toBeVisible();
     await expect(section.locator('script[data-uid="6ba4a35ab0"][src="https://carrowmont.kit.com/6ba4a35ab0/index.js"]')).toHaveCount(1);
   });
