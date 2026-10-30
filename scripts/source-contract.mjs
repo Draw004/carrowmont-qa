@@ -5694,6 +5694,38 @@ add('TRAFFIC1C: implementation record preserves U.S. scope, privacy, freshness a
   traffic1cImpl.includes('United States-specific') && traffic1cImpl.includes('does not fetch, store or transmit') && traffic1cImpl.includes('No workflow files') && traffic1cImpl.includes('26 October 2026')
 );
 
+
+// NEWSLETTER1 optional Carrowmont Money in Real Life signup - Snapshot 2026-10-29T22:17:00Z.
+const newsletter1Site=read('draw004.github.io/site.js');
+const newsletter1Home=read('draw004.github.io/index.html');
+const newsletter1Privacy=read('draw004.github.io/privacy.html');
+const newsletter1Confirmed=read('draw004.github.io/newsletter-confirmed.html');
+const newsletter1Qa=readQa('tests/55-newsletter1-money-in-real-life.spec.js');
+const newsletter1Impl=read('draw004.github.io/docs/CARROWMONT_NEWSLETTER1_MONEY_IN_REAL_LIFE_IMPLEMENTATION.md');
+const newsletter1LearnPages=learn3GuideEntries.map(entry=>read(`draw004.github.io${entry.url}`));
+const newsletter1ResearchPages=['emergency-savings-resilience.html','inflation-purchasing-power-monitor.html','mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/research/${name}`));
+add('NEWSLETTER1: homepage promise stays guest-first while optional email signup is explicit',
+  newsletter1Home.includes('No account required') && !newsletter1Home.includes('No sign-up required') && newsletter1Site.includes('CARROWMONT MONEY IN REAL LIFE') && newsletter1Site.includes('Optional. No Carrowmont account required.')
+);
+add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locked',
+  newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
+);
+add('NEWSLETTER1: all 90 Learn articles and three Research studies cache-bust shared runtime for immediate rollout',
+  newsletter1LearnPages.length===90 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261030-newsletter1')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261030-newsletter1'))
+);
+add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculator-data separation',
+  newsletter1Privacy.includes('<h2>Newsletter subscriptions</h2>') && newsletter1Privacy.includes('uses Kit to collect and store your email address') && newsletter1Privacy.includes('confirmation step') && newsletter1Privacy.includes('unsubscribe') && newsletter1Privacy.includes('does not send calculator inputs or calculated financial results to Kit') && newsletter1Privacy.includes('https://kit.com/dpa')
+);
+add('NEWSLETTER1: Carrowmont confirmation page is noindex and keeps users inside Tools/Learn/Research',
+  newsletter1Confirmed.includes('content="noindex,follow"') && newsletter1Confirmed.includes("You&apos;re subscribed.") && newsletter1Confirmed.includes('/tools.html') && newsletter1Confirmed.includes('/learn.html') && newsletter1Confirmed.includes('/research.html')
+);
+add('NEWSLETTER1: browser QA protects homepage, Learn, Research, mobile overflow and privacy behavior',
+  newsletter1Qa.includes("[390, 360]") && newsletter1Qa.includes('mock-kit-form') && newsletter1Qa.includes('/4-percent-rule-retirement.html') && newsletter1Qa.includes('/research/inflation-purchasing-power-monitor.html') && newsletter1Qa.includes('/privacy.html') && newsletter1Qa.includes("getByRole('button', { name: 'Get the weekly money briefing' })") && mcrQa.includes("!node.closest('[data-cm-newsletter]')")
+);
+add('NEWSLETTER1: implementation record preserves calculator and workflow boundaries',
+  newsletter1Impl.includes('No calculator formulas') && newsletter1Impl.includes('No automatic email sends') && newsletter1Impl.includes('No subscriber list is exposed') && newsletter1Impl.includes('GitHub workflow files')
+);
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);
