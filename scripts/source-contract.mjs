@@ -3716,6 +3716,8 @@ const privacyHelper = fs.readFileSync(new URL('../helpers/common.js', import.met
 const privacyQa = fs.readFileSync(new URL('../tests/31-privacy-analytics-trust.spec.js', import.meta.url), 'utf8');
 const privacyFiQa = fs.readFileSync(new URL('../tests/09-fi-number-by-spending.spec.js', import.meta.url), 'utf8');
 const forbiddenGaRuntime = /googletagmanager\.com|google-analytics\.com|gtag\s*\(|G-[A-Z0-9]{10}\b|carrowmont_analytics_consent/;
+const activeCloudflareToken = 'be7aec3cfdf3419e97d4452d4de3d672';
+const retiredCloudflareToken = '713a819bf0244b9fb4245554a6f20ee2';
 
 add('GSEO2A privacy: all nine tool repositories share one Cloudflare-only compatibility analytics implementation',
   privacyAnalyticsCopies.length===9 && privacyAnalyticsCopies.every(x=>x===privacyAnalytics) &&
@@ -3732,6 +3734,12 @@ add('GSEO2A privacy: main-site runtime has no consent popup or Google Analytics 
   !privacyMainSiteJs.includes('Continue without Google Analytics') &&
   !privacyMainSiteJs.includes('Allow Google Analytics') &&
   !forbiddenGaRuntime.test(privacyMainSiteJs)
+);
+add('GSEO2A privacy: active Cloudflare Web Analytics token is synchronized across main site and all nine tools',
+  privacyMainSiteJs.includes(activeCloudflareToken) &&
+  privacyAnalyticsCopies.every(x => x.includes(activeCloudflareToken)) &&
+  !privacyMainSiteJs.includes(retiredCloudflareToken) &&
+  privacyAnalyticsCopies.every(x => !x.includes(retiredCloudflareToken))
 );
 add('GSEO2A privacy: visitor configuration and legacy site loaders contain no Google Analytics escape hatch',
   !forbiddenGaRuntime.test(privacyInflationSite) && !forbiddenGaRuntime.test(privacyRetirementSite) &&
@@ -5711,7 +5719,7 @@ add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locke
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
 );
 add('NEWSLETTER1: all 90 Learn articles and three Research studies cache-bust shared runtime for immediate rollout',
-  newsletter1LearnPages.length===90 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261030-newsletter1b')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261030-newsletter1b'))
+  newsletter1LearnPages.length===90 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261031-cfwa1')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261031-cfwa1'))
 );
 add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculator-data separation',
   newsletter1Privacy.includes('<h2>Newsletter subscriptions</h2>') && newsletter1Privacy.includes('uses Kit to collect and store your email address') && newsletter1Privacy.includes('confirmation step') && newsletter1Privacy.includes('unsubscribe') && newsletter1Privacy.includes('does not send calculator inputs or calculated financial results to Kit') && newsletter1Privacy.includes('https://kit.com/dpa')

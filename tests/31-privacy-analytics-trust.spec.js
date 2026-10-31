@@ -24,6 +24,7 @@ test.describe('GSEO2A privacy-first analytics boundary', () => {
       await expect(page.getByRole('button', { name: 'Analytics settings' })).toHaveCount(0);
       await expect(page.locator('script[src*="googletagmanager.com"], script[src*="google-analytics.com"]')).toHaveCount(0);
       await expect(page.locator('script[data-carrowmont-cloudflare="true"]')).toHaveCount(1);
+      await expect(page.locator('script[data-carrowmont-cloudflare="true"]')).toHaveAttribute('data-cf-beacon', /be7aec3cfdf3419e97d4452d4de3d672/);
       await expect.poll(() => page.evaluate(() => window.CarrowmontAnalytics?.provider)).toBe('cloudflare-aggregate');
     }
 
