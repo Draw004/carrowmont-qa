@@ -2038,7 +2038,7 @@ let goldMacroReference = null;
 try { goldMacroReference = JSON.parse(goldMacroReferenceRaw); } catch (_) {}
 add('main site: SEO3D bundled reference is versioned, dated and preserves reviewed central-bank/fiscal fields',
   !!goldMacroReference && goldMacroReference.schemaVersion === 1 && goldMacroReference.methodologyVersion === 'gold-macro-stress-v1.0' &&
-  /^2026-10-\d{2}$/.test(goldMacroReference.snapshotDate || '') &&
+  /^\d{4}-\d{2}-\d{2}$/.test(goldMacroReference.snapshotDate || '') &&
   goldMacroReference.drivers?.centralBankDemand?.manualReviewed === true &&
   goldMacroReference.drivers?.centralBankDemand?.classificationMethod === 'reviewed-threshold-v1' &&
   goldMacroReference.drivers?.fiscalStress?.manualReviewed === true
@@ -2077,8 +2077,9 @@ add('main site: SEO3D responsive safeguards cover 700px and 420px breakpoints an
 add('main site: SEO3D weekly updater fails closed for core sources, preserves validated OFR only on explicit availability failure, and keeps reviewed fields protected',
   goldMacroUpdater.includes('Promise.all([fetchTreasury(),fetchDollar(),fetchCpi(),fetchGpr()])') &&
   goldMacroUpdater.includes('OFR_AVAILABILITY_STATUSES') && goldMacroUpdater.includes('class OfrUnavailableError') &&
+  goldMacroUpdater.includes('MAX_OFR_FALLBACK_BUSINESS_DAYS=5') && goldMacroUpdater.includes('function businessDaysBetween') && goldMacroUpdater.includes('function enforceOfrFreshness') &&
   goldMacroUpdater.includes("status:ofr.preserved?'preserved':'refreshed'") &&
-  goldMacroUpdater.includes('prior validated OFR reference may be preserved') &&
+  goldMacroUpdater.includes('prior validated OFR reference may be preserved') && goldMacroUpdater.includes('OFR FSI source is stale') && goldMacroUpdater.includes('Gold Macro update blocked') &&
   goldMacroUpdater.includes('Current reference snapshotDate is invalid.') &&
   goldMacroUpdater.includes('previousSnapshotDate,newestAutomatedDate') &&
   goldMacroUpdater.includes('OFR FSI input missing without an approved availability fallback') &&
@@ -2089,8 +2090,8 @@ add('main site: SEO3D weekly updater fails closed for core sources, preserves va
   goldMacroUpdater.includes('value:r.DTWEXBGS') &&
   goldMacroUpdater.includes('structuredClone(oldRef)') && goldMacroUpdater.includes('preservedReviewed') &&
   goldMacroSpec.includes('fail-closed for Treasury real yields, Broad Dollar, CPI and GPR') &&
-  goldMacroSpec.includes('previously validated OFR FSI value, percentile and source date') &&
-  goldMacroImplementation.includes('sourceStatus.ofr.status = "preserved"') &&
+  goldMacroSpec.includes('previously validated OFR FSI value, percentile and source date') && goldMacroSpec.includes('5 business days') &&
+  goldMacroImplementation.includes('sourceStatus.ofr.status = "preserved"') && goldMacroImplementation.includes('5 business days') &&
   goldMacroSpec.includes('top-level `snapshotDate` is monotonic') &&
   goldMacroImplementation.includes('monotonic reference freshness') &&
   !/drivers\.centralBankDemand\s*=|drivers\.fiscalStress\s*=/.test(goldMacroUpdater)
@@ -2098,7 +2099,7 @@ add('main site: SEO3D weekly updater fails closed for core sources, preserves va
 add('main site: SEO3D updater uses approved sources and only automated fields are refreshed',
   goldMacroUpdater.includes('daily_treasury_real_yield_curve') && goldMacroUpdater.includes('DTWEXBGS') &&
   goldMacroUpdater.includes('CUUR0000SA0') && goldMacroUpdater.includes('data_gpr_daily_recent.xls') &&
-  goldMacroUpdater.includes('ofr-fsi.csv') && goldMacroUpdater.includes('data/files/fsi.csv') &&
+  goldMacroUpdater.includes('financial-stress-index/data/fsi.csv') && goldMacroUpdater.includes('ofr-fsi.csv') && goldMacroUpdater.includes('data/files/fsi.csv') &&
   goldMacroUpdater.includes('Carrowmont-Gold-Macro-Reference/1.0') && goldMacroUpdater.includes('normalizeSourceDate') &&
   goldMacroImplementation.includes('Federal Reserve H.10 Broad Dollar series as distributed through the FRED CSV endpoint')
 );
@@ -2108,6 +2109,7 @@ add('main site: SEO3D update workflow is weekly, dispatchable, duplicate-aware a
   goldMacroWorkflow.includes('git checkout -b "$branch"') && goldMacroWorkflow.includes('git add data/gold-macro-reference.json') &&
   goldMacroWorkflow.includes('test "$(git diff --cached --name-only)" = "data/gold-macro-reference.json"') &&
   goldMacroWorkflow.includes('gh pr create') && goldMacroWorkflow.includes('--base main') &&
+  goldMacroWorkflow.includes('OFR FSI: **Refreshed ✅**') && goldMacroWorkflow.includes('OFR FSI: **Preserved ⚠️**') && goldMacroWorkflow.includes('Freshness guard') &&
   goldMacroWorkflow.includes('permissions:\n  contents: read') && !goldMacroWorkflow.includes('contents: write')
 );
 add('main site: SEO3D updater workflow never stores permanent workflow-write privilege',
@@ -2149,7 +2151,8 @@ add('central QA: SEO3D covers live-style RUM privacy, mobile widths, PDF, OFR av
   goldMacroQa.includes('isIsolatedCloudflareRum') && goldMacroQa.includes('360px and 390px') &&
   goldMacroQa.includes('PDF is exactly four pages') && goldMacroQa.includes('malformed input') &&
   goldMacroQa.includes('OFR availability fallback') && goldMacroQa.includes('non-OFR failure') &&
-  goldMacroQa.includes('sourceStatus.ofr.status') && goldMacroQa.includes('anomaly rejection')
+  goldMacroQa.includes('sourceStatus.ofr.status') && goldMacroQa.includes('prior validated OFR reference is stale') && goldMacroQa.includes('OFR FSI source is stale') &&
+  goldMacroQa.includes('maxFallbackBusinessDays') && goldMacroQa.includes('anomaly rejection')
 );
 let goldMacroCoreApi = null;
 try {
