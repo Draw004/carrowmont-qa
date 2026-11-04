@@ -5746,6 +5746,82 @@ add('NEWSLETTER1B: browser QA protects promise copy and all three newsletter ico
   newsletter1Qa.includes("getByText('Key developments'") && newsletter1Qa.includes("getByText('Real-life impact'") && newsletter1Qa.includes("getByText('Practical next steps'") && newsletter1Qa.includes(".cm-newsletter-promise-icon svg")
 );
 
+
+
+// HYGIENE1 final site hygiene, first-visit localization and Learn topic navigation.
+const hygieneSite = read('draw004.github.io/site.js');
+const hygieneAbout = read('draw004.github.io/about.html');
+const hygieneMonthlyGoal = read('draw004.github.io/how-much-should-i-invest-each-month.html');
+const hygieneLoan = read('loan-calculator/index.html');
+const hygieneLocaleFiles = [
+  'draw004.github.io/locale.js','sip-calculator/locale.js','goal-planner/locale.js','financial-independence/locale.js',
+  'inflation-calculator/locale.js','retirement-calculator/locale.js','budget-cash-flow-planner/locale.js',
+  'mortgage-payoff-calculator/locale.js','compound-interest-calculator/locale.js','loan-calculator/locale.js'
+].map(read);
+add('HYGIENE1: every public locale runtime prioritizes current device timezone before browser language on first visit',
+  hygieneLocaleFiles.length===10 && hygieneLocaleFiles.every(src=>src.includes('function detectRegionFromTimezone()') && src.includes('"Pacific/Auckland":"NZ"') && src.includes('const timezoneRegion = detectRegionFromTimezone();') && src.includes('if (timezoneRegion) return timezoneRegion;'))
+);
+add('HYGIENE1: saved explicit region preference wins and orphaned saved currency cannot override a newly detected country',
+  hygieneLocaleFiles.every(src=>src.includes('const hasStoredRegion = !!regions[storedRegion]') && src.includes('let regionCode = hasStoredRegion ? storedRegion : detectRegion();') && src.includes('hasStoredRegion && hasStoredCurrency ? storedCurrency : regions[regionCode].currency'))
+);
+add('HYGIENE1: desktop navigation puts Research after Learn and Search after About before the separate locale control',
+  hygieneSite.includes("var order = ['/#plan','/tools.html','/learn.html','/research.html','/methodology.html','/about.html','/search.html']") &&
+  hygieneSite.includes('Search is the final desktop navigation action')
+);
+add('HYGIENE1: Learn hub and articles expose a shared top topic navigator with requested major planning categories',
+  hygieneSite.includes("nav.dataset.cmLearnTopicNav") && hygieneSite.includes("'SIP & Investing'") && hygieneSite.includes("'Assets & Investing'") &&
+  hygieneSite.includes("'Credit, Loans & Debt'") && hygieneSite.includes("'Retirement'") && hygieneSite.includes("'Budget & Cash Flow'") &&
+  hygieneSite.includes("'/learn.html#' + targetId")
+);
+add('HYGIENE1: About page uses durable category-based product language and explains privacy-first first-visit inference',
+  hygieneAbout.includes('organized around practical planning categories') && hygieneAbout.includes('privacy-first first-visit country inference') && !hygieneAbout.includes('Current tools cover budgeting and cash flow')
+);
+add('HYGIENE1: crawler-visible monthly-goal illustration is complete without requiring JavaScript',
+  hygieneMonthlyGoal.includes('Illustrative example: $100,000 target in 10 years') && hygieneMonthlyGoal.includes('about $615') && hygieneMonthlyGoal.includes('about $555') && !hygieneMonthlyGoal.includes('Illustrative target: —')
+);
+add('HYGIENE1: Loan calculator static HTML is currency-neutral until locale formatting runs',
+  !hygieneLoan.includes('₹') && hygieneLoan.includes('id="heroResultValue">—</strong>') && hygieneLoan.includes('id="interestSaved">No extra-payment scenario</strong>')
+);
+function hygieneVisibleText(html){
+  return html
+    .replace(/<script\b[\s\S]*?<\/script>/gi,' ')
+    .replace(/<style\b[\s\S]*?<\/style>/gi,' ')
+    .replace(/<head\b[\s\S]*?<\/head>/gi,' ')
+    .replace(/<!--([\s\S]*?)-->/g,' ')
+    .replace(/<[^>]+>/g,' ')
+    .replace(/&nbsp;|&#160;/gi,' ')
+    .replace(/&amp;/gi,'&')
+    .replace(/\s+/g,' ');
+}
+function hygieneHtmlFiles(dir){
+  const base=path.join(root,dir),out=[];
+  if(!fs.existsSync(base))return out;
+  const walk=p=>{for(const ent of fs.readdirSync(p,{withFileTypes:true})){const full=path.join(p,ent.name);if(ent.isDirectory())walk(full);else if(ent.isFile()&&ent.name.endsWith('.html'))out.push(full);}};
+  walk(base);return out;
+}
+const hygieneForbidden=/\b(?:HOME1|RENT1|MDC1A|MDC1B|MDC1C|FIX1|V1|V2)\b/i;
+const hygieneLeaked=[];
+for(const dir of ['draw004.github.io','loan-calculator','mortgage-payoff-calculator']){
+  for(const file of hygieneHtmlFiles(dir)){
+    const visible=hygieneVisibleText(fs.readFileSync(file,'utf8'));
+    if(hygieneForbidden.test(visible))hygieneLeaked.push(path.relative(root,file));
+  }
+}
+add('HYGIENE1: internal release codenames and V1/V2 labels are absent from public visible HTML', hygieneLeaked.length===0, hygieneLeaked.join(', '));
+add('HYGIENE1: shared runtime normalizes drifting main-site footer menus without changing calculator architecture',
+  hygieneSite.includes('function synchronizeFooter()') && hygieneSite.includes("['/research.html','Research']") &&
+  hygieneSite.includes("['/tools.html','All financial tools','footer-all-tools']") && hygieneSite.includes("toolsCol.dataset.cmCompactTools = '1'")
+);
+add('HYGIENE1 compatibility: Tools and Search retain their Home gateway while the main homepage keeps the canonical seven-item desktop nav',
+  hygieneSite.includes("var keepCompatibilityHome = path === '/tools.html' || path === '/search.html'") && hygieneSite.includes("home.dataset.cmCompatibilityHome")
+);
+add('HYGIENE1 compatibility: legacy Home Loans Learn anchor is preserved inside the new topic navigator',
+  hygieneSite.includes("topic.key === 'home' ? 'home-loans' : 'topic-' + topic.key")
+);
+add('HYGIENE1 compatibility: mobile search control no longer splits desktop navigation from the locale selector',
+  hygieneSite.includes("locale.insertAdjacentElement('afterend', link)")
+);
+
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
 const failed = checks.filter(c => !c.ok);
