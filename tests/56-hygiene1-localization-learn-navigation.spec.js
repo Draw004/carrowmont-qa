@@ -24,19 +24,23 @@ test.describe('HYGIENE1 localization and Learn navigation closeout', () => {
     await context.close();
   });
 
-  test('desktop header uses canonical order with Search immediately after About', async ({ page }) => {
+  test('desktop header uses canonical Home-first order across the main site with Search immediately after About', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await gotoClean(page, '/');
-    const labels = await page.locator('.desktop-nav > a').allTextContents();
-    expect(labels.map(x => x.trim())).toEqual(['Plan','Tools','Learn','Research','Methodology','About','Search']);
-    const relation = await page.evaluate(() => {
-      const nav = document.querySelector('.desktop-nav');
-      const search = nav?.querySelector('a[href="/search.html"]');
-      const about = nav?.querySelector('a[href="/about.html"]');
-      const locale = document.querySelector('.header-inner > .locale-menu');
-      return { searchLast: search === nav?.lastElementChild, aboutBeforeSearch: about?.nextElementSibling === search, localeAfterNav: nav?.nextElementSibling === locale };
-    });
-    expect(relation).toEqual({ searchLast: true, aboutBeforeSearch: true, localeAfterNav: true });
+    for (const target of ['/', '/tools.html', '/learn.html', '/research.html', '/methodology.html', '/about.html', '/search.html']) {
+      await gotoClean(page, target);
+      const labels = await page.locator('.desktop-nav > a').allTextContents();
+      expect(labels.map(x => x.trim()), target).toEqual(['Home','Tools','Learn','Research','Methodology','About','Search']);
+      const relation = await page.evaluate(() => {
+        const nav = document.querySelector('.desktop-nav');
+        const home = nav?.querySelector('a[href="/"]');
+        const plan = nav?.querySelector('a[href="/#plan"]');
+        const search = nav?.querySelector('a[href="/search.html"]');
+        const about = nav?.querySelector('a[href="/about.html"]');
+        const locale = document.querySelector('.header-inner > .locale-menu');
+        return { homeFirst: home === nav?.firstElementChild, noPlan: !plan, searchLast: search === nav?.lastElementChild, aboutBeforeSearch: about?.nextElementSibling === search, localeAfterNav: nav?.nextElementSibling === locale };
+      });
+      expect(relation, target).toEqual({ homeFirst: true, noPlan: true, searchLast: true, aboutBeforeSearch: true, localeAfterNav: true });
+    }
   });
 
   test('Learn hub and articles expose the same major-topic banner', async ({ page }) => {
@@ -46,7 +50,15 @@ test.describe('HYGIENE1 localization and Learn navigation closeout', () => {
     for (const label of ['Retirement','Assets & Investing','Credit, Loans & Debt','Budget & Cash Flow','Financial Goals','Inflation','Macro & Markets']) {
       await expect(nav.getByText(label, { exact: true })).toBeVisible();
     }
-    await expect(nav.locator('[data-cm-learn-topic="investment"]')).toHaveText('SIP & Investing');
+    await expect(nav.locator('.cm-learn-topic-label')).toHaveText('Explore by topic');
+    await expect(nav.locator('[data-cm-learn-topic="investment"]')).toHaveText('Recurring Investing');
+    const hubPlacement = await page.evaluate(() => {
+      const hero = document.querySelector('main .learn-page-hero');
+      const topics = document.querySelector('[data-cm-learn-topic-nav]');
+      const search = document.querySelector('.search-discovery-section');
+      return { afterHero: hero?.nextElementSibling === topics, beforeSearch: topics?.nextElementSibling === search };
+    });
+    expect(hubPlacement).toEqual({ afterHero: true, beforeSearch: true });
     await nav.getByText('Retirement', { exact: true }).click();
     await expect(page).toHaveURL(/#topic-retirement$/);
     await expect(page.locator('#topic-retirement')).toBeVisible();
@@ -54,7 +66,14 @@ test.describe('HYGIENE1 localization and Learn navigation closeout', () => {
     await gotoClean(page, '/asset-allocation-explained.html');
     const articleNav = page.locator('[data-cm-learn-topic-nav]');
     await expect(articleNav).toBeVisible();
+    await expect(articleNav.locator('.cm-learn-topic-label')).toHaveText('Explore by topic');
     await expect(articleNav.locator('[data-cm-learn-topic="retirement"]')).toHaveAttribute('href', '/learn.html#topic-retirement');
+    const articlePlacement = await page.evaluate(() => {
+      const hero = document.querySelector('main .learn-page-hero');
+      const topics = document.querySelector('[data-cm-learn-topic-nav]');
+      return hero?.nextElementSibling === topics;
+    });
+    expect(articlePlacement).toBe(true);
   });
 
   test('topic banner remains usable without horizontal page overflow on 390 and 360', async ({ page }) => {

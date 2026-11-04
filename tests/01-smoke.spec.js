@@ -606,7 +606,7 @@ ${errors.join('\n')}`).toEqual([]);
   });
 
 
-  test('[AUTO] Homepage: expanded country catalogue is alphabetical and Home is not duplicated in navigation', async ({ page }) => {
+  test('[AUTO] Homepage: expanded country catalogue is alphabetical and canonical Home appears once in navigation', async ({ page }) => {
     await gotoClean(page, '/');
     const labels = await page.locator('#regionSelect option').allTextContents();
     expect(labels.at(-1)).toBe('Other / International');
@@ -616,7 +616,7 @@ ${errors.join('\n')}`).toEqual([]);
     for (const country of ['Austria','Bangladesh','Belgium','Chile','Denmark','Finland','Ireland','Netherlands','Norway','Oman','Poland','Portugal','Qatar','Sweden']) {
       expect(countryLabels).toContain(country);
     }
-    await expect(page.locator('.desktop-nav a', { hasText: /^Home$/ })).toHaveCount(0);
+    await expect(page.locator('.desktop-nav a', { hasText: /^Home$/ })).toHaveCount(1);
     await expect(page.locator('.hero-points .hero-point-icon')).toHaveCount(3);
     await expect(page.locator('.site-footer')).toHaveCSS('background-color', 'rgb(16, 41, 69)');
   });
