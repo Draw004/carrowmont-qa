@@ -52,6 +52,8 @@ test.describe('HYGIENE1 localization and Learn navigation closeout', () => {
     }
     await expect(nav.locator('.cm-learn-topic-label')).toHaveText('Explore by topic');
     await expect(nav.locator('[data-cm-learn-topic="investment"]')).toHaveText('Recurring Investing');
+    await expect(page.locator('[data-cm-search-suggestions]')).toHaveCount(0);
+    await expect(page.getByText('Try a topic:', { exact: true })).toHaveCount(0);
     const hubPlacement = await page.evaluate(() => {
       const hero = document.querySelector('main .learn-page-hero');
       const topics = document.querySelector('[data-cm-learn-topic-nav]');
