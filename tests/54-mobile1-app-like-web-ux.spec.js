@@ -11,19 +11,19 @@ test.describe('MOBILE1 app-like mobile web UX', () => {
     }
     await expect(page.locator('[data-mobile1-quick-tools]')).toBeVisible();
     await expect(page.locator('[data-homepage-core-grid]')).toBeHidden();
-    await expect(page.locator('.mobile-nav')).toBeVisible();
+    await expect(page.locator('.mobile-nav')).toBeHidden();
   });
 
 
-  test('mobile header follows menu, brand, Search pill, country/currency layout', async ({ page }) => {
-    for (const width of [390, 360]) {
+  test('mobile header is one compact row: brand left, Search pill centered, country/currency right, no hamburger', async ({ page }) => {
+    for (const width of [412, 390, 360]) {
       await page.setViewportSize({ width, height: 844 });
       await page.goto('/');
       const menu = page.locator('.header-inner > .mobile-nav');
       const brand = page.locator('.header-inner > .brand');
       const search = page.locator('[data-mobile1-header-search]');
       const locale = page.locator('.header-inner > .locale-menu');
-      await expect(menu).toBeVisible();
+      await expect(menu).toBeHidden();
       await expect(brand).toBeVisible();
       await expect(search).toBeVisible();
       await expect(search.getByText('Search', { exact: true })).toBeVisible();
@@ -31,19 +31,25 @@ test.describe('MOBILE1 app-like mobile web UX', () => {
       const geometry = await page.evaluate(() => {
         const box = (selector) => {
           const r = document.querySelector(selector)?.getBoundingClientRect();
-          return r ? { left:r.left, right:r.right, top:r.top, bottom:r.bottom, width:r.width, height:r.height } : null;
+          return r ? { left:r.left, right:r.right, top:r.top, bottom:r.bottom, width:r.width, height:r.height, cy:r.top+r.height/2 } : null;
         };
         const searchEl = document.querySelector('[data-mobile1-header-search]');
+        const brandEl = document.querySelector('.header-inner > .brand .brand-name');
         const radius = searchEl ? parseFloat(getComputedStyle(searchEl).borderTopLeftRadius) : 0;
+        const brandFont = brandEl ? parseFloat(getComputedStyle(brandEl).fontSize) : 0;
         return {
-          header: box('.header-inner'), menu: box('.header-inner > .mobile-nav'), brand: box('.header-inner > .brand'),
-          search: box('[data-mobile1-header-search]'), locale: box('.header-inner > .locale-menu'), radius
+          header: box('.header-inner'), brand: box('.header-inner > .brand'), search: box('[data-mobile1-header-search]'),
+          locale: box('.header-inner > .locale-menu'), radius, brandFont
         };
       });
-      expect(geometry.menu.left, `${width}px menu should be the left-most header control`).toBeLessThan(geometry.brand.left);
+      expect(geometry.brand.left, `${width}px brand should be the left-most header item`).toBeLessThan(geometry.search.left);
       expect(geometry.search.left, `${width}px Search should sit after the brand`).toBeGreaterThanOrEqual(geometry.brand.right - 1);
       expect(geometry.locale.left, `${width}px locale should sit after Search`).toBeGreaterThanOrEqual(geometry.search.right - 1);
       expect(Math.abs(geometry.locale.right - geometry.header.right), `${width}px locale should be anchored to the header's extreme right`).toBeLessThanOrEqual(2);
+      expect(Math.abs(geometry.brand.cy - geometry.search.cy), `${width}px brand and Search should share one header row`).toBeLessThanOrEqual(4);
+      expect(Math.abs(geometry.locale.cy - geometry.search.cy), `${width}px locale and Search should share one header row`).toBeLessThanOrEqual(4);
+      expect(geometry.header.height, `${width}px header should stay compact`).toBeLessThanOrEqual(70);
+      expect(geometry.brandFont, `${width}px CARROWMONT should retain a strong mobile brand size`).toBeGreaterThanOrEqual(width <= 360 ? 17 : 18);
       expect(geometry.search.width / geometry.search.height, `${width}px Search should be a horizontal pill`).toBeGreaterThan(1.8);
       expect(geometry.radius, `${width}px Search should have an oval radius`).toBeGreaterThanOrEqual(18);
       const dims = await page.evaluate(() => ({ body: document.body.scrollWidth, doc: document.documentElement.scrollWidth, width: window.innerWidth }));

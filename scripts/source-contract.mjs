@@ -5722,7 +5722,7 @@ add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locke
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
 );
 add('NEWSLETTER1: all 90 Learn articles and three Research studies cache-bust shared runtime for immediate rollout',
-  newsletter1LearnPages.length===90 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261105-navmobile1')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261105-navmobile1'))
+  newsletter1LearnPages.length===90 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261105-mobile2')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261105-mobile2'))
 );
 add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculator-data separation',
   newsletter1Privacy.includes('<h2>Newsletter subscriptions</h2>') && newsletter1Privacy.includes('uses Kit to collect and store your email address') && newsletter1Privacy.includes('confirmation step') && newsletter1Privacy.includes('unsubscribe') && newsletter1Privacy.includes('does not send calculator inputs or calculated financial results to Kit') && newsletter1Privacy.includes('https://kit.com/dpa')
@@ -5750,6 +5750,7 @@ add('NEWSLETTER1B: browser QA protects promise copy and all three newsletter ico
 
 // HYGIENE1 final site hygiene, first-visit localization and Learn topic navigation.
 const hygieneSite = read('draw004.github.io/site.js');
+const hygieneLearn = read('draw004.github.io/learn.html');
 const hygieneAbout = read('draw004.github.io/about.html');
 const hygieneMonthlyGoal = read('draw004.github.io/how-much-should-i-invest-each-month.html');
 const hygieneLoan = read('loan-calculator/index.html');
@@ -5770,7 +5771,7 @@ add('HYGIENE1: desktop navigation uses Home first, then Research after Learn and
 );
 const hygieneResearchPages = ['research.html','research/emergency-savings-resilience.html','research/inflation-purchasing-power-monitor.html','research/mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/${name}`));
 add('HYGIENE1: Research pages carry the shared country-currency control and locale runtime before shared site runtime',
-  hygieneResearchPages.every(html=>html.includes('class="locale-menu" id="localeMenu"') && html.includes('/locale.js?v=20261010-tools-hub1') && html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261105-navmobile1'))
+  hygieneResearchPages.every(html=>html.includes('class="locale-menu" id="localeMenu"') && html.includes('/locale.js?v=20261010-tools-hub1') && html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261105-mobile2'))
 );
 add('HYGIENE1: Learn hub and articles expose a shared topic navigator after the Learn hero with requested major planning categories',
   hygieneSite.includes("nav.dataset.cmLearnTopicNav") && hygieneSite.includes("label.textContent = 'Explore by topic'") &&
@@ -5827,13 +5828,20 @@ add('HYGIENE1 compatibility: legacy Home Loans Learn anchor is preserved inside 
 add('HYGIENE1 compatibility: mobile search control no longer splits desktop navigation from the locale selector',
   hygieneSite.includes("locale.insertAdjacentElement('afterend', link)")
 );
-add('MOBILE1 header closeout: mobile header exposes left menu, branded Search pill and right-anchored country/currency control',
-  hygieneSite.includes(".mobile-nav{display:block!important;grid-column:1") &&
-  hygieneSite.includes(".mobile1-header-search{grid-column:3;display:inline-flex") &&
+add('MOBILE2 header closeout: mobile header is one compact row with no hamburger, strong brand, Search pill and right-anchored currency',
+  hygieneSite.includes(".mobile-nav{display:none!important}") &&
+  hygieneSite.includes(".mobile1-header-search{grid-column:2;grid-row:1;display:inline-flex") &&
+  hygieneSite.includes(".brand-name{font-size:19px!important") &&
   hygieneSite.includes("border-radius:999px") && hygieneSite.includes("link.innerHTML = ICONS.search + '<span>Search</span>'") &&
-  hygieneSite.includes(".locale-menu{grid-column:4") && hygieneSite.includes("justify-self:end") &&
-  readQa('tests/54-mobile1-app-like-web-ux.spec.js').includes('Search should be a horizontal pill') &&
+  hygieneSite.includes(".locale-menu{grid-column:3;grid-row:1") && hygieneSite.includes(".brand{grid-column:1;grid-row:1") && hygieneSite.includes("justify-self:end") &&
+  readQa('tests/54-mobile1-app-like-web-ux.spec.js').includes('no hamburger') &&
+  readQa('tests/54-mobile1-app-like-web-ux.spec.js').includes('header should stay compact') &&
   readQa('tests/54-mobile1-app-like-web-ux.spec.js').includes("locale should be anchored to the header's extreme right")
+);
+add('LEARN navigation cleanup: Explore by topic is the sole topic shortcut row on the Learn hub',
+  hygieneSite.includes('data-cm-learn-topic-nav') && hygieneSite.includes('Explore by topic') &&
+  !hygieneLearn.includes('data-cm-search-suggestions') && !hygieneLearn.includes('Try a topic:') &&
+  readQa('tests/56-hygiene1-localization-learn-navigation.spec.js').includes("getByText('Try a topic:', { exact: true })")
 );
 
 console.log('\nCarrowmont source contract check\n');
