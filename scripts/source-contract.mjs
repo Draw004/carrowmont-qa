@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import { runFreCoreContract } from './fre-core-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -16,6 +17,8 @@ const read = rel => {
   if (!fs.existsSync(p)) return '';
   return fs.readFileSync(p, 'utf8');
 };
+for (const c of runFreCoreContract(root)) add(`FRE1A: ${c.name}`, c.ok, c.detail);
+
 const readQa = rel => {
   const p = new URL(`../${rel}`, import.meta.url);
   if (!fs.existsSync(p)) return '';
