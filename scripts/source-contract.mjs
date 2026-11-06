@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { runFreCoreContract } from './fre-core-contract.mjs';
+import { runFrePrimaryCoreParity } from './fre-primary-core-parity.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -17,7 +18,8 @@ const read = rel => {
   if (!fs.existsSync(p)) return '';
   return fs.readFileSync(p, 'utf8');
 };
-for (const c of runFreCoreContract(root)) add(`FRE1A: ${c.name}`, c.ok, c.detail);
+for (const c of runFreCoreContract(root)) add(`FRE1: ${c.name}`, c.ok, c.detail);
+for (const c of runFrePrimaryCoreParity(root)) add(`FRE1B: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
   const p = new URL(`../${rel}`, import.meta.url);
@@ -157,6 +159,7 @@ add('sip: country profiles carry contribution-frequency terminology metadata',
 
 const goalHtml = read('goal-planner/index.html');
 const goalApp = read('goal-planner/app.js');
+const goalCore = read('goal-planner/core.js');
 const goalLocale = read('goal-planner/locale.js');
 const goalPdf = read('goal-planner/goal-pdf-renderer.js');
 add('goal: GSEO1B-1 search title identifies savings-goal calculator intent while preserving Goal Planner UI',
@@ -171,12 +174,12 @@ add('goal: separate pay and savings/contribution frequency inputs',
   goalHtml.includes('id="sameAsPayCycle"')
 );
 add('goal: standardized frequency periods and periodic-return calculation',
-  /weekly\s*:\s*52/.test(goalApp) &&
-  /biweekly\s*:\s*26/.test(goalApp) &&
-  /semimonthly\s*:\s*24/.test(goalApp) &&
-  /fourweekly\s*:\s*13/.test(goalApp) &&
-  /monthly\s*:\s*12/.test(goalApp) &&
-  goalApp.includes('periodicRate') && goalApp.includes('annuityFactor(s.ret,s.years,s.contributionFrequency)')
+  /weekly\s*:\s*52/.test(goalCore) &&
+  /biweekly\s*:\s*26/.test(goalCore) &&
+  /semimonthly\s*:\s*24/.test(goalCore) &&
+  /fourweekly\s*:\s*13/.test(goalCore) &&
+  /monthly\s*:\s*12/.test(goalCore) &&
+  goalCore.includes('periodicRate') && goalCore.includes('annuityFactor(s.ret,s.years,s.contributionFrequency)') && goalApp.includes('Core.calculate(s)')
 );
 add('goal: pay frequency stays independent unless Same as my pay cycle is selected',
   goalApp.includes("els.sameAsPayCycle?.addEventListener('change'") &&
@@ -587,6 +590,7 @@ add('sip report visuals: midpoint and final callouts pair projected/step-up valu
 
 const retirementHtml = read('retirement-calculator/planner.html');
 const retirementApp = read('retirement-calculator/app.js');
+const retirementCore = read('retirement-calculator/core.js');
 const retirementLocale = read('retirement-calculator/locale.js');
 const retirementMethodology = read('retirement-calculator/methodology.html');
 const retirementCss = read('retirement-calculator/styles.css');
@@ -601,12 +605,12 @@ add('retirement: frequency controls precede savings and contribution inputs',
   retirementHtml.indexOf('id="contributionFrequency"') < retirementHtml.indexOf('id="currentMonthlyInvestment"')
 );
 add('retirement: standardized frequency periods drive pre-retirement contributions',
-  /weekly\s*:\s*52/.test(retirementApp) &&
-  /biweekly\s*:\s*26/.test(retirementApp) &&
-  /semimonthly\s*:\s*24/.test(retirementApp) &&
-  /fourweekly\s*:\s*13/.test(retirementApp) &&
-  /monthly\s*:\s*12/.test(retirementApp) &&
-  retirementApp.includes('contributionSchedule') && retirementApp.includes('s.contributionFrequency')
+  /weekly\s*:\s*52/.test(retirementCore) &&
+  /biweekly\s*:\s*26/.test(retirementCore) &&
+  /semimonthly\s*:\s*24/.test(retirementCore) &&
+  /fourweekly\s*:\s*13/.test(retirementCore) &&
+  /monthly\s*:\s*12/.test(retirementCore) &&
+  retirementCore.includes('contributionSchedule') && retirementCore.includes('s.contributionFrequency') && retirementApp.includes('Core.calculatePlan(s)')
 );
 add('retirement: pay frequency stays independent unless Same as my pay cycle is selected',
   retirementApp.includes("$('sameAsPayCycle')?.addEventListener('change'") &&
@@ -646,14 +650,15 @@ add('retirement: report buttons use shrink-safe grid', /grid-template-columns:\s
 
 const budgetHtml = read('budget-cash-flow-planner/index.html');
 const budgetApp = read('budget-cash-flow-planner/app.js');
+const budgetCore = read('budget-cash-flow-planner/core.js');
 const budgetStorage = read('budget-cash-flow-planner/storage.js');
 const budgetPdf = read('budget-cash-flow-planner/budget-pdf-renderer.js');
 const budgetCss = read('budget-cash-flow-planner/styles.css');
 const budgetSmart = read('budget-cash-flow-planner/smart-suggestions.js');
 const budgetReadme = read('budget-cash-flow-planner/README.md');
 add('budget: monthly and pay-cycle views are both present', budgetHtml.includes('Monthly View') && budgetHtml.includes('Pay Cycle View') && budgetHtml.includes('id="primaryPayFrequency"'));
-add('budget: frequency model covers weekly through annual and irregular averages', /weekly:\{[^}]*perMonth:52\/12/.test(budgetApp) && /biweekly:\{[^}]*perMonth:26\/12/.test(budgetApp) && /semimonthly:\{[^}]*perMonth:2/.test(budgetApp) && /fourweekly:\{[^}]*perMonth:13\/12/.test(budgetApp) && /quarterly:\{[^}]*perMonth:1\/3/.test(budgetApp) && /annual:\{[^}]*perMonth:1\/12/.test(budgetApp) && budgetApp.includes("irregular:{label:'Irregular / Monthly Average'"));
-add('budget: irregular bills are translated into monthly reserves without double subtraction', budgetApp.includes('function irregularReserve') && budgetApp.includes('const remaining=income-essential-flexible-saving') && budgetHtml.includes('Irregular-bill reserves'));
+add('budget: frequency model covers weekly through annual and irregular averages', /weekly:Object\.freeze\(\{[^}]*perMonth:52\/12/.test(budgetCore) && /biweekly:Object\.freeze\(\{[^}]*perMonth:26\/12/.test(budgetCore) && /semimonthly:Object\.freeze\(\{[^}]*perMonth:2/.test(budgetCore) && /fourweekly:Object\.freeze\(\{[^}]*perMonth:13\/12/.test(budgetCore) && /quarterly:Object\.freeze\(\{[^}]*perMonth:1\/3/.test(budgetCore) && /annual:Object\.freeze\(\{[^}]*perMonth:1\/12/.test(budgetCore) && budgetCore.includes("irregular:Object.freeze({label:'Irregular / Monthly Average'") && budgetApp.includes('const FREQ = Core.FREQ'));
+add('budget: irregular bills are translated into monthly reserves without double subtraction', budgetCore.includes('function irregularReserve') && budgetCore.includes('const remaining=income-essential-flexible-saving') && budgetApp.includes('Core.irregularReserve(rows)') && budgetHtml.includes('Irregular-bill reserves'));
 add('budget: emergency reserve target is user-selected', budgetHtml.includes('id="emergencyTargetMonths"') && budgetHtml.includes('Carrowmont does not assume one universal number of months'));
 add('budget: privacy-first local history uses IndexedDB plus localStorage preferences', budgetStorage.includes("indexedDB.open(DB_NAME") && budgetStorage.includes('localStorage.setItem') && budgetStorage.includes('exportAll') && budgetStorage.includes('importAll'));
 add('budget: history supports 3/6/12 month views and exceptional records', budgetHtml.includes('Last 3 months') && budgetHtml.includes('Last 6 months') && budgetHtml.includes('Last 12 months') && budgetApp.includes('monthExceptional'));
