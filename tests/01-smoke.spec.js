@@ -123,12 +123,12 @@ test.describe('Carrowmont smoke and content contracts', () => {
     const sortedLabels = [...countryLabels].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
     expect(countryLabels).toEqual(sortedLabels);
 
-    for (const country of ['Austria','Bangladesh','Belgium','Chile','Denmark','Finland','Ireland','Netherlands','Norway','Oman','Poland','Portugal','Qatar','Sweden']) {
+    for (const country of ['Argentina','Austria','Bangladesh','Belgium','Chile','Colombia','Czechia','Denmark','Egypt','Finland','Greece','Ireland','Israel','Kazakhstan','Kenya','Kuwait','Morocco','Netherlands','Nigeria','Norway','Oman','Pakistan','Peru','Poland','Portugal','Qatar','Romania','Sweden','Uzbekistan']) {
       expect(countryLabels).toContain(country);
     }
 
     const profiles = await page.evaluate(() => {
-      const codes = ['AT','BD','BE','CL','DK','FI','IE','NL','NO','OM','PL','PT','QA','SE'];
+      const codes = ['AT','BD','BE','CL','DK','FI','IE','NL','NO','OM','PL','PT','QA','SE','AR','IL','CO','RO','PK','CZ','EG','PE','KZ','NG','GR','MA','KW','UZ','KE'];
       return Object.fromEntries(codes.map(code => [code, window.CarrowmontLocale.regions[code]]));
     });
     expect(profiles).toEqual({
@@ -145,7 +145,22 @@ test.describe('Carrowmont smoke and content contracts', () => {
       PL: { label:'Poland', locale:'pl-PL', currency:'PLN', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
       PT: { label:'Portugal', locale:'pt-PT', currency:'EUR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
       QA: { label:'Qatar', locale:'en-QA', currency:'QAR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
-      SE: { label:'Sweden', locale:'sv-SE', currency:'SEK', contributionFrequency:'monthly', twoWeekLabel:'neutral' }
+      SE: { label:'Sweden', locale:'sv-SE', currency:'SEK', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      AR: { label:'Argentina', locale:'es-AR', currency:'ARS', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      IL: { label:'Israel', locale:'en-IL', currency:'ILS', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      CO: { label:'Colombia', locale:'es-CO', currency:'COP', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      RO: { label:'Romania', locale:'ro-RO', currency:'RON', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      PK: { label:'Pakistan', locale:'en-PK', currency:'PKR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      CZ: { label:'Czechia', locale:'cs-CZ', currency:'CZK', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      EG: { label:'Egypt', locale:'en-EG', currency:'EGP', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      PE: { label:'Peru', locale:'es-PE', currency:'PEN', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      KZ: { label:'Kazakhstan', locale:'en-KZ', currency:'KZT', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      NG: { label:'Nigeria', locale:'en-NG', currency:'NGN', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      GR: { label:'Greece', locale:'el-GR', currency:'EUR', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      MA: { label:'Morocco', locale:'en-MA', currency:'MAD', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      KW: { label:'Kuwait', locale:'en-KW', currency:'KWD', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      UZ: { label:'Uzbekistan', locale:'en-UZ', currency:'UZS', contributionFrequency:'monthly', twoWeekLabel:'neutral' },
+      KE: { label:'Kenya', locale:'en-KE', currency:'KES', contributionFrequency:'monthly', twoWeekLabel:'neutral' }
     });
 
     await page.locator('#regionSelect').evaluate(el => {
@@ -539,11 +554,11 @@ test.describe('Carrowmont smoke and content contracts', () => {
 
   test('[AUTO] Other calculators: country catalogue matches SIP expansion and is alphabetical', async ({ page }) => {
     const localeTools = tools.filter(tool => tool.key !== 'sip-calculator');
-    const expectedAdded = ['Austria','Bangladesh','Belgium','Chile','Denmark','Finland','Ireland','Netherlands','Norway','Oman','Poland','Portugal','Qatar','Sweden'];
+    const expectedAdded = ['Argentina','Austria','Bangladesh','Belgium','Chile','Colombia','Czechia','Denmark','Egypt','Finland','Greece','Ireland','Israel','Kazakhstan','Kenya','Kuwait','Morocco','Netherlands','Nigeria','Norway','Oman','Pakistan','Peru','Poland','Portugal','Qatar','Romania','Sweden','Uzbekistan'];
     for (const tool of localeTools) {
       await gotoClean(page, tool.path);
       const labels = await page.locator('#regionSelect option').allTextContents();
-      expect(labels).toHaveLength(44);
+      expect(labels).toHaveLength(59);
       expect(labels.at(-1)).toBe('Other / International');
       const countryLabels = labels.slice(0, -1);
       const sortedLabels = [...countryLabels].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
@@ -613,7 +628,7 @@ ${errors.join('\n')}`).toEqual([]);
     const countryLabels = labels.slice(0, -1);
     const sortedLabels = [...countryLabels].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
     expect(countryLabels).toEqual(sortedLabels);
-    for (const country of ['Austria','Bangladesh','Belgium','Chile','Denmark','Finland','Ireland','Netherlands','Norway','Oman','Poland','Portugal','Qatar','Sweden']) {
+    for (const country of ['Argentina','Austria','Bangladesh','Belgium','Chile','Colombia','Czechia','Denmark','Egypt','Finland','Greece','Ireland','Israel','Kazakhstan','Kenya','Kuwait','Morocco','Netherlands','Nigeria','Norway','Oman','Pakistan','Peru','Poland','Portugal','Qatar','Romania','Sweden','Uzbekistan']) {
       expect(countryLabels).toContain(country);
     }
     await expect(page.locator('.desktop-nav a', { hasText: /^Home$/ })).toHaveCount(1);

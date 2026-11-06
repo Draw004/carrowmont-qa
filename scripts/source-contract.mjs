@@ -119,7 +119,7 @@ add('sip: country change reapplies suggested frequency while currency-only chang
   sipApp.includes("$('contributionFrequency').addEventListener('change',()=>{frequencyUserOverride=true")
 );
 add('sip: country selector is alphabetized with Other / International last', sipApp.includes("a.label.localeCompare(b.label,'en'") && sipApp.includes("if(codeA==='OTHER') return 1"));
-const expandedRegionCodes = ['AT','BD','BE','CL','DK','FI','IE','NL','NO','OM','PL','PT','QA','SE'];
+const expandedRegionCodes = ['AT','BD','BE','CL','DK','FI','IE','NL','NO','OM','PL','PT','QA','SE','AR','IL','CO','RO','PK','CZ','EG','PE','KZ','NG','GR','MA','KW','UZ','KE'];
 add('sip: expanded country profiles are present', expandedRegionCodes.every(code => new RegExp(`\\b${code}:\\s*\\{`).test(sipLocale)));
 add('sip: expanded currencies and symbols are present',
   /BDT:\s*\{[^}]*symbol:\s*"৳"/.test(sipLocale) &&
@@ -129,7 +129,21 @@ add('sip: expanded currencies and symbols are present',
   /OMR:\s*\{[^}]*symbol:\s*"OMR"/.test(sipLocale) &&
   /PLN:\s*\{[^}]*symbol:\s*"zł"/.test(sipLocale) &&
   /QAR:\s*\{[^}]*symbol:\s*"QAR"/.test(sipLocale) &&
-  /SEK:\s*\{[^}]*symbol:\s*"kr"/.test(sipLocale)
+  /SEK:\s*\{[^}]*symbol:\s*"kr"/.test(sipLocale) &&
+  /ARS:\s*\{[^}]*symbol:\s*"\$"/.test(sipLocale) &&
+  /ILS:\s*\{[^}]*symbol:\s*"₪"/.test(sipLocale) &&
+  /COP:\s*\{[^}]*symbol:\s*"\$"/.test(sipLocale) &&
+  /RON:\s*\{[^}]*symbol:\s*"lei"/.test(sipLocale) &&
+  /PKR:\s*\{[^}]*symbol:\s*"₨"/.test(sipLocale) &&
+  /CZK:\s*\{[^}]*symbol:\s*"Kč"/.test(sipLocale) &&
+  /EGP:\s*\{[^}]*symbol:\s*"E£"/.test(sipLocale) &&
+  /PEN:\s*\{[^}]*symbol:\s*"S\/"/.test(sipLocale) &&
+  /KZT:\s*\{[^}]*symbol:\s*"₸"/.test(sipLocale) &&
+  /NGN:\s*\{[^}]*symbol:\s*"₦"/.test(sipLocale) &&
+  /MAD:\s*\{[^}]*symbol:\s*"MAD"/.test(sipLocale) &&
+  /KWD:\s*\{[^}]*symbol:\s*"KWD"/.test(sipLocale) &&
+  /UZS:\s*\{[^}]*symbol:\s*"UZS"/.test(sipLocale) &&
+  /KES:\s*\{[^}]*symbol:\s*"KSh"/.test(sipLocale)
 );
 add('sip: country profiles carry contribution-frequency terminology metadata',
   /IN:\s*\{[^}]*contributionFrequency:\s*"monthly"[^}]*twoWeekLabel:\s*"neutral"/.test(sipLocale) &&
@@ -838,6 +852,12 @@ if (mainHome || mainSiteJs) {
   );
   add('main site: homepage country selector is alphabetized with Other / International last',
     mainSiteJs.includes('a.label.localeCompare') && mainSiteJs.includes('codeA === "OTHER"') && mainSiteJs.includes('return 1')
+  );
+  add('main site: GLOBAL2 additional economies, currencies and timezone detection are complete',
+    ['AR','IL','CO','RO','PK','CZ','EG','PE','KZ','NG','GR','MA','KW','UZ','KE'].every(code => new RegExp(`\\b${code}:\\s*\\{`).test(mainLocale)) &&
+    ['ARS','ILS','COP','RON','PKR','CZK','EGP','PEN','KZT','NGN','MAD','KWD','UZS','KES'].every(code => new RegExp(`\\b${code}:\\s*\\{`).test(mainLocale)) &&
+    mainLocale.includes('\"Asia/Karachi\":\"PK\"') && mainLocale.includes('\"Africa/Lagos\":\"NG\"') && mainLocale.includes('\"Africa/Cairo\":\"EG\"') &&
+    mainLocale.includes('\"America/Argentina/Buenos_Aires\":\"AR\"') && mainLocale.includes('\"Asia/Tashkent\":\"UZ\"')
   );
   add('main site: redundant Home navigation removed from homepage',
     !/<nav class="desktop-nav"[\s\S]*?<a href="\/">Home<\/a>/.test(mainHome) &&
@@ -2344,11 +2364,11 @@ add('main site: LEARN-LOCALE1 raw Learn main content is globally neutral with no
 add('main site: LEARN-LOCALE1 all 33 initially affected pages remain under the permanent repository scanner',
   initialLearnLocaleAffected.length === 33 && initialLearnLocaleAffected.every(file => learnLocalePages.includes(file) && !regionalLeakPattern.test(learnMainTexts[file]))
 );
-add('main site: LEARN-LOCALE1 defines an explicit example profile for all 34 supported currencies',
-  localeCurrencyCodes.length === 34 && new Set(localeCurrencyCodes).size === 34 &&
-  learnExampleCodes.length === 34 && new Set(learnExampleCodes).size === 34 &&
+add('main site: GLOBAL2 defines an explicit Learn example profile for all 48 supported currencies',
+  localeCurrencyCodes.length === 48 && new Set(localeCurrencyCodes).size === 48 &&
+  learnExampleCodes.length === 48 && new Set(learnExampleCodes).size === 48 &&
   localeCurrencyCodes.every(code => learnExampleCodes.includes(code)) &&
-  ['BDT','CLP','DKK','NOK','OMR','PLN','QAR','SEK'].every(code => learnExampleCodes.includes(code))
+  ['ARS','ILS','COP','RON','PKR','CZK','EGP','PEN','KZT','NGN','MAD','KWD','UZS','KES'].every(code => learnExampleCodes.includes(code))
 );
 add('main site: LEARN-LOCALE1 shared declarative bindings handle money, country terminology and local-only updates',
   learnLocaleJs.includes("document.querySelectorAll('[data-cm-money-inr]')") &&

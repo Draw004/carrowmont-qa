@@ -67,7 +67,7 @@ test.describe('LEARN-LOCALE1 global Learn localization', () => {
       }
       return { currencyCodes, profileCodes, rows };
     });
-    expect(result.currencyCodes).toHaveLength(34);
+    expect(result.currencyCodes).toHaveLength(48);
     expect(result.profileCodes.sort()).toEqual(result.currencyCodes.sort());
     for (const row of result.rows) {
       expect(row.profile, `${row.code} explicit profile`).toBeTruthy();
