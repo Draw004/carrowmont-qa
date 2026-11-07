@@ -1,5 +1,5 @@
 export const standardDownloadMessage = 'Report has been downloaded.';
-export const search1ExpectedPublicPages = 134;
+export const search1ExpectedPublicPages = 135;
 
 export const tools = [
   {
@@ -160,6 +160,7 @@ export const mainSitePages = [
   { key: 'home-affordability-calculator-page', path: '/home-affordability-calculator.html', text: 'See what home price may fit your budget without squeezing everything else.' },
   { key: 'emergency-fund-runway-calculator-page', path: '/emergency-fund-runway-calculator.html', text: 'How long could your essential spending keep going if income changed suddenly?' },
   { key: 'debt-to-income-borrowing-health-page', path: '/debt-to-income-borrowing-health-calculator.html', text: 'How much of your income is already committed to debt?' },
+  { key: 'car-affordability-auto-decision-page', path: '/car-affordability-auto-decision-calculator.html', text: 'What would this car really do to your monthly finances?' },
   { key: 'home-affordability-learn', path: '/how-much-home-can-i-afford.html', text: 'How much home can I afford?' },
   { key: 'mortgage-affordability-vs-approval-learn', path: '/mortgage-affordability-vs-lender-approval.html', text: 'Mortgage affordability vs lender approval' },
   { key: 'deposit-rate-affordability-learn', path: '/how-deposit-and-interest-rates-affect-home-affordability.html', text: 'How do deposit and interest rates affect home affordability?' },
