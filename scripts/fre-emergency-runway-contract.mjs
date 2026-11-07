@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
+const qaRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const add = (checks, name, ok, detail = '') => checks.push({ name, ok:Boolean(ok), detail });
 const close = (actual, expected, tolerance = 1e-9) => Number.isFinite(actual) && Math.abs(actual - expected) <= tolerance * Math.max(1, Math.abs(expected));
 
@@ -21,10 +23,16 @@ export function runFreEmergencyRunwayContract(sourceRoot) {
     router:'draw004.github.io/assets/fre/intent-router.js',
     registry:'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json',
     ledger:'draw004.github.io/docs/CARROWMONT_FRE_BATCH2A_ACCEPTANCE_LEDGER.md',
-    implementation:'draw004.github.io/docs/CARROWMONT_FRE_BATCH2A_EMERGENCY_FUND_RUNWAY.md',
-    browserSpec:'carrowmont-qa/tests/57-fre2a-emergency-fund-runway.spec.js'
+    implementation:'draw004.github.io/docs/CARROWMONT_FRE_BATCH2A_EMERGENCY_FUND_RUNWAY.md'
   };
-  add(checks, 'Batch 2A tool core UI report adapter and continuity files exist', Object.values(rel).every(file => fs.existsSync(path.join(sourceRoot,file))));
+  const qaRel = {
+    browserSpec:'tests/57-fre2a-emergency-fund-runway.spec.js',
+    qaConfig:'qa.config.js'
+  };
+  add(checks, 'Batch 2A tool core UI report adapter and continuity files exist',
+    Object.values(rel).every(file => fs.existsSync(path.join(sourceRoot,file))) &&
+    Object.values(qaRel).every(file => fs.existsSync(path.join(qaRoot,file)))
+  );
   if (!checks[0].ok) return checks;
 
   let Core, AdapterContract, ResilienceAdapters;
@@ -104,10 +112,10 @@ export function runFreEmergencyRunwayContract(sourceRoot) {
   add(checks, 'Five relevant Learn pages provide contextual inbound discovery links', learnPages.every(file => fs.readFileSync(path.join(sourceRoot,'draw004.github.io',file),'utf8').includes('href="/emergency-fund-runway-calculator.html"')));
   add(checks, 'New Learn runway CTAs use the established mobile-wrapping related-guide contract', learnPages.every(file => /<p class="guide-note seo-related-guides"><strong>Calculate your runway:<\/strong>\s*<a class="text-link" href="\/emergency-fund-runway-calculator\.html">/.test(fs.readFileSync(path.join(sourceRoot,'draw004.github.io',file),'utf8'))));
 
-  const browserSpec = fs.readFileSync(path.join(sourceRoot,rel.browserSpec),'utf8');
+  const browserSpec = fs.readFileSync(path.join(qaRoot,qaRel.browserSpec),'utf8');
   add(checks, 'Browser QA protects privacy reports discovery and 1280/768/412/390/360 responsive layouts', /financial inputs remain local/i.test(browserSpec) && /exact three-page PDF/i.test(browserSpec) && /nine-core homepage/i.test(browserSpec) && /\[1280,768,412,390,360\]/.test(browserSpec));
 
-  const qaConfig = fs.readFileSync(path.join(sourceRoot,'carrowmont-qa/qa.config.js'),'utf8');
+  const qaConfig = fs.readFileSync(path.join(qaRoot,qaRel.qaConfig),'utf8');
   add(checks, 'Central QA public-page expectation advances to 133 pages and includes the runway tool', /search1ExpectedPublicPages\s*=\s*133/.test(qaConfig) && /emergency-fund-runway-calculator\.html/.test(qaConfig));
 
   return checks;
