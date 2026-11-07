@@ -1,5 +1,5 @@
 export const standardDownloadMessage = 'Report has been downloaded.';
-export const search1ExpectedPublicPages = 132;
+export const search1ExpectedPublicPages = 133;
 
 export const tools = [
   {
@@ -158,6 +158,7 @@ export const mainSitePages = [
   { key: 'compound-interest-calculator-page', path: '/compound-interest-calculator/', text: 'See how compounding can change your money over time.' },
   { key: 'loan-calculator-page', path: '/loan-calculator/', text: 'See what a loan could cost each month.' },
   { key: 'home-affordability-calculator-page', path: '/home-affordability-calculator.html', text: 'See what home price may fit your budget without squeezing everything else.' },
+  { key: 'emergency-fund-runway-calculator-page', path: '/emergency-fund-runway-calculator.html', text: 'How long could your essential spending keep going if income changed suddenly?' },
   { key: 'home-affordability-learn', path: '/how-much-home-can-i-afford.html', text: 'How much home can I afford?' },
   { key: 'mortgage-affordability-vs-approval-learn', path: '/mortgage-affordability-vs-lender-approval.html', text: 'Mortgage affordability vs lender approval' },
   { key: 'deposit-rate-affordability-learn', path: '/how-deposit-and-interest-rates-affect-home-affordability.html', text: 'How do deposit and interest rates affect home affordability?' },
