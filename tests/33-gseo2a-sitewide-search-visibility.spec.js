@@ -78,8 +78,8 @@ test.describe('GSEO2A sitewide search visibility foundation', () => {
       }
       return null;
     });
-    expect(itemList?.numberOfItems).toBe(19);
-    expect(itemList?.itemListElement).toHaveLength(19);
+    expect(itemList?.numberOfItems).toBe(20);
+    expect(itemList?.itemListElement).toHaveLength(20);
     expect(itemList.itemListElement.some(item => item.url === 'https://carrowmont.com/retirement-calculator/withdrawal-calculator.html')).toBe(true);
     expect(itemList.itemListElement.some(item => item.url === 'https://carrowmont.com/home-affordability-calculator.html')).toBe(true);
     expect(itemList.itemListElement.find(item => item.url === 'https://carrowmont.com/sip-calculator/')?.name)

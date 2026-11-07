@@ -7,6 +7,7 @@ const FRE_FILES = [
   'engine-catalog.js',
   'engine-adapters.js',
   'primary-engine-adapters.js',
+  'resilience-engine-adapters.js',
   'priority-framework.js',
   'intent-router.js',
   'scenario-comparison.js',
@@ -34,12 +35,14 @@ export function runFreCoreContract(sourceRoot) {
     'draw004.github.io/docs/CARROWMONT_FRE_BATCH1A_ACCEPTANCE_LEDGER.md',
     'draw004.github.io/docs/CARROWMONT_FRE_BATCH1A_CORE_CONTRACTS.md',
     'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V2.json',
-    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V3.json'
+    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V3.json',
+    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json'
   ];
-  add(checks, 'Batch 1A history and current Engine Registry V3 exist', docs.every(rel => fs.existsSync(path.join(sourceRoot, rel))));
+  add(checks, 'FRE history and current Engine Registry V4 exist', docs.every(rel => fs.existsSync(path.join(sourceRoot, rel))));
   const registryV2 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V2.json'), 'utf8'));
   const registryV3 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V3.json'), 'utf8'));
-  add(checks, 'Engine registries preserve 22 engines and the 59-region 48-currency baseline', registryV2.schema_version === 2 && registryV3.schema_version === 3 && registryV3.engines?.length === 22 && registryV3.locale_contract?.regions === 59 && registryV3.locale_contract?.currencies === 48);
+  const registryV4 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json'), 'utf8'));
+  add(checks, 'Engine registries preserve historical 22-engine state and current 23-engine 59-region 48-currency baseline', registryV2.schema_version === 2 && registryV3.schema_version === 3 && registryV3.engines?.length === 22 && registryV4.schema_version === 4 && registryV4.engines?.length === 23 && registryV4.locale_contract?.regions === 59 && registryV4.locale_contract?.currencies === 48);
   if (!checks[0].ok) return checks;
 
   let loaded;
@@ -77,7 +80,7 @@ export function runFreCoreContract(sourceRoot) {
   const reqStatus = Context.requirementStatus(reqCtx, ['resilience.liquidSavings','cashFlow.monthlyIncome']);
   add(checks, 'requirement status distinguishes missing and estimated facts', reqStatus.missing.length === 1 && reqStatus.missing[0] === 'cashFlow.monthlyIncome' && reqStatus.estimated.includes('resilience.liquidSavings'));
 
-  add(checks, 'engine catalog preserves 22 engines and closes all four Batch 1 extraction blockers', Catalog?.CATALOG_VERSION === 2 && Catalog?.ENGINES?.length === 22 && Catalog?.needsExtraction()?.length === 0 && ['budget-cash-flow','goal-planner','inflation','retirement'].every(id => Catalog.get(id)?.status === 'READY_WITH_ADAPTER' && Catalog.get(id)?.api));
+  add(checks, 'engine catalog exposes 23 engines with all Batch 1 extraction blockers closed and emergency runway ready', Catalog?.CATALOG_VERSION === 3 && Catalog?.ENGINES?.length === 23 && Catalog?.needsExtraction()?.length === 0 && ['budget-cash-flow','goal-planner','inflation','retirement','emergency-fund-runway'].every(id => Catalog.get(id)?.status === 'READY_WITH_ADAPTER' && Catalog.get(id)?.api));
 
   const registry = Adapters.createRegistry();
   registry.register({ id:'fixture-engine', engineVersion:'fixture-v1', requiredInputs:['amount'], invoke:({ inputs, currency }) => ({ currency, inputsUsed:inputs, metrics:{ doubled:Number(inputs.amount) * 2 }, assumptions:[], warnings:[] }) });
@@ -92,7 +95,7 @@ export function runFreCoreContract(sourceRoot) {
   const debtRoute = Router.resolve({ text:'I have credit card debt and savings. Should I invest the savings or clear debt?' });
   add(checks, 'intent router deterministically recognizes debt-versus-savings', debtRoute.intent === Router.INTENTS.DEBT_VS_SAVINGS && debtRoute.route.priorityStage === 'reduce');
   const runwayRoute = Router.routeForIntent(Router.INTENTS.EMERGENCY_RUNWAY);
-  add(checks, 'routes recognize extracted primary engines as ready for adapters', runwayRoute.status === 'READY_FOR_ADAPTERS' && runwayRoute.engineIds.includes('budget-cash-flow') && runwayRoute.engineStatus.every(item => item.status === 'READY_WITH_ADAPTER'));
+  add(checks, 'emergency-runway route now uses its dedicated deterministic engine', runwayRoute.status === 'READY_FOR_ADAPTERS' && runwayRoute.engineIds.length === 1 && runwayRoute.engineIds[0] === 'emergency-fund-runway' && runwayRoute.engineStatus.every(item => item.status === 'READY_WITH_ADAPTER')); 
   const carRoute = Router.routeForIntent(Router.INTENTS.CAR_AFFORDABILITY);
   add(checks, 'future car-affordability journey is explicitly blocked until its deterministic engine exists', carRoute.status === 'BLOCKED_MISSING_ENGINE');
 
@@ -117,7 +120,7 @@ export function runFreCoreContract(sourceRoot) {
   let planCtx = Context.create({ region:'IN', currency:'INR', now:'2026-11-07T00:00:00.000Z' });
   planCtx = Context.setFact(planCtx, 'resilience.liquidSavings', 150000, { origin:'user', now:'2026-11-07T00:00:01.000Z' });
   const plan = Core.planResolution({ text:'How many months can my emergency fund last if I lose my job?', context:planCtx });
-  add(checks, 'orchestrator asks only for missing route facts before engine execution', plan.status === 'NEEDS_INPUT' && plan.missingFacts.includes('cashFlow.monthlyIncome') && plan.missingFacts.includes('cashFlow.essentialExpenses') && !plan.missingFacts.includes('resilience.liquidSavings'));
+  add(checks, 'orchestrator asks only for missing emergency-runway facts before engine execution', plan.status === 'NEEDS_INPUT' && plan.missingFacts.length === 1 && plan.missingFacts[0] === 'cashFlow.essentialExpenses' && !plan.missingFacts.includes('resilience.liquidSavings')); 
 
   const allSource = FRE_FILES.map(file => fs.readFileSync(path.join(dir, file), 'utf8')).join('\n');
   add(checks, 'Batch 1A FRE core makes no network or browser-storage calls', !/\b(fetch|XMLHttpRequest|localStorage|sessionStorage|indexedDB)\b/.test(allSource));
