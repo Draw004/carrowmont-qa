@@ -103,8 +103,8 @@ export function runFreEmergencyRunwayContract(sourceRoot) {
   const searchAliases = JSON.parse(fs.readFileSync(path.join(sourceRoot,'draw004.github.io/data/carrowmont-search-aliases.json'),'utf8'));
   const SearchCore = require(path.join(sourceRoot,'draw004.github.io/search-core.js'));
   const learnPages = ['emergency-fund-how-much.html','emergency-savings.html','sinking-fund-vs-emergency-fund.html','how-to-make-a-budget.html','budgeting-with-irregular-income.html'];
-  add(checks, 'Tools Hub exposes exactly 20 live tools including Emergency Fund & Runway', /"numberOfItems"\s*:\s*20/.test(tools) && /data-secondary-tool="emergency-fund-runway"/.test(tools) && (tools.match(/class="directory-tool-card/g) || []).length === 20);
-  add(checks, 'Sitemap and reviewed search inventory include the new canonical tool', sitemap.includes('<loc>https://carrowmont.com/emergency-fund-runway-calculator.html</loc>') && searchPages.entries?.length === 133 && searchPages.entries?.some(item => item.url === '/emergency-fund-runway-calculator.html'));
+  add(checks, 'Tools Hub exposes 21 live tools including Emergency Fund & Runway', /"numberOfItems"\s*:\s*21/.test(tools) && /data-secondary-tool="emergency-fund-runway"/.test(tools) && (tools.match(/class="directory-tool-card/g) || []).length === 21);
+  add(checks, 'Sitemap and reviewed search inventory include the new canonical tool', sitemap.includes('<loc>https://carrowmont.com/emergency-fund-runway-calculator.html</loc>') && searchPages.entries?.length === 134 && searchPages.entries?.some(item => item.url === '/emergency-fund-runway-calculator.html'));
   const calcSearch = SearchCore.search(searchIndex.entries, searchAliases, 'emergency fund calculator', { region:'US', limit:12 });
   const runwaySearch = SearchCore.search(searchIndex.entries, searchAliases, 'financial runway calculator', { region:'IN', limit:12 });
   const guideSearch = SearchCore.search(searchIndex.entries, searchAliases, 'how much emergency fund', { region:'CA', limit:12 });
@@ -116,7 +116,7 @@ export function runFreEmergencyRunwayContract(sourceRoot) {
   add(checks, 'Browser QA protects privacy reports discovery and 1280/768/412/390/360 responsive layouts', /financial inputs remain local/i.test(browserSpec) && /exact three-page PDF/i.test(browserSpec) && /nine-core homepage/i.test(browserSpec) && /\[1280,768,412,390,360\]/.test(browserSpec));
 
   const qaConfig = fs.readFileSync(path.join(qaRoot,qaRel.qaConfig),'utf8');
-  add(checks, 'Central QA public-page expectation advances to 133 pages and includes the runway tool', /search1ExpectedPublicPages\s*=\s*133/.test(qaConfig) && /emergency-fund-runway-calculator\.html/.test(qaConfig));
+  add(checks, 'Central QA public-page expectation advances to 134 pages and includes the runway tool', /search1ExpectedPublicPages\s*=\s*134/.test(qaConfig) && /emergency-fund-runway-calculator\.html/.test(qaConfig));
 
   return checks;
 }

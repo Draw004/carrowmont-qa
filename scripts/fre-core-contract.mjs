@@ -8,6 +8,7 @@ const FRE_FILES = [
   'engine-adapters.js',
   'primary-engine-adapters.js',
   'resilience-engine-adapters.js',
+  'borrowing-health-engine-adapters.js',
   'priority-framework.js',
   'intent-router.js',
   'scenario-comparison.js',
@@ -36,13 +37,15 @@ export function runFreCoreContract(sourceRoot) {
     'draw004.github.io/docs/CARROWMONT_FRE_BATCH1A_CORE_CONTRACTS.md',
     'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V2.json',
     'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V3.json',
-    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json'
+    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json',
+    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V5.json'
   ];
-  add(checks, 'FRE history and current Engine Registry V4 exist', docs.every(rel => fs.existsSync(path.join(sourceRoot, rel))));
+  add(checks, 'FRE history and current Engine Registry V5 exist', docs.every(rel => fs.existsSync(path.join(sourceRoot, rel))));
   const registryV2 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V2.json'), 'utf8'));
   const registryV3 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V3.json'), 'utf8'));
   const registryV4 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json'), 'utf8'));
-  add(checks, 'Engine registries preserve historical 22-engine state and current 23-engine 59-region 48-currency baseline', registryV2.schema_version === 2 && registryV3.schema_version === 3 && registryV3.engines?.length === 22 && registryV4.schema_version === 4 && registryV4.engines?.length === 23 && registryV4.locale_contract?.regions === 59 && registryV4.locale_contract?.currencies === 48);
+  const registryV5 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V5.json'), 'utf8'));
+  add(checks, 'Engine registries preserve historical 22/23-engine states and current 24-engine 59-region 48-currency baseline', registryV2.schema_version === 2 && registryV3.schema_version === 3 && registryV3.engines?.length === 22 && registryV4.schema_version === 4 && registryV4.engines?.length === 23 && registryV5.schema_version === 5 && registryV5.engines?.length === 24 && registryV5.locale_contract?.regions === 59 && registryV5.locale_contract?.currencies === 48);
   if (!checks[0].ok) return checks;
 
   let loaded;
@@ -80,7 +83,7 @@ export function runFreCoreContract(sourceRoot) {
   const reqStatus = Context.requirementStatus(reqCtx, ['resilience.liquidSavings','cashFlow.monthlyIncome']);
   add(checks, 'requirement status distinguishes missing and estimated facts', reqStatus.missing.length === 1 && reqStatus.missing[0] === 'cashFlow.monthlyIncome' && reqStatus.estimated.includes('resilience.liquidSavings'));
 
-  add(checks, 'engine catalog exposes 23 engines with all Batch 1 extraction blockers closed and emergency runway ready', Catalog?.CATALOG_VERSION === 3 && Catalog?.ENGINES?.length === 23 && Catalog?.needsExtraction()?.length === 0 && ['budget-cash-flow','goal-planner','inflation','retirement','emergency-fund-runway'].every(id => Catalog.get(id)?.status === 'READY_WITH_ADAPTER' && Catalog.get(id)?.api));
+  add(checks, 'engine catalog exposes 24 engines with all Batch 1 extraction blockers closed and Batch 2A/2B engines ready', Catalog?.CATALOG_VERSION === 4 && Catalog?.ENGINES?.length === 24 && Catalog?.needsExtraction()?.length === 0 && ['budget-cash-flow','goal-planner','inflation','retirement','emergency-fund-runway','debt-to-income-borrowing-health'].every(id => Catalog.get(id)?.status === 'READY_WITH_ADAPTER' && Catalog.get(id)?.api));
 
   const registry = Adapters.createRegistry();
   registry.register({ id:'fixture-engine', engineVersion:'fixture-v1', requiredInputs:['amount'], invoke:({ inputs, currency }) => ({ currency, inputsUsed:inputs, metrics:{ doubled:Number(inputs.amount) * 2 }, assumptions:[], warnings:[] }) });
@@ -96,6 +99,8 @@ export function runFreCoreContract(sourceRoot) {
   add(checks, 'intent router deterministically recognizes debt-versus-savings', debtRoute.intent === Router.INTENTS.DEBT_VS_SAVINGS && debtRoute.route.priorityStage === 'reduce');
   const runwayRoute = Router.routeForIntent(Router.INTENTS.EMERGENCY_RUNWAY);
   add(checks, 'emergency-runway route now uses its dedicated deterministic engine', runwayRoute.status === 'READY_FOR_ADAPTERS' && runwayRoute.engineIds.length === 1 && runwayRoute.engineIds[0] === 'emergency-fund-runway' && runwayRoute.engineStatus.every(item => item.status === 'READY_WITH_ADAPTER')); 
+  const borrowingRoute = Router.resolve({ text:'What is my DTI and can I afford another loan payment?' });
+  add(checks, 'borrowing-health intent now routes to its dedicated deterministic engine', borrowingRoute.intent === Router.INTENTS.BORROWING_HEALTH && borrowingRoute.route.status === 'READY_FOR_ADAPTERS' && borrowingRoute.route.engineIds[0] === 'debt-to-income-borrowing-health');
   const carRoute = Router.routeForIntent(Router.INTENTS.CAR_AFFORDABILITY);
   add(checks, 'future car-affordability journey is explicitly blocked until its deterministic engine exists', carRoute.status === 'BLOCKED_MISSING_ENGINE');
 
