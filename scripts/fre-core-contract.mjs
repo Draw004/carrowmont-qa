@@ -9,6 +9,7 @@ const FRE_FILES = [
   'primary-engine-adapters.js',
   'resilience-engine-adapters.js',
   'borrowing-health-engine-adapters.js',
+  'credit-card-payoff-engine-adapters.js',
   'priority-framework.js',
   'intent-router.js',
   'scenario-comparison.js',
@@ -39,15 +40,17 @@ export function runFreCoreContract(sourceRoot) {
     'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V3.json',
     'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json',
     'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V5.json',
-    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V6.json'
+    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V6.json',
+    'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V7.json'
   ];
-  add(checks, 'FRE history and current Engine Registry V5 exist', docs.every(rel => fs.existsSync(path.join(sourceRoot, rel))));
+  add(checks, 'FRE history through current Engine Registry V7 exists', docs.every(rel => fs.existsSync(path.join(sourceRoot, rel))));
   const registryV2 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V2.json'), 'utf8'));
   const registryV3 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V3.json'), 'utf8'));
   const registryV4 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json'), 'utf8'));
   const registryV5 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V5.json'), 'utf8'));
   const registryV6 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V6.json'), 'utf8'));
-  add(checks, 'Engine registries preserve historical states and current 25-engine 59-region 48-currency baseline', registryV2.schema_version === 2 && registryV3.schema_version === 3 && registryV3.engines?.length === 22 && registryV4.schema_version === 4 && registryV4.engines?.length === 23 && registryV5.schema_version === 5 && registryV5.engines?.length === 24 && registryV6.schema_version === 6 && registryV6.engines?.length === 25 && registryV6.locale_contract?.regions === 59 && registryV6.locale_contract?.currencies === 48);
+  const registryV7 = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V7.json'), 'utf8'));
+  add(checks, 'Engine registries preserve historical states and historical V6 and current 26-engine 59-region 48-currency baseline', registryV2.schema_version === 2 && registryV3.schema_version === 3 && registryV3.engines?.length === 22 && registryV4.schema_version === 4 && registryV4.engines?.length === 23 && registryV5.schema_version === 5 && registryV5.engines?.length === 24 && registryV6.schema_version === 6 && registryV6.engines?.length === 25 && registryV7.schema_version === 7 && registryV7.engines?.length === 26 && registryV7.locale_contract?.regions === 59 && registryV7.locale_contract?.currencies === 48);
   if (!checks[0].ok) return checks;
 
   let loaded;
@@ -85,7 +88,7 @@ export function runFreCoreContract(sourceRoot) {
   const reqStatus = Context.requirementStatus(reqCtx, ['resilience.liquidSavings','cashFlow.monthlyIncome']);
   add(checks, 'requirement status distinguishes missing and estimated facts', reqStatus.missing.length === 1 && reqStatus.missing[0] === 'cashFlow.monthlyIncome' && reqStatus.estimated.includes('resilience.liquidSavings'));
 
-  add(checks, 'engine catalog exposes 25 engines with all Batch 1 extraction blockers closed and Batch 2A/2B/2C engines ready', Catalog?.CATALOG_VERSION === 5 && Catalog?.ENGINES?.length === 25 && Catalog?.needsExtraction()?.length === 0 && ['budget-cash-flow','goal-planner','inflation','retirement','emergency-fund-runway','debt-to-income-borrowing-health','car-affordability'].every(id => Catalog.get(id)?.status === 'READY_WITH_ADAPTER' && Catalog.get(id)?.api));
+  add(checks, 'engine catalog exposes 26 engines with all Batch 1 extraction blockers closed and Batch 2A/2B/2C/2D engines ready', Catalog?.CATALOG_VERSION === 6 && Catalog?.ENGINES?.length === 26 && Catalog?.needsExtraction()?.length === 0 && ['budget-cash-flow','goal-planner','inflation','retirement','emergency-fund-runway','debt-to-income-borrowing-health','car-affordability','credit-card-payoff-comparison'].every(id => Catalog.get(id)?.status === 'READY_WITH_ADAPTER' && Catalog.get(id)?.api));
 
   const registry = Adapters.createRegistry();
   registry.register({ id:'fixture-engine', engineVersion:'fixture-v1', requiredInputs:['amount'], invoke:({ inputs, currency }) => ({ currency, inputsUsed:inputs, metrics:{ doubled:Number(inputs.amount) * 2 }, assumptions:[], warnings:[] }) });

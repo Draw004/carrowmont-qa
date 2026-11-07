@@ -89,7 +89,7 @@ test.describe('HOME1 Home Affordability / Mortgage Borrowing Power',()=>{
   });
 
   test('[AUTO] Tools Hub, Learn cluster, sitemap and contextual journeys expose HOME1 without changing the nine-core homepage',async({page,request})=>{
-    await gotoClean(page,'/tools.html');await expect(page.locator('.directory-tool-card')).toHaveCount(22);const card=page.locator('[data-secondary-tool="home-affordability"]');await expect(card).toHaveCount(1);await expect(card.locator('a')).toHaveAttribute('href',PATH);
+    await gotoClean(page,'/tools.html');await expect(page.locator('.directory-tool-card')).toHaveCount(23);const card=page.locator('[data-secondary-tool="home-affordability"]');await expect(card).toHaveCount(1);await expect(card.locator('a')).toHaveAttribute('href',PATH);
     await gotoClean(page,'/');await expect(page.locator('[data-homepage-core-grid] [data-tool-id]')).toHaveCount(9);await expect(page.locator('[data-tool-id="home-affordability"]')).toHaveCount(0);
     await gotoClean(page,'/learn.html');for(const path of LEARN)await expect(page.locator(`#home-loans a[href="${path}"]`)).toBeVisible();
     for(const path of LEARN){await gotoClean(page,path);await expect(page.locator('.guide-answer')).toHaveCount(1);await expect(page.locator(`.guide-action-first a[href="${PATH}"]`)).toBeVisible();await expect(page.locator(`.learn-tool-return a[href="${PATH}"]`)).toBeVisible();expect((await page.locator('article.guide-section').innerText()).split(/\s+/).length).toBeGreaterThan(1000);}
