@@ -4,6 +4,7 @@ import vm from 'node:vm';
 import { runFreCoreContract } from './fre-core-contract.mjs';
 import { runFrePrimaryCoreParity } from './fre-primary-core-parity.mjs';
 import { runFreEmergencyRunwayContract } from './fre-emergency-runway-contract.mjs';
+import { runFreBorrowingHealthContract } from './fre-borrowing-health-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -22,6 +23,7 @@ const read = rel => {
 for (const c of runFreCoreContract(root)) add(`FRE1: ${c.name}`, c.ok, c.detail);
 for (const c of runFrePrimaryCoreParity(root)) add(`FRE1B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreEmergencyRunwayContract(root)) add(`FRE2A: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBorrowingHealthContract(root)) add(`FRE2B: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
   const p = new URL(`../${rel}`, import.meta.url);
@@ -920,8 +922,8 @@ if (mainHome || mainSiteJs) {
     toolsDirectory.includes('<link rel="canonical" href="https://carrowmont.com/tools.html">') &&
     toolsDirectory.includes('<meta name="robots" content="index,follow">') &&
     /"@type"\s*:\s*"CollectionPage"/.test(toolsDirectory) && /"@type"\s*:\s*"ItemList"/.test(toolsDirectory) &&
-    /"numberOfItems"\s*:\s*20/.test(toolsDirectory) &&
-    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 20
+    /"numberOfItems"\s*:\s*21/.test(toolsDirectory) &&
+    (toolsDirectory.match(/class="directory-tool-card/g)||[]).length === 21
   );
   add('main site: CORE9 directory keeps nine core tools while focused secondary tools expand safely',
     toolsDirectory.includes('id="core-planning-tools"') &&
@@ -1420,7 +1422,7 @@ add('CORE8 compound: report uses standardized guide and Continue Planning pages 
 add('CORE8 compound: homepage, tools directory, sitemap and Learn cluster integrate the canonical calculator',
   mainHome.includes('data-tool-id="compound"') && mainHome.includes('href="/compound-interest-calculator/"') &&
   core7ToolsDirectory.includes('data-directory-tool="compound"') && core7ToolsDirectory.includes('href="/compound-interest-calculator/"') &&
-  /"numberOfItems"\s*:\s*20/.test(core7ToolsDirectory) && core7Sitemap.includes('https://carrowmont.com/compound-interest-calculator/') &&
+  /"numberOfItems"\s*:\s*21/.test(core7ToolsDirectory) && core7Sitemap.includes('https://carrowmont.com/compound-interest-calculator/') &&
   read('draw004.github.io/compounding-and-time.html').includes('href="/compound-interest-calculator/"') &&
   read('draw004.github.io/compound-interest-monthly-contributions.html').includes('href="/compound-interest-calculator/"')
 );
@@ -3397,7 +3399,7 @@ add('RENT1: tool and existing Learn guide form a bidirectional live journey whil
 add('RENT1: Tools Hub keeps Rent vs Buy live while CORE8 expands the primary suite without changing the four-module Decision Centre',
   rent1Tools.includes('data-secondary-tool="rent-vs-buy"') &&
   rent1Tools.includes('/mortgage-payoff-calculator/rent-vs-buy-calculator.html') &&
-  /"numberOfItems"\s*:\s*20/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===20 &&
+  /"numberOfItems"\s*:\s*21/.test(rent1Tools) && (rent1Tools.match(/class="directory-tool-card/g)||[]).length===21 &&
   rent1Home.includes('data-core-tool-count="9"') && (rent1Home.match(/data-tool-id=/g)||[]).length===9 &&
   !rent1Home.includes('data-tool-id="rent-vs-buy"') && (rent1Centre.match(/class="decision-card"/g)||[]).length===4 &&
   !rent1Centre.includes('Rent vs Buy Calculator')
@@ -3516,7 +3518,7 @@ add('MCR1: Learn hub and Tools directory expose the macro network without promot
   mcrHub.includes('data-category="macro"') && mcrHub.includes('class="category-tool-link" href="/market-chain-reaction-explorer.html"') &&
   mcrLearnNames.every(name=>mcrHub.includes(`href="/${name}"`)) &&
   mcrTools.includes('data-secondary-tool="market-chain-reaction"') && mcrTools.includes('href="/market-chain-reaction-explorer.html"') &&
-  /"numberOfItems"\s*:\s*20/.test(mcrTools) && (mcrTools.match(/class="directory-tool-card/g)||[]).length===20 &&
+  /"numberOfItems"\s*:\s*21/.test(mcrTools) && (mcrTools.match(/class="directory-tool-card/g)||[]).length===21 &&
   mcrHome.includes('data-core-tool-count="9"') && !mcrHome.includes('data-tool-id="market-chain-reaction"')
 );
 add('MCR1: existing Gold, Silver and U.S. debt authority assets link into the new explanation layer',
@@ -3675,12 +3677,12 @@ add('CORE9 loan: shared report, plan-state and bridge files remain byte-identica
   sharedStateCopies.length===9 && sharedStateCopies.every(x=>x===loanState) &&
   sharedBridgeCopies.length===9 && sharedBridgeCopies.every(x=>x===loanBridge)
 );
-add('CORE9 loan: homepage and Tools Hub expose nine core tools while the directory contains twenty total tools',
+add('CORE9 loan: homepage and Tools Hub expose nine core tools while the directory contains twenty-one total tools',
   mainHome.includes('data-core-tool-count="9"') && mainHome.includes('data-tool-id="loan"') && mainHome.includes('href="/loan-calculator/"') &&
   (mainHome.match(/data-tool-id=/g)||[]).length===9 &&
   loanTools.includes('data-directory-tool="loan"') && loanTools.includes('href="/loan-calculator/"') &&
-  (loanTools.match(/data-directory-tool=/g)||[]).length===9 && (loanTools.match(/class="directory-tool-card/g)||[]).length===20 &&
-  /"numberOfItems"\s*:\s*20/.test(loanTools)
+  (loanTools.match(/data-directory-tool=/g)||[]).length===9 && (loanTools.match(/class="directory-tool-card/g)||[]).length===21 &&
+  /"numberOfItems"\s*:\s*21/.test(loanTools)
 );
 add('CORE9 loan: country-demand profiles contain nine unique core IDs and loan terminology is country-aware without changing math',
   ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11'].every(profile=>{
@@ -3716,7 +3718,7 @@ const loanRegressionQa = [
   fs.readFileSync(new URL('../tests/28-mcr1-batch2-bond-equities-gold.spec.js', import.meta.url), 'utf8')
 ].join('\n');
 add('CORE9 loan: legacy browser invariants are migrated from CORE8 counts before staged QA',
-  loanRegressionQa.includes("'loan'") && loanRegressionQa.includes('toHaveCount(20)') &&
+  loanRegressionQa.includes("'loan'") && loanRegressionQa.includes('toHaveCount(21)') &&
   loanRegressionQa.includes('nine-core homepage') && loanRegressionQa.includes('[data-core-tool-count="9"]') &&
   !loanRegressionQa.includes('[data-core-tool-count="8"]') && !loanRegressionQa.includes('toHaveCount(16)')
 );
@@ -3869,8 +3871,8 @@ const gseo2aToolChecks = gseo2aToolItems.map(item => {
       gseo2aH1Count(html) === 1 && gseo2aSitemap.includes(`<loc>${url}</loc>`)
   };
 });
-add('GSEO2A search: all 19 Tools Hub destinations have crawlable title, description, canonical, robots, one H1 and sitemap coverage',
-  gseo2aToolItems.length === 20 && gseo2aToolChecks.every(x=>x.ok),
+add('GSEO2A search: all 21 Tools Hub destinations have crawlable title, description, canonical, robots, one H1 and sitemap coverage',
+  gseo2aToolItems.length === 21 && gseo2aToolChecks.every(x=>x.ok),
   gseo2aToolChecks.filter(x=>!x.ok).map(x=>`${x.url} -> ${x.file}`).join('; ')
 );
 
@@ -3887,7 +3889,7 @@ const gseo2aInboundCounts = gseo2aToolItems.map(item => {
   return { url, count: sources.length, sources };
 });
 add('GSEO2A search: every live Tools Hub destination has at least five contextual main-site discovery paths',
-  gseo2aInboundCounts.length === 20 && gseo2aInboundCounts.every(x => x.count >= 5),
+  gseo2aInboundCounts.length === 21 && gseo2aInboundCounts.every(x => x.count >= 5),
   gseo2aInboundCounts.filter(x => x.count < 5).map(x => `${x.url}=${x.count}`).join('; ')
 );
 const gseo2aLearnFiles = fs.readdirSync(gseo2aMainDir).filter(name => name.endsWith('.html')).filter(name => {
@@ -3933,10 +3935,10 @@ add('GSEO2A search: SIP, SWP, retirement and loan intents remain explicit while 
 
 const gseo2aToolsHubQa = fs.readFileSync(new URL('../tests/12-tools-hub.spec.js', import.meta.url), 'utf8');
 const gseo2aSearchQa = fs.readFileSync(new URL('../tests/33-gseo2a-sitewide-search-visibility.spec.js', import.meta.url), 'utf8');
-add('GSEO2A regression: Publisher browser expectations are migrated for 20 tools, current sitemap freshness, duplicate contextual CTAs and repeated Learn-hub viewport checks',
-  gseo2aToolsHubQa.includes('exposes twenty live tools') &&
+add('GSEO2A regression: Publisher browser expectations are migrated for 21 tools, current sitemap freshness, duplicate contextual CTAs and repeated Learn-hub viewport checks',
+  gseo2aToolsHubQa.includes('exposes twenty-one live tools') &&
   gseo2aToolsHubQa.includes("'/retirement-calculator/withdrawal-calculator.html'") &&
-  gseo2aToolsHubQa.includes('itemListElement).toHaveLength(20)') &&
+  gseo2aToolsHubQa.includes('itemListElement).toHaveLength(21)') &&
   gseo2aToolsHubQa.includes("match[1] >= '2026-10-19'") &&
   !gseo2aToolsHubQa.includes('itemListElement).toHaveLength(17)') &&
   (gseo2aSearchQa.match(/\.first\(\)\)\.toBeVisible\(\);/g)||[]).length >= 2 &&
@@ -4028,7 +4030,7 @@ add('RETIRE1: report is driven from the calculator result and includes chart/sen
 add('RETIRE1: Tools Hub and retirement Learn journeys expose the live secondary tool without adding another homepage core card',
   retire1Tools.includes('id="retirement-income-tools"') && retire1Tools.includes('data-secondary-tool="retirement-withdrawal"') &&
   retire1Tools.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
-  /"numberOfItems"\s*:\s*20/.test(retire1Tools) && (retire1Tools.match(/class="directory-tool-card/g)||[]).length===20 &&
+  /"numberOfItems"\s*:\s*21/.test(retire1Tools) && (retire1Tools.match(/class="directory-tool-card/g)||[]).length===21 &&
   retire1MainJs.includes('function retirementWithdrawalIdentity(') &&
   retire1LongevityLearn.includes('href="/retirement-calculator/withdrawal-calculator.html"') &&
   retire1LongevityLearn.includes('href="/what-is-swp-systematic-withdrawal-plan.html"') &&
@@ -4188,7 +4190,7 @@ add('HOME1: country terminology is localized while the static title and canonica
   home1SiteJs.includes('function homeAffordabilityIdentity(regionCode)') && home1SiteJs.includes('applyHomeAffordabilityTerminology(regionCode)')
 );
 add('HOME1: tools directory remains compatible with the nine-core homepage architecture and compact footer',
-  /"numberOfItems"\s*:\s*20/.test(home1Tools) && (home1Tools.match(/class="directory-tool-card/g)||[]).length===20 &&
+  /"numberOfItems"\s*:\s*21/.test(home1Tools) && (home1Tools.match(/class="directory-tool-card/g)||[]).length===21 &&
   home1Tools.includes('data-secondary-tool="home-affordability"') && home1Tools.includes('href="/home-affordability-calculator.html"') &&
   !read('draw004.github.io/index.html').includes('data-tool-id="home-affordability"') &&
   !home1Html.includes('footer-home-affordability')
@@ -4246,7 +4248,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 133;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 134;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
