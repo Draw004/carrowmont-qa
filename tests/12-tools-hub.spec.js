@@ -79,7 +79,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       expect(box.y, `${width}px tools search should be pulled upward`).toBeLessThan(width === 1280 ? 640 : 760);
     }
   });
-  test('[AUTO] canonical tools directory exposes twenty-one live tools in three meaningful categories', async ({ page }) => {
+  test('[AUTO] canonical tools directory exposes twenty-two live tools in three meaningful categories', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, DIRECTORY);
     await dismissAnalytics(page);
@@ -89,9 +89,9 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com/tools.html');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
     await expect(page.locator('#core-planning-tools .directory-tool-card')).toHaveCount(9);
-    await expect(page.locator('#planning-stress-tests .directory-tool-card')).toHaveCount(7);
+    await expect(page.locator('#planning-stress-tests .directory-tool-card')).toHaveCount(8);
     await expect(page.locator('#macro-market-explorers .directory-tool-card')).toHaveCount(4);
-    await expect(page.locator('.directory-tool-card')).toHaveCount(21);
+    await expect(page.locator('.directory-tool-card')).toHaveCount(22);
     await expect(page.locator('body')).not.toContainText(/coming soon/i);
 
     for (const path of ALL_TOOL_PATHS) {
@@ -107,8 +107,8 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     const collectionPage = schemas.find(node => node['@type'] === 'CollectionPage');
     expect(collectionPage).toBeTruthy();
     expect(collectionPage.mainEntity?.['@type']).toBe('ItemList');
-    expect(collectionPage.mainEntity?.numberOfItems).toBe(21);
-    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(21);
+    expect(collectionPage.mainEntity?.numberOfItems).toBe(22);
+    expect(collectionPage.mainEntity?.itemListElement).toHaveLength(22);
     expect(errors).toEqual([]);
   });
 
@@ -269,7 +269,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       await gotoClean(page, DIRECTORY);
       await dismissAnalytics(page);
       await assertNoHorizontalOverflow(page, `${width}px all-tools directory`);
-      await expect(page.locator('.directory-tool-card')).toHaveCount(21);
+      await expect(page.locator('.directory-tool-card')).toHaveCount(22);
     }
   });
 

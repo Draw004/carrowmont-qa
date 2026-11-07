@@ -65,7 +65,7 @@ test.describe('GSEO2A sitewide search visibility foundation', () => {
     }
   });
 
-  test('[AUTO] Tools Hub schema lists all 21 live tools including SWP and stable SIP identity', async ({ page }) => {
+  test('[AUTO] Tools Hub schema lists all 22 live tools including SWP and stable SIP identity', async ({ page }) => {
     await gotoClean(page, '/tools.html');
     const itemList = await page.locator('script[type="application/ld+json"]').evaluateAll(nodes => {
       for (const node of nodes) {
@@ -78,8 +78,8 @@ test.describe('GSEO2A sitewide search visibility foundation', () => {
       }
       return null;
     });
-    expect(itemList?.numberOfItems).toBe(21);
-    expect(itemList?.itemListElement).toHaveLength(21);
+    expect(itemList?.numberOfItems).toBe(22);
+    expect(itemList?.itemListElement).toHaveLength(22);
     expect(itemList.itemListElement.some(item => item.url === 'https://carrowmont.com/retirement-calculator/withdrawal-calculator.html')).toBe(true);
     expect(itemList.itemListElement.some(item => item.url === 'https://carrowmont.com/home-affordability-calculator.html')).toBe(true);
     expect(itemList.itemListElement.find(item => item.url === 'https://carrowmont.com/sip-calculator/')?.name)
