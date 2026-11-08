@@ -8,6 +8,7 @@ import { runFreBorrowingHealthContract } from './fre-borrowing-health-contract.m
 import { runFreCarAffordabilityContract } from './fre-car-affordability-contract.mjs';
 import { runFreCreditCardPayoffContract } from './fre-credit-card-payoff-contract.mjs';
 import { runFreSavingsGrowthContract } from './fre-savings-growth-contract.mjs';
+import { runFreAskMvpContract } from './fre-ask-mvp-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -30,6 +31,7 @@ for (const c of runFreBorrowingHealthContract(root)) add(`FRE2B: ${c.name}`, c.o
 for (const c of runFreCarAffordabilityContract(root)) add(`FRE2C: ${c.name}`, c.ok, c.detail);
 for (const c of runFreCreditCardPayoffContract(root)) add(`FRE2D: ${c.name}`, c.ok, c.detail);
 for (const c of runFreSavingsGrowthContract(root)) add(`FRE2E: ${c.name}`, c.ok, c.detail);
+for (const c of runFreAskMvpContract(root)) add(`FRE3A: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
   const p = new URL(`../${rel}`, import.meta.url);
