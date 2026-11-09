@@ -10,6 +10,7 @@ import { runFreCreditCardPayoffContract } from './fre-credit-card-payoff-contrac
 import { runFreSavingsGrowthContract } from './fre-savings-growth-contract.mjs';
 import { runFreAskMvpContract } from './fre-ask-mvp-contract.mjs';
 import { runFreAskMvpUiContract } from './fre-ask-mvp-ui-contract.mjs';
+import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -34,6 +35,7 @@ for (const c of runFreCreditCardPayoffContract(root)) add(`FRE2D: ${c.name}`, c.
 for (const c of runFreSavingsGrowthContract(root)) add(`FRE2E: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpContract(root)) add(`FRE3A: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpUiContract(root)) add(`FRE3B: ${c.name}`, c.ok, c.detail);
+for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
   const p = new URL(`../${rel}`, import.meta.url);
