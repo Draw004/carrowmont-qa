@@ -14,7 +14,7 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
   test('[AUTO] emergency-fund journey resolves through the deterministic engine and explains the trace',async({page})=>{
     const errors=monitorPageErrors(page);
     await gotoClean(page,PATH);
-    await expect(page.getByRole('heading',{name:'What’s happening with your money?'})).toBeVisible();
+    await expect(page.getByRole('heading',{name:'What are you trying to figure out?'})).toBeVisible();
     await page.locator('[data-ask-intent="emergency-runway"]').click();
     await expect(page.locator('#askQuestionFields input')).toHaveCount(2);
     await setValue(page,'essentialExpenses',3000);
@@ -73,7 +73,39 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     await expect(page.locator('.directory-tool-card')).toHaveCount(23);
     await gotoClean(page,'/');
     await expect(page.locator('[data-homepage-core-grid] [data-tool-id]')).toHaveCount(9);
-    await expect(page.locator(`a[href="${PATH}"]`)).toHaveCount(0);
+    await expect(page.locator('[data-home-ask-entry]')).toHaveAttribute('href',PATH);
+    await expect(page.locator('.desktop-nav a[href="/ask-carrowmont.html"]')).toHaveCount(1);
+  });
+
+  test('[AUTO] Ask is discoverable from shared navigation and the homepage while remaining outside the 23-tool directory',async({page})=>{
+    await gotoClean(page,'/');
+    await expect(page.locator('[data-home-ask-entry]')).toBeVisible();
+    await expect(page.locator('.desktop-nav a[href="/ask-carrowmont.html"]')).toHaveCount(1);
+    await gotoClean(page,'/tools.html');
+    await expect(page.locator('.directory-tool-card')).toHaveCount(23);
+    await expect(page.locator('.desktop-nav a[href="/ask-carrowmont.html"]')).toHaveCount(1);
+    await gotoClean(page,PATH);
+    await expect(page.locator('.ask-side-card')).toHaveCount(0);
+    await expect(page.locator('#askQuestion')).toBeVisible();
+    const box=await page.locator('#askQuestion').boundingBox();
+    expect(box && box.y).toBeLessThan(650);
+  });
+
+
+  test('[AUTO] mobile navigation keeps Ask first-level and visually distinct from Search',async({page})=>{
+    await page.setViewportSize({width:390,height:844});
+    await gotoClean(page,'/');
+    const nav=page.locator('[data-mobile1-bottom-nav]');
+    await expect(nav).toBeVisible();
+    const items=nav.locator('[data-mobile1-nav]');
+    await expect(items).toHaveCount(5);
+    await expect(items.nth(2)).toHaveAttribute('data-mobile1-nav','ask');
+    await expect(items.nth(2)).toHaveAttribute('href',PATH);
+    await expect(page.locator('[data-mobile1-header-search]')).toHaveAttribute('href','/search.html');
+    await page.locator('[data-mobile1-nav="more"]').click();
+    const more=page.locator('#mobile1MoreDialog');
+    await expect(more.getByText('Research',{exact:true})).toBeVisible();
+    await expect(more.getByText('Ask Carrowmont',{exact:true})).toHaveCount(0);
   });
 
   test('[AUTO] responsive guided interface has no horizontal overflow at [1280,768,412,390,360]',async({page})=>{

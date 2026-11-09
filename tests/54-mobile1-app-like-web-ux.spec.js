@@ -6,12 +6,31 @@ test.describe('MOBILE1 app-like mobile web UX', () => {
     await page.goto('/');
     const bottom = page.locator('[data-mobile1-bottom-nav]');
     await expect(bottom).toBeVisible();
-    for (const label of ['Home', 'Tools', 'Learn', 'Research', 'More']) {
+    for (const label of ['Home', 'Tools', 'Ask', 'Learn', 'More']) {
       await expect(bottom.getByText(label, { exact: true })).toBeVisible();
     }
     await expect(page.locator('[data-mobile1-quick-tools]')).toBeVisible();
     await expect(page.locator('[data-homepage-core-grid]')).toBeHidden();
     await expect(page.locator('.mobile-nav')).toBeHidden();
+  });
+
+
+  test('Ask is a first-level center mobile destination and remains distinct from Search', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    const bottom = page.locator('[data-mobile1-bottom-nav]');
+    const items = bottom.locator('[data-mobile1-nav]');
+    await expect(items).toHaveCount(5);
+    await expect(items.nth(2)).toHaveAttribute('data-mobile1-nav', 'ask');
+    await expect(items.nth(2)).toHaveAttribute('href', '/ask-carrowmont.html');
+    await expect(items.nth(2).getByText('Ask', { exact: true })).toBeVisible();
+    await expect(page.locator('[data-mobile1-header-search]')).toBeVisible();
+    await expect(page.locator('[data-mobile1-header-search]')).toHaveAttribute('href', '/search.html');
+    await page.locator('[data-mobile1-nav="more"]').click();
+    const dialog = page.locator('#mobile1MoreDialog');
+    await expect(dialog.getByText('Research', { exact: true })).toBeVisible();
+    await expect(dialog.getByText('Ask Carrowmont', { exact: true })).toHaveCount(0);
+    await expect(dialog.getByText('Search', { exact: true })).toHaveCount(0);
   });
 
 
@@ -78,7 +97,7 @@ test.describe('MOBILE1 app-like mobile web UX', () => {
     await page.locator('[data-mobile1-nav="more"]').click();
     const dialog = page.locator('#mobile1MoreDialog');
     await expect(dialog).toBeVisible();
-    for (const label of ['Search', 'About', 'Methodology', 'Contact', 'Country & currency']) {
+    for (const label of ['Research', 'About', 'Methodology', 'Contact', 'Country & currency']) {
       await expect(dialog.getByText(label, { exact: true })).toBeVisible();
     }
 

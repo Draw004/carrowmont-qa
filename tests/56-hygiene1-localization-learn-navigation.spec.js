@@ -24,12 +24,12 @@ test.describe('HYGIENE1 localization and Learn navigation closeout', () => {
     await context.close();
   });
 
-  test('desktop header uses canonical Home-first order across the main site with Search immediately after About', async ({ page }) => {
+  test('desktop header uses canonical Home-first order with Ask after Tools and Search immediately after About', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     for (const target of ['/', '/tools.html', '/learn.html', '/research.html', '/methodology.html', '/about.html', '/search.html']) {
       await gotoClean(page, target);
       const labels = await page.locator('.desktop-nav > a').allTextContents();
-      expect(labels.map(x => x.trim()), target).toEqual(['Home','Tools','Learn','Research','Methodology','About','Search']);
+      expect(labels.map(x => x.trim()), target).toEqual(['Home','Tools','Ask','Learn','Research','Methodology','About','Search']);
       const relation = await page.evaluate(() => {
         const nav = document.querySelector('.desktop-nav');
         const home = nav?.querySelector('a[href="/"]');

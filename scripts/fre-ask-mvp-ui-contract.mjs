@@ -28,11 +28,15 @@ export function runFreAskMvpUiContract(root){
     'askDiagnosis','askMetrics','askAlternatives','askNextSteps','askEngineTrace','askAssumptions'
   ].every(id=>html.includes(`id="${id}"`)));
   add('Ask financial facts are not persisted or transmitted by the UI or journey core',!/(?:localStorage|sessionStorage|indexedDB|\bfetch\s*\(|XMLHttpRequest|WebSocket)/.test(ui+'\n'+core));
-  add('public copy makes deterministic calculation authority and privacy boundary explicit',/Calculations use Carrowmont engines/.test(html) && /Financial inputs are not saved/.test(html) && /calculators do the mathematics/.test(html));
+  add('public copy makes deterministic calculation authority and privacy boundary explicit',/Tested engines/.test(html) && /Inputs are not saved/.test(html) && /calculators do the mathematics/.test(html));
   add('locale layer remains authoritative for country currency and money formatting',ui.includes('CarrowmontLocale') && ui.includes('getCurrency') && ui.includes('getRegion') && ui.includes('formatMoney'));
 
   const tools=read(main+'tools.html'); const home=read(main+'index.html');
-  add('Batch 3B does not change the 23-tool directory or nine-card homepage',/"numberOfItems"\s*:\s*23/.test(tools) && (tools.match(/class="directory-tool-card/g)||[]).length===23 && (home.match(/data-tool-id=/g)||[]).length===9 && !/href=["']\/ask-carrowmont\.html["']/.test(home));
+  add('Batch 3C preserves the 23-tool directory and nine-card homepage while adding a controlled Ask entry',/"numberOfItems"\s*:\s*23/.test(tools) && (tools.match(/class="directory-tool-card/g)||[]).length===23 && (home.match(/data-tool-id=/g)||[]).length===9 && /data-home-ask-entry/.test(home) && /href=["']\/ask-carrowmont\.html["']/.test(home));
+
+  const sharedSite=read(main+'site.js');
+  add('Batch 3C makes Ask discoverable in shared desktop navigation and as the center mobile primary action',/FRE3C: expose Ask Carrowmont/.test(sharedSite) && /href='\/ask-carrowmont\.html'/.test(sharedSite) && /\{ key: 'ask', label: 'Ask', href: '\/ask-carrowmont\.html' \}/.test(sharedSite) && /\{ key: 'research', label: 'Research'/.test(sharedSite)===false && /href=\"\/research\.html\">'.*ICONS\.research/s.test(sharedSite));
+  add('Batch 3C puts the interactive question in the compact first-screen workspace',/ask-workspace-section/.test(html) && /What are you trying to figure out\?/.test(html) && !/ask-side-card/.test(html) && /ask-suggestions/.test(html));
 
   const sitemap=read(main+'sitemap.xml');
   const pages=JSON.parse(read(main+'data/carrowmont-search-pages.json'));
@@ -46,7 +50,7 @@ export function runFreAskMvpUiContract(root){
   const qaConfig=fs.readFileSync(path.join(qaRoot,'qa.config.js'),'utf8');
   add('central QA inventory advances to 137 and includes Ask Carrowmont',/search1ExpectedPublicPages\s*=\s*137/.test(qaConfig) && /ask-carrowmont-page/.test(qaConfig));
   const browserSpec=fs.readFileSync(path.join(qaRoot,'tests/61-fre3b-ask-carrowmont.spec.js'),'utf8');
-  add('browser QA protects guided resolution privacy and responsive layouts',/emergency-fund journey resolves/.test(browserSpec) && /financial inputs are not persisted/.test(browserSpec) && /\[1280,768,412,390,360\]/.test(browserSpec));
+  add('browser QA protects guided resolution privacy discoverability and responsive layouts',/emergency-fund journey resolves/.test(browserSpec) && /financial inputs are not persisted/.test(browserSpec) && /Ask is discoverable from shared navigation/.test(browserSpec) && /\[1280,768,412,390,360\]/.test(browserSpec));
 
   const registry=JSON.parse(read(main+'docs/CARROWMONT_FRE_ENGINE_REGISTRY_V10.json'));
   add('Engine Registry V10 records public Batch 3B without adding an engine',registry.schema_version===10 && registry.engines?.length===26 && registry.fre_batch3b?.public_url==='/ask-carrowmont.html' && registry.fre_batch3b?.public_tool_count===23 && registry.fre_batch3b?.search_public_page_count===137);

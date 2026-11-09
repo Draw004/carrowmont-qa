@@ -135,7 +135,7 @@ export const tools = [
 export const mainSitePages = [
   { key: 'home', path: '/', text: 'Want to build' },
   { key: 'tools-directory', path: '/tools.html', text: 'Financial calculators, planners and scenario tools' },
-  { key: 'ask-carrowmont-page', path: '/ask-carrowmont.html', text: 'What’s happening with your money?' },
+  { key: 'ask-carrowmont-page', path: '/ask-carrowmont.html', text: 'What are you trying to figure out?' },
   { key: 'about', path: '/about.html', text: 'About Carrowmont' },
   { key: 'learn', path: '/learn.html', text: 'PLANNING TOPICS' },
   { key: 'search', path: '/search.html', text: 'Search Carrowmont' },
