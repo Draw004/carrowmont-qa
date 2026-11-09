@@ -91,6 +91,86 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     await expect(page.locator('#askEngineTrace')).toContainText('Car affordability');
   });
 
+  test('[AUTO] Batch 4 guided GUI shows progress, collapsed Why we ask, and explicit I-dont-know handling only for assumptions',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('[data-ask-intent="mortgage-prepay-vs-invest"]').click();
+    await expect(page.locator('#askProgressText')).toContainText('Step 1 of 2');
+    await expect(page.locator('#askQuestionFields input')).toHaveCount(3);
+    await expect(page.locator('#askQuestionFields .ask-why')).toHaveCount(3);
+    await expect(page.locator('#askQuestionFields .ask-why[open]')).toHaveCount(0);
+    await expect(page.locator('[data-ask-unknown]')).toHaveCount(0);
+    await setValue(page,'mortgageBalance',200000);
+    await setValue(page,'mortgageRatePct',6);
+    await setValue(page,'remainingYears',15);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askProgressText')).toContainText('Step 2 of 2');
+    await expect(page.locator('#askQuestionFields input')).toHaveCount(2);
+    await expect(page.locator('[data-ask-unknown="assumedInvestmentReturnPct"]')).toBeVisible();
+    await setValue(page,'extraAmount',10000);
+    await page.locator('[data-ask-unknown="assumedInvestmentReturnPct"]').click();
+    await expect(page.locator('input[name="assumedInvestmentReturnPct"]')).toHaveValue('5');
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askResultStage')).toBeVisible();
+    await expect(page.locator('#askAssumptions')).toContainText('Illustrative default used because you selected “I don’t know”');
+  });
+
+
+  test('[AUTO] Batch 4 closeout lets users go back, correct answers, and keeps prior values',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('[data-ask-intent="car-affordability"]').click();
+    await setValue(page,'vehiclePrice',25000);
+    await setValue(page,'takeHomeMonthlyIncome',5500);
+    await setValue(page,'essentialMonthlyExpenses',2500);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askProgressText')).toContainText('Step 2');
+    await expect(page.locator('#askBackBtn')).toBeVisible();
+    await page.locator('#askBackBtn').click();
+    await expect(page.locator('#askProgressText')).toContainText('Step 1');
+    await expect(page.locator('input[name="vehiclePrice"]')).toHaveValue('25000');
+    await expect(page.locator('input[name="takeHomeMonthlyIncome"]')).toHaveValue('5500');
+    await setValue(page,'vehiclePrice',24000);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askProgressText')).toContainText('Step 2');
+  });
+
+  test('[AUTO] Batch 4 closeout validation preserves good answers and focuses the exact invalid field',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('[data-ask-intent="emergency-runway"]').click();
+    await setValue(page,'essentialExpenses',3000);
+    await page.locator('input[name="emergencySavings"]').fill('-1');
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('input[name="essentialExpenses"]')).toHaveValue('3000');
+    await expect(page.locator('input[name="emergencySavings"]')).toHaveAttribute('aria-invalid','true');
+    await expect(page.locator('.ask-field-invalid')).toHaveCount(1);
+    const active=await page.evaluate(()=>document.activeElement?.getAttribute('name'));
+    expect(active).toBe('emergencySavings');
+    await page.locator('input[name="emergencySavings"]').fill('18000');
+    await expect(page.locator('input[name="emergencySavings"]')).not.toHaveAttribute('aria-invalid','true');
+  });
+
+  test('[AUTO] Batch 4 closeout smart focus and result review remain keyboard-accessible',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('[data-ask-intent="emergency-runway"]').click();
+    expect(await page.evaluate(()=>document.activeElement?.getAttribute('name'))).toBe('essentialExpenses');
+    await setValue(page,'essentialExpenses',3000);
+    await setValue(page,'emergencySavings',18000);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askReviewAnswers')).toBeVisible();
+    await page.locator('#askReviewAnswers').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#askQuestionsStage')).toBeVisible();
+    await expect(page.locator('input[name="essentialExpenses"]')).toHaveValue('3000');
+  });
+
+  test('[AUTO] Batch 4 validation names the field that needs attention',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('[data-ask-intent="emergency-runway"]').click();
+    await page.locator('input[name="essentialExpenses"]').fill('-1');
+    await setValue(page,'emergencySavings',1000);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askQuestionMessage')).toContainText('essential monthly expenses');
+  });
+
   test('[AUTO] sitemap Search inventory and product boundaries remain controlled',async({page,request})=>{
     const xml=await (await request.get('/sitemap.xml')).text();
     expect(xml).toContain('<loc>https://carrowmont.com/ask-carrowmont.html</loc>');
