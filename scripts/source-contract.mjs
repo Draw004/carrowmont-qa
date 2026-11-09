@@ -5807,8 +5807,9 @@ add('HYGIENE1: every public locale runtime prioritizes current device timezone b
 add('HYGIENE1: saved explicit region preference wins and orphaned saved currency cannot override a newly detected country',
   hygieneLocaleFiles.every(src=>src.includes('const hasStoredRegion = !!regions[storedRegion]') && src.includes('let regionCode = hasStoredRegion ? storedRegion : detectRegion();') && src.includes('hasStoredRegion && hasStoredCurrency ? storedCurrency : regions[regionCode].currency'))
 );
-add('HYGIENE1: desktop navigation uses Home first, then Tools/Ask, Research after Learn and Search after About before the separate locale control',
-  hygieneSite.includes("var order = ['/','/tools.html','/ask-carrowmont.html','/learn.html','/research.html','/methodology.html','/about.html','/search.html']") &&
+add('HYGIENE1: desktop navigation keeps Methodology out of the primary ribbon, highlights Ask separately from Search, and keeps Search after About before locale',
+  hygieneSite.includes("var order = ['/','/tools.html','/ask-carrowmont.html','/learn.html','/research.html','/about.html','/search.html']") &&
+  hygieneSite.includes('if (!mobile && methodology) methodology.remove()') && hygieneSite.includes("link.classList.add('site-ask-link')") &&
   hygieneSite.includes("home.textContent = 'Home'") && hygieneSite.includes('Search is the final desktop navigation action')
 );
 const hygieneResearchPages = ['research.html','research/emergency-savings-resilience.html','research/inflation-purchasing-power-monitor.html','research/mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/${name}`));
