@@ -24,9 +24,10 @@ export function runFreAskMvpUiContract(root){
     '/assets/fre/ask-carrowmont-mvp.js','/assets/fre/intent-router.js','/budget-cash-flow-planner/core.js','/emergency-fund-runway-core.js','/car-affordability-auto-decision-core.js','/budget-cash-flow-planner/debt-payoff-core.js','/compound-interest-calculator/core.js','/mortgage-payoff-calculator/prepayment-vs-investing-core.js'
   ].every(src=>html.includes(src)) && html.indexOf('/assets/fre/ask-carrowmont-mvp.js')<html.indexOf('/assets/ask/ask-carrowmont.js'));
   add('question UI keeps each step to the core maximum of three missing facts',ui.includes('maxQuestions:3') && ui.includes('api.missingQuestions(state.intent,state.facts,3)'));
-  add('result UI exposes diagnosis numbers alternatives next steps trace and assumptions',[
-    'askDiagnosis','askMetrics','askAlternatives','askNextSteps','askEngineTrace','askAssumptions'
-  ].every(id=>html.includes(`id="${id}"`)));
+  add('public result renderer presents recommendation confidence and change factors before practical next steps',ui.includes('askRecommendationHeadline') && ui.includes('askConfidence') && ui.includes('askWhatCouldChange') && html.indexOf('askRecommendationHeadline') < html.indexOf('askMetrics') && html.indexOf('askWhatCouldChange') < html.indexOf('askNextSteps'));
+  add('result UI exposes answer-first resolution diagnosis numbers alternatives change factors next steps trace and assumptions',[
+    'askRecommendationHeadline','askRecommendationAction','askRecommendationRationale','askConfidence','askDiagnosis','askMetrics','askAlternatives','askWhatCouldChange','askNextSteps','askEngineTrace','askAssumptions'
+  ].every(id=>html.includes(`id="${id}"`)) && /Carrowmont’s view/.test(html));
   add('Ask financial facts are not persisted or transmitted by the UI or journey core',!/(?:localStorage|sessionStorage|indexedDB|\bfetch\s*\(|XMLHttpRequest|WebSocket)/.test(ui+'\n'+core));
   add('public copy makes deterministic calculation authority and privacy boundary explicit',/Tested engines/.test(html) && /Inputs are not saved/.test(html) && /calculators do the mathematics/.test(html));
   add('unsupported free-text questions get a visible transparent fallback instead of a silent dead end',/id="askUnsupported"/.test(html) && /guided resolution is not available yet/.test(html) && /showUnsupported/.test(ui) && /Search Carrowmont/.test(html) && /Browse Tools/.test(html) && /Explore Learn/.test(html));
@@ -56,5 +57,6 @@ export function runFreAskMvpUiContract(root){
   const registry=JSON.parse(read(main+'docs/CARROWMONT_FRE_ENGINE_REGISTRY_V10.json'));
   add('Engine Registry V10 records public Batch 3B without adding an engine',registry.schema_version===10 && registry.engines?.length===26 && registry.fre_batch3b?.public_url==='/ask-carrowmont.html' && registry.fre_batch3b?.public_tool_count===23 && registry.fre_batch3b?.search_public_page_count===137);
   add('Batch 3B documentation and acceptance ledger exist',Boolean(read(main+'docs/CARROWMONT_FRE_BATCH3B_ASK_CARROWMONT_PUBLIC_MVP.md')) && Boolean(read(main+'docs/CARROWMONT_FRE_BATCH3B_ACCEPTANCE_LEDGER.md')));
+  add('Batch 3D resolution-completion documentation and 14-item acceptance ledger exist',Boolean(read(main+'docs/CARROWMONT_FRE_BATCH3D_ASK_MVP_RESOLUTION_COMPLETION.md')) && /14-dimension change-impact matrix/.test(read(main+'docs/CARROWMONT_FRE_BATCH3D_ACCEPTANCE_LEDGER.md')));
   return checks;
 }

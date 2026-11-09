@@ -59,7 +59,13 @@ export function runFreAskMvpContract(root) {
 
   for (const result of [emergency,cash,car,debt,mortgage]) {
     add(`resolved ${result.intent} returns the standard explanation contract`, Boolean(result.situation && result.diagnosis && result.importantNumbers && result.alternatives && result.nextSteps && result.assumptions && result.trace));
+    add(`resolved ${result.intent} returns an answer-first resolution contract`, Boolean(result.recommendation?.headline && result.recommendation?.action && result.recommendation?.rationale && result.confidence?.level && result.confidence?.basis && result.whatCouldChangeAnswer?.length));
   }
+  add('emergency journey prioritizes resilience when runway is below one month', api.resolve({ intent:api.INTENTS.EMERGENCY_RUNWAY, currency:'USD', facts:{ essentialExpenses:3000, emergencySavings:500 } }).recommendation?.headline.includes('first cash buffer'));
+  add('cash-flow journey gives a corrective resolution when monthly room is negative', cash.recommendation?.headline.includes('deficit') && cash.whatCouldChangeAnswer.length>=3);
+  add('car journey gives an affordability resolution rather than only calculator output', Boolean(car.recommendation?.headline && car.confidence?.level==='MEDIUM_HIGH'));
+  add('debt-versus-savings journey favors high-cost debt when buffer exists and debt APR exceeds modeled return', debt.recommendation?.headline.includes('debt') && debt.recommendation?.headline.includes('stronger'));
+  add('mortgage journey states which modeled path is stronger or tied', /stronger modeled path|approximately tied/.test(mortgage.recommendation?.headline||''));
 
   const source=fs.readFileSync(askFile,'utf8');
   add('Ask MVP core makes no network or persistence calls', !/\b(fetch|XMLHttpRequest|localStorage|sessionStorage|indexedDB)\b/.test(source));
