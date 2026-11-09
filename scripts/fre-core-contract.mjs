@@ -136,7 +136,8 @@ export function runFreCoreContract(sourceRoot) {
   add(checks, 'Batch 1A FRE core makes no network or browser-storage calls', !/\b(fetch|XMLHttpRequest|localStorage|sessionStorage|indexedDB)\b/.test(allSource));
 
   const htmlFiles = fs.readdirSync(path.join(sourceRoot, 'draw004.github.io')).filter(name => name.endsWith('.html'));
-  add(checks, 'Batch 1A is not wired into public pages yet', htmlFiles.every(name => !fs.readFileSync(path.join(sourceRoot, 'draw004.github.io', name), 'utf8').includes('/assets/fre/')));
+  const frePublicPages = htmlFiles.filter(name => fs.readFileSync(path.join(sourceRoot, 'draw004.github.io', name), 'utf8').includes('/assets/fre/'));
+  add(checks, 'FRE public wiring remains limited to the approved Batch 3B Ask Carrowmont page', frePublicPages.length === 1 && frePublicPages[0] === 'ask-carrowmont.html');
 
   return checks;
 }
