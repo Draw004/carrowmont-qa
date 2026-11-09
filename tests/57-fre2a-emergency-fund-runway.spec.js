@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { test, expect } from '@playwright/test';
+import { search1ExpectedPublicPages } from '../qa.config.js';
 import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow, setInput, validatePdfDownload, saveReferenceScreenshot } from '../helpers/common.js';
 
 const PATH='/emergency-fund-runway-calculator.html';
@@ -74,7 +75,7 @@ test.describe('FRE2A Emergency Fund & Financial Runway',()=>{
     await gotoClean(page,'/');await expect(page.locator('[data-homepage-core-grid] [data-tool-id]')).toHaveCount(9);await expect(page.locator('[data-tool-id="emergency-fund-runway"]')).toHaveCount(0);
     for(const path of LEARN){await gotoClean(page,path);await expect(page.locator(`a[href="${PATH}"]`).first()).toBeVisible();}
     const xml=await (await request.get('/sitemap.xml')).text();expect(xml).toContain(`<loc>https://carrowmont.com${PATH}</loc>`);
-    const inventory=await (await request.get('/data/carrowmont-search-pages.json')).json();expect(inventory.entries).toHaveLength(136);expect(inventory.entries.some(entry=>entry.url===PATH)).toBe(true);
+    const inventory=await (await request.get('/data/carrowmont-search-pages.json')).json();expect(inventory.entries).toHaveLength(search1ExpectedPublicPages);expect(inventory.entries.some(entry=>entry.url===PATH)).toBe(true);
   });
 
   test('[AUTO] 1280 768 412 390 and 360 layouts are overflow-safe with primary action visible',async({page})=>{

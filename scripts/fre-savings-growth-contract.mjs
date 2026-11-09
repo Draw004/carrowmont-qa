@@ -55,7 +55,7 @@ export function runFreSavingsGrowthContract(root) {
   add('Engine Registry V8 closes Batch 2 with no new public engine', registryDoc.schema_version === 8 && registryDoc.engines?.length === 26 && registryDoc.batch_2_status === 'COMPLETE' && registryDoc.engines.some(e => e.id === 'recurring-investment' && e.status === 'READY_WITH_ADAPTER') && registryDoc.engines.some(e => e.id === 'compound-interest' && e.status === 'READY_WITH_ADAPTER'));
 
   const qaConfig = fs.readFileSync(path.join(qaRoot, 'qa.config.js'), 'utf8');
-  add('public-page inventory stays at the post-Batch-2D level', /search1ExpectedPublicPages\s*=\s*136/.test(qaConfig));
+  add('public-page inventory remains at or above the post-Batch-2D level', Number((qaConfig.match(/search1ExpectedPublicPages\s*=\s*(\d+)/)||[])[1]) >= 136);
 
   return checks;
 }

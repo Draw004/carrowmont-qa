@@ -9,6 +9,7 @@ import { runFreCarAffordabilityContract } from './fre-car-affordability-contract
 import { runFreCreditCardPayoffContract } from './fre-credit-card-payoff-contract.mjs';
 import { runFreSavingsGrowthContract } from './fre-savings-growth-contract.mjs';
 import { runFreAskMvpContract } from './fre-ask-mvp-contract.mjs';
+import { runFreAskMvpUiContract } from './fre-ask-mvp-ui-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -32,6 +33,7 @@ for (const c of runFreCarAffordabilityContract(root)) add(`FRE2C: ${c.name}`, c.
 for (const c of runFreCreditCardPayoffContract(root)) add(`FRE2D: ${c.name}`, c.ok, c.detail);
 for (const c of runFreSavingsGrowthContract(root)) add(`FRE2E: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpContract(root)) add(`FRE3A: ${c.name}`, c.ok, c.detail);
+for (const c of runFreAskMvpUiContract(root)) add(`FRE3B: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
   const p = new URL(`../${rel}`, import.meta.url);
@@ -4256,7 +4258,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 136;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 137;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
