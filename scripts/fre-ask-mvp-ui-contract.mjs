@@ -29,6 +29,7 @@ export function runFreAskMvpUiContract(root){
   ].every(id=>html.includes(`id="${id}"`)));
   add('Ask financial facts are not persisted or transmitted by the UI or journey core',!/(?:localStorage|sessionStorage|indexedDB|\bfetch\s*\(|XMLHttpRequest|WebSocket)/.test(ui+'\n'+core));
   add('public copy makes deterministic calculation authority and privacy boundary explicit',/Tested engines/.test(html) && /Inputs are not saved/.test(html) && /calculators do the mathematics/.test(html));
+  add('unsupported free-text questions get a visible transparent fallback instead of a silent dead end',/id="askUnsupported"/.test(html) && /guided resolution is not available yet/.test(html) && /showUnsupported/.test(ui) && /Search Carrowmont/.test(html) && /Browse Tools/.test(html) && /Explore Learn/.test(html));
   add('locale layer remains authoritative for country currency and money formatting',ui.includes('CarrowmontLocale') && ui.includes('getCurrency') && ui.includes('getRegion') && ui.includes('formatMoney'));
 
   const tools=read(main+'tools.html'); const home=read(main+'index.html');
