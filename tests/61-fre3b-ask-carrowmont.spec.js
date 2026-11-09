@@ -26,6 +26,28 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     expect(errors).toEqual([]);
   });
 
+  test('[AUTO] unsupported ordinary-language questions always receive a visible not-yet-available response',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('#askQuestion').fill('How to start investing?');
+    await page.locator('#askStartBtn').click();
+    const fallback=page.locator('#askUnsupported');
+    await expect(fallback).toBeVisible();
+    await expect(fallback).toContainText('guided resolution is not available yet');
+    await expect(fallback).toContainText('five controlled money decisions');
+    await expect(fallback.getByRole('link',{name:'Search Carrowmont'})).toHaveAttribute('href','/search.html');
+    await expect(fallback.getByRole('link',{name:'Browse Tools'})).toHaveAttribute('href','/tools.html');
+    await expect(fallback.getByRole('link',{name:'Explore Learn'})).toHaveAttribute('href','/learn.html');
+    await expect(page.locator('#askQuestionsStage')).toBeHidden();
+    await expect(page.locator('#askResultStage')).toBeHidden();
+  });
+
+  test('[AUTO] blank Ask input shows validation instead of failing silently',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('#askStartBtn').click();
+    await expect(page.locator('#askStartMessage')).toContainText('Tell Carrowmont what you are trying to solve');
+    await expect(page.locator('#askUnsupported')).toBeHidden();
+  });
+
   test('[AUTO] ordinary-language cash-shortfall journey asks no more than three facts and financial inputs are not persisted',async({page})=>{
     await gotoClean(page,PATH);
     await page.locator('#askQuestion').fill('I keep running out of money before payday');
