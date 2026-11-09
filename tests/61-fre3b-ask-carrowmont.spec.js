@@ -18,8 +18,11 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     await page.locator('[data-ask-intent="emergency-runway"]').click();
     await expect(page.locator('#askQuestionFields input')).toHaveCount(2);
     await setValue(page,'essentialExpenses',3000);
-    await setValue(page,'emergencySavings',9000);
+    await setValue(page,'emergencySavings',18000);
     await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askRecommendationHeadline')).toContainText('meets the target');
+    await expect(page.locator('#askConfidence')).toContainText('Confidence: high');
+    await expect(page.locator('#askWhatCouldChange li')).toHaveCount(3);
     await expect(page.locator('#askDiagnosis')).toContainText('reserve');
     await expect(page.locator('#askEngineTrace')).toContainText('Emergency fund runway');
     await expect(page.locator('#askMetrics .ask-metric')).not.toHaveCount(0);
@@ -57,6 +60,7 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     await setValue(page,'essentialExpenses',3000);
     await setValue(page,'flexibleExpenses',1500);
     await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askRecommendationHeadline')).toContainText('deficit');
     await expect(page.locator('#askDiagnosis')).toContainText('higher than');
     const stored=await page.evaluate(()=>({local:{...localStorage},session:{...sessionStorage}}));
     const serialized=JSON.stringify(stored);
@@ -82,6 +86,8 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     await setValue(page,'emergencySavings',12000);
     await page.locator('#askQuestionsForm button[type="submit"]').click();
     await expect(page.locator('#askResultStage')).toBeVisible();
+    await expect(page.locator('#askRecommendationHeadline')).not.toBeEmpty();
+    await expect(page.locator('#askWhatCouldChange li')).toHaveCount(3);
     await expect(page.locator('#askEngineTrace')).toContainText('Car affordability');
   });
 
