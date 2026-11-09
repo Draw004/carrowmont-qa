@@ -5628,7 +5628,7 @@ add('TRAFFIC1A: SEARCH1 keeps calculator and research intent distinct',
 add('TRAFFIC1A: shared Research presentation and navigation are reusable without browser-side data fetching',
   traffic1aCss.includes('TRAFFIC1A') && traffic1aCss.includes('.research-chart') && traffic1aCss.includes('@media(max-width:520px)') &&
   read('draw004.github.io/site.js').includes('TRAFFIC1A: add Research') && read('draw004.github.io/site.js').includes('TRAFFIC1A-NAV-FIT') &&
-  read('draw004.github.io/site.js').includes('(min-width:1361px) and (max-width:1500px)') && !/\bfetch\s*\(/.test(traffic1aStudy) && !/\bfetch\s*\(/.test(traffic1aHub)
+  (/\(min-width:1361px\) and \(max-width:1500px\)/.test(read('draw004.github.io/site.js')) || /\(min-width:981px\) and \(max-width:1560px\)/.test(read('draw004.github.io/site.js'))) && !/\bfetch\s*\(/.test(traffic1aStudy) && !/\bfetch\s*\(/.test(traffic1aHub)
 );
 add('TRAFFIC1A: browser QA protects data downloads, values, contextual links and 1440/1280/390/360 layouts',
   traffic1aQa.includes('headline values agree with deterministic payment math') && traffic1aQa.includes('research data files parse') && traffic1aQa.includes('[1440,1280,390,360]') &&
@@ -5807,8 +5807,8 @@ add('HYGIENE1: every public locale runtime prioritizes current device timezone b
 add('HYGIENE1: saved explicit region preference wins and orphaned saved currency cannot override a newly detected country',
   hygieneLocaleFiles.every(src=>src.includes('const hasStoredRegion = !!regions[storedRegion]') && src.includes('let regionCode = hasStoredRegion ? storedRegion : detectRegion();') && src.includes('hasStoredRegion && hasStoredCurrency ? storedCurrency : regions[regionCode].currency'))
 );
-add('HYGIENE1: desktop navigation uses Home first, then Research after Learn and Search after About before the separate locale control',
-  hygieneSite.includes("var order = ['/','/tools.html','/learn.html','/research.html','/methodology.html','/about.html','/search.html']") &&
+add('HYGIENE1: desktop navigation uses Home first, then Tools/Ask, Research after Learn and Search after About before the separate locale control',
+  hygieneSite.includes("var order = ['/','/tools.html','/ask-carrowmont.html','/learn.html','/research.html','/methodology.html','/about.html','/search.html']") &&
   hygieneSite.includes("home.textContent = 'Home'") && hygieneSite.includes('Search is the final desktop navigation action')
 );
 const hygieneResearchPages = ['research.html','research/emergency-savings-resilience.html','research/inflation-purchasing-power-monitor.html','research/mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/${name}`));
