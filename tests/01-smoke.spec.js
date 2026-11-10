@@ -648,6 +648,21 @@ ${errors.join('\n')}`).toEqual([]);
     expect(box.y, 'The India/INR 1 Crore section should begin within roughly one viewport plus a small scroll cue').toBeLessThan(viewportHeight + 350);
   });
 
+  test('[AUTO] Homepage: India/INR Want to build section remains visible and compact on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await gotoClean(page, '/');
+    await chooseIndiaLocale(page);
+    await expect(page.locator('html')).toHaveClass(/mobile1-active/);
+    const spotlight = page.locator('.india-sip-spotlight').first();
+    const target = spotlight.locator('h2').filter({ hasText: /Want to build/i }).filter({ hasText: /1\s*Crore/i }).first();
+    await expect(spotlight).toBeVisible();
+    await expect(target).toBeVisible();
+    await expect(spotlight.getByRole('link', { name: /Explore SIP Calculator/i })).toBeVisible();
+    const box = await spotlight.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box.width).toBeLessThanOrEqual(390);
+  });
+
   test('[AUTO] Learn expansion: 14 new guides load with indexable article metadata', async ({ page }) => {
     const guides = [
       '/50-30-20-budget-rule.html','/zero-based-budgeting.html','/pay-yourself-first-budgeting.html','/sinking-fund-vs-emergency-fund.html',
