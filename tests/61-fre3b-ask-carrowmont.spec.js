@@ -91,6 +91,26 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     await expect(page.locator('#askEngineTrace')).toContainText('Car affordability');
   });
 
+  test('[AUTO] Ask car-affordability handoff carries the exact entered scenario into the full tool and is consumed once',async({page})=>{
+    await gotoClean(page,PATH);
+    await expect.poll(()=>page.evaluate(()=>Boolean(window.CarrowmontLocale?.setLocale))).toBe(true);
+    await page.evaluate(()=>window.CarrowmontLocale.setLocale('NZ','NZD'));
+    await page.locator('[data-ask-intent="car-affordability"]').click();
+    await setValue(page,'vehiclePrice',25000); await setValue(page,'takeHomeMonthlyIncome',5500); await setValue(page,'essentialMonthlyExpenses',2500);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await setValue(page,'annualRate',7); await setValue(page,'termMonths',60); await setValue(page,'monthlyRunningCosts',350);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await setValue(page,'emergencySavings',12000); await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askResultStage')).toBeVisible();
+    const link=page.locator('#askDetailLinkWrap a[data-ask-car-affordability-handoff="1"]'); await expect(link).toBeVisible();
+    await Promise.all([page.waitForURL(/car-affordability-auto-decision-calculator\.html/),link.click()]);
+    await expect(page.locator('#vehiclePrice')).toHaveValue('25000'); await expect(page.locator('#takeHomeMonthlyIncome')).toHaveValue('5500'); await expect(page.locator('#essentialMonthlyExpenses')).toHaveValue('2500'); await expect(page.locator('#annualRate')).toHaveValue('7'); await expect(page.locator('#termMonths')).toHaveValue('60'); await expect(page.locator('#monthlyRunningCosts')).toHaveValue('350'); await expect(page.locator('#emergencySavings')).toHaveValue('12000');
+    await expect(page.locator('#actionMessage')).toContainText('Values carried over from Ask Carrowmont');
+    expect(await page.evaluate(()=>sessionStorage.getItem('carrowmont_handoff_car_affordability_v1'))).toBeNull();
+    expect(await page.evaluate(()=>({region:window.CarrowmontLocale.getRegion(),currency:window.CarrowmontLocale.getCurrency()}))).toEqual({region:'NZ',currency:'NZD'});
+  });
+
+
   test('[AUTO] Batch 5 Money Priorities returns three explainable moves in deterministic stage order',async({page})=>{
     await gotoClean(page,PATH);
     await page.locator('[data-ask-intent="money-priorities"]').click();
