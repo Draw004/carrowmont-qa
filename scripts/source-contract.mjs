@@ -11,6 +11,7 @@ import { runFreSavingsGrowthContract } from './fre-savings-growth-contract.mjs';
 import { runFreAskMvpContract } from './fre-ask-mvp-contract.mjs';
 import { runFreAskMvpUiContract } from './fre-ask-mvp-ui-contract.mjs';
 import { runFreMoneyPrioritiesContract } from './fre-money-priorities-contract.mjs';
+import { runFreDashboardContract } from './fre-dashboard-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -37,6 +38,7 @@ for (const c of runFreSavingsGrowthContract(root)) add(`FRE2E: ${c.name}`, c.ok,
 for (const c of runFreAskMvpContract(root)) add(`FRE3A: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpUiContract(root)) add(`FRE3B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreMoneyPrioritiesContract(root)) add(`FRE5: ${c.name}`, c.ok, c.detail);
+for (const c of runFreDashboardContract(root)) add(`FRE6: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -4262,7 +4264,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 137;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 138;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
@@ -5811,10 +5813,11 @@ add('HYGIENE1: every public locale runtime prioritizes current device timezone b
 add('HYGIENE1: saved explicit region preference wins and orphaned saved currency cannot override a newly detected country',
   hygieneLocaleFiles.every(src=>src.includes('const hasStoredRegion = !!regions[storedRegion]') && src.includes('let regionCode = hasStoredRegion ? storedRegion : detectRegion();') && src.includes('hasStoredRegion && hasStoredCurrency ? storedCurrency : regions[regionCode].currency'))
 );
-add('HYGIENE1: desktop navigation keeps Methodology out of the primary ribbon, highlights Ask separately from Search, and keeps Search after About before locale',
-  hygieneSite.includes("var order = ['/','/tools.html','/ask-carrowmont.html','/learn.html','/research.html','/about.html','/search.html']") &&
-  hygieneSite.includes('if (!mobile && methodology) methodology.remove()') && hygieneSite.includes("link.classList.add('site-ask-link')") &&
-  hygieneSite.includes("home.textContent = 'Home'") && hygieneSite.includes('Search is the final desktop navigation action')
+add('HYGIENE1: desktop navigation promotes My Carrowmont beside Home, keeps Methodology/About secondary, highlights Ask separately from Search, and keeps Search final before locale',
+  hygieneSite.includes("var order = ['/','/my-carrowmont.html','/tools.html','/ask-carrowmont.html','/learn.html','/research.html','/search.html']") &&
+  hygieneSite.includes('if (!mobile && methodology) methodology.remove()') && hygieneSite.includes('if (!mobile && about) about.remove()') &&
+  hygieneSite.includes("link.classList.add('site-ask-link')") && hygieneSite.includes("home.textContent = 'Home'") &&
+  hygieneSite.includes('Search is the final desktop navigation action')
 );
 const hygieneResearchPages = ['research.html','research/emergency-savings-resilience.html','research/inflation-purchasing-power-monitor.html','research/mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/${name}`));
 add('HYGIENE1: Research pages carry the shared country-currency control and locale runtime before shared site runtime',

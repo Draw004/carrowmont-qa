@@ -79,7 +79,7 @@ export function runFreAskMvpContract(root) {
   const tools=fs.readFileSync(path.join(main,'tools.html'),'utf8');
   add('Batch 3A does not change public Tools Hub count', /"numberOfItems"\s*:\s*23/.test(tools) && (tools.match(/class="directory-tool-card/g)||[]).length===23);
   const qaConfig=fs.readFileSync(path.join(qaRoot,'qa.config.js'),'utf8');
-  add('Batch 3A core remains compatible with the Batch 3B public-page inventory', /search1ExpectedPublicPages\s*=\s*137/.test(qaConfig));
+  add('Batch 3A core remains compatible with the Batch 3B public-page inventory', /search1ExpectedPublicPages\s*=\s*138/.test(qaConfig));
   const registry=JSON.parse(fs.readFileSync(path.join(main,'docs/CARROWMONT_FRE_ENGINE_REGISTRY_V9.json'),'utf8'));
   add('Engine Registry V9 records Batch 3A without changing engine count', registry.schema_version===9 && registry.engines?.length===26 && registry.fre_batch3a?.controlled_journeys?.length===5 && registry.fre_batch3a?.public_url===null);
   add('Batch 3A documentation and ledger exist', fs.existsSync(path.join(main,'docs/CARROWMONT_FRE_BATCH3A_ASK_CARROWMONT_MVP_CORE.md')) && fs.existsSync(path.join(main,'docs/CARROWMONT_FRE_BATCH3A_ACCEPTANCE_LEDGER.md')));
