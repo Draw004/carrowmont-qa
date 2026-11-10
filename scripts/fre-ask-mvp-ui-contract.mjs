@@ -17,11 +17,11 @@ export function runFreAskMvpUiContract(root){
   add('public Ask Carrowmont page and scoped UI assets exist',Boolean(html&&ui&&css&&core));
   if(!html||!ui) return checks;
 
-  add('public UI exposes the five controlled journey starters',[
-    'debt-vs-savings','car-affordability','mortgage-prepay-vs-invest','emergency-runway','cash-flow-shortfall'
+  add('public UI exposes the six controlled journey starters after Batch 5',[
+    'debt-vs-savings','car-affordability','mortgage-prepay-vs-invest','emergency-runway','cash-flow-shortfall','money-priorities'
   ].every(intent=>html.includes(`data-ask-intent="${intent}"`)));
   add('public UI uses the Batch 3A journey core and all required deterministic engine scripts',[
-    '/assets/fre/ask-carrowmont-mvp.js','/assets/fre/intent-router.js','/budget-cash-flow-planner/core.js','/emergency-fund-runway-core.js','/car-affordability-auto-decision-core.js','/budget-cash-flow-planner/debt-payoff-core.js','/compound-interest-calculator/core.js','/mortgage-payoff-calculator/prepayment-vs-investing-core.js'
+    '/assets/fre/ask-carrowmont-mvp.js','/assets/fre/intent-router.js','/assets/fre/priority-framework.js','/assets/fre/money-priorities.js','/budget-cash-flow-planner/core.js','/emergency-fund-runway-core.js','/goal-planner/core.js','/car-affordability-auto-decision-core.js','/budget-cash-flow-planner/debt-payoff-core.js','/compound-interest-calculator/core.js','/mortgage-payoff-calculator/prepayment-vs-investing-core.js'
   ].every(src=>html.includes(src)) && html.indexOf('/assets/fre/ask-carrowmont-mvp.js')<html.indexOf('/assets/ask/ask-carrowmont.js'));
   add('question UI keeps each step to the core maximum of three missing facts',ui.includes('maxQuestions:3') && ui.includes('api.missingQuestions(state.intent,state.facts,3)'));
   add('Batch 4 guided GUI exposes progress and keeps Why we ask collapsed by default',/id="askProgress"/.test(html) && /askProgressText/.test(ui) && /Why we ask/.test(ui) && /document\.createElement\('details'\)/.test(ui));
@@ -65,5 +65,9 @@ export function runFreAskMvpUiContract(root){
   add('Batch 3B documentation and acceptance ledger exist',Boolean(read(main+'docs/CARROWMONT_FRE_BATCH3B_ASK_CARROWMONT_PUBLIC_MVP.md')) && Boolean(read(main+'docs/CARROWMONT_FRE_BATCH3B_ACCEPTANCE_LEDGER.md')));
   add('Batch 3D resolution-completion documentation and 14-item acceptance ledger exist',Boolean(read(main+'docs/CARROWMONT_FRE_BATCH3D_ASK_MVP_RESOLUTION_COMPLETION.md')) && /14-dimension change-impact matrix/.test(read(main+'docs/CARROWMONT_FRE_BATCH3D_ACCEPTANCE_LEDGER.md')));
   add('Batch 4 guided-GUI documentation and acceptance ledger exist',Boolean(read(main+'docs/CARROWMONT_FRE_BATCH4_GUIDED_GUI.md')) && /14-dimension change-impact matrix/.test(read(main+'docs/CARROWMONT_FRE_BATCH4_ACCEPTANCE_LEDGER.md')));
+  add('Batch 5 Money Priorities renders a next-three-moves evidence surface without a new public URL',/money-priorities/.test(html) && /askAlternativesHeading/.test(html) && /priorityMoves/.test(ui) && /Your next three moves/.test(ui));
+  const registry11=JSON.parse(read(main+'docs/CARROWMONT_FRE_ENGINE_REGISTRY_V11.json'));
+  add('Engine Registry V11 records Money Priorities as an Ask journey while keeping 23 public tools and 137 public pages',registry11.schema_version===11 && registry11.fre_batch5?.ask_journey==='money-priorities' && registry11.fre_batch5?.public_tool_count===23 && registry11.fre_batch5?.search_public_page_count===137);
+  add('Batch 5 documentation and acceptance ledger exist',Boolean(read(main+'docs/CARROWMONT_FRE_BATCH5_MONEY_PRIORITIES.md')) && /14-dimension change-impact matrix/.test(read(main+'docs/CARROWMONT_FRE_BATCH5_ACCEPTANCE_LEDGER.md')));
   return checks;
 }

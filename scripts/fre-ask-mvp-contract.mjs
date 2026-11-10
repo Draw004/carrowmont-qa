@@ -26,6 +26,9 @@ export function runFreAskMvpContract(root) {
   const Router=require(path.join(main,'assets/fre/intent-router.js'));
   const Budget=require(path.join(root,'budget-cash-flow-planner/core.js'));
   const Emergency=require(path.join(main,'emergency-fund-runway-core.js'));
+  const Goal=require(path.join(root,'goal-planner/core.js'));
+  const Priority=require(path.join(main,'assets/fre/priority-framework.js'));
+  const MoneyPriorities=require(path.join(main,'assets/fre/money-priorities.js'));
   const Car=require(path.join(main,'car-affordability-auto-decision-core.js'));
   const loanWindow=loadBrowserCore(path.join(root,'loan-calculator/core.js'));
   const Loan=loanWindow.CarrowmontLoanCore;
@@ -35,9 +38,10 @@ export function runFreAskMvpContract(root) {
   const mortgageWindow=loadBrowserCore(path.join(root,'mortgage-payoff-calculator/core.js'));
   const mdcWindow=loadBrowserCore(path.join(root,'mortgage-payoff-calculator/prepayment-vs-investing-core.js'), { CarrowmontMortgageCore:mortgageWindow.CarrowmontMortgageCore });
   const Ask=require(askFile);
-  const api=Ask.create({ router:Router, budget:Budget, emergency:Emergency, car:Car, loan:Loan, borrowing:Borrowing, debtPayoff:debtWindow.CarrowmontDebtPayoffCore, compound:compoundWindow.CarrowmontCompoundCore, mortgagePrepay:mdcWindow.CarrowmontMdc1aCore });
+  const api=Ask.create({ router:Router, budget:Budget, emergency:Emergency, car:Car, loan:Loan, borrowing:Borrowing, debtPayoff:debtWindow.CarrowmontDebtPayoffCore, compound:compoundWindow.CarrowmontCompoundCore, mortgagePrepay:mdcWindow.CarrowmontMdc1aCore, goal:Goal, priorityFramework:Priority, moneyPriorities:MoneyPriorities });
 
-  add('MVP exposes exactly five controlled journeys', api.SUPPORTED.length===5 && new Set(api.SUPPORTED.map(x=>x.intent)).size===5);
+  add('Ask exposes six controlled journeys after Batch 5 while preserving the original five', api.SUPPORTED.length===6 && new Set(api.SUPPORTED.map(x=>x.intent)).size===6 && ['debt-vs-savings','car-affordability','mortgage-prepay-vs-invest','emergency-runway','cash-flow-shortfall','money-priorities'].every(intent=>api.SUPPORTED.some(x=>x.intent===intent)));
+  add('ordinary-language Money Priorities text is recognized deterministically', api.classify('What should I focus on first?').intent===api.INTENTS.MONEY_PRIORITIES);
   add('ordinary-language cash-shortfall text is recognized deterministically', api.classify('I keep running out of money before payday').intent===api.INTENTS.CASH_FLOW_SHORTFALL);
   const missing=api.resolve({ intent:api.INTENTS.CAR_AFFORDABILITY, facts:{ vehiclePrice:25000 } });
   add('missing-fact response asks at most three questions and does not execute early', missing.status==='NEEDS_INPUT' && missing.questions.length===3 && missing.questions.every(q=>q.key!=='vehiclePrice'));
@@ -57,7 +61,10 @@ export function runFreAskMvpContract(root) {
   const mortgage=api.resolve({ intent:api.INTENTS.MORTGAGE_PREPAY_VS_INVEST, currency:'USD', country:'US', startDate:'2026-11-09', facts:{ mortgageBalance:200000, mortgageRatePct:5, remainingYears:20, extraAmount:10000, assumedInvestmentReturnPct:7 } });
   add('mortgage journey calls existing Mortgage Prepay vs Invest core', mortgage.status==='RESOLVED' && mortgage.trace?.[0]?.engineId==='mortgage-prepay-vs-invest' && mortgage.importantNumbers.assumedReturnPct===7);
 
-  for (const result of [emergency,cash,car,debt,mortgage]) {
+  const priorities=api.resolve({ intent:api.INTENTS.MONEY_PRIORITIES, currency:'USD', facts:{ monthlyIncome:6000, essentialExpenses:2500, flexibleExpenses:1000, monthlyDebtPayments:400, emergencySavings:1000, emergencyTargetMonths:3, debtBalance:5000, highestDebtAprPct:18, assumedLongTermReturnPct:5, retirementSavings:10000, retirementMonthlyContribution:0, goalTargetAmount:12000, goalCurrentSavings:2000, goalYearsAway:2, goalMonthlyContribution:200 } });
+  add('Money Priorities journey resolves to three deterministic next moves', priorities.status==='RESOLVED' && priorities.priorityMoves?.length===3 && priorities.priorityMoves.map(x=>x.stage).join('|')==='protect|reduce|build');
+
+  for (const result of [emergency,cash,car,debt,mortgage,priorities]) {
     add(`resolved ${result.intent} returns the standard explanation contract`, Boolean(result.situation && result.diagnosis && result.importantNumbers && result.alternatives && result.nextSteps && result.assumptions && result.trace));
     add(`resolved ${result.intent} returns an answer-first resolution contract`, Boolean(result.recommendation?.headline && result.recommendation?.action && result.recommendation?.rationale && result.confidence?.level && result.confidence?.basis && result.whatCouldChangeAnswer?.length));
   }

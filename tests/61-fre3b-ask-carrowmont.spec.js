@@ -36,7 +36,7 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     const fallback=page.locator('#askUnsupported');
     await expect(fallback).toBeVisible();
     await expect(fallback).toContainText('guided resolution is not available yet');
-    await expect(fallback).toContainText('five controlled money decisions');
+    await expect(fallback).toContainText('six controlled money decisions');
     await expect(fallback.getByRole('link',{name:'Search Carrowmont'})).toHaveAttribute('href','/search.html');
     await expect(fallback.getByRole('link',{name:'Browse Tools'})).toHaveAttribute('href','/tools.html');
     await expect(fallback.getByRole('link',{name:'Explore Learn'})).toHaveAttribute('href','/learn.html');
@@ -89,6 +89,45 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     await expect(page.locator('#askRecommendationHeadline')).not.toBeEmpty();
     await expect(page.locator('#askWhatCouldChange li')).toHaveCount(3);
     await expect(page.locator('#askEngineTrace')).toContainText('Car affordability');
+  });
+
+  test('[AUTO] Batch 5 Money Priorities returns three explainable moves in deterministic stage order',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('[data-ask-intent="money-priorities"]').click();
+    await expect(page.locator('#askProgressText')).toContainText('Step 1 of 5');
+    await setValue(page,'monthlyIncome',6000);
+    await setValue(page,'essentialExpenses',2500);
+    await setValue(page,'flexibleExpenses',1000);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await setValue(page,'monthlyDebtPayments',400);
+    await setValue(page,'emergencySavings',1000);
+    await setValue(page,'emergencyTargetMonths',3);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await setValue(page,'debtBalance',5000);
+    await setValue(page,'highestDebtAprPct',18);
+    await setValue(page,'assumedLongTermReturnPct',5);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await setValue(page,'retirementSavings',10000);
+    await setValue(page,'retirementMonthlyContribution',0);
+    await setValue(page,'goalTargetAmount',12000);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askProgressText')).toContainText('Step 5 of 5');
+    await setValue(page,'goalCurrentSavings',2000);
+    await setValue(page,'goalYearsAway',2);
+    await setValue(page,'goalMonthlyContribution',200);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askResultStage')).toBeVisible();
+    await expect(page.locator('#askRecommendationHeadline')).toHaveText('Your first priority: Protect');
+    await expect(page.locator('#askAlternativesHeading')).toHaveText('Your next three moves');
+    await expect(page.locator('.ask-priority-move')).toHaveCount(3);
+    const titles=await page.locator('.ask-priority-move h4').allTextContents();
+    expect(titles[0]).toContain('Protect');
+    expect(titles[1]).toContain('Reduce');
+    expect(titles[2]).toContain('Build');
+    await expect(page.locator('.ask-priority-numbers')).toHaveCount(3);
+    await expect(page.locator('#askEngineTrace')).toContainText('Budget cash flow');
+    await expect(page.locator('#askEngineTrace')).toContainText('Emergency fund runway');
+    await expect(page.locator('#askEngineTrace')).toContainText('Goal planner');
   });
 
   test('[AUTO] Batch 4 guided GUI shows progress, collapsed Why we ask, and explicit I-dont-know handling only for assumptions',async({page})=>{
