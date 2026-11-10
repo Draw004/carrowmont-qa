@@ -38,7 +38,7 @@ export function runFreAskMvpUiContract(root){
   add('Ask car-affordability detail link writes a one-time same-session handoff from the exact deterministic engine input',/writeCarAffordabilityHandoff/.test(ui) && /engineId==='car-affordability'/.test(ui) && /trace\.input/.test(ui) && /expiresAt/.test(ui));
   const qaCommon=fs.readFileSync(path.join(qaRoot,'helpers/common.js'),'utf8');
   add('automated QA navigation preserves the sanctioned one-time car-affordability handoff across the same-tab page transition',/carrowmont_handoff_car_affordability_v1/.test(qaCommon) && /carAffordabilityHandoff/.test(qaCommon) && /sessionStorage\.setItem\(carAffordabilityHandoffKey, carAffordabilityHandoff\)/.test(qaCommon));
-  add('public copy makes deterministic calculation authority and privacy boundary explicit',/Tested engines/.test(html) && /Inputs are not saved/.test(html) && /calculators do the mathematics/.test(html));
+  add('public copy makes deterministic calculation authority and privacy boundary explicit',/Tested engines/.test(html) && /Not saved automatically/.test(html) && /calculators do the mathematics/.test(html));
   add('unsupported free-text questions get a visible transparent fallback instead of a silent dead end',/id="askUnsupported"/.test(html) && /guided resolution is not available yet/.test(html) && /showUnsupported/.test(ui) && /Search Carrowmont/.test(html) && /Browse Tools/.test(html) && /Explore Learn/.test(html));
   add('locale layer remains authoritative for country currency and money formatting',ui.includes('CarrowmontLocale') && ui.includes('getCurrency') && ui.includes('getRegion') && ui.includes('formatMoney'));
 
@@ -54,12 +54,12 @@ export function runFreAskMvpUiContract(root){
   const index=JSON.parse(read(main+'data/carrowmont-search-index.json'));
   const aliases=JSON.parse(read(main+'data/carrowmont-search-aliases.json'));
   const SearchCore=require(path.join(root,main+'search-core.js'));
-  add('sitemap and reviewed search inventory expose Ask Carrowmont as public page 137',sitemap.includes('<loc>https://carrowmont.com/ask-carrowmont.html</loc>') && pages.entries?.length===137 && index.entries?.length===137 && pages.entries?.some(e=>e.url==='/ask-carrowmont.html'));
+  add('sitemap and reviewed search inventory expose Ask Carrowmont as public page 138',sitemap.includes('<loc>https://carrowmont.com/ask-carrowmont.html</loc>') && pages.entries?.length===138 && index.entries?.length===138 && pages.entries?.some(e=>e.url==='/ask-carrowmont.html'));
   const askSearch=SearchCore.search(index.entries,aliases,'ask carrowmont',{region:'US',limit:12});
   add('site search gives Ask Carrowmont clear navigational ownership',askSearch[0]?.url==='/ask-carrowmont.html');
 
   const qaConfig=fs.readFileSync(path.join(qaRoot,'qa.config.js'),'utf8');
-  add('central QA inventory advances to 137 and includes Ask Carrowmont',/search1ExpectedPublicPages\s*=\s*137/.test(qaConfig) && /ask-carrowmont-page/.test(qaConfig));
+  add('central QA inventory advances to 138 and includes Ask Carrowmont',/search1ExpectedPublicPages\s*=\s*138/.test(qaConfig) && /ask-carrowmont-page/.test(qaConfig));
   const browserSpec=fs.readFileSync(path.join(qaRoot,'tests/61-fre3b-ask-carrowmont.spec.js'),'utf8');
   add('browser QA protects guided resolution privacy correction recovery discoverability and responsive layouts',/emergency-fund journey resolves/.test(browserSpec) && /financial inputs are not persisted/.test(browserSpec) && /lets users go back, correct answers/.test(browserSpec) && /focuses the exact invalid field/.test(browserSpec) && /smart focus and result review/.test(browserSpec) && /Ask is discoverable from shared navigation/.test(browserSpec) && /\[1280,768,412,390,360\]/.test(browserSpec));
 
@@ -70,7 +70,7 @@ export function runFreAskMvpUiContract(root){
   add('Batch 4 guided-GUI documentation and acceptance ledger exist',Boolean(read(main+'docs/CARROWMONT_FRE_BATCH4_GUIDED_GUI.md')) && /14-dimension change-impact matrix/.test(read(main+'docs/CARROWMONT_FRE_BATCH4_ACCEPTANCE_LEDGER.md')));
   add('Batch 5 Money Priorities renders a next-three-moves evidence surface without a new public URL',/money-priorities/.test(html) && /askAlternativesHeading/.test(html) && /priorityMoves/.test(ui) && /Your next three moves/.test(ui));
   const registry11=JSON.parse(read(main+'docs/CARROWMONT_FRE_ENGINE_REGISTRY_V11.json'));
-  add('Engine Registry V11 records Money Priorities as an Ask journey while keeping 23 public tools and 137 public pages',registry11.schema_version===11 && registry11.fre_batch5?.ask_journey==='money-priorities' && registry11.fre_batch5?.public_tool_count===23 && registry11.fre_batch5?.search_public_page_count===137);
+  add('Engine Registry V11 records Money Priorities as an Ask journey while keeping 23 public tools and 138 public pages',registry11.schema_version===11 && registry11.fre_batch5?.ask_journey==='money-priorities' && registry11.fre_batch5?.public_tool_count===23 && registry11.fre_batch5?.search_public_page_count===137);
   add('Batch 5 documentation and acceptance ledger exist',Boolean(read(main+'docs/CARROWMONT_FRE_BATCH5_MONEY_PRIORITIES.md')) && /14-dimension change-impact matrix/.test(read(main+'docs/CARROWMONT_FRE_BATCH5_ACCEPTANCE_LEDGER.md')));
   return checks;
 }

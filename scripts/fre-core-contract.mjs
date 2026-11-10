@@ -137,7 +137,7 @@ export function runFreCoreContract(sourceRoot) {
 
   const htmlFiles = fs.readdirSync(path.join(sourceRoot, 'draw004.github.io')).filter(name => name.endsWith('.html'));
   const frePublicPages = htmlFiles.filter(name => fs.readFileSync(path.join(sourceRoot, 'draw004.github.io', name), 'utf8').includes('/assets/fre/'));
-  add(checks, 'FRE public wiring remains limited to the approved Batch 3B Ask Carrowmont page', frePublicPages.length === 1 && frePublicPages[0] === 'ask-carrowmont.html');
+  add(checks, 'FRE public wiring remains limited to the approved Ask Carrowmont and My Carrowmont surfaces', frePublicPages.length === 2 && frePublicPages.includes('ask-carrowmont.html') && frePublicPages.includes('my-carrowmont.html'));
 
   return checks;
 }

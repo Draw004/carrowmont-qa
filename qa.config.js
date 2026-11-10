@@ -1,5 +1,5 @@
 export const standardDownloadMessage = 'Report has been downloaded.';
-export const search1ExpectedPublicPages = 137;
+export const search1ExpectedPublicPages = 138;
 
 export const tools = [
   {
@@ -136,6 +136,7 @@ export const mainSitePages = [
   { key: 'home', path: '/', text: 'Want to build' },
   { key: 'tools-directory', path: '/tools.html', text: 'Financial calculators, planners and scenario tools' },
   { key: 'ask-carrowmont-page', path: '/ask-carrowmont.html', text: 'What are you trying to figure out?' },
+  { key: 'my-carrowmont-page', path: '/my-carrowmont.html', text: 'See what matters without tracking every transaction.' },
   { key: 'about', path: '/about.html', text: 'About Carrowmont' },
   { key: 'learn', path: '/learn.html', text: 'PLANNING TOPICS' },
   { key: 'search', path: '/search.html', text: 'Search Carrowmont' },

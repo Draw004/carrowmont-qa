@@ -48,11 +48,17 @@ export async function gotoClean(page, targetPath) {
       const retirementHandoff = sessionStorage.getItem(retirementHandoffKey);
       const carAffordabilityHandoffKey = 'carrowmont_handoff_car_affordability_v1';
       const carAffordabilityHandoff = sessionStorage.getItem(carAffordabilityHandoffKey);
+      const dashboardSessionKey = 'carrowmont_guest_dashboard_session_v1';
+      const dashboardSession = sessionStorage.getItem(dashboardSessionKey);
+      const dashboardLocalKey = 'carrowmont_guest_dashboard_local_v1';
+      const dashboardLocal = localStorage.getItem(dashboardLocalKey);
       localStorage.clear();
       sessionStorage.clear();
       if (privacyHandoff) sessionStorage.setItem(privacyHandoffKey, privacyHandoff);
       if (retirementHandoff) sessionStorage.setItem(retirementHandoffKey, retirementHandoff);
       if (carAffordabilityHandoff) sessionStorage.setItem(carAffordabilityHandoffKey, carAffordabilityHandoff);
+      if (dashboardSession) sessionStorage.setItem(dashboardSessionKey, dashboardSession);
+      if (dashboardLocal) localStorage.setItem(dashboardLocalKey, dashboardLocal);
     } catch (_) {}
   });
   const response = await page.goto(targetPath, { waitUntil: 'domcontentloaded' });

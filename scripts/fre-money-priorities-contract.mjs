@@ -48,7 +48,7 @@ export function runFreMoneyPrioritiesContract(root) {
   const pages=JSON.parse(fs.readFileSync(path.join(main,'data/carrowmont-search-pages.json'),'utf8'));
   const index=JSON.parse(fs.readFileSync(path.join(main,'data/carrowmont-search-index.json'),'utf8'));
   const askEntry=pages.entries?.find(e=>e.url==='/ask-carrowmont.html');
-  add('Batch 5 keeps public inventory at 137 while adding Money Priorities discovery terms',pages.entries?.length===137&&index.entries?.length===137&&askEntry?.keywords?.includes('money priorities')&&askEntry?.aliases?.includes('what should i focus on first'));
+  add('Batch 5 keeps public inventory at 138 while adding Money Priorities discovery terms',pages.entries?.length===138&&index.entries?.length===138&&askEntry?.keywords?.includes('money priorities')&&askEntry?.aliases?.includes('what should i focus on first'));
 
   const registry=JSON.parse(fs.readFileSync(path.join(main,'docs/CARROWMONT_FRE_ENGINE_REGISTRY_V11.json'),'utf8'));
   add('Engine Registry V11 records Batch 5 without adding a calculator engine',registry.schema_version===11&&registry.engines?.length===26&&registry.fre_batch5?.ask_journey==='money-priorities'&&registry.fre_batch5?.controlled_journey_count===6&&registry.fre_batch5?.public_tool_count===23);
