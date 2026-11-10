@@ -58,7 +58,12 @@ export function runFreCarAffordabilityContract(sourceRoot){
   add(checks,'Public page loads all deterministic dependencies before car decision core and UI app',loanPos>=0&&borrowPos>loanPos&&emPos>borrowPos&&carPos>emPos&&appPos>carPos&&/window\.CarrowmontCarAffordabilityCore/.test(app));
   add(checks,'Public copy rejects universal affordability cutoffs and lender-approval prediction',/No universal car-affordability rule/i.test(html)&&/does not predict lender approval/i.test(html)&&/does not use one universal/i.test(html));
   add(checks,'Public methodology discloses important exclusions and local-input privacy',/does not model depreciation/i.test(html)&&/does not send or store the financial amounts entered on this page/i.test(html));
+  add(checks,'Direct car tool no longer hard-codes India-scale monetary defaults into the HTML',!/value=\"1200000\"/.test(html)&&!/value=\"300000\"/.test(html)&&/Starter values:/.test(html));
+  add(checks,'Car tool provides reviewed currency-aware starter magnitudes without treating them as FX conversion',/STARTER_MONTHLY/.test(app)&&/NZD:500/.test(app)&&/vehiclePrice:roundStarter\(m\*60,m\)/.test(app)&&/not exchange-rate conversions/.test(app));
+  add(checks,'Car tool consumes and immediately removes the one-time Ask Carrowmont handoff before calculation',/HANDOFF_KEY='carrowmont_handoff_car_affordability_v1'/.test(app)&&/sessionStorage\.removeItem\(HANDOFF_KEY\)/.test(app)&&/Values carried over from Ask Carrowmont/.test(app));
+  add(checks,'Car tool preserves starter/handoff context messages through automatic calculation until the user edits or recalculates',/contextualActionMessageActive/.test(app)&&/if\(!contextualActionMessageActive\)setText\('actionMessage',''\)/.test(app)&&/contextualActionMessageActive=false; calculate\(\)/.test(app));
   add(checks,'Public actions expose Copy Summary CSV and Car Affordability Report', ['copySummaryBtn','downloadCsvBtn','generateReportBtn'].every(id=>html.includes(`id="${id}"`))&&/carrowmont-car-affordability-auto-decision\.csv/.test(app));
+  add(checks,'Handoff/localized-starter repair documentation and acceptance ledger exist',fs.existsSync(path.join(sourceRoot,'draw004.github.io/docs/CARROWMONT_CAR_AFFORDABILITY_HANDOFF_LOCALIZED_STARTERS_FIX.md'))&&fs.existsSync(path.join(sourceRoot,'draw004.github.io/docs/CARROWMONT_CAR_AFFORDABILITY_HANDOFF_LOCALIZED_STARTERS_ACCEPTANCE_LEDGER.md')));
 
   const registryV6=JSON.parse(fs.readFileSync(path.join(sourceRoot,rel.registry),'utf8'));
   const engine=registryV6.engines?.find(e=>e.id==='car-affordability');

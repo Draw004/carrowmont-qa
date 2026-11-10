@@ -46,10 +46,13 @@ export async function gotoClean(page, targetPath) {
       const privacyHandoff = sessionStorage.getItem(privacyHandoffKey);
       const retirementHandoffKey = 'carrowmont_retirement_withdrawal_handoff_v1';
       const retirementHandoff = sessionStorage.getItem(retirementHandoffKey);
+      const carAffordabilityHandoffKey = 'carrowmont_handoff_car_affordability_v1';
+      const carAffordabilityHandoff = sessionStorage.getItem(carAffordabilityHandoffKey);
       localStorage.clear();
       sessionStorage.clear();
       if (privacyHandoff) sessionStorage.setItem(privacyHandoffKey, privacyHandoff);
       if (retirementHandoff) sessionStorage.setItem(retirementHandoffKey, retirementHandoff);
+      if (carAffordabilityHandoff) sessionStorage.setItem(carAffordabilityHandoffKey, carAffordabilityHandoff);
     } catch (_) {}
   });
   const response = await page.goto(targetPath, { waitUntil: 'domcontentloaded' });
