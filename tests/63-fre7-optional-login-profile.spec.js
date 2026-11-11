@@ -41,16 +41,29 @@ async function installMockSupabase(page,{signedIn=true}={}){
   },{signedIn});
 }
 
-test.describe('FRE7 optional login and saved profile foundation',()=>{
-  test('[AUTO] account saving stays invisible and network-free while backend configuration is disabled',async({page})=>{
+test.describe('FRE7 optional login and saved profile activation',()=>{
+  test('[AUTO] live optional account is visible but signed-out guest mode stays network-lazy until sign-in is requested',async({page})=>{
     const errors=monitorPageErrors(page);
     const sdkRequests=[];
     page.on('request',req=>{if(req.url().includes('@supabase/supabase-js'))sdkRequests.push(req.url());});
     await gotoClean(page,PATH);
-    await expect(page.locator('#mycmAccount')).toBeHidden();
+    await expect(page.locator('#mycmAccount')).toBeVisible();
+    await expect(page.getByText('Account optional')).toBeVisible();
+    await expect(page.locator('#mycmAccountSignedOut')).toBeVisible();
     expect(sdkRequests).toEqual([]);
-    await expect(page.getByText('No account required')).toBeVisible();
     expect(errors).toEqual([]);
+  });
+
+  test('[AUTO] public trust and legal pages describe the live optional-account model consistently',async({page})=>{
+    await gotoClean(page,'/about.html');
+    await expect(page.getByRole('heading',{name:'Guest-first, account optional'})).toBeVisible();
+    await expect(page.getByText('does not automatically upload financial values')).toBeVisible();
+    await gotoClean(page,'/terms.html');
+    await expect(page.getByRole('heading',{name:'Optional accounts and saved profiles'})).toBeVisible();
+    await expect(page.getByRole('link',{name:'Privacy Policy'})).toHaveAttribute('href','/privacy.html');
+    await gotoClean(page,'/privacy.html');
+    await expect(page.getByText('Brevo processes the authentication email delivery')).toBeVisible();
+    await expect(page.locator('body')).not.toContainText('future optional account');
   });
 
   test('[AUTO] configured account never uploads the guest dashboard until the user explicitly saves it',async({page})=>{
@@ -58,7 +71,7 @@ test.describe('FRE7 optional login and saved profile foundation',()=>{
     await page.addInitScript(()=>{
       sessionStorage.setItem('carrowmont_guest_dashboard_session_v1',JSON.stringify({schemaVersion:1,version:'dashboard-store-v1.0',mode:'session',createdAt:'2026-11-11T00:00:00Z',updatedAt:'2026-11-11T00:00:00Z',locale:{region:'US',currency:'USD'},facts:{'cashFlow.takeHomeIncome':{value:6000,origin:'user',source:'QA',lastUpdated:'2026-11-11T00:00:00Z',excluded:false,unit:'USD',note:null}},lastImport:null}));
     });
-    await gotoClean(page,PATH);
+    await gotoClean(page,`${PATH}?code=qa-auth-return`);
     await expect(page.locator('#mycmAccount')).toBeVisible();
     await expect(page.locator('#mycmAccountCurrentEmail')).toHaveText('tester@example.com');
     expect(await page.evaluate(()=>window.__cmCloud.profile)).toBeNull();

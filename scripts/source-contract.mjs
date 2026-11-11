@@ -5765,8 +5765,23 @@ const newsletter1Qa=readQa('tests/55-newsletter1-money-in-real-life.spec.js');
 const newsletter1Impl=read('draw004.github.io/docs/CARROWMONT_NEWSLETTER1_MONEY_IN_REAL_LIFE_IMPLEMENTATION.md');
 const newsletter1LearnPages=learn3GuideEntries.map(entry=>read(`draw004.github.io${entry.url}`));
 const newsletter1ResearchPages=['emergency-savings-resilience.html','inflation-purchasing-power-monitor.html','mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/research/${name}`));
+
+// FRE7B trust/legal closeout for live optional account.
+const fre7bAbout = read('draw004.github.io/about.html');
+const fre7bTerms = read('draw004.github.io/terms.html');
+const fre7bPrivacy = read('draw004.github.io/privacy.html');
+add('FRE7B: About explains guest-first account-optional use without implying a sign-up wall',
+  fre7bAbout.includes('Guest-first, account optional') && fre7bAbout.includes('/my-carrowmont.html') && fre7bAbout.includes('does not automatically upload financial values')
+);
+add('FRE7B: Terms cover optional accounts, explicit saved-profile use and Privacy linkage',
+  fre7bTerms.includes('<h2>Optional accounts and saved profiles</h2>') && fre7bTerms.includes('does not automatically upload financial values') && fre7bTerms.includes('href="/privacy.html"') && fre7bTerms.includes('Last updated: November 2026')
+);
+add('FRE7B: Privacy names current Supabase/Brevo processing and contains no stale future-account wording',
+  fre7bPrivacy.includes('Brevo processes the authentication email delivery') && fre7bPrivacy.includes('brevo.com/legal/privacypolicy') && fre7bPrivacy.includes('optional My Carrowmont account') && !fre7bPrivacy.includes('future optional account')
+);
+
 add('NEWSLETTER1: homepage promise stays guest-first while optional email signup is explicit',
-  newsletter1Home.includes('No account required') && !newsletter1Home.includes('No sign-up required') && newsletter1Site.includes('CARROWMONT MONEY IN REAL LIFE') && newsletter1Site.includes('Optional. No Carrowmont account required.')
+  newsletter1Home.includes('Account optional') && !newsletter1Home.includes('No sign-up required') && newsletter1Site.includes('CARROWMONT MONEY IN REAL LIFE') && newsletter1Site.includes('Optional. No Carrowmont account required.')
 );
 add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locked',
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
