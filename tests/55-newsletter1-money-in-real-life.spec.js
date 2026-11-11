@@ -25,7 +25,7 @@ test.describe('NEWSLETTER1 Carrowmont Money in Real Life', () => {
     await mockKit(page);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
-    await expect(page.getByText('No account required', { exact: true })).toBeVisible();
+    await expect(page.getByText('Account optional', { exact: true })).toBeVisible();
     await expect(page.getByText('No sign-up required', { exact: true })).toHaveCount(0);
     const section = await revealNewsletter(page);
     await expect(section.getByText('Money explained for real life — once a week.', { exact: true })).toBeVisible();
