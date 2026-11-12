@@ -3,83 +3,54 @@ import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow } from '../hel
 
 const PATH='/my-carrowmont.html';
 
-async function openEditor(page){await page.locator('#mycmEditAll').click();await expect(page.locator('#mycmEditDialog')).toBeVisible();}
-async function setDashboardField(page,path,value){const input=page.locator(`[data-mycm-path="${path}"]`);await expect(input).toBeVisible();await input.fill(String(value));}
-async function setAskValue(page,name,value){const input=page.locator(`#askQuestionFields input[name="${name}"]`);await expect(input).toBeVisible();await input.fill(String(value));}
+async function installMockSupabase(page,{signedIn=true,profile=null}={}){
+  await page.addInitScript(({signedIn,profile})=>{
+    Object.defineProperty(window,'CarrowmontSupabaseConfig',{configurable:true,get(){return window.__cmSupabaseConfig;},set(value){window.__cmSupabaseConfig={...value,enabled:true,url:'https://example.supabase.co',publishableKey:'pk_test_public'};}});
+    window.__cmCloud={profile:profile?{user_id:'u1',profile,schema_version:1,region:'US',currency:'USD',updated_at:'2026-11-12T00:00:00Z'}:null,scenarios:[]};
+    const user=signedIn?{id:'u1',email:'tester@example.com'}:null;
+    function builder(table){const state={table,mode:'select',payload:null};const api={select(){return api;},eq(){return api;},order(){return Promise.resolve({data:window.__cmCloud.scenarios,error:null});},maybeSingle(){return Promise.resolve({data:window.__cmCloud.profile,error:null});},single(){if(table==='carrowmont_profiles'){window.__cmCloud.profile=state.payload;return Promise.resolve({data:state.payload,error:null});}const row={id:'s1',...state.payload};window.__cmCloud.scenarios=[row];return Promise.resolve({data:row,error:null});},upsert(payload){state.mode='upsert';state.payload=payload;return api;},delete(){state.mode='delete';return api;}};api.then=resolve=>{if(state.mode==='delete'){if(table==='carrowmont_profiles')window.__cmCloud.profile=null;if(table==='carrowmont_saved_scenarios')window.__cmCloud.scenarios=[];resolve({data:null,error:null});}else resolve({data:null,error:null});};return api;}
+    window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user},error:null}),signInWithOtp:async()=>({data:{},error:null}),signOut:async()=>({error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},from:builder})};
+  },{signedIn,profile});
+}
 
-test.describe('FRE6 My Carrowmont guest/local dashboard',()=>{
-  test('[AUTO] dashboard is guest-first, session-only by default, and summarizes deterministic cash-flow/emergency facts',async({page})=>{
-    const errors=monitorPageErrors(page);
-    await gotoClean(page,PATH);
-    await expect(page.getByRole('heading',{name:'See what matters without tracking every transaction.'})).toBeVisible();
-    await expect(page.locator('#mycmRemember')).not.toBeChecked();
-    await openEditor(page);
-    await setDashboardField(page,'cashFlow.takeHomeIncome',6000);
-    await setDashboardField(page,'cashFlow.essentialExpenses',2500);
-    await setDashboardField(page,'cashFlow.flexibleExpenses',800);
-    await setDashboardField(page,'resilience.emergencySavings',12000);
-    await setDashboardField(page,'resilience.targetMonths',3);
-    await page.locator('#mycmEditForm button[type="submit"]').click();
-    await expect(page.locator('#mycmCashFlowCard')).toContainText('2,700');
-    await expect(page.locator('#mycmEmergencyCard')).toContainText('4.8 months');
-    const storage=await page.evaluate(()=>({session:sessionStorage.getItem('carrowmont_guest_dashboard_session_v1'),local:localStorage.getItem('carrowmont_guest_dashboard_local_v1')}));
-    expect(storage.session).toContain('cashFlow.takeHomeIncome');
-    expect(storage.local).toBeNull();
+function sampleProfile(){return {schemaVersion:1,version:'dashboard-store-v1.0',mode:'session',createdAt:'2026-11-12T00:00:00Z',updatedAt:'2026-11-12T00:00:00Z',locale:{region:'US',currency:'USD'},facts:{'cashFlow.takeHomeIncome':{value:6000,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null},'cashFlow.essentialExpenses':{value:2500,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null},'resilience.emergencySavings':{value:12000,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null}},lastImport:null};}
+
+ test.describe('FRE8A My Carrowmont account-backed dashboard',()=>{
+  test('[AUTO] signed-out visitors see sign-in but no populated dashboard',async({page})=>{
+    const errors=monitorPageErrors(page);await gotoClean(page,PATH);
+    await expect(page.getByRole('heading',{name:'Sign in to My Carrowmont'})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Continue with email'})).toBeVisible();
+    await expect(page.getByText('No password required.',{exact:false})).toBeVisible();
+    await expect(page.locator('#mycmDashboardShell')).toBeHidden();
+    await expect(page.locator('#mycmRemember')).toHaveCount(0);
+    await expect(page.getByText('Only the plans you choose to keep become part of My Carrowmont.',{exact:false})).toBeVisible();
     expect(errors).toEqual([]);
   });
 
-  test('[AUTO] Remember on this device is explicit and switching back removes persistent financial data',async({page})=>{
-    await gotoClean(page,PATH);
-    await openEditor(page); await setDashboardField(page,'cashFlow.takeHomeIncome',5000); await setDashboardField(page,'cashFlow.essentialExpenses',2000); await page.locator('#mycmEditForm button[type="submit"]').click();
-    await page.locator('#mycmRemember').check();
-    let storage=await page.evaluate(()=>({session:sessionStorage.getItem('carrowmont_guest_dashboard_session_v1'),local:localStorage.getItem('carrowmont_guest_dashboard_local_v1')}));
-    expect(storage.session).toBeNull(); expect(storage.local).toContain('5000');
-    await page.locator('#mycmRemember').uncheck();
-    storage=await page.evaluate(()=>({session:sessionStorage.getItem('carrowmont_guest_dashboard_session_v1'),local:localStorage.getItem('carrowmont_guest_dashboard_local_v1')}));
-    expect(storage.session).toContain('5000'); expect(storage.local).toBeNull();
+  test('[AUTO] authenticated profile populates deterministic dashboard and uses session working copy only',async({page})=>{
+    await installMockSupabase(page,{signedIn:true,profile:sampleProfile()});
+    await gotoClean(page,`${PATH}?code=qa-auth-return`);
+    await expect(page.locator('#mycmAccountCurrentEmail')).toHaveText('tester@example.com');
+    await expect(page.locator('#mycmDashboardShell')).toBeVisible();
+    await expect(page.locator('#mycmCashFlowCard')).toContainText('3,500');
+    await expect(page.locator('#mycmEmergencyCard')).toContainText('4.8 months');
+    const storage=await page.evaluate(()=>({session:sessionStorage.getItem('carrowmont_guest_dashboard_session_v1'),local:localStorage.getItem('carrowmont_guest_dashboard_local_v1')}));
+    expect(storage.session).toContain('cashFlow.takeHomeIncome');expect(storage.local).toBeNull();
   });
 
-  test('[AUTO] What Carrowmont knows lets the user ignore and remove individual values',async({page})=>{
-    await gotoClean(page,PATH);
-    await openEditor(page); await setDashboardField(page,'cashFlow.takeHomeIncome',5000); await setDashboardField(page,'cashFlow.essentialExpenses',2000); await page.locator('#mycmEditForm button[type="submit"]').click();
-    const row=page.locator('.mycm-fact').filter({hasText:'Monthly take-home income'});
-    await expect(row).toBeVisible();
-    await row.locator('[data-mycm-influence]').uncheck();
-    await expect(page.locator('#mycmCashFlowCard')).toContainText('Add take-home income');
-    await row.locator('[data-mycm-influence]').check();
-    await expect(page.locator('#mycmCashFlowCard')).toContainText('/ month');
-    await row.locator('[data-mycm-remove]').click();
-    await expect(page.locator('.mycm-fact').filter({hasText:'Monthly take-home income'})).toHaveCount(0);
+  test('[AUTO] signed-in edits update the account-backed profile',async({page})=>{
+    await installMockSupabase(page,{signedIn:true,profile:sampleProfile()});await gotoClean(page,`${PATH}?code=qa-auth-return`);
+    await page.locator('#mycmEditAll').click();
+    const input=page.locator('[data-mycm-path="cashFlow.takeHomeIncome"]');await input.fill('7000');
+    await page.locator('#mycmEditForm button[type="submit"]').click();
+    await expect(page.locator('#mycmBanner')).toContainText('saved to My Carrowmont');
+    await page.waitForTimeout(400);
+    const value=await page.evaluate(()=>window.__cmCloud.profile.profile.facts['cashFlow.takeHomeIncome'].value);
+    expect(value).toBe(7000);
   });
 
-  test('[AUTO] Ask Carrowmont never saves automatically and explicit My Carrowmont capture carries compatible facts only',async({page})=>{
-    await gotoClean(page,'/ask-carrowmont.html');
-    await page.locator('[data-ask-intent="emergency-runway"]').click();
-    await setAskValue(page,'essentialExpenses',3000); await setAskValue(page,'emergencySavings',18000);
-    await page.locator('#askQuestionsForm button[type="submit"]').click();
-    await expect(page.locator('#askResultStage')).toBeVisible();
-    expect(await page.evaluate(()=>sessionStorage.getItem('carrowmont_guest_dashboard_session_v1'))).toBeNull();
-    await page.locator('#askDashboardSaveBtn').click();
-    await expect(page.locator('#askDashboardSaveStatus')).toContainText('Saved to this browser');
-    const stored=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('carrowmont_guest_dashboard_session_v1')));
-    expect(stored.facts['cashFlow.essentialExpenses'].value).toBe(3000);
-    expect(stored.facts['resilience.emergencySavings'].value).toBe(18000);
-    await page.locator('#askDashboardSaveStatus a').click();
-    await expect(page).toHaveURL(/my-carrowmont\.html/);
-    await expect(page.locator('#mycmEmergencyCard')).toContainText('6 months');
-  });
-
-  test('[AUTO] dashboard is mobile-safe and remains a summary rather than a transaction tracker',async({page})=>{
-    await page.setViewportSize({width:390,height:844});
-    await gotoClean(page,PATH);
-    await assertNoHorizontalOverflow(page);
-    await expect(page.locator('[data-mobile1-bottom-nav]')).toBeVisible();
-    await expect(page.locator('[data-mobile1-nav="my"]')).toHaveAttribute('href','/my-carrowmont.html');
-    await expect(page.locator('[data-mobile1-nav="my"]')).toHaveAttribute('aria-current','page');
-    await page.locator('[data-mobile1-nav="more"]').click();
-    await expect(page.locator('#mobile1MoreDialog')).toContainText('Learn');
-    await expect(page.locator('#mobile1MoreDialog')).toContainText('About');
-    await expect(page.getByText('No bank connection')).toBeVisible();
-    await expect(page.getByText('not a transaction tracker',{exact:false})).toBeVisible();
+  test('[AUTO] account-backed dashboard remains mobile-safe',async({page})=>{
+    await installMockSupabase(page,{signedIn:true,profile:sampleProfile()});await page.setViewportSize({width:390,height:844});await gotoClean(page,`${PATH}?code=qa-auth-return`);
+    await assertNoHorizontalOverflow(page);await expect(page.locator('#mycmDashboardShell')).toBeVisible();await expect(page.locator('[data-mobile1-bottom-nav]')).toBeVisible();
   });
 });

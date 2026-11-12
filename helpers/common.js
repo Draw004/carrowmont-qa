@@ -52,6 +52,8 @@ export async function gotoClean(page, targetPath) {
       const dashboardSession = sessionStorage.getItem(dashboardSessionKey);
       const dashboardLocalKey = 'carrowmont_guest_dashboard_local_v1';
       const dashboardLocal = localStorage.getItem(dashboardLocalKey);
+      const pendingCloudProfileKey = 'carrowmont_pending_cloud_profile_v1';
+      const pendingCloudProfile = localStorage.getItem(pendingCloudProfileKey);
       localStorage.clear();
       sessionStorage.clear();
       if (privacyHandoff) sessionStorage.setItem(privacyHandoffKey, privacyHandoff);
@@ -59,6 +61,7 @@ export async function gotoClean(page, targetPath) {
       if (carAffordabilityHandoff) sessionStorage.setItem(carAffordabilityHandoffKey, carAffordabilityHandoff);
       if (dashboardSession) sessionStorage.setItem(dashboardSessionKey, dashboardSession);
       if (dashboardLocal) localStorage.setItem(dashboardLocalKey, dashboardLocal);
+      if (pendingCloudProfile) localStorage.setItem(pendingCloudProfileKey, pendingCloudProfile);
     } catch (_) {}
   });
   const response = await page.goto(targetPath, { waitUntil: 'domcontentloaded' });
