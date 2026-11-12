@@ -66,7 +66,7 @@ export function runFreBatch8bSavedPlansContract(sourceRoot){
   const budgetHtml=read('budget-cash-flow-planner/index.html');
   add('Budget guest month comparisons are session-only instead of a persistent account substitute',budgetStorage.includes('sessionStorage')&&!budgetStorage.includes('indexedDB')&&!budgetStorage.includes('localStorage')&&budgetHtml.includes('Session-only comparisons')&&budgetHtml.includes('THIS BROWSER SESSION'));
   const continuity=read(`${main}/docs/CARROWMONT_FRE_BATCH8_CONTINUITY_AMENDMENT.md`);
-  add('Batch 8 continuity records Save/Update contract and keeps progress tracking in 8C',continuity.includes('**8B — COMPLETE:**')&&continuity.includes('Update My Carrowmont with these changes')&&continuity.includes('Keep existing plan')&&continuity.includes('**8C — THIS RELEASE:**'));
+  add('Batch 8 continuity records Save/Update contract and keeps progress tracking in 8C',continuity.includes('**8B — COMPLETE:**')&&continuity.includes('Update My Carrowmont with these changes')&&continuity.includes('Keep existing plan')&&(continuity.includes('**8C — THIS RELEASE:**')||continuity.includes('**8C — COMPLETE:**')));
   const pages=JSON.parse(read(`${main}/data/carrowmont-search-pages.json`)),index=JSON.parse(read(`${main}/data/carrowmont-search-index.json`));
   add('search inventory remains 138 and My Carrowmont metadata reflects saved plans and insights',pages.entries?.length===138&&index.entries?.length===138&&pages.entries?.some(e=>e.url==='/my-carrowmont.html'&&/Save Financial Plans/.test(e.title)&&/deeper planning insights/i.test(e.description)));
   const registry=JSON.parse(read(`${main}/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V15.json`));
