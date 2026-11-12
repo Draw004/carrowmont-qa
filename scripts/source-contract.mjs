@@ -13,6 +13,7 @@ import { runFreAskMvpUiContract } from './fre-ask-mvp-ui-contract.mjs';
 import { runFreMoneyPrioritiesContract } from './fre-money-priorities-contract.mjs';
 import { runFreDashboardContract } from './fre-dashboard-contract.mjs';
 import { runFreSavedProfileContract } from './fre-saved-profile-contract.mjs';
+import { runFreBatch8bSavedPlansContract } from './fre-batch8b-saved-plans-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -41,6 +42,7 @@ for (const c of runFreAskMvpUiContract(root)) add(`FRE3B: ${c.name}`, c.ok, c.de
 for (const c of runFreMoneyPrioritiesContract(root)) add(`FRE5: ${c.name}`, c.ok, c.detail);
 for (const c of runFreDashboardContract(root)) add(`FRE6: ${c.name}`, c.ok, c.detail);
 for (const c of runFreSavedProfileContract(root)) add(`FRE7A: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch8bSavedPlansContract(root)) add(`FRE8B: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -682,7 +684,7 @@ add('budget: monthly and pay-cycle views are both present', budgetHtml.includes(
 add('budget: frequency model covers weekly through annual and irregular averages', /weekly:Object\.freeze\(\{[^}]*perMonth:52\/12/.test(budgetCore) && /biweekly:Object\.freeze\(\{[^}]*perMonth:26\/12/.test(budgetCore) && /semimonthly:Object\.freeze\(\{[^}]*perMonth:2/.test(budgetCore) && /fourweekly:Object\.freeze\(\{[^}]*perMonth:13\/12/.test(budgetCore) && /quarterly:Object\.freeze\(\{[^}]*perMonth:1\/3/.test(budgetCore) && /annual:Object\.freeze\(\{[^}]*perMonth:1\/12/.test(budgetCore) && budgetCore.includes("irregular:Object.freeze({label:'Irregular / Monthly Average'") && budgetApp.includes('const FREQ = Core.FREQ'));
 add('budget: irregular bills are translated into monthly reserves without double subtraction', budgetCore.includes('function irregularReserve') && budgetCore.includes('const remaining=income-essential-flexible-saving') && budgetApp.includes('Core.irregularReserve(rows)') && budgetHtml.includes('Irregular-bill reserves'));
 add('budget: emergency reserve target is user-selected', budgetHtml.includes('id="emergencyTargetMonths"') && budgetHtml.includes('Carrowmont does not assume one universal number of months'));
-add('budget: privacy-first local history uses IndexedDB plus localStorage preferences', budgetStorage.includes("indexedDB.open(DB_NAME") && budgetStorage.includes('localStorage.setItem') && budgetStorage.includes('exportAll') && budgetStorage.includes('importAll'));
+add('budget: guest history is session-only while export/import remains explicit', budgetStorage.includes("HISTORY_KEY = 'carrowmont_budget_session_months_v1'") && budgetStorage.includes('sessionStorage.setItem') && !budgetStorage.includes('indexedDB.open') && !budgetStorage.includes('localStorage.setItem') && budgetStorage.includes('exportAll') && budgetStorage.includes('importAll'));
 add('budget: history supports 3/6/12 month views and exceptional records', budgetHtml.includes('Last 3 months') && budgetHtml.includes('Last 6 months') && budgetHtml.includes('Last 12 months') && budgetApp.includes('monthExceptional'));
 add('budget: Smart Suggestions SS2 UI and local engine are wired',
   budgetHtml.includes('SMART SUGGESTIONS') &&
