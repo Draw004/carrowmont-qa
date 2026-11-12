@@ -2,54 +2,40 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 const require=createRequire(import.meta.url);
-
 export function runFreDashboardContract(root){
-  const checks=[]; const add=(name,ok,detail='')=>checks.push({name,ok:Boolean(ok),detail});
-  const main=path.join(root,'draw004.github.io');
-  const storeFile=path.join(main,'assets/fre/dashboard-store.js');
-  const pageFile=path.join(main,'my-carrowmont.html');
-  const uiFile=path.join(main,'assets/dashboard/my-carrowmont.js');
-  add('Batch 6 dashboard store and public page exist',fs.existsSync(storeFile)&&fs.existsSync(pageFile)&&fs.existsSync(uiFile));
-  if(!fs.existsSync(storeFile)) return checks;
-  const Store=require(storeFile);
-  let profile=Store.create({region:'NZ',currency:'NZD',now:'2026-11-10T00:00:00Z'});
-  profile=Store.setFact(profile,'cashFlow.takeHomeIncome',6000,{source:'contract'});
-  profile=Store.setFact(profile,'resilience.emergencySavings',12000,{source:'contract'});
-  add('dashboard fact contract supports add read ignore and remove',Store.getFact(profile,'cashFlow.takeHomeIncome')?.value===6000 && Store.getFact(Store.setExcluded(profile,'cashFlow.takeHomeIncome',true),'cashFlow.takeHomeIncome')===null && !Store.hasFact(Store.removeFact(profile,'resilience.emergencySavings'),'resilience.emergencySavings'));
-
-  function fakeStorage(){const map=new Map();return{getItem:k=>map.has(k)?map.get(k):null,setItem:(k,v)=>map.set(k,String(v)),removeItem:k=>map.delete(k),clear:()=>map.clear(),dump:()=>Object.fromEntries(map)};}
-  const sessionStorage=fakeStorage(),localStorage=fakeStorage();
-  const browser=Store.createBrowserStore({sessionStorage,localStorage});
-  let saved=browser.save(profile,'session');
-  add('dashboard persistence defaults can remain session-only',saved.mode==='session'&&Boolean(sessionStorage.getItem(Store.SESSION_KEY))&&!localStorage.getItem(Store.LOCAL_KEY));
-  saved=browser.save(saved,'local');
-  add('Remember on this device moves the profile to local storage and removes the session copy',saved.mode==='local'&&Boolean(localStorage.getItem(Store.LOCAL_KEY))&&!sessionStorage.getItem(Store.SESSION_KEY));
-  saved=browser.save(saved,'session');
-  add('switching back to session-only removes the persistent copy',saved.mode==='session'&&Boolean(sessionStorage.getItem(Store.SESSION_KEY))&&!localStorage.getItem(Store.LOCAL_KEY));
+  const checks=[];const add=(name,ok,detail='')=>checks.push({name,ok:Boolean(ok),detail});const main=path.join(root,'draw004.github.io');
+  const storeFile=path.join(main,'assets/fre/dashboard-store.js'),pageFile=path.join(main,'my-carrowmont.html'),uiFile=path.join(main,'assets/dashboard/my-carrowmont.js');
+  add('dashboard store and account-backed public page exist',fs.existsSync(storeFile)&&fs.existsSync(pageFile)&&fs.existsSync(uiFile));if(!fs.existsSync(storeFile))return checks;
+  const Store=require(storeFile);let profile=Store.create({region:'NZ',currency:'NZD',now:'2026-11-12T00:00:00Z'});profile=Store.setFact(profile,'cashFlow.takeHomeIncome',6000,{source:'contract'});profile=Store.setFact(profile,'resilience.emergencySavings',12000,{source:'contract'});
+  add('dashboard fact contract still supports add read ignore and remove',Store.getFact(profile,'cashFlow.takeHomeIncome')?.value===6000&&Store.getFact(Store.setExcluded(profile,'cashFlow.takeHomeIncome',true),'cashFlow.takeHomeIncome')===null&&!Store.hasFact(Store.removeFact(profile,'resilience.emergencySavings'),'resilience.emergencySavings'));
+  function fakeStorage(){const map=new Map();return{getItem:k=>map.has(k)?map.get(k):null,setItem:(k,v)=>map.set(k,String(v)),removeItem:k=>map.delete(k),clear:()=>map.clear()};}
+  const sessionStorage=fakeStorage(),localStorage=fakeStorage(),browser=Store.createBrowserStore({sessionStorage,localStorage});
+  const sessionSaved=browser.save(profile,'session');
+  add('dashboard store still supports a deterministic session working copy',sessionSaved.mode==='session'&&Boolean(sessionStorage.getItem(Store.SESSION_KEY))&&!localStorage.getItem(Store.LOCAL_KEY));
+  const legacyLocal=browser.save(sessionSaved,'local');
+  add('legacy local-storage capability remains readable for controlled migration without being exposed in the UI',legacyLocal.mode==='local'&&Boolean(localStorage.getItem(Store.LOCAL_KEY))&&!sessionStorage.getItem(Store.SESSION_KEY));
   browser.clear();
-  add('Clear dashboard removes both guest storage keys',!sessionStorage.getItem(Store.SESSION_KEY)&&!localStorage.getItem(Store.LOCAL_KEY));
-
-  const mpFacts={monthlyIncome:6000,essentialExpenses:2500,flexibleExpenses:1000,monthlyDebtPayments:400,emergencySavings:1000,emergencyTargetMonths:3,debtBalance:5000,highestDebtAprPct:18,assumedLongTermReturnPct:5,retirementSavings:10000,retirementMonthlyContribution:0,goalTargetAmount:12000,goalCurrentSavings:2000,goalYearsAway:2,goalMonthlyContribution:200};
-  const imported=Store.captureAskJourney(Store.create(),'money-priorities',mpFacts,{locale:{region:'US',currency:'USD'},currency:'USD'});
-  add('Money Priorities import maps compatible facts only after an explicit capture call',Store.getFact(imported,'cashFlow.takeHomeIncome')?.value===6000&&Store.getFact(imported,'debt.highestAprPct')?.value===18&&Store.getFact(imported,'goal.targetAmount')?.value===12000&&imported.lastImport?.intent==='money-priorities');
-
-  const page=fs.readFileSync(pageFile,'utf8'),ui=fs.readFileSync(uiFile,'utf8'),storeSource=fs.readFileSync(storeFile,'utf8'),ask=fs.readFileSync(path.join(main,'assets/ask/ask-carrowmont.js'),'utf8'),askHtml=fs.readFileSync(path.join(main,'ask-carrowmont.html'),'utf8');
-  add('dashboard exposes eight roadmap summary cards', ['mycmCashFlowCard','mycmEmergencyCard','mycmDebtCard','mycmBorrowingCard','mycmRetirementCard','mycmGoalCard','mycmFiCard','mycmPrioritiesCard'].every(id=>page.includes(`id="${id}"`)));
-  add('dashboard exposes What Carrowmont knows plus edit remove ignore and clear controls',page.includes('What Carrowmont knows about you')&&ui.includes('data-mycm-influence')&&ui.includes('data-mycm-remove')&&ui.includes('data-mycm-edit')&&page.includes('id="mycmClear"'));
-  add('dashboard defaults to session storage and local persistence requires explicit user choice',storeSource.includes("mode:MODES.includes(options.mode)?options.mode:'session'")&&page.includes('Remember on this device')&&ui.includes("e.target.checked?'local':'session'"));
-  add('dashboard calculation layer reuses deterministic engines and makes no network calls',ui.includes('CarrowmontBudgetCore.calculate')&&ui.includes('CarrowmontEmergencyFundCore.calculate')&&ui.includes('CarrowmontBorrowingHealthCore.calculate')&&ui.includes('CarrowmontGoalCore.calculate')&&ui.includes('CarrowmontFICore.result')&&ui.includes('CarrowmontMoneyPriorities.create')&&!/(?:\bfetch\s*\(|XMLHttpRequest|WebSocket)/.test(ui+'\n'+storeSource));
-  add('Ask Carrowmont dashboard persistence is explicit rather than automatic',askHtml.includes('Use these answers in My Carrowmont')&&ask.includes('saveToDashboard')&&ask.includes('captureAskJourney')&&ask.includes('captureAskJourney(current,lastResult.intent,state.facts'));
-  add('Ask trust copy states that results are not saved automatically',askHtml.includes('Not saved automatically')&&askHtml.includes('My Carrowmont saves only when you choose it'));
-  const privacy=fs.readFileSync(path.join(main,'privacy.html'),'utf8');
-  add('privacy policy documents session default local opt-in and user controls',privacy.includes('My Carrowmont guest dashboard')&&privacy.includes('current browser session')&&privacy.includes('Remember on this device')&&privacy.includes('edit or remove individual values'));
-  const pages=JSON.parse(fs.readFileSync(path.join(main,'data/carrowmont-search-pages.json'),'utf8'));
-  const index=JSON.parse(fs.readFileSync(path.join(main,'data/carrowmont-search-index.json'),'utf8'));
-  const sitemap=fs.readFileSync(path.join(main,'sitemap.xml'),'utf8');
-  add('My Carrowmont is reviewed public page 138 without adding a calculator',pages.entries?.length===138&&index.entries?.length===138&&pages.entries?.some(e=>e.url==='/my-carrowmont.html'&&e.type==='carrowmont')&&sitemap.includes('<loc>https://carrowmont.com/my-carrowmont.html</loc>')&&/"numberOfItems"\s*:\s*23/.test(fs.readFileSync(path.join(main,'tools.html'),'utf8')));
+  add('browser working-copy clear removes both historical dashboard keys',!sessionStorage.getItem(Store.SESSION_KEY)&&!localStorage.getItem(Store.LOCAL_KEY));
+  const imported=Store.captureAskJourney(Store.create(),'emergency-runway',{essentialExpenses:3000,emergencySavings:18000},{locale:{region:'US',currency:'USD'},currency:'USD'});
+  add('explicit Ask capture still maps only sanctioned compatible facts',Store.getFact(imported,'cashFlow.essentialExpenses')?.value===3000&&Store.getFact(imported,'resilience.emergencySavings')?.value===18000&&imported.lastImport?.intent==='emergency-runway');
+  const page=fs.readFileSync(pageFile,'utf8'),ui=fs.readFileSync(uiFile,'utf8'),ask=fs.readFileSync(path.join(main,'assets/ask/ask-carrowmont.js'),'utf8'),askHtml=fs.readFileSync(path.join(main,'ask-carrowmont.html'),'utf8'),privacy=fs.readFileSync(path.join(main,'privacy.html'),'utf8');
+  add('My Carrowmont dashboard is account-gated instead of guest-populated',page.includes('id="mycmDashboardShell" hidden')&&page.includes('Sign in to My Carrowmont')&&!page.includes('Remember on this device')&&!page.includes('id="mycmClear"'));
+  add('signed-out UI removes browser-persistence and browser-clear decisions from the user surface',!page.includes('mycmRemember')&&!page.includes('Remember on this device')&&!page.includes('Clear dashboard')&&!page.includes('Save this browser profile to account')&&!page.includes('Load saved profile'));
+  add('What Carrowmont knows retains edit remove and influence controls for authenticated profiles',page.includes('What Carrowmont knows about you')&&ui.includes('data-mycm-influence')&&ui.includes('data-mycm-remove')&&ui.includes('data-mycm-edit'));
+  add('dashboard waits for authenticated account-ready event before rendering profile values',ui.includes('carrowmont:mycm-account-ready')&&ui.includes('let initialized=false')&&!ui.includes('profile=browserStore?.load?.()||Store.create()'));
+  add('dashboard exposes eight roadmap summary cards after sign-in',['mycmCashFlowCard','mycmEmergencyCard','mycmDebtCard','mycmBorrowingCard','mycmRetirementCard','mycmGoalCard','mycmFiCard','mycmPrioritiesCard'].every(id=>page.includes(`id="${id}"`)));
+  add('authenticated dashboard edits emit an account save event and use only a session working copy',ui.includes("browserStore.save(profile,'session')")&&ui.includes("carrowmont:mycm-profile-change")&&!ui.includes("e.target.checked?'local':'session'"));
+  add('dashboard calculation layer still reuses deterministic engines and makes no network calls',ui.includes('CarrowmontBudgetCore.calculate')&&ui.includes('CarrowmontEmergencyFundCore.calculate')&&ui.includes('CarrowmontBorrowingHealthCore.calculate')&&ui.includes('CarrowmontGoalCore.calculate')&&ui.includes('CarrowmontFICore.result')&&ui.includes('CarrowmontMoneyPriorities.create')&&!/(?:\bfetch\s*\(|XMLHttpRequest|WebSocket)/.test(ui));
+  add('Ask uses an explicit Save to My Carrowmont handoff rather than guest dashboard persistence',askHtml.includes('Save this plan to My Carrowmont')&&ask.includes('stageGuestProfile')&&ask.includes("location.href='/my-carrowmont.html?save=ask'")&&!ask.includes('Saved to this browser'));
+  add('Ask trust copy states that My Carrowmont persistence happens only after a user choice',askHtml.includes('Saved only when you choose')&&askHtml.includes('Keep a meaningful plan in My Carrowmont'));
+  add('privacy policy documents account-backed My Carrowmont and no guest profile creation',privacy.includes('My Carrowmont saved planning profile')&&privacy.includes('Guest calculator use does not by itself create or update a My Carrowmont profile')&&privacy.includes('does not sell those financial planning values or use them for advertising'));
+  const pages=JSON.parse(fs.readFileSync(path.join(main,'data/carrowmont-search-pages.json'),'utf8')),index=JSON.parse(fs.readFileSync(path.join(main,'data/carrowmont-search-index.json'),'utf8')),sitemap=fs.readFileSync(path.join(main,'sitemap.xml'),'utf8');
+  add('public inventory remains 138 pages and 23 tools',pages.entries?.length===138&&index.entries?.length===138&&pages.entries?.some(e=>e.url==='/my-carrowmont.html'&&/Saved Financial Planning Dashboard/.test(e.title))&&sitemap.includes('<loc>https://carrowmont.com/my-carrowmont.html</loc>')&&/"numberOfItems"\s*:\s*23/.test(fs.readFileSync(path.join(main,'tools.html'),'utf8')));
+  const registry=JSON.parse(fs.readFileSync(path.join(main,'docs/CARROWMONT_FRE_ENGINE_REGISTRY_V14.json'),'utf8'));
+  add('Engine Registry V14 records account-backed continuity',registry.schema_version===14&&registry.registry_id==='carrowmont-fre-engine-registry-v14'&&registry.fre_batch8a?.status==='ACCOUNT_BACKED_CONTINUITY_ENABLED');
+  add('Batch 8A implementation, ledger and continuity amendment exist',['CARROWMONT_FRE_BATCH8A_ACCOUNT_CONTINUITY_FOUNDATION.md','CARROWMONT_FRE_BATCH8A_ACCEPTANCE_LEDGER.md','CARROWMONT_FRE_BATCH8_CONTINUITY_AMENDMENT.md'].every(f=>fs.existsSync(path.join(main,'docs',f))));
   const site=fs.readFileSync(path.join(main,'site.js'),'utf8');
-  add('My Carrowmont is a first-level desktop and mobile destination while About/Learn remain available secondarily',site.includes("var order = ['/','/my-carrowmont.html','/tools.html','/ask-carrowmont.html','/learn.html','/research.html','/search.html']")&&site.includes("{ key: 'my', label: 'My Money', href: '/my-carrowmont.html' }")&&site.includes('<span>Learn</span>')&&site.includes('<span>About</span>')&&site.includes("['/my-carrowmont.html','My Carrowmont']"));
-  const registry=JSON.parse(fs.readFileSync(path.join(main,'docs/CARROWMONT_FRE_ENGINE_REGISTRY_V12.json'),'utf8'));
-  add('Engine Registry V12 records guest/local dashboard boundaries',registry.schema_version===12&&registry.version==='V12'&&registry.fre_batch6?.public_url==='/my-carrowmont.html'&&registry.fre_batch6?.public_tool_count===23&&registry.fre_batch6?.search_public_page_count===138);
-  add('Batch 6 documentation and 14-dimension acceptance ledger exist',fs.existsSync(path.join(main,'docs/CARROWMONT_FRE_BATCH6_MY_CARROWMONT_DASHBOARD.md'))&&/14-dimension change-impact matrix/.test(fs.readFileSync(path.join(main,'docs/CARROWMONT_FRE_BATCH6_ACCEPTANCE_LEDGER.md'),'utf8')));
+  add('My Carrowmont remains first-level desktop/mobile navigation while guest tools remain independently discoverable',site.includes("var order = ['/','/my-carrowmont.html','/tools.html','/ask-carrowmont.html','/learn.html','/research.html','/search.html']")&&site.includes("{ key: 'my', label: 'My Money', href: '/my-carrowmont.html' }")&&site.includes('/tools.html')&&site.includes('/ask-carrowmont.html'));
+  add('historical Batch 6 dashboard documentation is retained while Batch 8 continuity explicitly supersedes its guest-persistence rule',fs.existsSync(path.join(main,'docs/CARROWMONT_FRE_BATCH6_MY_CARROWMONT_DASHBOARD.md'))&&fs.readFileSync(path.join(main,'docs/CARROWMONT_FRE_BATCH8_CONTINUITY_AMENDMENT.md'),'utf8').includes('superseded'));
   return checks;
 }

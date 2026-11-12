@@ -5770,18 +5770,21 @@ const newsletter1ResearchPages=['emergency-savings-resilience.html','inflation-p
 const fre7bAbout = read('draw004.github.io/about.html');
 const fre7bTerms = read('draw004.github.io/terms.html');
 const fre7bPrivacy = read('draw004.github.io/privacy.html');
-add('FRE7B: About explains guest-first account-optional use without implying a sign-up wall',
-  fre7bAbout.includes('Guest-first, account optional') && fre7bAbout.includes('/my-carrowmont.html') && fre7bAbout.includes('does not automatically upload financial values')
+add('FRE8A: About preserves guest-first tools while making My Carrowmont account-backed',
+  fre7bAbout.includes('Guest-first, My Carrowmont account-backed') && fre7bAbout.includes('/my-carrowmont.html') && fre7bAbout.includes('does not by itself create or update a My Carrowmont profile')
 );
-add('FRE7B: Terms cover optional accounts, explicit saved-profile use and Privacy linkage',
-  fre7bTerms.includes('<h2>Optional accounts and saved profiles</h2>') && fre7bTerms.includes('does not automatically upload financial values') && fre7bTerms.includes('href="/privacy.html"') && fre7bTerms.includes('Last updated: November 2026')
+add('FRE8A: Terms cover optional account-backed profiles and Privacy linkage',
+  fre7bTerms.includes('<h2>Optional accounts and saved profiles</h2>') && fre7bTerms.includes('does not by itself create or update a My Carrowmont profile') && fre7bTerms.includes('href="/privacy.html"') && fre7bTerms.includes('Last updated: November 2026')
 );
-add('FRE7B: Privacy names current Supabase/Brevo processing and contains no stale future-account wording',
-  fre7bPrivacy.includes('Brevo processes the authentication email delivery') && fre7bPrivacy.includes('brevo.com/legal/privacypolicy') && fre7bPrivacy.includes('optional My Carrowmont account') && !fre7bPrivacy.includes('future optional account')
+add('FRE8A: Privacy names Supabase/Brevo processing and account-backed My Carrowmont boundaries',
+  fre7bPrivacy.includes('Brevo processes the authentication email delivery') && fre7bPrivacy.includes('brevo.com/legal/privacypolicy') && fre7bPrivacy.includes('My Carrowmont saved planning profile') && fre7bPrivacy.includes('does not sell those financial planning values or use them for advertising') && !fre7bPrivacy.includes('future optional account')
 );
 
 add('NEWSLETTER1: homepage promise stays guest-first while optional email signup is explicit',
   newsletter1Home.includes('Account optional') && !newsletter1Home.includes('No sign-up required') && newsletter1Site.includes('CARROWMONT MONEY IN REAL LIFE') && newsletter1Site.includes('Optional. No Carrowmont account required.')
+);
+add('FRE8A: homepage places My Carrowmont and newsletter together after core planning and before decision-support tools',
+  newsletter1Site.includes('cm-home-relationship-grid') && newsletter1Site.includes('data-cm-home-mycarrowmont') && newsletter1Site.includes('Keep your plans together.') && newsletter1Site.includes("main.insertBefore(section, authority)") && newsletter1Site.includes('No Carrowmont account required.')
 );
 add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locked',
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")

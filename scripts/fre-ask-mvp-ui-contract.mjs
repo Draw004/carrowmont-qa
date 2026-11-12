@@ -38,7 +38,7 @@ export function runFreAskMvpUiContract(root){
   add('Ask car-affordability detail link writes a one-time same-session handoff from the exact deterministic engine input',/writeCarAffordabilityHandoff/.test(ui) && /engineId==='car-affordability'/.test(ui) && /trace\.input/.test(ui) && /expiresAt/.test(ui));
   const qaCommon=fs.readFileSync(path.join(qaRoot,'helpers/common.js'),'utf8');
   add('automated QA navigation preserves the sanctioned one-time car-affordability handoff across the same-tab page transition',/carrowmont_handoff_car_affordability_v1/.test(qaCommon) && /carAffordabilityHandoff/.test(qaCommon) && /sessionStorage\.setItem\(carAffordabilityHandoffKey, carAffordabilityHandoff\)/.test(qaCommon));
-  add('public copy makes deterministic calculation authority and privacy boundary explicit',/Tested engines/.test(html) && /Not saved automatically/.test(html) && /calculators do the mathematics/.test(html));
+  add('public copy makes deterministic calculation authority and explicit-save privacy boundary clear',/Tested engines/.test(html) && /Saved only when you choose/.test(html) && /calculators do the mathematics/.test(html) && /Save this plan to My Carrowmont/.test(html));
   add('unsupported free-text questions get a visible transparent fallback instead of a silent dead end',/id="askUnsupported"/.test(html) && /guided resolution is not available yet/.test(html) && /showUnsupported/.test(ui) && /Search Carrowmont/.test(html) && /Browse Tools/.test(html) && /Explore Learn/.test(html));
   add('locale layer remains authoritative for country currency and money formatting',ui.includes('CarrowmontLocale') && ui.includes('getCurrency') && ui.includes('getRegion') && ui.includes('formatMoney'));
 
