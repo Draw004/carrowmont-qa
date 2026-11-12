@@ -13,10 +13,12 @@
     "qa:headed": "playwright test --project=chrome-desktop --headed",
     "qa:ui": "playwright test --ui",
     "show-report": "playwright show-report",
-    "source-check": "node scripts/source-contract.mjs"
+    "source-check": "node scripts/source-contract.mjs",
+    "preqa:chrome": "node scripts/playwright-runtime-preflight.mjs",
+    "preqa:reports": "node scripts/playwright-runtime-preflight.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0",
-    "pdf-lib": "^1.17.1"
+    "@playwright/test": "1.65.0",
+    "pdf-lib": "1.17.1"
   }
 }
