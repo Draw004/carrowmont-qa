@@ -54,6 +54,10 @@ export async function gotoClean(page, targetPath) {
       const dashboardLocal = localStorage.getItem(dashboardLocalKey);
       const pendingCloudProfileKey = 'carrowmont_pending_cloud_profile_v1';
       const pendingCloudProfile = localStorage.getItem(pendingCloudProfileKey);
+      const pendingSavedPlanKey = 'carrowmont_pending_saved_plan_v1';
+      const pendingSavedPlan = localStorage.getItem(pendingSavedPlanKey);
+      const openSavedPlanKey = 'carrowmont_open_saved_plan_v1';
+      const openSavedPlan = sessionStorage.getItem(openSavedPlanKey);
       localStorage.clear();
       sessionStorage.clear();
       if (privacyHandoff) sessionStorage.setItem(privacyHandoffKey, privacyHandoff);
@@ -62,6 +66,8 @@ export async function gotoClean(page, targetPath) {
       if (dashboardSession) sessionStorage.setItem(dashboardSessionKey, dashboardSession);
       if (dashboardLocal) localStorage.setItem(dashboardLocalKey, dashboardLocal);
       if (pendingCloudProfile) localStorage.setItem(pendingCloudProfileKey, pendingCloudProfile);
+      if (pendingSavedPlan) localStorage.setItem(pendingSavedPlanKey, pendingSavedPlan);
+      if (openSavedPlan) sessionStorage.setItem(openSavedPlanKey, openSavedPlan);
     } catch (_) {}
   });
   const response = await page.goto(targetPath, { waitUntil: 'domcontentloaded' });

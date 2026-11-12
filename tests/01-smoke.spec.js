@@ -779,7 +779,7 @@ ${errors.join('\n')}`).toEqual([]);
 
 
 test.describe('Budget & Cash Flow Planner contracts', () => {
-  test('[AUTO] Budget: monthly and pay-cycle views, local save and deterministic insights work', async ({ page }) => {
+  test('[AUTO] Budget: monthly and pay-cycle views, session keep and deterministic insights work', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, '/budget-cash-flow-planner/');
     await page.locator('#loadDefaultsBtn').click();
@@ -790,8 +790,14 @@ test.describe('Budget & Cash Flow Planner contracts', () => {
     await page.locator('#primaryPayFrequency').selectOption('biweekly');
     await expect(page.locator('#cycleIncome')).not.toHaveText('₹0');
     await page.locator('#saveMonthBtn').click();
-    await expect(page.locator('#saveStatus')).toContainText('Saved');
+    await expect(page.locator('#saveStatus')).toContainText('browser session');
     await expect(page.locator('#historyTableBody tr')).toHaveCount(1);
+    const sessionHistory = await page.evaluate(() => ({
+      session: sessionStorage.getItem('carrowmont_budget_session_months_v1'),
+      local: localStorage.getItem('carrowmont_budget_session_months_v1')
+    }));
+    expect(sessionHistory.session).toBeTruthy();
+    expect(sessionHistory.local).toBeNull();
     await expect(page.locator('#insightGrid .insight-card').first()).toBeVisible();
     expect(errors, `Budget browser errors:
 ${errors.join('\n')}`).toEqual([]);
