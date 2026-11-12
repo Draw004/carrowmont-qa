@@ -15,6 +15,7 @@ import { runFreDashboardContract } from './fre-dashboard-contract.mjs';
 import { runFreSavedProfileContract } from './fre-saved-profile-contract.mjs';
 import { runFreBatch8bSavedPlansContract } from './fre-batch8b-saved-plans-contract.mjs';
 import { runFreBatch8cProgressContract } from './fre-batch8c-progress-contract.mjs';
+import { runFreBatch8dPlanIntelligenceContract } from './fre-batch8d-plan-intelligence-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -45,6 +46,7 @@ for (const c of runFreDashboardContract(root)) add(`FRE6: ${c.name}`, c.ok, c.de
 for (const c of runFreSavedProfileContract(root)) add(`FRE7A: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8bSavedPlansContract(root)) add(`FRE8B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8cProgressContract(root)) add(`FRE8C: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch8dPlanIntelligenceContract(root)) add(`FRE8D: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {

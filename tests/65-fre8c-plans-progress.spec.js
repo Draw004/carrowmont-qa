@@ -65,7 +65,7 @@ test.describe('FRE8C saved-plan progress tracking',()=>{
     await gotoClean(page,'/my-carrowmont.html?code=qa-auth-return');
     const progress=page.locator('#mycmProgressSection');await expect(progress.getByText('Needs attention', { exact: true })).toBeVisible();
     await expect(progress).toContainText('Emergency runway fell by 1.5 months.');
-    await expect(progress).toContainText('Open Emergency Fund & Runway and review your current reserve and target.');
+    await expect(progress).toContainText('Open Emergency Fund & Runway and calculate the amount needed for the saved target.');
   });
 
   test('[AUTO] Car Affordability remains a saved decision scenario outside ongoing progress',async({page})=>{
