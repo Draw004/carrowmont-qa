@@ -17,6 +17,7 @@ import { runFreBatch8bSavedPlansContract } from './fre-batch8b-saved-plans-contr
 import { runFreBatch8cProgressContract } from './fre-batch8c-progress-contract.mjs';
 import { runFreBatch8dPlanIntelligenceContract } from './fre-batch8d-plan-intelligence-contract.mjs';
 import { runFreBatch8eProductMobileContract } from './fre-batch8e-product-mobile-contract.mjs';
+import { runFreBatch8fUxRoutingPerformanceContract } from './fre-batch8f-ux-routing-performance-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -49,6 +50,7 @@ for (const c of runFreBatch8bSavedPlansContract(root)) add(`FRE8B: ${c.name}`, c
 for (const c of runFreBatch8cProgressContract(root)) add(`FRE8C: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8dPlanIntelligenceContract(root)) add(`FRE8D: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8eProductMobileContract(root)) add(`FRE8E: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch8fUxRoutingPerformanceContract(root)) add(`FRE8F: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -912,9 +914,10 @@ if (mainHome || mainSiteJs) {
     mainHome.includes('footer-investment-link')
   );
   add('main site: responsive homepage hero image assets are wired without copy changes',
-    mainHome.includes('carrowmont-hero-mobile.webp?v=20260927-hero-asset3') &&
-    mainHome.includes('carrowmont-hero-laptop.webp?v=20260927-hero-asset3') &&
-    mainHome.includes('carrowmont-hero.webp?v=20260927-hero-asset3') &&
+    mainHome.includes('carrowmont-hero-mobile.webp?v=20261113-hero4') &&
+    mainHome.includes('carrowmont-hero-laptop.webp?v=20261113-hero4') &&
+    mainHome.includes('carrowmont-hero.webp?v=20261113-hero4') &&
+    mainHome.includes('fetchpriority="high"') && mainHome.includes('loading="eager"') &&
     mainCss.includes('Homepage hero responsive image asset fix - 2026-09-27') &&
     mainCss.includes('object-position:80% center!important') &&
     mainCss.includes('object-position:right center!important') &&
@@ -4338,13 +4341,18 @@ add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-lo
   search1FixtureScript.includes('debt consolidation finds the total-cost guide') &&
   search1FixtureScript.includes('nonsense returns no misleading match')
 );
-add('SEARCH1: search words remain memory-only and are never placed in URLs, browser storage, cookies or analytics calls',
-  !/localStorage|sessionStorage|document\.cookie|URLSearchParams|history\.(?:pushState|replaceState)|location\.(?:search|hash)/.test(search1Js) &&
+add('SEARCH1: search words remain private; only the sanctioned one-time Ask handoff may use sessionStorage',
+  !/localStorage|document\.cookie|URLSearchParams|history\.(?:pushState|replaceState)|location\.(?:search|hash)/.test(search1Js) &&
+  search1Js.includes("ASK_SEARCH_HANDOFF_KEY = 'carrowmont_search_handoff_v1'") &&
+  search1Js.includes('sessionStorage.getItem(ASK_SEARCH_HANDOFF_KEY)') &&
+  search1Js.includes('sessionStorage.removeItem(ASK_SEARCH_HANDOFF_KEY)') &&
+  !/sessionStorage\.setItem/.test(search1Js) &&
+  (search1Js.match(/sessionStorage\./g)||[]).length === 2 &&
   !/sendBeacon|XMLHttpRequest|WebSocket/.test(search1Js) &&
   search1Js.includes("fetch(INDEX_URL, { credentials: 'same-origin'") && search1Js.includes("fetch(ALIASES_URL, { credentials: 'same-origin'") &&
   !/https?:\/\//.test(search1Js) &&
   !/name=["'](?:q|query|search)["']/.test(search1Html + search1Learn + search1Tools) &&
-  search1Privacy.includes('not added to the page URL') && search1Privacy.includes('not sent to an external search provider')
+  search1Privacy.includes('not put in the URL') && search1Privacy.includes('not sent to an external search provider')
 );
 add('SEARCH1: header, Learn and Tools expose one consistent search path without replacing crawlable browse links',
   search1SiteJs.includes("href = '/search.html'") && search1SiteJs.includes('data-cm-search-link') &&
@@ -4555,13 +4563,15 @@ add(`LEARN2A-2: sitemap and SEARCH1 contain ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT
   search1Result('credit card interest','GB')[0]?.url === '/how-credit-card-interest-works.html' &&
   search1Result('apr vs interest rate','US')[0]?.url === '/apr-vs-interest-rate.html'
 );
-add('SEARCH1 layout refinement: compact hero places the primary search action above the fold while preserving responsive and privacy boundaries',
+add('SEARCH1 layout refinement: compact hero and current Search assets preserve responsive and privacy boundaries',
   search1Css.includes('.cm-search-page-hero .page-hero-inner{padding:46px 0 94px') &&
   search1Css.includes('.cm-search-page-section{position:relative;z-index:2;margin-top:-64px') &&
   search1Css.includes('.cm-search-page-section{margin-top:-48px;padding-bottom:54px}') &&
-  search1Html.includes('search.css?v=20261020-learn2a2') && search1Learn.includes('search.css?v=20261020-learn2a2') && search1Tools.includes('search.css?v=20261020-learn2a2') &&
+  search1Html.includes('search.css?v=20261113-fre8f') && search1Learn.includes('search.css?v=20261113-fre8f') && search1Tools.includes('search.css?v=20261113-fre8f') &&
+  search1Learn.includes('search.js?v=20261113-fre8f') && search1Tools.includes('search.js?v=20261113-fre8f') &&
   search1Qa.includes('search action should be visible above the fold') && search1Qa.includes('[1280, 390, 360]') &&
-  !/localStorage|sessionStorage|URLSearchParams/.test(search1Js)
+  !/localStorage|URLSearchParams/.test(search1Js) && !/sessionStorage\.setItem/.test(search1Js) &&
+  search1Js.includes("ASK_SEARCH_HANDOFF_KEY = 'carrowmont_search_handoff_v1'")
 );
 add('LEARN2A-2: browser QA and implementation record protect identity, localization, discovery, layout and Snapshot 90 release boundaries',
   learn2a2Qa.includes('four guides have unique indexable identities') &&

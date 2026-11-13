@@ -14,7 +14,7 @@ export function runFreBatch8eProductMobileContract(root){
   let manifest={};try{manifest=JSON.parse(read('draw004.github.io/carrowmont.webmanifest'));}catch{}
   add('homepage: connected product journey explains Plan Keep Track Understand without numbered cards',home.includes('HOW CARROWMONT HELPS')&&home.includes('cm-product-journey')&&home.includes('cm-journey-node')&&home.includes('>Plan</h3>')&&home.includes('>Keep</h3>')&&home.includes('>Track</h3>')&&home.includes('>Understand</h3>')&&!home.includes('cm-product-step'));
   add('homepage: connected journey has desktop line and mobile vertical line',css.includes('.cm-product-journey::before')&&css.includes('left:12.5%;right:12.5%')&&css.includes('left:43px;right:auto')&&css.includes('grid-template-columns:48px minmax(0,1fr)'));
-  add('homepage: what-if rule remains explicit',home.includes('What-if calculations stay separate until you choose to update My Carrowmont.'));
+  add('what-if separation remains explicit in My Carrowmont after homepage cleanup',my.includes('What-if calculation')&&my.includes('Stays separate until you choose to update My Carrowmont.')&&!home.includes('Explore freely.'));
   add('homepage: product preview is explicitly illustrative',home.includes('SEE CARROWMONT IN ACTION')&&home.includes('Illustrative example'));
   add('homepage: core tool grid remains present',home.includes('data-homepage-core-grid')&&home.includes('Explore All Tools'));
   add('homepage: one My Carrowmont showcase remains and newsletter is separate after it',!site.includes('data-cm-home-mycarrowmont')&&site.includes("var productPreview = main.querySelector('.cm-product-preview-section')")&&site.includes('if (authority) main.insertBefore(section, authority)'));
