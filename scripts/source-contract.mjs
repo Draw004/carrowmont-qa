@@ -16,6 +16,7 @@ import { runFreSavedProfileContract } from './fre-saved-profile-contract.mjs';
 import { runFreBatch8bSavedPlansContract } from './fre-batch8b-saved-plans-contract.mjs';
 import { runFreBatch8cProgressContract } from './fre-batch8c-progress-contract.mjs';
 import { runFreBatch8dPlanIntelligenceContract } from './fre-batch8d-plan-intelligence-contract.mjs';
+import { runFreBatch8eProductMobileContract } from './fre-batch8e-product-mobile-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -47,6 +48,7 @@ for (const c of runFreSavedProfileContract(root)) add(`FRE7A: ${c.name}`, c.ok, 
 for (const c of runFreBatch8bSavedPlansContract(root)) add(`FRE8B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8cProgressContract(root)) add(`FRE8C: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8dPlanIntelligenceContract(root)) add(`FRE8D: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch8eProductMobileContract(root)) add(`FRE8E: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -5790,7 +5792,7 @@ add('NEWSLETTER1: homepage promise stays guest-first while optional email signup
   newsletter1Home.includes('Account optional') && !newsletter1Home.includes('No sign-up required') && newsletter1Site.includes('CARROWMONT MONEY IN REAL LIFE') && newsletter1Site.includes('Optional. No Carrowmont account required.')
 );
 add('FRE8A: homepage places My Carrowmont and newsletter together after core planning and before decision-support tools',
-  newsletter1Site.includes('cm-home-relationship-grid') && newsletter1Site.includes('data-cm-home-mycarrowmont') && newsletter1Site.includes('Keep your plans together.') && newsletter1Site.includes("main.insertBefore(section, authority)") && newsletter1Site.includes('No Carrowmont account required.')
+  newsletter1Site.includes('cm-home-relationship-grid') && newsletter1Site.includes('data-cm-home-mycarrowmont') && newsletter1Site.includes('Keep your financial plans connected.') && newsletter1Site.includes("var productPreview = main.querySelector('.cm-product-preview-section')") && newsletter1Site.includes('main.insertBefore(section, productPreview)') && newsletter1Site.includes('No Carrowmont account required.')
 );
 add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locked',
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")

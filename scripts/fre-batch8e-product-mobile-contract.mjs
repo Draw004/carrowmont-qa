@@ -1,0 +1,32 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+export function runFreBatch8eProductMobileContract(root){
+  const checks=[];const add=(name,ok,detail='')=>checks.push({name,ok,detail});
+  const read=rel=>{const p=path.join(root,rel);return fs.existsSync(p)?fs.readFileSync(p,'utf8'):'';};
+  const exists=rel=>fs.existsSync(path.join(root,rel));
+  const home=read('draw004.github.io/index.html');
+  const css=read('draw004.github.io/carrowmont.css');
+  const site=read('draw004.github.io/site.js');
+  const my=read('draw004.github.io/my-carrowmont.html');
+  const mycss=read('draw004.github.io/assets/dashboard/my-carrowmont.css');
+  const about=read('draw004.github.io/about.html');
+  let manifest={};try{manifest=JSON.parse(read('draw004.github.io/carrowmont.webmanifest'));}catch{}
+  add('homepage: product story explains Plan Keep Track Understand',home.includes('HOW CARROWMONT HELPS')&&home.includes('>Plan</h3>')&&home.includes('>Keep</h3>')&&home.includes('>Track</h3>')&&home.includes('>Understand</h3>'));
+  add('homepage: what-if rule remains explicit',home.includes('What-if calculations stay separate until you choose to update My Carrowmont.'));
+  add('homepage: product preview is explicitly illustrative',home.includes('SEE CARROWMONT IN ACTION')&&home.includes('Illustrative example'));
+  add('homepage: core tool grid remains present',home.includes('data-homepage-core-grid')&&home.includes('Explore All Tools'));
+  add('homepage: relationship section mounts before product preview',site.includes("var productPreview = main.querySelector('.cm-product-preview-section')")&&site.includes('main.insertBefore(section, productPreview)'));
+  add('mobile: product story and preview have responsive contracts',css.includes('@media(max-width:600px)')&&css.includes('.cm-product-story-grid{grid-template-columns:1fr')&&css.includes('.cm-product-preview-layout{grid-template-columns:1fr'));
+  add('my carrowmont: phone install access is explicit',my.includes('Keep My Carrowmont one tap away.')&&my.includes('Installing it does not change what is saved in your account.'));
+  add('my carrowmont: mobile quick access covers four core destinations',my.includes('My Carrowmont quick access')&&my.includes('>Progress</a>')&&my.includes('>Saved plans</a>')&&my.includes('>Financial picture</a>')&&my.includes('>Saved details</a>'));
+  add('my carrowmont: quick access is mobile scoped',mycss.includes('.mycm-mobile-quick{display:none}')&&mycss.includes('@media(max-width:800px)')&&mycss.includes('.mycm-mobile-quick{display:grid'));
+  add('pwa: manifest is standards-ready',manifest.name==='Carrowmont'&&manifest.short_name==='Carrowmont'&&manifest.start_url==='/my-carrowmont.html?source=pwa'&&manifest.scope==='/'&&manifest.display==='standalone'&&manifest.prefer_related_applications===false);
+  add('pwa: required 192 and 512 icons are declared and present',Array.isArray(manifest.icons)&&manifest.icons.some(x=>x.sizes==='192x192')&&manifest.icons.some(x=>x.sizes==='512x512')&&exists('draw004.github.io/assets/pwa/carrowmont-192.png')&&exists('draw004.github.io/assets/pwa/carrowmont-512.png'));
+  add('pwa: shortcuts cover My Carrowmont Ask and Tools',Array.isArray(manifest.shortcuts)&&manifest.shortcuts.some(x=>x.url==='/my-carrowmont.html')&&manifest.shortcuts.some(x=>x.url==='/ask-carrowmont.html')&&manifest.shortcuts.some(x=>x.url==='/tools.html'));
+  add('pwa: custom install interception is limited to the My Carrowmont install button',site.includes("if(!button) return;")&&site.includes("event.preventDefault();deferredPrompt=event;button.hidden=false;"));
+  add('pwa: no service worker or offline financial-data cache is introduced',!site.includes('serviceWorker.register')&&!exists('draw004.github.io/service-worker.js')&&!exists('draw004.github.io/sw.js'));
+  add('about: product positioning moves beyond calculator directory',about.includes('financial planning system, not just a directory of calculators')&&about.includes('track what changed over time'));
+  add('docs: Batch 8E implementation and acceptance ledger exist',exists('draw004.github.io/docs/CARROWMONT_FRE_BATCH8E_PRODUCT_STORY_MOBILE_FOUNDATION.md')&&exists('draw004.github.io/docs/CARROWMONT_FRE_BATCH8E_ACCEPTANCE_LEDGER.md')&&exists('draw004.github.io/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V18.json'));
+  return checks;
+}
