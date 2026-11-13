@@ -29,19 +29,24 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     expect(errors).toEqual([]);
   });
 
-  test('[AUTO] unsupported ordinary-language questions always receive a visible not-yet-available response',async({page})=>{
+  test('[AUTO] unsupported ordinary-language questions route to useful Carrowmont content without exposing the backlog',async({page})=>{
     await gotoClean(page,PATH);
-    await page.locator('#askQuestion').fill('How to start investing?');
+    const query='How to start investing?';
+    await page.locator('#askQuestion').fill(query);
     await page.locator('#askStartBtn').click();
     const fallback=page.locator('#askUnsupported');
     await expect(fallback).toBeVisible();
-    await expect(fallback).toContainText('guided resolution is not available yet');
-    await expect(fallback).toContainText('six controlled money decisions');
-    await expect(fallback.getByRole('link',{name:'Search Carrowmont'})).toHaveAttribute('href','/search.html');
+    await expect(fallback).toContainText('Here is a good place to start');
+    await expect(fallback.locator('.ask-route-result').first()).toContainText('Investing for Beginners');
+    await expect(fallback).not.toContainText(/not available yet|has not been built yet|still growing/i);
+    await expect(fallback.getByRole('link',{name:'See all search results'})).toHaveAttribute('href','/search.html');
     await expect(fallback.getByRole('link',{name:'Browse Tools'})).toHaveAttribute('href','/tools.html');
     await expect(fallback.getByRole('link',{name:'Explore Learn'})).toHaveAttribute('href','/learn.html');
-    await expect(page.locator('#askQuestionsStage')).toBeHidden();
-    await expect(page.locator('#askResultStage')).toBeHidden();
+    await Promise.all([page.waitForURL(/\/search\.html$/),fallback.getByRole('link',{name:'See all search results'}).click()]);
+    await expect(page.locator('[data-cm-search-input]')).toHaveValue(query);
+    await expect(page.locator('[data-cm-search-results-heading]')).toContainText('Results for');
+    expect(new URL(page.url()).search).toBe('');
+    expect(await page.evaluate(()=>sessionStorage.getItem('carrowmont_search_handoff_v1'))).toBeNull();
   });
 
   test('[AUTO] blank Ask input shows validation instead of failing silently',async({page})=>{
