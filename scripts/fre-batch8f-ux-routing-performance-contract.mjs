@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export function runFreBatch8fUxRoutingPerformanceContract(root){
   const checks=[]; const add=(name,ok,detail='')=>checks.push({name,ok,detail});
@@ -9,7 +10,9 @@ export function runFreBatch8fUxRoutingPerformanceContract(root){
   const learn=read(main+'learn.html'); const search=read(main+'search.js'); const searchCss=read(main+'search.css');
   const ask=read(main+'ask-carrowmont.html'); const askJs=read(main+'assets/ask/ask-carrowmont.js');
   const research=read(main+'research.html'); const privacy=read(main+'privacy.html'); const site=read(main+'site.js');
-  const qaCommon=read('carrowmont-qa/helpers/common.js');
+  const qaCommonFromSourceRoot=read('carrowmont-qa/helpers/common.js');
+  const localQaCommonPath=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../helpers/common.js');
+  const qaCommon=qaCommonFromSourceRoot || (fs.existsSync(localQaCommonPath)?fs.readFileSync(localQaCommonPath,'utf8'):'');
   add('homepage removes the redundant Explore freely strip while keeping the connected journey',!home.includes('Explore freely.') && /cm-product-journey/.test(home) && ['Plan','Keep','Track','Understand'].every(x=>home.includes('>'+x+'</h3>')));
   add('mobile navigation keeps the established My Money label',site.includes("{ key: 'my', label: 'My Money', href: '/my-carrowmont.html' }"));
   add('hero keeps the approved responsive assets but loads them early with the new cache version',home.includes('20261113-hero4') && home.includes('fetchpriority="high"') && home.includes('loading="eager"') && (home.match(/rel="preload" as="image"/g)||[]).length===3);
