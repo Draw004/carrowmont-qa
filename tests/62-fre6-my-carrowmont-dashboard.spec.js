@@ -13,7 +13,7 @@ async function installMockSupabase(page,{signedIn=true,profile=null}={}){
   },{signedIn,profile});
 }
 
-function sampleProfile(){return {schemaVersion:1,version:'dashboard-store-v1.0',mode:'session',createdAt:'2026-11-12T00:00:00Z',updatedAt:'2026-11-12T00:00:00Z',locale:{region:'US',currency:'USD'},facts:{'cashFlow.takeHomeIncome':{value:6000,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null},'cashFlow.essentialExpenses':{value:2500,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null},'resilience.emergencySavings':{value:12000,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null}},lastImport:null};}
+function sampleProfile(){return {schemaVersion:1,version:'dashboard-store-v1.0',mode:'session',createdAt:'2026-11-12T00:00:00Z',updatedAt:'2026-11-12T00:00:00Z',locale:{region:'US',currency:'USD'},facts:{'cashFlow.takeHomeIncome':{value:6000,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null},'cashFlow.essentialExpenses':{value:2500,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null},'cashFlow.flexibleExpenses':{value:0,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null},'debt.monthlyPayments':{value:0,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null},'resilience.emergencySavings':{value:12000,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null}},lastImport:null};}
 
  test.describe('FRE8A My Carrowmont account-backed dashboard',()=>{
   test('[AUTO] signed-out visitors see sign-in but no populated dashboard',async({page})=>{
@@ -40,13 +40,37 @@ function sampleProfile(){return {schemaVersion:1,version:'dashboard-store-v1.0',
 
   test('[AUTO] signed-in edits update the account-backed profile',async({page})=>{
     await installMockSupabase(page,{signedIn:true,profile:sampleProfile()});await gotoClean(page,`${PATH}?code=qa-auth-return`);
-    await page.locator('#mycmEditAll').click();
+    await page.locator('#mycmCashFlowCard [data-mycm-edit="monthly"]').click();
     const input=page.locator('[data-mycm-path="cashFlow.takeHomeIncome"]');await input.fill('7000');
     await page.locator('#mycmEditForm button[type="submit"]').click();
     await expect(page.locator('#mycmBanner')).toContainText('saved to My Carrowmont');
     await page.waitForTimeout(400);
     const value=await page.evaluate(()=>window.__cmCloud.profile.profile.facts['cashFlow.takeHomeIncome'].value);
     expect(value).toBe(7000);
+  });
+
+
+  test('[AUTO] an explicitly removed saved value stays removed instead of returning as the old value',async({page})=>{
+    const profile=sampleProfile();profile.facts['cashFlow.flexibleExpenses'].value=500;
+    await installMockSupabase(page,{signedIn:true,profile});await gotoClean(page,`${PATH}?code=qa-auth-return`);
+    await page.locator('#mycmCashFlowCard [data-mycm-edit="monthly"]').click();
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('[data-mycm-remove="cashFlow.flexibleExpenses"]').click();
+    await page.waitForTimeout(400);
+    const stored=await page.evaluate(()=>window.__cmCloud.profile.profile.facts['cashFlow.flexibleExpenses']);
+    expect(stored).toBeUndefined();
+    await expect(page.locator('[data-mycm-path="cashFlow.flexibleExpenses"]')).toHaveValue('');
+    await page.locator('#mycmEditClose').click();
+    await page.locator('#mycmCashFlowCard [data-mycm-edit="monthly"]').click();
+    await expect(page.locator('[data-mycm-path="cashFlow.flexibleExpenses"]')).toHaveValue('');
+  });
+
+  test('[AUTO] dashboard keeps debt and mortgage context in one simple Debt & loans card',async({page})=>{
+    const profile=sampleProfile();profile.facts['cashFlow.takeHomeIncome'].value=60000;profile.facts['debt.balance']={value:1200000,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'USD',note:null};profile.facts['debt.monthlyPayments'].value=22350;profile.facts['debt.highestAprPct']={value:10.8,origin:'user',source:'QA',lastUpdated:'2026-11-12T00:00:00Z',excluded:false,unit:'pct',note:null};
+    await installMockSupabase(page,{signedIn:true,profile});await gotoClean(page,`${PATH}?code=qa-auth-return`);
+    await expect(page.locator('#mycmDebtCard')).toContainText('Debt & loans');
+    await expect(page.locator('#mycmDebtCard')).toContainText('37.3% of your monthly income goes toward debt payments');
+    await expect(page.getByText('Mortgage & loan burden')).toHaveCount(0);
   });
 
   test('[AUTO] account-backed dashboard remains mobile-safe',async({page})=>{

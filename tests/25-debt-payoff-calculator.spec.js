@@ -31,10 +31,10 @@ async function scenario(page,debts,extra=0){
 const numeric=text=>Number(String(text||'').replace(/[^0-9.-]/g,''));
 
 test.describe('DEBT1 Debt Payoff Calculator',()=>{
-  test('[AUTO] deterministic core fixtures pass 19 of 19 before DOM-result assertions',async({page})=>{
+  test('[AUTO] deterministic core fixtures pass 21 of 21 before DOM-result assertions',async({page})=>{
     await gotoClean(page,TOOL);
     const fixtures=await page.evaluate(()=>window.CarrowmontDebtPayoffCore.runFixtures());
-    expect(fixtures).toHaveLength(19);
+    expect(fixtures).toHaveLength(21);
     expect(fixtures.filter(x=>!x.ok),JSON.stringify(fixtures,null,2)).toEqual([]);
   });
 
@@ -45,6 +45,8 @@ test.describe('DEBT1 Debt Payoff Calculator',()=>{
     await expect(page.getByText('Your debt details are not automatically saved.')).toBeVisible();
     await expect(page.locator('.debt-row').first()).toContainText('How much do you owe?');
     await expect(page.locator('.debt-row').first()).toContainText(/Minimum monthly (payment|repayment)/);
+    await expect(page.locator('.debt-row').first()).toContainText('Annual interest rate (%)');
+    await expect(page.locator('.debt-row').first()).toContainText('enter 10.75 for 10.75%');
     expect(errors).toEqual([]);
   });
 
@@ -82,18 +84,41 @@ test.describe('DEBT1 Debt Payoff Calculator',()=>{
     await expect(page.locator('#payoffTableBody tr')).toHaveCount(4);
   });
 
-  test('[AUTO] weak minimum payment warning and 600-month unresolved state are explicit',async({page})=>{
+  test('[AUTO] payment that cannot reduce debt is stopped before a 600-month projection',async({page})=>{
     await scenario(page,[{label:'Growing balance',balance:100000,rate:24,minimum:1}],0);
-    await expect(page.locator('#warningMessage')).toContainText('may not cover the first modeled month of interest');
-    await expect(page.locator('#avalancheMonths')).toHaveText('Not repaid within 50 years');
-    await expect(page.locator('#snowballMonths')).toHaveText('Not repaid within 50 years');
+    await expect(page.locator('#warningMessage')).toContainText('payment is not enough to reduce this debt');
+    await expect(page.locator('#warningMessage')).toContainText('First-month interest is about');
+    await expect(page.locator('#avalancheMonths')).toHaveText('Payment does not reduce debt');
+    await expect(page.locator('#snowballMonths')).toHaveText('Payment does not reduce debt');
+    await expect(page.locator('#avalancheInterest')).toHaveText('—');
+    await expect(page.locator('#reportBtn')).toBeDisabled();
+  });
+
+  test('[AUTO] suspicious four-digit annual rate requires review and never renders an explosive interest result',async({page})=>{
+    await gotoClean(page,TOOL);
+    await debtRow(page,0,{label:'Home loan',balance:1250000,rate:1075,minimum:22300});
+    await setInput(page,'#extraMonthly',5000);
+    await page.locator('#calculateBtn').click();
+    await expect(page.locator('#validationMessage')).toContainText('Review the annual interest rate');
+    await expect(page.locator('#validationMessage')).toContainText('If you meant 10.75%, enter 10.75 — not 1075');
+    await page.getByRole('button',{name:'Use the entered rate anyway'}).click();
+    await expect(page.locator('#warningMessage')).toContainText('payment is not enough to reduce this debt');
+    await expect(page.locator('#avalancheInterest')).toHaveText('—');
+    await assertNoHorizontalOverflow(page,'1075% guarded result');
+  });
+
+  test('[AUTO] ordinary 10.75 percent loan remains a valid repayable scenario',async({page})=>{
+    await scenario(page,[{label:'Home loan',balance:1250000,rate:10.75,minimum:22300}],5000);
+    await expect(page.locator('#avalancheMonths')).not.toHaveText('Payment does not reduce debt');
+    await expect(page.locator('#avalancheInterest')).not.toHaveText('—');
+    await expect(page.locator('#reportBtn')).toBeEnabled();
   });
 
   test('[AUTO] country and currency change labels/formatting without changing the underlying result',async({page})=>{
     await scenario(page,[{label:'Loan',balance:5000,rate:10,minimum:150}],50);
     const months=await page.locator('#avalancheMonths').textContent();
-    await setLocale(page,'AU','AUD'); await expect(page.locator('.debt-row').first()).toContainText('Minimum monthly repayment'); await expect(page.locator('#avalancheMonths')).toHaveText(months||'');
-    await setLocale(page,'US','USD'); await expect(page.locator('.debt-row').first()).toContainText('Interest rate (APR)'); await expect(page.locator('#avalancheMonths')).toHaveText(months||'');
+    await setLocale(page,'AU','AUD'); await expect(page.locator('.debt-row').first()).toContainText('Minimum monthly repayment'); await expect(page.locator('.debt-row').first()).toContainText('Annual interest rate (%)'); await expect(page.locator('#avalancheMonths')).toHaveText(months||'');
+    await setLocale(page,'US','USD'); await expect(page.locator('.debt-row').first()).toContainText('Annual interest rate (%)'); await expect(page.locator('#avalancheMonths')).toHaveText(months||'');
   });
 
   test('[AUTO] Budget handoff is explicit, short-lived, currency-safe and cleared after apply',async({page})=>{

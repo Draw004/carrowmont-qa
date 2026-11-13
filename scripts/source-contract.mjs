@@ -18,6 +18,7 @@ import { runFreBatch8cProgressContract } from './fre-batch8c-progress-contract.m
 import { runFreBatch8dPlanIntelligenceContract } from './fre-batch8d-plan-intelligence-contract.mjs';
 import { runFreBatch8eProductMobileContract } from './fre-batch8e-product-mobile-contract.mjs';
 import { runFreBatch8fUxRoutingPerformanceContract } from './fre-batch8f-ux-routing-performance-contract.mjs';
+import { runFreBatch8gMyCarrowmontSimplificationContract } from './fre-batch8g-my-carrowmont-simplification-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -51,6 +52,7 @@ for (const c of runFreBatch8cProgressContract(root)) add(`FRE8C: ${c.name}`, c.o
 for (const c of runFreBatch8dPlanIntelligenceContract(root)) add(`FRE8D: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8eProductMobileContract(root)) add(`FRE8E: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8fUxRoutingPerformanceContract(root)) add(`FRE8F: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch8gMyCarrowmontSimplificationContract(root)) add(`FRE8G: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -3294,10 +3296,10 @@ add('DEBT1: deterministic core owns equal-budget monthly interest, tie rules and
   debt1Core.includes('targetSort(method, a, b)') &&
   debt1Core.includes("version: 'DEBT1-1.0'")
 );
-add('DEBT1: core fixture pack protects all 19 required edge cases',
+add('DEBT1: core fixture pack protects the original edge cases plus Batch 8G payment guards',
   debt1Core.includes('function runFixtures()') &&
-  (debt1Core.match(/add\('/g)||[]).length >= 19 &&
-  debt1Qa.includes('fixtures).toHaveLength(19)')
+  (debt1Core.match(/add\('/g)||[]).length >= 21 &&
+  debt1Qa.includes('fixtures).toHaveLength(21)')
 );
 add('DEBT1: zero-extra comparison and 600-month unresolved protection are built into the same result object',
   debt1Core.includes("const avalancheZero = simulateStrategy(normalized, 0, 'avalanche'") &&
