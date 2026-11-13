@@ -17,7 +17,7 @@ export function runFreBatch8dPlanIntelligenceContract(sourceRoot){
   let registry={};try{registry=JSON.parse(read(`${main}/docs/CARROWMONT_FRE_ENGINE_REGISTRY_V17.json`));}catch(_){registry={};}
 
   add('8D explicitly separates current details saved plan what-if calculation and progress history',
-    ['Current details','Saved plan','What-if calculation','Progress history'].every(x=>mycm.includes(x))&&mycm.includes('Know what is saved — and what is only a what-if.'));
+    ['Current details','Saved plan','What-if calculation','Progress history'].every(x=>mycm.includes(x))&&mycm.includes('Current details, saved plans and what-if calculations stay separate.'));
   add('8D progress engine preserves 8C trend comparison and adds separate target intelligence',progressSrc.includes("const VERSION='carrowmont-progress-v2.0'")&&progressSrc.includes('function compare(row,currency)')&&progressSrc.includes('function evaluate(row,currency,now)')&&progressSrc.includes('function evaluateAll(rows,currency,now)'));
   add('8D plan metadata carries baseline start last-reviewed review cadence and target without a new database table',progressSrc.includes('function planMeta(existing,nextScenario,savedAt)')&&progressSrc.includes('startedAt')&&progressSrc.includes('lastReviewedAt')&&progressSrc.includes('reviewEveryMonths')&&progressSrc.includes('baseline,target')&&impl.includes('No new database table'));
   add('8D UI treats target status as primary and saved-version trend as Since last save',accountUi.includes('Progress.evaluateAll?Progress.evaluateAll(rows,currency):Progress.analyze(rows,currency)')&&accountUi.includes('Since last save')&&accountUi.includes('mycm-progress-trend')&&progressSrc.includes('Last reviewed'));
