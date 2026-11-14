@@ -1,9 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export function runFreBatch8hPlannerFormPolishContract(root){
   const checks=[];const add=(name,ok,detail='')=>checks.push({name,ok:Boolean(ok),detail});
   const read=rel=>{const p=path.join(root,rel);return fs.existsSync(p)?fs.readFileSync(p,'utf8'):'';};
+  const qaRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+  const readQa=rel=>{const p=path.join(qaRoot,rel);return fs.existsSync(p)?fs.readFileSync(p,'utf8'):'';};
 
   const compoundHtml=read('compound-interest-calculator/index.html');
   const compoundCss=read('compound-interest-calculator/styles.css');
@@ -28,8 +31,8 @@ export function runFreBatch8hPlannerFormPolishContract(root){
     compoundCss.includes('.money-input input,.input-suffix input{height:46px}'));
   add('8H compound stylesheet cache key is refreshed',compoundHtml.includes('styles.css?v=20261114-fre8h'));
 
-  const qaFixtures=read('carrowmont-qa/helpers/fixtures.js');
-  const compoundQa=read('carrowmont-qa/tests/29-core8-compound-interest.spec.js');
+  const qaFixtures=readQa('helpers/fixtures.js');
+  const compoundQa=readQa('tests/29-core8-compound-interest.spec.js');
   add('8H QA treats the boolean details open property correctly for Compound Interest',
     qaFixtures.includes("advanced.evaluate(el => el.open)")&&
     compoundQa.includes("advanced.evaluate(el => el.open)")&&
