@@ -15,7 +15,7 @@ async function setLocale(page, region, currency) {
 
 async function openAdvanced(page) {
   const advanced = page.locator('details.advanced');
-  if (await advanced.count() && !(await advanced.getAttribute('open'))) await advanced.locator('summary').click();
+  if (await advanced.count() && !(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
   await expect(page.locator('#inflationEnabled')).toBeVisible();
 }
 
