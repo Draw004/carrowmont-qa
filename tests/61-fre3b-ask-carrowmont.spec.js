@@ -36,7 +36,8 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
     await page.locator('#askStartBtn').click();
     const fallback=page.locator('#askUnsupported');
     await expect(fallback).toBeVisible();
-    await expect(fallback).toContainText('Here is a good place to start');
+    await expect(fallback).toContainText('Best Carrowmont matches');
+    await expect(fallback).toContainText('Start here');
     await expect(fallback.locator('.ask-route-result').first()).toContainText('Investing for Beginners');
     await expect(fallback).not.toContainText(/not available yet|has not been built yet|still growing/i);
     await expect(fallback.getByRole('link',{name:'See all search results'})).toHaveAttribute('href','/search.html');

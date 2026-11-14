@@ -20,6 +20,7 @@ import { runFreBatch8eProductMobileContract } from './fre-batch8e-product-mobile
 import { runFreBatch8fUxRoutingPerformanceContract } from './fre-batch8f-ux-routing-performance-contract.mjs';
 import { runFreBatch8gMyCarrowmontSimplificationContract } from './fre-batch8g-my-carrowmont-simplification-contract.mjs';
 import { runFreBatch8hPlannerFormPolishContract } from './fre-batch8h-planner-form-polish-contract.mjs';
+import { runFreBatch8iAskSearchRelevanceContract } from './fre-batch8i-ask-search-relevance-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -55,6 +56,7 @@ for (const c of runFreBatch8eProductMobileContract(root)) add(`FRE8E: ${c.name}`
 for (const c of runFreBatch8fUxRoutingPerformanceContract(root)) add(`FRE8F: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8gMyCarrowmontSimplificationContract(root)) add(`FRE8G: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8hPlannerFormPolishContract(root)) add(`FRE8H: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch8iAskSearchRelevanceContract(root)) add(`FRE8I: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -4324,7 +4326,7 @@ try {
 } catch {}
 const search1Result = (query, region='OTHER') => search1CoreApi?.search?.(search1Entries, search1Aliases, query, { region, limit:12 }) || [];
 add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-loan and empty-state behavior',
-  search1CoreApi?.version === '1.0.0' &&
+  search1CoreApi?.version === '1.1.0' &&
   search1Result('sip','IN')[0]?.url === '/sip-calculator/' &&
   search1Result('emi','IN')[0]?.url === '/loan-calculator/' &&
   search1Result('remortgage','GB')[0]?.url === '/mortgage-payoff-calculator/refinance-break-even.html' &&
@@ -4363,7 +4365,7 @@ add('SEARCH1: header, Learn and Tools expose one consistent search path without 
   search1SiteCss.includes('.desktop-nav .site-search-link') &&
   search1Learn.includes('id="learnSearchInput"') && search1Learn.includes('class="planning-categories"') &&
   search1Tools.includes('id="toolsSearchInput"') && search1Tools.includes('id="core-planning-tools"') &&
-  search1Learn.includes('search-core.js?v=20261020-search1') && search1Tools.includes('search-core.js?v=20261020-search1') &&
+  search1Learn.includes('search-core.js?v=20261114-fre8i') && search1Tools.includes('search-core.js?v=20261114-fre8i') &&
   search1Css.includes('@media(max-width:760px)') && search1Css.includes('grid-template-columns:1fr')
 );
 add('SEARCH1: central QA protects index, aliases, privacy, navigation, embedded discovery and 1280/390/360 layouts',
@@ -4572,7 +4574,7 @@ add('SEARCH1 layout refinement: compact hero and current Search assets preserve 
   search1Css.includes('.cm-search-page-section{position:relative;z-index:2;margin-top:-64px') &&
   search1Css.includes('.cm-search-page-section{margin-top:-48px;padding-bottom:54px}') &&
   search1Html.includes('search.css?v=20261113-fre8f') && search1Learn.includes('search.css?v=20261113-fre8f') && search1Tools.includes('search.css?v=20261113-fre8f') &&
-  search1Learn.includes('search.js?v=20261113-fre8f') && search1Tools.includes('search.js?v=20261113-fre8f') &&
+  search1Learn.includes('search.js?v=20261114-fre8i') && search1Tools.includes('search.js?v=20261114-fre8i') &&
   search1Qa.includes('search action should be visible above the fold') && search1Qa.includes('[1280, 390, 360]') &&
   !/localStorage|URLSearchParams/.test(search1Js) && !/sessionStorage\.setItem/.test(search1Js) &&
   search1Js.includes("ASK_SEARCH_HANDOFF_KEY = 'carrowmont_search_handoff_v1'")
