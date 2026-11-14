@@ -195,7 +195,7 @@ export async function prepareToolForQa(page, toolKey) {
     await page.locator('#contributionFrequency').selectOption('monthly');
     await page.locator('#contributionTiming').selectOption('end');
     const advanced = page.locator('details.advanced');
-    if (await advanced.count() && !(await advanced.getAttribute('open'))) await advanced.locator('summary').click();
+    if (await advanced.count() && !(await advanced.evaluate(el => el.open))) await advanced.locator('summary').click();
     const inflationEnabled = page.locator('#inflationEnabled');
     if (await inflationEnabled.count() && !(await inflationEnabled.isChecked())) await inflationEnabled.check();
     await setInput(page, '#inflationRate', 3);
