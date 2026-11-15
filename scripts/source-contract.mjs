@@ -22,6 +22,7 @@ import { runFreBatch8gMyCarrowmontSimplificationContract } from './fre-batch8g-m
 import { runFreBatch8hPlannerFormPolishContract } from './fre-batch8h-planner-form-polish-contract.mjs';
 import { runFreBatch8iAskSearchRelevanceContract } from './fre-batch8i-ask-search-relevance-contract.mjs';
 import { runFreBatch8jMyCarrowmontVisualAppContract } from './fre-batch8j-my-carrowmont-visual-app-contract.mjs';
+import { runFreBatch8kSitewidePolishAccountContract } from './fre-batch8k-sitewide-polish-account-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -59,6 +60,7 @@ for (const c of runFreBatch8gMyCarrowmontSimplificationContract(root)) add(`FRE8
 for (const c of runFreBatch8hPlannerFormPolishContract(root)) add(`FRE8H: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8iAskSearchRelevanceContract(root)) add(`FRE8I: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8jMyCarrowmontVisualAppContract(root)) add(`FRE8J: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch8kSitewidePolishAccountContract(root)) add(`FRE8K: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -1180,7 +1182,7 @@ add('main site: Learn titles/descriptions are unique and kept within the editori
       ? standardLearnTitles[i] === 'How Much Could Your Mortgage Payment Rise if Rates Increase? | Carrowmont'
       : standardLearnTitles[i].length >= 25 && standardLearnTitles[i].length <= 70) &&
   standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
-    ? standardLearnDescriptions[i] === 'Compare mortgage or home-loan prepayment with investing the same extra money using equal cash flows, a common horizon and a modeled break-even investment return.'
+    ? standardLearnDescriptions[i] === 'Understand mortgage or home-loan prepayment versus investing, including interest saved, investment uncertainty, equal cash flows and comparison horizons.'
     : standardLearnDescriptions[i].length >= 100 && standardLearnDescriptions[i].length <= 170)
 );
 
@@ -1370,8 +1372,8 @@ const sharedBridgeCopies = ['sip-calculator','goal-planner','financial-independe
 add('CORE9: shared-plan-state helper is byte-identical across all nine primary tools', sharedStateCopies.every(Boolean) && sharedStateCopies.every(x => x === sharedStateCopies[0]));
 add('CORE9: shared-plan bridge is byte-identical across all nine primary tools', sharedBridgeCopies.every(Boolean) && sharedBridgeCopies.every(x => x === sharedBridgeCopies[0]));
 add('CORE7 mortgage: existing tools use safe explicit housing handoff rules rather than silent double counting',
-  mortgageBridge.includes('Use in Rent / mortgage') && mortgageBridge.includes('Apply to Home loan / rent') &&
-  mortgageBridge.includes('Use balance as goal amount') && mortgageBridge.includes('will not add this automatically and risk double-counting') &&
+  mortgageBridge.includes('Use in housing row') && mortgageBridge.includes('Apply to ${housingTerms().nounCap} / rent') &&
+  mortgageBridge.includes('Use balance as goal amount') && mortgageBridge.includes('housingTerms') && mortgageBridge.includes('will not add this automatically and risk double-counting') &&
   mortgageBridge.includes('will not automatically redirect that future payment into investing') &&
   mortgageBridge.includes('will not inflate the loan balance')
 );
@@ -1578,7 +1580,7 @@ add('main site: BING-SEO2 Learn titles and descriptions stay concise for search 
       ? standardLearnTitles[i] === 'How Much Could Your Mortgage Payment Rise if Rates Increase? | Carrowmont'
       : standardLearnTitles[i].length >= 25 && standardLearnTitles[i].length <= 60) &&
   standardizedLearnFiles.every((file,i) => file === 'mortgage-prepayment-vs-investing.html'
-    ? standardLearnDescriptions[i] === 'Compare mortgage or home-loan prepayment with investing the same extra money using equal cash flows, a common horizon and a modeled break-even investment return.'
+    ? standardLearnDescriptions[i] === 'Understand mortgage or home-loan prepayment versus investing, including interest saved, investment uncertainty, equal cash flows and comparison horizons.'
     : standardLearnDescriptions[i].length >= 110 && standardLearnDescriptions[i].length <= 160)
 );
 

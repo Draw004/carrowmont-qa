@@ -193,11 +193,11 @@ test.describe('CORE7 Home Loan / Mortgage Prepayment & Early Payoff', () => {
     await page.waitForLoadState('networkidle').catch(() => {});
     const banner = page.locator('#cmSharedPlanBanner');
     await expect(banner).toBeVisible();
-    await expect(banner).toContainText('Home-loan repayment available from Carrowmont');
+    await expect(banner).toContainText('Home loan repayment available from Carrowmont');
     const rentAmount = page.locator('#essentialRows .entry-row').filter({ has: page.locator('[data-field="name"][value="Rent / mortgage"]') }).locator('[data-field="amount"]');
     const before = await rentAmount.inputValue();
     const expectedPayment = stored.housingLoan.monthlyEquivalentPayment.value;
-    await banner.getByRole('button', { name: 'Use in Rent / mortgage' }).click();
+    await banner.getByRole('button', { name: 'Use in housing row' }).click();
     const liveRentAmount = page.locator('#essentialRows .entry-row').filter({ has: page.locator('[data-field="name"][value="Rent / mortgage"]') }).locator('[data-field="amount"]');
     const after = await liveRentAmount.inputValue();
     expect(Number(after)).toBeCloseTo(expectedPayment, 6);

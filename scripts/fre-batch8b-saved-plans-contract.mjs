@@ -51,7 +51,7 @@ export function runFreBatch8bSavedPlansContract(sourceRoot){
   const credit=read('budget-cash-flow-planner/credit-card-payoff-calculator.js');
   add('Credit Card Payoff can preserve balance APR and minimum-payment context after explicit save',credit.includes("journey:'credit-card-payoff'")&&credit.includes("'debt.creditCardMinimums'")&&credit.includes("'debt.highestAprPct'"));
   const loan=read('loan-calculator/app.js');
-  add('Loan/EMI can be kept as a saved plan without silently converting a modeled loan into current dashboard debt facts',loan.includes("journey:'loan-emi'")&&loan.includes('profileFacts:{}')&&loan.includes('Save this loan plan to My Carrowmont'));
+  add('Loan/EMI can be kept as a saved plan without silently converting a modeled loan into current dashboard debt facts',loan.includes("journey:'loan-emi'")&&loan.includes('profileFacts:{}')&&loan.includes('Save to My Carrowmont'));
   const sip=read('sip-calculator/app.js');
   add('SIP/Recurring Investment can be kept as a reusable plan without misclassifying a generic investment as retirement/FI facts',sip.includes("journey:'recurring-investment'")&&sip.includes('profileFacts:{}'));
   const withdrawal=read('retirement-calculator/withdrawal-calculator.js');
