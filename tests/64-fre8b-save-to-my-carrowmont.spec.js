@@ -61,12 +61,12 @@ test.describe('FRE8B selective Save/Update to My Carrowmont',()=>{
     await gotoClean(page,'/retirement-calculator/planner.html');
     const card=page.locator('#cmMycmSave-retirement');await expect(card).toBeHidden();
     await enterMeaningfulRetirementPlan(page);await expect(card).toBeVisible();
-    await expect(card.getByRole('button',{name:'Save this plan to My Carrowmont'})).toBeVisible();
+    await expect(card.getByRole('button',{name:'Save to My Carrowmont'})).toBeVisible();
   });
 
   test('[AUTO] explicit Save stages the selected retirement plan and routes to My Carrowmont',async({page})=>{
     await gotoClean(page,'/retirement-calculator/planner.html');await enterMeaningfulRetirementPlan(page);
-    await page.locator('#cmMycmSave-retirement').getByRole('button',{name:'Save this plan to My Carrowmont'}).click();
+    await page.locator('#cmMycmSave-retirement').getByRole('button',{name:'Save to My Carrowmont'}).click();
     await page.waitForURL(/\/my-carrowmont\.html\?savePlan=retirement/);
     const staged=await page.evaluate(()=>JSON.parse(localStorage.getItem('carrowmont_pending_saved_plan_v1')||'null'));
     expect(staged?.explicit).toBe(true);expect(staged?.plan?.journey).toBe('retirement');expect(staged?.plan?.scenario?.input).toBeTruthy();

@@ -60,6 +60,11 @@ export async function gotoClean(page, targetPath) {
       const pendingSavedPlan = localStorage.getItem(pendingSavedPlanKey);
       const openSavedPlanKey = 'carrowmont_open_saved_plan_v1';
       const openSavedPlan = sessionStorage.getItem(openSavedPlanKey);
+      const supabaseAuthEntries = [];
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i) || '';
+        if (/^sb-.*-auth-token$/.test(key)) supabaseAuthEntries.push([key, localStorage.getItem(key)]);
+      }
       localStorage.clear();
       sessionStorage.clear();
       if (privacyHandoff) sessionStorage.setItem(privacyHandoffKey, privacyHandoff);
@@ -71,6 +76,7 @@ export async function gotoClean(page, targetPath) {
       if (pendingCloudProfile) localStorage.setItem(pendingCloudProfileKey, pendingCloudProfile);
       if (pendingSavedPlan) localStorage.setItem(pendingSavedPlanKey, pendingSavedPlan);
       if (openSavedPlan) sessionStorage.setItem(openSavedPlanKey, openSavedPlan);
+      for (const [key, value] of supabaseAuthEntries) if (value) localStorage.setItem(key, value);
     } catch (_) {}
   });
   const response = await page.goto(targetPath, { waitUntil: 'domcontentloaded' });
