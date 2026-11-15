@@ -21,6 +21,7 @@ import { runFreBatch8fUxRoutingPerformanceContract } from './fre-batch8f-ux-rout
 import { runFreBatch8gMyCarrowmontSimplificationContract } from './fre-batch8g-my-carrowmont-simplification-contract.mjs';
 import { runFreBatch8hPlannerFormPolishContract } from './fre-batch8h-planner-form-polish-contract.mjs';
 import { runFreBatch8iAskSearchRelevanceContract } from './fre-batch8i-ask-search-relevance-contract.mjs';
+import { runFreBatch8jMyCarrowmontVisualAppContract } from './fre-batch8j-my-carrowmont-visual-app-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -57,6 +58,7 @@ for (const c of runFreBatch8fUxRoutingPerformanceContract(root)) add(`FRE8F: ${c
 for (const c of runFreBatch8gMyCarrowmontSimplificationContract(root)) add(`FRE8G: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8hPlannerFormPolishContract(root)) add(`FRE8H: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch8iAskSearchRelevanceContract(root)) add(`FRE8I: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch8jMyCarrowmontVisualAppContract(root)) add(`FRE8J: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
