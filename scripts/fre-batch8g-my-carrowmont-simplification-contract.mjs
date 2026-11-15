@@ -29,7 +29,7 @@ export function runFreBatch8gMyCarrowmontSimplificationContract(root){
   add('8G explicit removal uses removeFact and requests immediate account persistence while blank inputs remain no-change',
     ui.includes('profile=Store.removeFact(profile,path);persist(true,true)')&&ui.includes("if(input.value==='')return")&&ui.includes('data-mycm-remove')&&
     accountUi.includes('event.detail.saveImmediately===true')&&accountUi.includes('void (async()=>')&&accountUi.includes('Account.saveCloudProfile(profile)'));
-  add('8G keeps the saved-plan concept model visible by default while remaining collapsible',page.includes('<details class="mycm-plan-model" open>')&&['Current details','Saved plan','What-if calculation','Progress history'].every(label=>page.includes(`<strong>${label}</strong>`)));
+  add('8G keeps the saved-plan concept model available and collapsible without crowding the main dashboard',page.includes('<details class="mycm-plan-model">')&&['current-details','saved-plan','what-if','progress-history'].every(key=>page.includes(`data-mycm-plan-concept="${key}"`)));
   let p=store.create({region:'US',currency:'USD'});p=store.setFact(p,'cashFlow.flexibleExpenses',35000,{source:'8g-contract'});p=store.removeFact(p,'cashFlow.flexibleExpenses');
   add('8G removed facts stay absent after normalization',!store.hasFact(store.normalize(p),'cashFlow.flexibleExpenses',{includeExcluded:true}));
   add('8G emergency target is user-selected 2 3 6 or custom and excludes flexible spending',
