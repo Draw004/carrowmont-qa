@@ -31,7 +31,7 @@ test.describe('RENT1 Rent vs Buy Calculator',()=>{
     await expect(page).toHaveTitle('Rent vs Buy Calculator | Compare Renting and Buying | Carrowmont');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://carrowmont.com/mortgage-payoff-calculator/rent-vs-buy-calculator.html');
     const ld=await page.locator('script[type="application/ld+json"]').textContent(); const parsed=JSON.parse(ld); const types=parsed['@graph'].map(x=>x['@type']); expect(types).toContain('WebApplication'); expect(types).toContain('BreadcrumbList');
-    await expect(page.getByText('Price of the home')).toBeVisible(); await expect(page.getByText('Monthly rent for a similar home')).toBeVisible(); await expect(page.getByText('How long do you expect to stay?')).toBeVisible();
+    await expect(page.locator('label.rent1-field > span', { hasText: /^Price of the home$/ })).toBeVisible(); await expect(page.locator('label.rent1-field > span', { hasText: /^Monthly rent for a similar home$/ })).toBeVisible(); await expect(page.locator('label.rent1-field > span', { hasText: /^How long do you expect to stay\?$/ })).toBeVisible();
     await expect(page.getByText(/does not save or overwrite your Mortgage \/ Home Loan Decision Centre profile/i)).toBeVisible();
     expect(errors).toEqual([]);
   });
