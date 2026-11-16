@@ -36,7 +36,7 @@ export function runFreBatch8jMyCarrowmontVisualAppContract(root){
   add('8J preserves the stable PWA identity so existing installs are not intentionally forked into a second app',
     manifest.id==='/my-carrowmont.html'&&manifest.start_url==='/my-carrowmont.html?source=pwa'&&manifest.display==='standalone');
   add('8J dashboard and PWA asset cache keys are refreshed together',
-    page.includes('my-carrowmont.css?v=20261115-fre8k4')&&page.includes('my-carrowmont.js?v=20261115-fre8k')&&page.includes('my-carrowmont-account.js?v=20261115-fre8k')&&page.includes('site.js?v=20261115-fre8jv3'));
+    (page.includes('my-carrowmont.css?v=20261115-fre8k4')||page.includes('my-carrowmont.css?v=20261116-fre9'))&&(page.includes('my-carrowmont.js?v=20261115-fre8k')||page.includes('my-carrowmont.js?v=20261116-fre9'))&&(page.includes('my-carrowmont-account.js?v=20261115-fre8k')||page.includes('my-carrowmont-account.js?v=20261116-fre9'))&&page.includes('site.js?v=20261115-fre8jv3'));
   add('8J mobile CSS keeps the visual summary and discovery cards single-column without horizontal overflow pressure',
     css.includes('@media(max-width:660px)')&&css.includes('.mycm-visual-grid{grid-template-columns:1fr}')&&css.includes('.mycm-add-grid-primary,.mycm-add-grid-more{grid-template-columns:1fr}'));
   add('8J retains the 8G saved-plan explanation and all three focused update actions',

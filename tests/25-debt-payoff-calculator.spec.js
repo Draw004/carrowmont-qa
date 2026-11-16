@@ -164,7 +164,7 @@ test.describe('DEBT1 Debt Payoff Calculator',()=>{
 
   test('[AUTO] primary fields, results and CTAs stay in plain language',async({page})=>{
     await gotoClean(page,TOOL); const text=(await page.locator('#debts, #resultSummaryCard').allInnerTexts()).join('\n'); for(const jargon of ['amortization hierarchy','repayment allocation','optimization strategy','roll-forward','residual balance','cash-flow allocation']) expect(text.toLowerCase()).not.toContain(jargon);
-    await expect(page.getByText('How much do you owe?').first()).toBeVisible(); await expect(page.getByText('Extra amount I can pay each month')).toBeVisible(); await expect(page.getByText('You could be debt-free in').first()).toBeVisible();
+    await expect(page.getByText('How much do you owe?').first()).toBeVisible(); await expect(page.getByText('Extra amount I can pay each month',{exact:true})).toBeVisible(); await expect(page.getByText('You could be debt-free in').first()).toBeVisible();
   });
 
   test('[AUTO] desktop, 390px and 360px layouts do not overflow on tool and Learn guide',async({page})=>{
