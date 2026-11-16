@@ -25,6 +25,7 @@ import { runFreBatch8jMyCarrowmontVisualAppContract } from './fre-batch8j-my-car
 import { runFreBatch8kSitewidePolishAccountContract } from './fre-batch8k-sitewide-polish-account-contract.mjs';
 import { runFreBatch9TrustTransparencyContract } from './fre-batch9-trust-transparency-contract.mjs';
 import { runFreBatch9bFinancialPlanContract } from './fre-batch9b-financial-plan-contract.mjs';
+import { runFreBatch10CountryIntelligenceContract } from './fre-batch10-country-intelligence-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -65,6 +66,7 @@ for (const c of runFreBatch8jMyCarrowmontVisualAppContract(root)) add(`FRE8J: ${
 for (const c of runFreBatch8kSitewidePolishAccountContract(root)) add(`FRE8K: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch9TrustTransparencyContract(root)) add(`FRE9: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch9bFinancialPlanContract(root)) add(`FRE9B: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch10CountryIntelligenceContract(root)) add(`FRE10: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
