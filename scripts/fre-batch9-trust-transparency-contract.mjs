@@ -13,6 +13,7 @@ export function runFreBatch9TrustTransparencyContract(root){
   const trustCss=read(main+'assets/trust/carrowmont-trust.css');
   const mycm=read(main+'my-carrowmont.html');
   const mycmCss=read(main+'assets/dashboard/my-carrowmont.css');
+  const googleG=read(main+'assets/brand/google-g.svg');
   const mycmUi=read(main+'assets/account/my-carrowmont-account.js');
   const mycmDash=read(main+'assets/dashboard/my-carrowmont.js');
   const ask=read(main+'ask-carrowmont.html');
@@ -43,8 +44,8 @@ export function runFreBatch9TrustTransparencyContract(root){
     mycmUi.includes('progressTrustHtml')&&mycmUi.includes('Values you entered / numbers used')&&mycmUi.includes('Assumptions')&&mycmUi.includes('Freshness')&&mycmUi.includes('What could change this?')&&mycmUi.includes('Save boundary'));
   add('Batch 9 saved details expose source and last-updated context',mycmDash.includes('Last updated ${esc(factDate('));
 
-  add('Batch 9 Continue with Google uses a multicolor Google G without changing the button wording',
-    mycm.includes('Continue with Google')&&['#4285F4','#34A853','#FBBC05','#EA4335'].every(c=>mycm.includes(c))&&mycmCss.includes('.mycm-google-mark svg'));
+  add('Batch 9 Continue with Google uses an isolated standard multicolor Google G without changing the button wording',
+    mycm.includes('Continue with Google')&&mycm.includes('/assets/brand/google-g.svg')&&['#4285F4','#34A853','#FBBC05','#EA4335'].every(c=>googleG.includes(c))&&googleG.includes('stroke="none"')&&mycmCss.includes('.mycm-google-mark img'));
 
   add('Batch 9 Ask result includes a progressive Trust Check with rationale values engines assumptions freshness change drivers and save boundary',
     ask.includes('Carrowmont Trust Check - verify this result')&&['askTrustWhy','askTrustValues','askEngineTrace','askAssumptions','askTrustFreshness','askTrustChange','askTrustBoundary'].every(id=>ask.includes(id))&&

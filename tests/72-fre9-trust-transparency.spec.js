@@ -22,7 +22,7 @@ test.describe('FRE9 Trust, Explainability & Plan Transparency',()=>{
   test('[AUTO] multicolor Google G preserves the existing Google authentication action',async({page})=>{
     await mockAccount(page,{signedIn:false});await gotoClean(page,'/my-carrowmont.html');
     const button=page.locator('#mycmGoogleSignIn');await expect(button).toBeVisible();await expect(button).toContainText('Continue with Google');
-    for(const fill of ['#4285F4','#34A853','#FBBC05','#EA4335']) await expect(button.locator(`path[fill="${fill}"]`)).toHaveCount(1);
+    const googleMark=button.locator('.mycm-google-mark img');await expect(googleMark).toBeVisible();await expect(googleMark).toHaveAttribute('src','/assets/brand/google-g.svg');
     await button.click();const calls=await page.evaluate(()=>window.__oauthCalls);expect(calls).toHaveLength(1);expect(calls[0].provider).toBe('google');
   });
 
