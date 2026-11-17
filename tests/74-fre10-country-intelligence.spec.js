@@ -23,11 +23,15 @@ const supported=[
   ['US','USD','United States','3.75%-4.00%','2%'],
   ['GB','GBP','United Kingdom','4.00%','2%'],
   ['CA','CAD','Canada','2.50%','2% target; 1%-3% control range'],
-  ['AU','AUD','Australia','4.85%','2%-3%']
+  ['AU','AUD','Australia','4.85%','2%-3%'],
+  ['JP','JPY','Japan','1.25%','2%'],
+  ['KR','KRW','South Korea','3.00%','2%'],
+  ['FR','EUR','France','2.50%','2% over the medium term'],
+  ['IT','EUR','Italy','2.50%','2% over the medium term']
 ];
 
 test.describe('FRE10 Country-Aware Financial Intelligence',()=>{
-  test('[AUTO] five priority markets show sourced official context and locale switches do not overwrite the calculator rate',async({page})=>{
+  test('[AUTO] nine supported country profiles show sourced official context and locale switches do not overwrite the calculator rate',async({page})=>{
     const errors=monitorPageErrors(page);
     await page.setViewportSize({width:1280,height:900});
     await gotoClean(page,'/home-affordability-calculator.html');
@@ -49,6 +53,7 @@ test.describe('FRE10 Country-Aware Financial Intelligence',()=>{
     await gotoClean(page,'/home-affordability-calculator.html');
     await selectLocale(page,'IN','INR');await expect(page.locator('#cmCountryContext')).toBeVisible();
     await selectLocale(page,'NZ','NZD');await expect(page.locator('#cmCountryContext')).toBeHidden();
+    await selectLocale(page,'CN','CNY');await expect(page.locator('#cmCountryContext')).toBeHidden();
   });
 
   test('[AUTO] inflation tools state that an official target is not today\'s inflation or a forecast and preserve the entered assumption',async({page})=>{
@@ -64,10 +69,10 @@ test.describe('FRE10 Country-Aware Financial Intelligence',()=>{
 
   test('[AUTO] official source links and mobile Country Context geometry remain usable',async({page})=>{
     await page.setViewportSize({width:390,height:844});
-    await gotoClean(page,'/home-affordability-calculator.html');await selectLocale(page,'AU','AUD');
+    await gotoClean(page,'/home-affordability-calculator.html');await selectLocale(page,'FR','EUR');
     const card=page.locator('#cmCountryContext');await expect(card).toBeVisible();await card.locator('summary').click();
     const links=card.locator('a[target="_blank"][rel="noopener"]');await expect(links).toHaveCount(2);
-    await expect(links.nth(0)).toHaveAttribute('href',/rba\.gov\.au/);await expect(links.nth(1)).toHaveAttribute('href',/rba\.gov\.au/);
+    await expect(links.nth(0)).toHaveAttribute('href',/ecb\.europa\.eu/);await expect(links.nth(1)).toHaveAttribute('href',/ecb\.europa\.eu/);
     await assertNoHorizontalOverflow(page,'Batch 10 Country Context 390px');
   });
 });
