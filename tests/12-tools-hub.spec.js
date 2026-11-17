@@ -153,7 +153,7 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
       expect(gatewayStyle.backgroundImage).toContain('gradient');
       expect(gatewayStyle.color).toBe('rgb(255, 255, 255)');
       expect(gatewayStyle.position).toBe(9);
-      await expect(page.locator('a.text-link[href="/tools.html"]').first()).toContainText('View all tools');
+      await expect(page.locator('.planning-section a.text-link[href="/tools.html"]')).toContainText('View all tools');
     }
 
     await expect(page.locator('.authority-tools-grid .authority-tool-card')).toHaveCount(4);

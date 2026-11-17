@@ -13,7 +13,7 @@ export function runFreBatch8fUxRoutingPerformanceContract(root){
   const qaCommonFromSourceRoot=read('carrowmont-qa/helpers/common.js');
   const localQaCommonPath=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../helpers/common.js');
   const qaCommon=qaCommonFromSourceRoot || (fs.existsSync(localQaCommonPath)?fs.readFileSync(localQaCommonPath,'utf8'):'');
-  add('homepage removes the redundant Explore freely strip while keeping the connected journey',!home.includes('Explore freely.') && /cm-product-journey/.test(home) && ['Plan','Keep','Track','Understand'].every(x=>home.includes('>'+x+'</h3>')));
+  add('homepage removes the redundant Explore freely strip while keeping the connected journey',!home.includes('Explore freely.') && /cm-product-journey/.test(home) && (home.includes('>Plan</h3>')||home.includes('>Ask &amp; Plan</h3>')) && ['Keep','Track','Understand'].every(x=>home.includes('>'+x+'</h3>')));
   add('mobile navigation keeps the established My Money label',site.includes("{ key: 'my', label: 'My Money', href: '/my-carrowmont.html' }"));
   add('hero keeps the approved responsive assets but loads them early with the new cache version',home.includes('20261113-hero4') && home.includes('fetchpriority="high"') && home.includes('loading="eager"') && (home.match(/rel="preload" as="image"/g)||[]).length===3);
   for(const [name,limit] of [['carrowmont-hero.webp',190000],['carrowmont-hero-laptop.webp',190000],['carrowmont-hero-mobile.webp',150000]]){const p=path.join(root,main+name);add(name+' is materially lighter',fs.existsSync(p)&&fs.statSync(p).size<limit,String(fs.existsSync(p)?fs.statSync(p).size:'missing'));}
