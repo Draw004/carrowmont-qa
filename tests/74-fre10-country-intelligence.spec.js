@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { gotoClean, assertNoHorizontalOverflow, monitorPageErrors } from '../helpers/common.js';
+import { gotoClean, assertNoHorizontalOverflow, monitorPageErrors, setInput } from '../helpers/common.js';
 
 async function selectLocale(page, regionCode, currencyCode){
   const summary=page.locator('#localeSummary, #localeMenu > summary, summary.locale-summary').first();
@@ -31,7 +31,7 @@ test.describe('FRE10 Country-Aware Financial Intelligence',()=>{
     const errors=monitorPageErrors(page);
     await page.setViewportSize({width:1280,height:900});
     await gotoClean(page,'/home-affordability-calculator.html');
-    const rate=page.locator('#annualRate');await expect(rate).toHaveValue('8.5');
+    const rate=page.locator('#annualRate');await setInput(page,'#annualRate',7.25);await expect(rate).toHaveValue('7.25');
     for(const [region,currency,country,policy,inflation] of supported){
       await selectLocale(page,region,currency);
       const card=page.locator('#cmCountryContext');await expect(card).toBeVisible();
@@ -40,7 +40,7 @@ test.describe('FRE10 Country-Aware Financial Intelligence',()=>{
       await expect(card).toContainText(policy);
       await expect(card).toContainText(inflation);
       await expect(card).toContainText('does not automatically replace an entered interest rate');
-      await expect(rate).toHaveValue('8.5');
+      await expect(rate).toHaveValue('7.25');
     }
     expect(errors).toEqual([]);
   });

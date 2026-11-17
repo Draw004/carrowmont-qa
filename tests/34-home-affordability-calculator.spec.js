@@ -72,6 +72,30 @@ test.describe('HOME1 Home Affordability / Mortgage Borrowing Power',()=>{
     for(const [region,currency,title,deposit,payment] of cases){await setLocale(page,region,currency);await expect(page.locator('[data-home1-product-label]')).toHaveText(title);await expect(page.locator('label[for="deposit"] [data-home1-deposit-label]')).toHaveText(deposit);await expect(page.locator('.home1-metric-grid [data-home1-payment-label]')).toHaveText(payment);await expect(page).toHaveTitle('Home Affordability Calculator | Carrowmont');}
   });
 
+  test('[AUTO] direct tool uses currency-aware home starter magnitudes and never carries India-scale raw defaults into NZD',async({page})=>{
+    await gotoClean(page,PATH);await setLocale(page,'NZ','NZD');
+    await expect(page.locator('#takeHomeIncome')).toHaveValue('12000');
+    await expect(page.locator('#essentialSpending')).toHaveValue('4000');
+    await expect(page.locator('#existingDebt')).toHaveValue('500');
+    await expect(page.locator('#protectedSavings')).toHaveValue('1000');
+    await expect(page.locator('#freeBuffer')).toHaveValue('1000');
+    await expect(page.locator('#deposit')).toHaveValue('200000');
+    await expect(page.locator('#targetHomePrice')).toHaveValue('1000000');
+    await expect(page.locator('#annualRate')).toHaveValue('6');
+    await expect(page.locator('#termYears')).toHaveValue('30');
+    await expect(page.locator('#ownershipCosts')).toHaveValue('1000');
+    await expect(page.locator('#actionMessage')).toContainText('not market averages or exchange-rate conversions');
+    const headline=Number((await page.locator('#headlineValue').innerText()).replace(/[^0-9.]/g,''));
+    expect(headline).toBeGreaterThan(700000);expect(headline).toBeLessThan(1200000);
+    await setInput(page,'#takeHomeIncome',13500);await setLocale(page,'US','USD');
+    await expect(page.locator('#takeHomeIncome')).toHaveValue('13500');
+    await expect(page.locator('#deposit')).toHaveValue('200000');
+    await page.locator('#resetBtn').click();
+    await expect(page.locator('#takeHomeIncome')).toHaveValue('6000');
+    await expect(page.locator('#deposit')).toHaveValue('100000');
+    await expect(page.locator('#targetHomePrice')).toHaveValue('500000');
+  });
+
   test('[AUTO] financial inputs remain local and never enter URL or browser storage',async({page})=>{
     const requests=[];page.on('request',r=>{if(['fetch','xhr'].includes(r.resourceType()))requests.push({url:r.url(),body:r.postData()||''});});
     await gotoClean(page,PATH);await setInput(page,'#takeHomeIncome',9876543);await setInput(page,'#deposit',7654321);await page.locator('#calculateBtn').click();
