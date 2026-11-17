@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 export function runFreBatch10CountryIntelligenceContract(root){
   const checks=[];const add=(name,ok,detail='')=>checks.push({name,ok:Boolean(ok),detail});
@@ -17,6 +18,9 @@ export function runFreBatch10CountryIntelligenceContract(root){
   const methodology=read('draw004.github.io/methodology.html');
   const spec=read('draw004.github.io/docs/CARROWMONT_FRE_BATCH10_COUNTRY_AWARE_FINANCIAL_INTELLIGENCE.md');
   const ledger=read('draw004.github.io/docs/CARROWMONT_FRE_BATCH10_ACCEPTANCE_LEDGER.md');
+  const updater=read('draw004.github.io/scripts/update-country-financial-reference.mjs');
+  const updaterWorkflow=read('draw004.github.io/.github/workflows/update-country-financial-reference.yml');
+  const homeApp=read('draw004.github.io/home-affordability-calculator.js');
   const toolPages=[
     'draw004.github.io/home-affordability-calculator.html',
     'draw004.github.io/debt-to-income-borrowing-health-calculator.html',
@@ -41,5 +45,13 @@ export function runFreBatch10CountryIntelligenceContract(root){
   add('Batch 10 implementation and acceptance records preserve formula, FX, tax/regulatory, account and Trust boundaries',spec.includes('does not automatically write an official rate')&&spec.includes('does not perform automatic FX conversion')&&spec.includes('tax, pension, benefit, lender-eligibility or regulatory engines')&&ledger.includes('No calculator formula or deterministic engine changed')&&ledger.includes('No Supabase schema, Google OAuth or account-ownership change'));
   const browser=readQa('tests/74-fre10-country-intelligence.spec.js');
   add('Batch 10 browser QA covers all five supported markets, unsupported fallback, role copy, no input overwrite and mobile geometry',expected.every(code=>browser.includes(`'${code}'`))&&browser.includes("'NZ'")&&browser.includes('do not overwrite')&&browser.includes('not today')&&browser.includes('assertNoHorizontalOverflow'));
+  add('Batch 10 country-reference updater checks official central-bank sources on weekdays and never auto-merges',updater.includes('rbi.org.in')&&updater.includes('federalreserve.gov')&&updater.includes('bankofengland.co.uk')&&updater.includes('bankofcanada.ca')&&updater.includes('rba.gov.au')&&updaterWorkflow.includes('35 22 * * 1-5')&&updaterWorkflow.includes('gh pr create')&&!/gh pr merge|--auto/.test(updaterWorkflow));
+  add('Batch 10 updater uses explicit signed percentage-point changes with stale/future/anomaly blocking',updater.includes("`${n>0?'+':''}${n.toFixed(2)}`")&&updater.includes('proposed minus stored')&&updater.includes('MAX_AUTOMATED_MOVE_PP = 2')&&updater.includes('older than stored')&&updater.includes('unexpectedly in the future')&&updater.includes('MAX_CHANGED_SOURCE_AGE_DAYS = 120'));
+  add('Batch 10 updater keeps canonical JSON and embedded runtime synchronized and preserves inflation frameworks',updater.includes('COUNTRY_REFERENCE_BEGIN')&&updater.includes('COUNTRY_REFERENCE_END')&&updater.includes('writeSynchronizedFiles')&&updater.includes('inflationFrameworksPreserved')&&updaterWorkflow.includes('data/country-financial-reference.json assets/trust/carrowmont-trust.js'));
+  const unit=spawnSync(process.execPath,[path.join(qaRoot,'scripts/fre-batch10-country-updater-unit.mjs')],{env:{...process.env,SOURCE_ROOT:root},encoding:'utf8'});
+  add('Batch 10 country-reference updater unit checks protect sign direction, parser shapes, freshness/anomaly guards and runtime sync',unit.status===0,(unit.stderr||unit.stdout||'').trim());
+  add('Batch 10 Home Affordability uses currency-aware starter magnitudes and does not silently convert user-edited values',homeApp.includes('STARTER_UNIT')&&homeApp.includes('NZD:1000')&&homeApp.includes('targetHomePrice:roundStarter(unit*1000,unit)')&&homeApp.includes('not market averages or exchange-rate conversions')&&homeApp.includes('if(usingStarterValues)applyStarterDefaults(true);else render();')&&homeApp.includes('usingStarterValues=false'));
+  const homeBrowser=readQa('tests/34-home-affordability-calculator.spec.js');
+  add('Batch 10 Home Affordability browser QA locks realistic NZD starters and edit-preservation behavior',homeBrowser.includes("'#takeHomeIncome')).toHaveValue('12000'")&&homeBrowser.includes("'#targetHomePrice')).toHaveValue('1000000'")&&homeBrowser.includes("'#deposit')).toHaveValue('200000'")&&homeBrowser.includes('not market averages or exchange-rate conversions')&&homeBrowser.includes("'#takeHomeIncome',13500"));
   return checks;
 }
