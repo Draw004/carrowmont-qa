@@ -50,6 +50,8 @@ export async function gotoClean(page, targetPath) {
       const carAffordabilityHandoff = sessionStorage.getItem(carAffordabilityHandoffKey);
       const searchHandoffKey = 'carrowmont_search_handoff_v1';
       const searchHandoff = sessionStorage.getItem(searchHandoffKey);
+      const homeAskHandoffKey = 'carrowmont_home_ask_handoff_v1';
+      const homeAskHandoff = sessionStorage.getItem(homeAskHandoffKey);
       const dashboardSessionKey = 'carrowmont_guest_dashboard_session_v1';
       const dashboardSession = sessionStorage.getItem(dashboardSessionKey);
       const dashboardLocalKey = 'carrowmont_guest_dashboard_local_v1';
@@ -71,6 +73,7 @@ export async function gotoClean(page, targetPath) {
       if (retirementHandoff) sessionStorage.setItem(retirementHandoffKey, retirementHandoff);
       if (carAffordabilityHandoff) sessionStorage.setItem(carAffordabilityHandoffKey, carAffordabilityHandoff);
       if (searchHandoff) sessionStorage.setItem(searchHandoffKey, searchHandoff);
+      if (homeAskHandoff) sessionStorage.setItem(homeAskHandoffKey, homeAskHandoff);
       if (dashboardSession) sessionStorage.setItem(dashboardSessionKey, dashboardSession);
       if (dashboardLocal) localStorage.setItem(dashboardLocalKey, dashboardLocal);
       if (pendingCloudProfile) localStorage.setItem(pendingCloudProfileKey, pendingCloudProfile);

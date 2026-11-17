@@ -27,6 +27,7 @@ import { runFreBatch9TrustTransparencyContract } from './fre-batch9-trust-transp
 import { runFreBatch9bFinancialPlanContract } from './fre-batch9b-financial-plan-contract.mjs';
 import { runFreBatch10CountryIntelligenceContract } from './fre-batch10-country-intelligence-contract.mjs';
 import { runFreBatch10bAccountAwareAskContract } from './fre-batch10b-account-aware-ask-contract.mjs';
+import { runFreBatch11HomepageProductContract } from './fre-batch11-homepage-product-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -69,6 +70,7 @@ for (const c of runFreBatch9TrustTransparencyContract(root)) add(`FRE9: ${c.name
 for (const c of runFreBatch9bFinancialPlanContract(root)) add(`FRE9B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch10CountryIntelligenceContract(root)) add(`FRE10: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch10bAccountAwareAskContract(root)) add(`FRE10B: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch11HomepageProductContract(root)) add(`FRE11: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -921,8 +923,9 @@ if (mainHome || mainSiteJs) {
     !/<nav class="desktop-nav"[\s\S]*?<a href="\/">Home<\/a>/.test(mainHome) &&
     !/<div class="mobile-nav-panel"[\s\S]*?<a href="\/">Home<\/a>/.test(mainHome)
   );
-  add('main site: homepage keeps practical-tools wording and refined trust-point icons',
-    mainHome.includes('Carrowmont gives you practical tools, clear explanations and scenario analysis') &&
+  add('main site: homepage keeps product-first decision wording and refined trust-point icons',
+    mainHome.includes('Start with a real-life money question') &&
+    mainHome.includes('uses its tested calculators for the numbers') &&
     mainHome.includes('hero-point-icon') &&
     !mainHome.includes('Carrowmont gives you practical calculators')
   );
@@ -5820,7 +5823,7 @@ add('NEWSLETTER1: homepage promise stays guest-first while optional email signup
   newsletter1Home.includes('Account optional') && !newsletter1Home.includes('No sign-up required') && newsletter1Site.includes('CARROWMONT MONEY IN REAL LIFE') && newsletter1Site.includes('Optional. No Carrowmont account required.')
 );
 add('FRE8E cleanup: homepage uses one My Carrowmont showcase and keeps newsletter independent before decision-support tools',
-  newsletter1Home.includes('SEE CARROWMONT IN ACTION') && !newsletter1Site.includes('cm-home-relationship-grid') && !newsletter1Site.includes('data-cm-home-mycarrowmont') && newsletter1Site.includes("var productPreview = main.querySelector('.cm-product-preview-section')") && newsletter1Site.includes('if (authority) main.insertBefore(section, authority)') && newsletter1Site.includes('No Carrowmont account required.')
+  newsletter1Home.includes('SEE CARROWMONT IN ACTION') && !newsletter1Site.includes('cm-home-relationship-grid') && !newsletter1Site.includes('data-cm-home-mycarrowmont') && newsletter1Site.includes("var productPreview = main.querySelector('.cm-product-preview-section')") && newsletter1Site.includes('main.insertBefore(section, productPreview.nextSibling)') && newsletter1Site.includes('No Carrowmont account required.')
 );
 add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locked',
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
