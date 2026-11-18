@@ -32,11 +32,27 @@ export function runFreHeadlineAndDrawCContract(root){
   const main=path.join(root,'draw004.github.io');
   const page=fs.readFileSync(path.join(main,'my-carrowmont.html'),'utf8');
   const css=fs.readFileSync(path.join(main,'assets/dashboard/my-carrowmont.css'),'utf8');
-  add('PWA: Draw the C renders the complete approved icon at animation end',page.includes('cm-pwa-draw-stroke')&&page.includes('cm-pwa-draw-finish')&&page.includes('carrowmont-512.png')&&css.includes('100%{opacity:1}')&&css.includes('stroke-dashoffset:0'));
-  add('PWA: reduced motion, bounded dismissal, and non-blocking overlay remain intact',page.includes('window.setTimeout(release,1600)')&&page.includes('prefers-reduced-motion: reduce')&&css.includes('pointer-events:none')&&css.includes('@media(prefers-reduced-motion:reduce)'));
+  const home=fs.readFileSync(path.join(main,'index.html'),'utf8');
+  const manifest=JSON.parse(fs.readFileSync(path.join(main,'carrowmont.webmanifest'),'utf8'));
+  const homeBoot=fs.readFileSync(path.join(main,'assets/pwa/carrowmont-launch.css'),'utf8');
+  add('PWA: stable installed-app identity, Home launch and approved top-to-bottom Draw the C',
+    manifest.id==='/my-carrowmont.html' && manifest.start_url==='/?source=pwa' &&
+    home.includes('d="M355 164 C306 109') && home.includes('Plan today. Build tomorrow.') &&
+    home.includes('class="cm-home-pwa-c-finish"') && homeBoot.includes('cm-home-draw-c'));
+  add('PWA: full-screen intro is mobile icon-launch-only, website/desktop navigation is immediate',
+    home.includes("searchParams.get('source') === 'pwa'") && home.includes("matchMedia('(display-mode: standalone)')") &&
+    home.includes("matchMedia('(max-width: 700px)')") && home.includes("matchMedia('(prefers-reduced-motion: reduce)')") &&
+    home.includes("root.classList.remove('cm-home-pwa-launch')") &&
+    page.includes("window.location.replace('/?source=pwa')") &&
+    !page.includes('window.setTimeout(release,1600)') &&
+    homeBoot.includes('pointer-events:none'));
   const site=fs.readFileSync(path.join(main,'site.js'),'utf8');
   const plan=fs.readFileSync(path.join(main,'assets/account/carrowmont-financial-plan.js'),'utf8');
   const dashboard=fs.readFileSync(path.join(main,'assets/dashboard/my-carrowmont.js'),'utf8');
+  add('install guidance remains visible without a browser prompt and retains a one-click prompt if offered',
+    page.includes('id="cmPwaInstallShortcut"') && site.includes('function instructions()') &&
+    site.includes('function update()') && site.includes("event.preventDefault();deferredPrompt=event;update();") &&
+    site.includes("if(card)card.hidden=isInstalled;") && site.includes("How to install"));
   add('dynamic display headings: no trailing periods in newsletter and dashboard large headings',!site.includes('week.</h2>')&&!plan.includes('view.</h2>')&&!plan.includes('forecast.</h3>')&&!dashboard.includes('wheel.</h3>'));
   return checks;
 }
