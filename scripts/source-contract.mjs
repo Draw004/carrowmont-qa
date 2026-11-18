@@ -30,6 +30,7 @@ import { runFreBatch10bAccountAwareAskContract } from './fre-batch10b-account-aw
 import { runFreBatch11HomepageProductContract } from './fre-batch11-homepage-product-contract.mjs';
 import { runFreBatch12UxSearchLearnContract } from './fre-batch12-ux-search-learn-contract.mjs';
 import { runFreHeadlineAndDrawCContract } from './fre-headline-and-drawc-contract.mjs';
+import { runFreAppWebBehaviorContract } from './fre-app-web-behavior-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -75,6 +76,7 @@ for (const c of runFreBatch10bAccountAwareAskContract(root)) add(`FRE10B: ${c.na
 for (const c of runFreBatch11HomepageProductContract(root)) add(`FRE11: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12UxSearchLearnContract(root)) add(`FRE12: ${c.name}`, c.ok, c.detail);
 for (const c of runFreHeadlineAndDrawCContract(root)) add(`FRE12B: ${c.name}`, c.ok, c.detail);
+for (const c of runFreAppWebBehaviorContract(root)) add(`APP-WEB: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -4641,7 +4643,7 @@ add('LEARN3A: Tools hero is compact and embedded search is pulled upward without
   search1SiteCss.includes('.tools-directory-hero-actions{display:none}') &&
   search1SiteCss.includes('body[data-cm-page="tools-directory"] .search-discovery-section{margin-top:-28px') &&
   search1SiteCss.includes('.cm-search-heading h2{margin-bottom:5px;font-size:21px;line-height:1.16}') &&
-  search1Tools.includes('/carrowmont.css?v=20261020-learn3a-fix1') &&
+  (search1Tools.includes('/carrowmont.css?v=20261020-learn3a-fix1') || search1Tools.includes('/carrowmont.css?v=20261119-app-behavior-v5')) &&
   !search1Tools.includes('decorative-search') &&
   readQa('tests/12-tools-hub.spec.js').includes('tools search should appear above the fold')
 );
@@ -5613,7 +5615,7 @@ add('LEARN-PRESENTATION2: shared Learn tables are visually refined and the retir
   !learnPresentationRetirement.includes('<td>No single lifespan</td><td>Returns, inflation and spending vary; sequence matters</td>')
 );
 add('LEARN-PRESENTATION2: Contact hero is compact and exposes the email action earlier without changing contact identity',
-  learnPresentationContact.includes('<body class="contact-page">') && (learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') || learnPresentationContact.includes('carrowmont.css?v=20261029-social1a') || learnPresentationContact.includes('carrowmont.css?v=20261030-social1b')) &&
+  learnPresentationContact.includes('<body class="contact-page">') && (learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') || learnPresentationContact.includes('carrowmont.css?v=20261029-social1a') || learnPresentationContact.includes('carrowmont.css?v=20261030-social1b') || learnPresentationContact.includes('carrowmont.css?v=20261119-app-behavior-v5')) &&
   learnPresentationContactCss.includes('CONTACT-PRESENTATION2') && learnPresentationContactCss.includes('body.contact-page .page-hero-inner{padding:42px 0 38px}') &&
   learnPresentationContact.includes('mailto:contact@carrowmont.com')
 );
@@ -5884,7 +5886,7 @@ add('HYGIENE1: desktop navigation promotes My Carrowmont beside Home, keeps Meth
 );
 const hygieneResearchPages = ['research.html','research/emergency-savings-resilience.html','research/inflation-purchasing-power-monitor.html','research/mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/${name}`));
 add('HYGIENE1: Research pages carry the shared country-currency control and locale runtime before shared site runtime',
-  hygieneResearchPages.every(html=>html.includes('class="locale-menu" id="localeMenu"') && html.includes('/locale.js?v=20261010-tools-hub1') && html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261105-mobile2'))
+  hygieneResearchPages.every(html=>html.includes('class="locale-menu" id="localeMenu"') && html.includes('/locale.js?v=20261010-tools-hub1') && (html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261105-mobile2') || html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261119-app-behavior-v5')))
 );
 add('HYGIENE1: Learn hub and articles expose a shared topic navigator after the Learn hero with requested major planning categories',
   hygieneSite.includes("nav.dataset.cmLearnTopicNav") && hygieneSite.includes("label.textContent = 'Explore by topic'") &&

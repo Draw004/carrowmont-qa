@@ -62,11 +62,14 @@ export function runFreBatch12UxSearchLearnContract(root){
     planJs.includes("target.classList.add('mycm-plan-area-focus')")&&planJs.includes("overview.setAttribute('aria-label'")&&
     myCss.includes('.mycm-plan-area{scroll-margin-top:112px}')&&myCss.includes('@media(prefers-reduced-motion:reduce){.mycm-plan-area-focus'));
 
-  add('FRE12 PWA launch polish is Carrowmont-side, lightweight, dismisses on readiness and respects reduced motion',
-    myPage.includes('cm-pwa-launching')&&myPage.includes("searchParams.get('source')==='pwa'")&&myPage.includes('class="cm-pwa-boot"')&&
-    myPage.includes('requestAnimationFrame(release)')&&myPage.includes('window.setTimeout(release,1600)')&&
-    myPage.includes('id="cmPwaCReveal"')&&myPage.includes('class="cm-pwa-draw-finish"')&&myPage.includes('carrowmont-512.png')&&
-    myCss.includes('@keyframes cm-pwa-draw-c')&&myCss.includes('@keyframes cm-pwa-complete-c')&&myCss.includes('@media(prefers-reduced-motion:reduce)'));
+  add('FRE12 PWA launch polish plays Draw the C on installed-mobile Home only, preserving fast normal navigation',
+    home.includes('cm-home-pwa-launch') && home.includes('class="cm-home-pwa-boot"') &&
+    home.includes('Plan today. Build tomorrow.') && home.includes('d="M355 164 C306 109') &&
+    home.includes("searchParams.get('source') === 'pwa'") &&
+    home.includes("matchMedia('(display-mode: standalone)')") &&
+    myPage.includes("window.location.replace('/?source=pwa')") &&
+    myCss.includes('cm-pwa-boot-tagline') && myCss.includes('@media(prefers-reduced-motion:reduce)'));
+
 
   const newGuides=[
     'mutual-funds-explained.html','pay-off-debt-or-invest.html','balance-transfer-credit-card.html','where-to-keep-short-term-savings.html',

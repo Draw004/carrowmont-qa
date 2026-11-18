@@ -30,7 +30,7 @@ export function runFreBatch11HomepageProductContract(root){
   add('Batch 12 rollback removes the homepage free-text handoff writer while keeping Ask backward-compatible',
     !site.includes("sessionStorage.setItem(KEY")&&!home.includes('carrowmont_home_ask_handoff_v1'));
   add('Batch 11 preserves approved hero performance assets under the refreshed site runtime',
-    home.includes('carrowmont-hero-mobile.webp?v=20261113-hero4')&&home.includes('fetchpriority="high"')&&home.includes('loading="eager"')&&home.includes('site.js?v=20261118-fre12'));
+    home.includes('carrowmont-hero-mobile.webp?v=20261113-hero4')&&home.includes('fetchpriority="high"')&&home.includes('loading="eager"')&&home.includes('site.js?v=20261119-app-behavior-v5'));
   add('Batch 12 Learn expansion grows reviewed public inventory while Ask and Tools remain indexable',
     pages.entries?.length===145&&(sitemap.match(/<loc>/g)||[]).length===145&&sitemap.includes('<loc>https://carrowmont.com/ask-carrowmont.html</loc>')&&sitemap.includes('<loc>https://carrowmont.com/tools.html</loc>'));
   add('Batch 11 browser QA was updated to protect the compact Ask rollback rather than the retired embedded form',

@@ -40,8 +40,8 @@ test.describe('FRE8J My Carrowmont visual intelligence and app experience',()=>{
     await expect(page.locator('body')).toHaveClass(/mycm-authenticated/);await expect(page.locator('#mycmAccountSignedIn')).not.toHaveAttribute('open','');await expect(page.locator('.mycm-plan-model')).not.toHaveAttribute('open','');
     await expect(page.locator('#mycmVisualOverview')).toBeVisible();const order=await page.evaluate(()=>{const overview=document.querySelector('#mycmVisualOverview'),help=document.querySelector('.mycm-plan-model');return Boolean(overview&&help&&(overview.compareDocumentPosition(help)&Node.DOCUMENT_POSITION_FOLLOWING));});expect(order).toBe(true);
   });
-  test('[AUTO] install card stays quiet by default and appears only when this browser reports installability',async({page})=>{
-    await page.setViewportSize({width:390,height:844});await gotoClean(page,'/my-carrowmont.html');const card=page.locator('[data-cm-pwa-card]');await expect(card).toBeHidden();
-    await page.evaluate(()=>window.dispatchEvent(new Event('beforeinstallprompt',{cancelable:true})));await expect(card).toBeVisible();await expect(page.locator('#cmPwaInstallButton')).toBeVisible();await assertNoHorizontalOverflow(page);
+  test('[AUTO] install guidance remains discoverable even when install events are not offered',async({page})=>{
+    await page.setViewportSize({width:390,height:844});await gotoClean(page,'/my-carrowmont.html');const card=page.locator('[data-cm-pwa-card]');await expect(card).toBeVisible();await expect(page.locator('#cmPwaInstallShortcut')).toBeVisible();await expect(page.locator('#cmPwaInstallButton')).toBeVisible();
+    await page.evaluate(()=>window.dispatchEvent(new Event('beforeinstallprompt',{cancelable:true})));await expect(page.locator('#cmPwaInstallButton')).toHaveText('Install Carrowmont');await assertNoHorizontalOverflow(page);
   });
 });
