@@ -4,7 +4,7 @@ import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow } from '../hel
 const PAGES = [
   { path:'/retirement-savings-by-age.html', title:'Retirement Savings by Age: 30, 40, 50 and 60 | Carrowmont', heading:'How much should you have saved for retirement by 30, 40, 50 and 60?', cta:'/retirement-calculator/' },
   { path:'/retirement-monthly-income-needed.html', title:'Monthly Income Needed in Retirement | Carrowmont', heading:'How much monthly income will you need in retirement?', cta:'/retirement-calculator/' },
-  { path:'/retirement-expenses.html', title:'How retirement expenses may change | Carrowmont', heading:"Retirement spending is not simply today's budget plus inflation.", cta:'/retirement-calculator/' },
+  { path:'/retirement-expenses.html', title:'How retirement expenses may change | Carrowmont', heading:"Retirement spending is not simply today's budget plus inflation", cta:'/retirement-calculator/' },
   { path:'/inflation-and-retirement-planning.html', title:'Inflation and Retirement Planning | Carrowmont', heading:'How does inflation change the retirement amount you need?', cta:'/retirement-calculator/' },
   { path:'/how-long-will-retirement-savings-last.html', title:'How long could your retirement savings last? | Carrowmont', heading:'How long could your retirement savings last?', cta:'/retirement-calculator/' },
   { path:'/4-percent-rule-retirement.html', title:'The 4% Rule in Retirement: Meaning and Limits | Carrowmont', heading:'What is the 4% rule in retirement, and what are its limits?', cta:'/4-percent-rule-stress-test.html' },

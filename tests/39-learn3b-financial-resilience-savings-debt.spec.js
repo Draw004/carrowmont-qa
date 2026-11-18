@@ -13,7 +13,7 @@ const PAGES = [
   {
     path: '/emergency-savings.html',
     title: 'Emergency Savings: Why Liquidity Matters | Carrowmont',
-    h1: 'Emergency savings has a different job from long-term investing.',
+    h1: 'Emergency savings has a different job from long-term investing',
     published: '2026-09-20',
     cta: '/goal-planner/'
   },

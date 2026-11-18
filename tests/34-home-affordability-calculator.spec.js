@@ -21,7 +21,7 @@ test.describe('HOME1 Home Affordability / Mortgage Borrowing Power',()=>{
     const errors=monitorPageErrors(page);await gotoClean(page,PATH);
     await expect(page).toHaveTitle('Home Affordability Calculator | Carrowmont');
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toHaveText('See what home price may fit your budget without squeezing everything else.');
+    await expect(page.locator('h1')).toHaveText('See what home price may fit your budget without squeezing everything else');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://carrowmont.com/home-affordability-calculator.html');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content','index,follow');
     await expect(page.locator('[data-cm-search-identity]')).toContainText('mortgage affordability calculator');

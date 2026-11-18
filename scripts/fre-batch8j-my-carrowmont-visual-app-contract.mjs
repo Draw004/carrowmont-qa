@@ -18,7 +18,7 @@ export function runFreBatch8jMyCarrowmontVisualAppContract(root){
   const index=JSON.parse(read(main+'data/carrowmont-search-index.json')||'{"entries":[]}');
 
   add('8J adds a visual money snapshot above the existing detail cards without replacing edit sections',
-    page.includes('id="mycmVisualOverview"')&&page.includes('See the shape of your money in seconds.')&&page.includes('id="mycmCashFlowCard"')&&page.includes('id="mycmEmergencyCard"')&&page.includes('id="mycmDebtCard"'));
+    page.includes('id="mycmVisualOverview"')&&page.includes('See the shape of your money in seconds')&&page.includes('id="mycmCashFlowCard"')&&page.includes('id="mycmEmergencyCard"')&&page.includes('id="mycmDebtCard"'));
   add('8J monthly money wheel shows essentials other spending debt and money left as distinct readable segments',
     dash.includes('function moneyWheel(')&&dash.includes('Essentials ${esc(money(essential))}')&&dash.includes('Other ${esc(money(flexible))}')&&dash.includes('Debt ${esc(money(debt.value))}')&&dash.includes('Left ${esc(money(remaining))}')&&css.includes('.mycm-wheel-legend'));
   add('8J emergency colour is tied to the user selected target while debt ratio stays explicitly neutral',
@@ -36,7 +36,7 @@ export function runFreBatch8jMyCarrowmontVisualAppContract(root){
   add('8J preserves the stable PWA identity so existing installs are not intentionally forked into a second app',
     manifest.id==='/my-carrowmont.html'&&manifest.start_url==='/my-carrowmont.html?source=pwa'&&manifest.display==='standalone');
   add('8J dashboard and PWA asset cache keys are refreshed together',
-    (page.includes('my-carrowmont.css?v=20261115-fre8k4')||page.includes('my-carrowmont.css?v=20261116-fre9')||page.includes('my-carrowmont.css?v=20261118-fre12'))&&(page.includes('my-carrowmont.js?v=20261115-fre8k')||page.includes('my-carrowmont.js?v=20261116-fre9')||page.includes('my-carrowmont.js?v=20261116-fre9b'))&&(page.includes('my-carrowmont-account.js?v=20261115-fre8k')||page.includes('my-carrowmont-account.js?v=20261116-fre9')||page.includes('my-carrowmont-account.js?v=20261116-fre9b'))&&(page.includes('site.js?v=20261115-fre8jv3')||page.includes('site.js?v=20261118-fre12')));
+    (page.includes('my-carrowmont.css?v=20261115-fre8k4')||page.includes('my-carrowmont.css?v=20261116-fre9')||(page.includes('my-carrowmont.css?v=20261118-fre12')||page.includes('my-carrowmont.css?v=20261118-drawc1')))&&(page.includes('my-carrowmont.js?v=20261115-fre8k')||page.includes('my-carrowmont.js?v=20261116-fre9')||page.includes('my-carrowmont.js?v=20261116-fre9b'))&&(page.includes('my-carrowmont-account.js?v=20261115-fre8k')||page.includes('my-carrowmont-account.js?v=20261116-fre9')||page.includes('my-carrowmont-account.js?v=20261116-fre9b'))&&(page.includes('site.js?v=20261115-fre8jv3')||page.includes('site.js?v=20261118-fre12')));
   add('8J mobile CSS keeps the visual summary and discovery cards single-column without horizontal overflow pressure',
     css.includes('@media(max-width:660px)')&&css.includes('.mycm-visual-grid{grid-template-columns:1fr}')&&css.includes('.mycm-add-grid-primary,.mycm-add-grid-more{grid-template-columns:1fr}'));
   add('8J retains the 8G saved-plan explanation and all three focused update actions',

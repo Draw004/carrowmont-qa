@@ -49,7 +49,7 @@ async function enterMeaningfulRetirementPlan(page,currentSavings=1250000){
 test.describe('FRE8B selective Save/Update to My Carrowmont',()=>{
   test('[AUTO] My Carrowmont hero explains connected plans analytics and explicit choice',async({page})=>{
     const errors=monitorPageErrors(page);await gotoClean(page,'/my-carrowmont.html');
-    await expect(page.getByRole('heading',{name:'Keep your financial plans connected.'})).toBeVisible();
+    await expect(page.getByRole('heading',{name:'Keep your financial plans connected'})).toBeVisible();
     await expect(page.getByText(/Save your retirement, goals, debt, loans and other financial plans/)).toBeVisible();
     await expect(page.getByText('Only the plans you choose to keep become part of My Carrowmont.').first()).toBeVisible();
     await expect(page.locator('.mycm-privacy-badges')).toContainText('See deeper insights');

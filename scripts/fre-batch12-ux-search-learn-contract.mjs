@@ -64,8 +64,9 @@ export function runFreBatch12UxSearchLearnContract(root){
 
   add('FRE12 PWA launch polish is Carrowmont-side, lightweight, dismisses on readiness and respects reduced motion',
     myPage.includes('cm-pwa-launching')&&myPage.includes("searchParams.get('source')==='pwa'")&&myPage.includes('class="cm-pwa-boot"')&&
-    myPage.includes('requestAnimationFrame(release)')&&myPage.includes('window.setTimeout(release,900)')&&
-    myCss.includes('@keyframes cm-pwa-c-breathe')&&myCss.includes('@keyframes cm-pwa-dot')&&myCss.includes('@media(prefers-reduced-motion:reduce){.cm-pwa-boot-mark'));
+    myPage.includes('requestAnimationFrame(release)')&&myPage.includes('window.setTimeout(release,1600)')&&
+    myPage.includes('id="cmPwaCReveal"')&&myPage.includes('class="cm-pwa-draw-finish"')&&myPage.includes('carrowmont-512.png')&&
+    myCss.includes('@keyframes cm-pwa-draw-c')&&myCss.includes('@keyframes cm-pwa-complete-c')&&myCss.includes('@media(prefers-reduced-motion:reduce)'));
 
   const newGuides=[
     'mutual-funds-explained.html','pay-off-debt-or-invest.html','balance-transfer-credit-card.html','where-to-keep-short-term-savings.html',

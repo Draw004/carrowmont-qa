@@ -8,8 +8,8 @@ const PAGES = [
   { path:'/inflation-value-of-money-over-time.html', title:'Future Value of Money After Inflation | Carrowmont', heading:'What will your money be worth in 10, 20 and 30 years?', cta:'/inflation-calculator/' },
   { path:'/future-cost-of-expenses.html', title:'Future Cost of Monthly Expenses | Carrowmont', heading:'How much will today’s monthly expenses cost in 10, 20 and 30 years?', cta:'/inflation-calculator/' },
   { path:'/inflation-purchasing-power-savings.html', title:'How Inflation Reduces Purchasing Power | Carrowmont', heading:'How much purchasing power can inflation take from your savings?', cta:'/inflation-calculator/' },
-  { path:'/inflation-purchasing-power.html', title:'Inflation & purchasing power | Carrowmont', heading:'Inflation changes both future prices and what money can buy.', cta:'/inflation-calculator/' },
-  { path:'/todays-money-vs-future-money.html', title:"Today's money vs future money | Carrowmont", heading:"Today's money and future money answer different questions.", cta:'/inflation-calculator/' }
+  { path:'/inflation-purchasing-power.html', title:'Inflation & purchasing power | Carrowmont', heading:'Inflation changes both future prices and what money can buy', cta:'/inflation-calculator/' },
+  { path:'/todays-money-vs-future-money.html', title:"Today's money vs future money | Carrowmont", heading:"Today's money and future money answer different questions", cta:'/inflation-calculator/' }
 ];
 
 function staticTitle(source) {
