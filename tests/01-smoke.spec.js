@@ -240,24 +240,24 @@ test.describe('Carrowmont smoke and content contracts', () => {
     await gotoClean(page, '/financial-independence/');
     await expect(page).toHaveTitle('Financial Independence & FIRE Calculator | Carrowmont');
     await expect(page.locator('.product-label')).toHaveText('Financial Independence');
-    await expect(page.locator('main h1')).toHaveText('See how spending and saving may shape your path to financial independence.');
+    await expect(page.locator('main h1')).toHaveText('See how spending and saving may shape your path to financial independence');
 
     await gotoClean(page, '/retirement-calculator/');
     await expect(page).toHaveTitle('Retirement Calculator & Retirement Planner | Carrowmont');
     await gotoClean(page, '/retirement-calculator/planner.html');
     await expect(page).toHaveTitle('Detailed Retirement Planner | Carrowmont');
     await expect(page.locator('.product-label')).toHaveText('Retirement Planner');
-    await expect(page.locator('main h1')).toHaveText('Your retirement plan should reflect how your expenses actually change.');
+    await expect(page.locator('main h1')).toHaveText('Your retirement plan should reflect how your expenses actually change');
 
     await gotoClean(page, '/budget-cash-flow-planner/');
     await expect(page).toHaveTitle('Budget Calculator & Monthly Cash Flow Planner | Carrowmont');
     await expect(page.locator('.product-label')).toHaveText('Budget & Cash Flow Planner');
-    await expect(page.locator('main h1')).toHaveText('See what comes in, what goes out, and what is actually left.');
+    await expect(page.locator('main h1')).toHaveText('See what comes in, what goes out, and what is actually left');
 
     await gotoClean(page, '/inflation-calculator/');
     await expect(page).toHaveTitle('Inflation & Purchasing Power Calculator | Carrowmont');
     await expect(page.locator('.product-label')).toHaveText('Inflation Calculator');
-    await expect(page.locator('main h1')).toHaveText('See what inflation can do to your money.');
+    await expect(page.locator('main h1')).toHaveText('See what inflation can do to your money');
   });
 
   test('[AUTO] GSEO1C: domain identity, trust policy and core-tool structured data stay connected', async ({ page }) => {
@@ -280,7 +280,7 @@ test.describe('Carrowmont smoke and content contracts', () => {
     expect(organization?.email).toBe('contact@carrowmont.com');
 
     await gotoClean(page, '/editorial-policy.html');
-    await expect(page.locator('main h1')).toHaveText('Clear standards for how Carrowmont publishes financial information.');
+    await expect(page.locator('main h1')).toHaveText('Clear standards for how Carrowmont publishes financial information');
     await expect(page.locator('main a[href="/methodology.html"]')).toBeVisible();
     await expect(page.locator('main a[href="/disclaimer.html"]')).toBeVisible();
     await expect(page.locator('main a[href="/contact.html"]')).toBeVisible();

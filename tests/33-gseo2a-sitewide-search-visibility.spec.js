@@ -25,7 +25,7 @@ test.describe('GSEO2A sitewide search visibility foundation', () => {
 
     await gotoClean(page, '/retirement-calculator/planner.html');
     await expect(page).toHaveTitle('Detailed Retirement Planner | Carrowmont');
-    await expect(page.locator('main h1')).toHaveText('Your retirement plan should reflect how your expenses actually change.');
+    await expect(page.locator('main h1')).toHaveText('Your retirement plan should reflect how your expenses actually change');
   });
 
   test('[AUTO] SWP and Loan search intents have useful crawlable explanations and bidirectional Learn paths', async ({ page }) => {

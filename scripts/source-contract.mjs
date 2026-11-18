@@ -29,6 +29,7 @@ import { runFreBatch10CountryIntelligenceContract } from './fre-batch10-country-
 import { runFreBatch10bAccountAwareAskContract } from './fre-batch10b-account-aware-ask-contract.mjs';
 import { runFreBatch11HomepageProductContract } from './fre-batch11-homepage-product-contract.mjs';
 import { runFreBatch12UxSearchLearnContract } from './fre-batch12-ux-search-learn-contract.mjs';
+import { runFreHeadlineAndDrawCContract } from './fre-headline-and-drawc-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -73,6 +74,7 @@ for (const c of runFreBatch10CountryIntelligenceContract(root)) add(`FRE10: ${c.
 for (const c of runFreBatch10bAccountAwareAskContract(root)) add(`FRE10B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch11HomepageProductContract(root)) add(`FRE11: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12UxSearchLearnContract(root)) add(`FRE12: ${c.name}`, c.ok, c.detail);
+for (const c of runFreHeadlineAndDrawCContract(root)) add(`FRE12B: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -273,7 +275,7 @@ add('financial-independence: GSEO1B-2 identifies Financial Independence and FIRE
   gseoFiHtml.includes('content="Financial Independence &amp; FIRE Calculator | Carrowmont"') &&
   gseoFiHtml.includes('"name":"Carrowmont Financial Independence & FIRE Calculator"') &&
   gseoFiHtml.includes('<span class="product-label">Financial Independence</span>') &&
-  gseoFiHtml.includes('<h1>See how spending and saving may shape your path to financial independence.</h1>')
+  gseoFiHtml.includes('<h1>See how spending and saving may shape your path to financial independence</h1>')
 );
 add('retirement: GSEO2A assigns broad retirement-calculator intent to the landing page and detailed-planner intent to planner.html',
   gseoRetirementLandingHtml.includes('<title>Retirement Calculator &amp; Retirement Planner | Carrowmont</title>') &&
@@ -283,21 +285,21 @@ add('retirement: GSEO2A assigns broad retirement-calculator intent to the landin
   gseoRetirementPlannerHtml.includes('<title>Detailed Retirement Planner | Carrowmont</title>') &&
   gseoRetirementPlannerHtml.includes('content="Detailed Retirement Planner | Carrowmont"') &&
   gseoRetirementPlannerHtml.includes('"name": "Carrowmont Detailed Retirement Planner"') &&
-  gseoRetirementPlannerHtml.includes('<h1>Your retirement plan should reflect how your expenses actually change.</h1>')
+  gseoRetirementPlannerHtml.includes('<h1>Your retirement plan should reflect how your expenses actually change</h1>')
 );
 add('budget: GSEO1B-2 identifies budget-calculator and monthly cash-flow intent without changing visible product identity',
   gseoBudgetHtml.includes('<title>Budget Calculator &amp; Monthly Cash Flow Planner | Carrowmont</title>') &&
   gseoBudgetHtml.includes('content="Budget Calculator &amp; Monthly Cash Flow Planner | Carrowmont"') &&
   gseoBudgetHtml.includes('"name":"Carrowmont Budget Calculator & Monthly Cash Flow Planner"') &&
   gseoBudgetHtml.includes('<span class="product-label">Budget &amp; Cash Flow Planner</span>') &&
-  gseoBudgetHtml.includes('<h1>See what comes in, what goes out, and what is actually left.</h1>')
+  gseoBudgetHtml.includes('<h1>See what comes in, what goes out, and what is actually left</h1>')
 );
 add('inflation: GSEO1B-2 identifies purchasing-power calculator intent without changing visible product identity',
   gseoInflationHtml.includes('<title>Inflation &amp; Purchasing Power Calculator | Carrowmont</title>') &&
   gseoInflationHtml.includes('content="Inflation &amp; Purchasing Power Calculator | Carrowmont"') &&
   gseoInflationHtml.includes('"name":"Carrowmont Inflation & Purchasing Power Calculator"') &&
   gseoInflationHtml.includes('<a class="product-label" href="index.html">Inflation Calculator</a>') &&
-  gseoInflationHtml.includes('<h1>See what inflation can do to your money.</h1>')
+  gseoInflationHtml.includes('<h1>See what inflation can do to your money</h1>')
 );
 
 // GSEO1C trust + structured-data foundation - 2026-10-13.
@@ -2606,7 +2608,7 @@ add('MDC family after MDC1C: Decision Centre publishes exactly four live choices
 add('MDC1A: canonical routes, equal-cash-flow methodology and break-even hero are present',
   mdcHubHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') &&
   mdcToolHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/prepayment-vs-investing.html') &&
-  mdcToolHtml.includes('BREAK-EVEN INVESTMENT RETURN') && mdcToolHtml.includes('Equal cash flow. One original mortgage horizon.') &&
+  mdcToolHtml.includes('BREAK-EVEN INVESTMENT RETURN') && mdcToolHtml.includes('Equal cash flow. One original mortgage horizon') &&
   mdcCore.includes("breakEvenStatus: 'no-extra'") && mdcCore.includes('applicable: false') &&
   mdcCore.includes('prepayInvestmentContribution') && mdcCore.includes('identityDifference') &&
   !/fetch\s*\(|XMLHttpRequest|sendBeacon\s*\(/.test(mdcCore + mdcProfile)
@@ -2746,7 +2748,7 @@ add('MDC1B: canonical route, search identity and three-payment rate/term separat
   mdc1bToolHtml.includes('<title>Mortgage Refinance Break-Even Calculator | Carrowmont</title>') &&
   mdc1bToolHtml.includes('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') &&
   mdc1bToolHtml.includes('id="currentPaymentResult"') && mdc1bToolHtml.includes('id="rateOnlyPaymentResult"') && mdc1bToolHtml.includes('id="proposedPaymentResult"') &&
-  mdc1bToolHtml.includes('Separate the rate effect from the term effect.') &&
+  mdc1bToolHtml.includes('Separate the rate effect from the term effect') &&
   mdc1bCore.includes('rateOnlySameTerm') && mdc1bCore.includes('principal: normalized.balance') &&
   mdc1bCore.includes('const proposedPrincipal = normalized.balance + financedFees')
 );
@@ -3682,7 +3684,7 @@ add('CORE9 loan: approved specification, canonical indexable shell and one-H1 id
   loanHtml.includes('<title>Loan &amp; EMI Calculator | Carrowmont</title>') &&
   loanHtml.includes('<link rel="canonical" href="https://carrowmont.com/loan-calculator/"') &&
   loanHtml.includes('<meta name="robots" content="index,follow"') &&
-  (loanHtml.match(/<h1\b/g)||[]).length===1 && loanHtml.includes('See what a loan could cost each month.') &&
+  (loanHtml.match(/<h1\b/g)||[]).length===1 && loanHtml.includes('See what a loan could cost each month') &&
   loanHtml.includes('data-carrowmont-tool="loan-calculator"')
 );
 add('CORE9 loan: deterministic engine anchors standard, zero-rate, reverse-principal and final-balance formulas',
@@ -4163,7 +4165,7 @@ add('RETIRE1-SWP1: dedicated Learn page owns the explanatory query and links bac
    retire1SwpLearn.includes('href="https://carrowmont.com/what-is-swp-systematic-withdrawal-plan.html" rel="canonical"'))
 );
 add('RETIRE1-SWP1: Learn page is substantive, decision-focused and avoids fund recommendations or guaranteed outcomes',
-  retire1SwpLearn.length > 20000 && retire1SwpLearn.includes('An SWP is a withdrawal method, not a promise of income.') &&
+  retire1SwpLearn.length > 20000 && retire1SwpLearn.includes('An SWP is a withdrawal method, not a promise of income') &&
   retire1SwpLearn.includes('What Carrowmont') && retire1SwpLearn.includes("does <strong>not</strong> model a particular fund or investment product's price history") &&
   retire1SwpLearn.includes('NISM: Understanding mutual funds') && retire1SwpLearn.includes('SEBI Investor: Exit Load') &&
   !/best mutual fund|top fund|guaranteed return|guaranteed income/i.test(retire1SwpLearn)
@@ -4784,7 +4786,7 @@ const learn3b2Titles = [
 ];
 const learn3b2H1s = [
   'How much emergency fund should you have?',
-  'Emergency savings has a different job from long-term investing.',
+  'Emergency savings has a different job from long-term investing',
   'Sinking fund vs emergency fund: What is the difference?',
   'How do you plan a savings goal and work backward from the target?',
   'What is lifestyle inflation and how can it slow financial progress?',
@@ -5837,7 +5839,7 @@ add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculato
   newsletter1Privacy.includes('<h2>Newsletter subscriptions</h2>') && newsletter1Privacy.includes('uses Kit to collect and store your email address') && newsletter1Privacy.includes('confirmation step') && newsletter1Privacy.includes('unsubscribe') && newsletter1Privacy.includes('does not send calculator inputs or calculated financial results to Kit') && newsletter1Privacy.includes('https://kit.com/dpa')
 );
 add('NEWSLETTER1: Carrowmont confirmation page is noindex and keeps users inside Tools/Learn/Research',
-  newsletter1Confirmed.includes('content="noindex,follow"') && newsletter1Confirmed.includes("You&apos;re subscribed.") && newsletter1Confirmed.includes('/tools.html') && newsletter1Confirmed.includes('/learn.html') && newsletter1Confirmed.includes('/research.html')
+  newsletter1Confirmed.includes('content="noindex,follow"') && newsletter1Confirmed.includes("You&apos;re subscribed") && newsletter1Confirmed.includes('/tools.html') && newsletter1Confirmed.includes('/learn.html') && newsletter1Confirmed.includes('/research.html')
 );
 add('NEWSLETTER1C: confirmation page uses the approved three-promise model and removes legacy negative copy',
   newsletter1Confirmed.includes('Key developments') && newsletter1Confirmed.includes('Real-life impact') && newsletter1Confirmed.includes('Practical next steps') && newsletter1Confirmed.includes('newsletter-confirmed-promise') && newsletter1Confirmed.includes('.newsletter-confirmed-card > .eyebrow{color:#0e827a}') && !newsletter1Confirmed.includes('No hype.') && !newsletter1Confirmed.includes('No stock tips.')

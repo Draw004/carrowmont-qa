@@ -43,7 +43,7 @@ test.describe('SOCIAL1 official channels', () => {
     await page.goto('/');
     const section = page.locator('.social-follow-section');
     await expect(section).toBeVisible();
-    await expect(section.getByRole('heading', { name: 'Financial awareness, beyond the calculator.' })).toBeVisible();
+    await expect(section.getByRole('heading', { name: 'Financial awareness, beyond the calculator' })).toBeVisible();
     for (const href of CHANNELS) {
       const link = section.locator(`a[href="${href}"]`);
       await expect(link).toHaveCount(1);
@@ -69,7 +69,7 @@ test.describe('SOCIAL1 official channels', () => {
 
   test('About page carries the financial-awareness promise without becoming recommendation copy', async ({ page }) => {
     await page.goto('/about.html');
-    await expect(page.getByRole('heading', { name: 'Understand the system. See the impact. Make your own decision.' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Understand the system. See the impact. Make your own decision' })).toBeVisible();
     await expect(page.getByText('We do not exist to tell people what to buy or sell.')).toBeVisible();
   });
 

@@ -16,7 +16,7 @@ const goalScenario={id:'g1',user_id:'u1',journey:'goal',label:'Home deposit goal
 test.describe('FRE9B Your Financial Plan View & Report',()=>{
   test('[AUTO] six planning areas reconcile saved facts and saved plans into one traceable view',async({page})=>{
     const errors=monitorPageErrors(page);await mockAccount(page,{profile:savedProfile(),scenarios:[retirementScenario,goalScenario]});await page.setViewportSize({width:390,height:844});await gotoClean(page,'/my-carrowmont.html?code=qa-auth-return');
-    const plan=page.locator('#mycmFinancialPlan');await expect(plan).toBeVisible();await expect(plan).toContainText('Your saved plans, brought together in one view.');
+    const plan=page.locator('#mycmFinancialPlan');await expect(plan).toBeVisible();await expect(plan).toContainText('Your saved plans, brought together in one view');
     await expect(plan.locator('.mycm-plan-area')).toHaveCount(6);await expect(plan).toContainText('Retirement');await expect(plan).toContainText('Needs attention');await expect(plan).toContainText('Goals & investing');
     await expect(plan).toContainText('Your next three moves');await expect(plan.locator('.mycm-plan-moves li')).toHaveCount(3);await expect(plan).toContainText('Important assumptions');await expect(plan).toContainText('Long-term return assumption');
     const source=plan.locator('.mycm-plan-area').filter({hasText:'Cash flow'}).locator('details.mycm-plan-source');await expect(source.locator('summary')).toHaveText('Where this came from');await source.locator('summary').click();await expect(source).toContainText('Monthly income');await expect(source).toContainText('QA saved detail');

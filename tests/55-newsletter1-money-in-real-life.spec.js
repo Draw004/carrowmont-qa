@@ -29,7 +29,7 @@ test.describe('NEWSLETTER1 Carrowmont Money in Real Life', () => {
     await expect(page.getByText('No sign-up required', { exact: true })).toHaveCount(0);
     const section = await revealNewsletter(page);
     await expect(section.locator('[data-cm-home-mycarrowmont]')).toHaveCount(0);
-    await expect(section.getByText('Money explained for real life — once a week.', { exact: true })).toBeVisible();
+    await expect(section.getByText('Money explained for real life — once a week', { exact: true })).toBeVisible();
     expect(await section.evaluate(node=>node.previousElementSibling?.classList.contains('cm-product-preview-section'))).toBe(true);
     expect(await section.evaluate(node=>node.nextElementSibling?.classList.contains('planning-section'))).toBe(true);
     expect(await section.evaluate(node=>node.nextElementSibling?.nextElementSibling?.classList.contains('authority-tools-section'))).toBe(true);
@@ -83,7 +83,7 @@ test.describe('NEWSLETTER1 Carrowmont Money in Real Life', () => {
     await expect(page.getByText(/does not send calculator inputs or calculated financial results to Kit/)).toBeVisible();
     await page.goto('/newsletter-confirmed.html');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
-    await expect(page.getByRole('heading', { name: "You're subscribed." })).toBeVisible();
+    await expect(page.getByRole('heading', { name: "You're subscribed" })).toBeVisible();
     await expect(page.locator('.newsletter-confirmed-card > .eyebrow')).toHaveCSS('color', 'rgb(14, 130, 122)');
     await expect(page.getByText('Key developments', { exact: true })).toBeVisible();
     await expect(page.getByText('Real-life impact', { exact: true })).toBeVisible();

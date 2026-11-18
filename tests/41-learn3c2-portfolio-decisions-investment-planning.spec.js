@@ -3,7 +3,7 @@ import { gotoClean, monitorPageErrors, assertNoHorizontalOverflow } from '../hel
 
 const PAGES = [
   { path:'/lump-sum-vs-monthly-investing.html', title:'Lump Sum vs Monthly Investing | Carrowmont', heading:'Lump sum vs monthly investing: How does timing change the maths?', cta:'/sip-calculator/' },
-  { path:'/compounding-and-time.html', title:'Compounding &amp; time | Carrowmont', heading:'Compounding makes time an important part of every long-term projection.', cta:'/compound-interest-calculator/' },
+  { path:'/compounding-and-time.html', title:'Compounding &amp; time | Carrowmont', heading:'Compounding makes time an important part of every long-term projection', cta:'/compound-interest-calculator/' },
   { path:'/asset-allocation-explained.html', title:'What Is Asset Allocation? How It Works | Carrowmont', heading:'What is asset allocation, and why does it matter?', cta:'/retirement-calculator/' },
   { path:'/diversification-across-asset-classes.html', title:'Diversification Across Asset Classes | Carrowmont', heading:'What does diversification across asset classes actually mean?', cta:'/financial-independence/' },
   { path:'/stocks-vs-bonds.html', title:'Stocks vs bonds: What is the difference? | Carrowmont', heading:'Stocks vs bonds: What is the difference?', cta:'/retirement-calculator/' },

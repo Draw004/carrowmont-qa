@@ -24,7 +24,7 @@ test.describe('CORE9 Loan / EMI Calculator', () => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, PATH);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toHaveText('See what a loan could cost each month.');
+    await expect(page.locator('h1')).toHaveText('See what a loan could cost each month');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://carrowmont.com/loan-calculator/');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
     await expect(page).toHaveTitle('Loan & EMI Calculator | Carrowmont');
