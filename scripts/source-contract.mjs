@@ -28,6 +28,7 @@ import { runFreBatch9bFinancialPlanContract } from './fre-batch9b-financial-plan
 import { runFreBatch10CountryIntelligenceContract } from './fre-batch10-country-intelligence-contract.mjs';
 import { runFreBatch10bAccountAwareAskContract } from './fre-batch10b-account-aware-ask-contract.mjs';
 import { runFreBatch11HomepageProductContract } from './fre-batch11-homepage-product-contract.mjs';
+import { runFreBatch12UxSearchLearnContract } from './fre-batch12-ux-search-learn-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -71,6 +72,7 @@ for (const c of runFreBatch9bFinancialPlanContract(root)) add(`FRE9B: ${c.name}`
 for (const c of runFreBatch10CountryIntelligenceContract(root)) add(`FRE10: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch10bAccountAwareAskContract(root)) add(`FRE10B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch11HomepageProductContract(root)) add(`FRE11: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch12UxSearchLearnContract(root)) add(`FRE12: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -4298,7 +4300,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 138;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 145;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
@@ -4341,7 +4343,7 @@ try {
 } catch {}
 const search1Result = (query, region='OTHER') => search1CoreApi?.search?.(search1Entries, search1Aliases, query, { region, limit:12 }) || [];
 add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-loan and empty-state behavior',
-  search1CoreApi?.version === '1.1.0' &&
+  search1CoreApi?.version === '1.2.0' &&
   search1Result('sip','IN')[0]?.url === '/sip-calculator/' &&
   search1Result('emi','IN')[0]?.url === '/loan-calculator/' &&
   search1Result('remortgage','GB')[0]?.url === '/mortgage-payoff-calculator/refinance-break-even.html' &&
@@ -4380,7 +4382,7 @@ add('SEARCH1: header, Learn and Tools expose one consistent search path without 
   search1SiteCss.includes('.desktop-nav .site-search-link') &&
   search1Learn.includes('id="learnSearchInput"') && search1Learn.includes('class="planning-categories"') &&
   search1Tools.includes('id="toolsSearchInput"') && search1Tools.includes('id="core-planning-tools"') &&
-  search1Learn.includes('search-core.js?v=20261114-fre8i') && search1Tools.includes('search-core.js?v=20261114-fre8i') &&
+  search1Learn.includes('search-core.js?v=20261118-fre12') && search1Tools.includes('search-core.js?v=20261118-fre12') &&
   search1Css.includes('@media(max-width:760px)') && search1Css.includes('grid-template-columns:1fr')
 );
 add('SEARCH1: central QA protects index, aliases, privacy, navigation, embedded discovery and 1280/390/360 layouts',
@@ -4589,7 +4591,7 @@ add('SEARCH1 layout refinement: compact hero and current Search assets preserve 
   search1Css.includes('.cm-search-page-section{position:relative;z-index:2;margin-top:-64px') &&
   search1Css.includes('.cm-search-page-section{margin-top:-48px;padding-bottom:54px}') &&
   search1Html.includes('search.css?v=20261113-fre8f') && search1Learn.includes('search.css?v=20261113-fre8f') && search1Tools.includes('search.css?v=20261113-fre8f') &&
-  search1Learn.includes('search.js?v=20261114-fre8i') && search1Tools.includes('search.js?v=20261114-fre8i') &&
+  search1Learn.includes('search.js?v=20261118-fre12') && search1Tools.includes('search.js?v=20261118-fre12') &&
   search1Qa.includes('search action should be visible above the fold') && search1Qa.includes('[1280, 390, 360]') &&
   !/localStorage|URLSearchParams/.test(search1Js) && !/sessionStorage\.setItem/.test(search1Js) &&
   search1Js.includes("ASK_SEARCH_HANDOFF_KEY = 'carrowmont_search_handoff_v1'")
@@ -4642,7 +4644,7 @@ add('LEARN3A: Tools hero is compact and embedded search is pulled upward without
   readQa('tests/12-tools-hub.spec.js').includes('tools search should appear above the fold')
 );
 add('LEARN3A: every current Learn title and H1-H6 heading follows colon capitalization',
-  learn3GuideEntries.length === 90 && learn3HeadingColonFailures.length === 0,
+  learn3GuideEntries.length === 97 && learn3HeadingColonFailures.length === 0,
   learn3HeadingColonFailures.slice(0,3).join(' | ')
 );
 add('LEARN3A: shared standards retain the colon-capitalization rule and its non-content exceptions',
@@ -5531,8 +5533,8 @@ const learnCloseoutQa=readQa('tests/48-learn-final-consistency-closeout.spec.js'
 const learnCloseoutImpl=read('draw004.github.io/docs/CARROWMONT_LEARN_FINAL_CONSISTENCY_CLOSEOUT_IMPLEMENTATION.md');
 const learnCloseoutMacroNames=['what-happens-when-bond-yields-rise.html','why-do-stocks-fall-when-bond-yields-rise.html','what-happens-to-gold-when-interest-rates-rise.html','how-oil-prices-affect-inflation.html','what-happens-when-fed-cuts-interest-rates.html','what-happens-when-dollar-strengthens.html','what-happens-to-gold-when-dollar-rises.html','real-yields-explained.html','why-us-debt-interest-costs-matter.html','treasury-bills-vs-notes-vs-bonds.html','what-makes-a-global-reserve-currency.html','why-central-banks-buy-gold.html','de-dollarisation-explained.html','gold-vs-government-bonds-reserve-assets.html'];
 const learnCloseoutGuidePages=learn3GuideEntries.map(entry=>read(`draw004.github.io${entry.url}`));
-add('LEARN-CLOSEOUT1: all 90 current Learn guides use one 30-second-answer label',
-  learn3GuideEntries.length===90 && learnCloseoutGuidePages.every(html=>html.includes('<div class="guide-answer') && html.includes('<strong>30-second answer</strong>') && !html.includes('<strong>Direct answer</strong>'))
+add('LEARN-CLOSEOUT1: all current Learn guides use one 30-second-answer label',
+  learn3GuideEntries.length===97 && learnCloseoutGuidePages.every(html=>html.includes('<div class="guide-answer') && html.includes('<strong>30-second answer</strong>') && !html.includes('<strong>Direct answer</strong>'))
 );
 add('LEARN-CLOSEOUT1: shared step cards override the legacy two-column grid and preserve strong-label emphasis',
   learnCloseoutCss.includes('LEARN-CLOSEOUT1') && learnCloseoutCss.includes('.guide-steps li{') && learnCloseoutCss.includes('display:block;') && learnCloseoutCss.includes('grid-template-columns:none;') && learnCloseoutCss.includes('.guide-steps li>strong:first-child')
@@ -5597,7 +5599,7 @@ add('LEARN-PRESENTATION2: 30-second answers use normal body weight with at most 
   learnPresentationAnswerEmphasisFailures.slice(0,3).join(' | ')
 );
 add('LEARN-PRESENTATION2: owner colon-capitalization rule covers all Carrowmont-authored Learn prose while source titles stay exempt',
-  learn3GuideEntries.length===90 && learnPresentationColonFailures.length===0 && learn3Standard.includes('ordinary explanatory prose') && learn3UiStandard.includes('ordinary explanatory prose'),
+  learn3GuideEntries.length===97 && learnPresentationColonFailures.length===0 && learn3Standard.includes('ordinary explanatory prose') && learn3UiStandard.includes('ordinary explanatory prose'),
   learnPresentationColonFailures.slice(0,3).join(' | ')
 );
 add('LEARN-PRESENTATION2: checklist/question cards use one compact rhythm without stacked grid/item spacing',
@@ -5828,8 +5830,8 @@ add('FRE8E cleanup: homepage uses one My Carrowmont showcase and keeps newslette
 add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locked',
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
 );
-add('NEWSLETTER1: all 90 Learn articles and three Research studies cache-bust shared runtime for immediate rollout',
-  newsletter1LearnPages.length===90 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261105-mobile2')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261105-mobile2'))
+add('NEWSLETTER1: all Learn articles and three Research studies use an approved shared runtime cache key',
+  newsletter1LearnPages.length===97 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261105-mobile2')||html.includes('site.js?v=20261118-fre12')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261105-mobile2'))
 );
 add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculator-data separation',
   newsletter1Privacy.includes('<h2>Newsletter subscriptions</h2>') && newsletter1Privacy.includes('uses Kit to collect and store your email address') && newsletter1Privacy.includes('confirmation step') && newsletter1Privacy.includes('unsubscribe') && newsletter1Privacy.includes('does not send calculator inputs or calculated financial results to Kit') && newsletter1Privacy.includes('https://kit.com/dpa')
