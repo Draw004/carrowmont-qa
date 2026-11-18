@@ -71,7 +71,7 @@ export function runFreBatch8kSitewidePolishAccountContract(root){
   const learnDesc=desc(learn),toolDesc=desc(tool);
   add('8K Learn and tool mortgage-prepayment pages keep distinct concise search descriptions',learnDesc&&toolDesc&&learnDesc!==toolDesc&&learnDesc.length>=100&&learnDesc.length<=160&&toolDesc.length>=100&&toolDesc.length<=170);
   add('8K My Carrowmont refreshed assets are cache-busted without unnecessarily changing the unchanged site/PWA runtime key',
-    (page.includes('my-carrowmont.css?v=20261115-fre8k4')||page.includes('my-carrowmont.css?v=20261116-fre9'))&&page.includes('carrowmont-account.js?v=20261115-fre8k')&&(page.includes('my-carrowmont.js?v=20261115-fre8k')||page.includes('my-carrowmont.js?v=20261116-fre9'))&&(page.includes('my-carrowmont-account.js?v=20261115-fre8k')||page.includes('my-carrowmont-account.js?v=20261116-fre9'))&&page.includes('site.js?v=20261115-fre8jv3'));
+    (page.includes('my-carrowmont.css?v=20261115-fre8k4')||page.includes('my-carrowmont.css?v=20261116-fre9')||page.includes('my-carrowmont.css?v=20261118-fre12'))&&page.includes('carrowmont-account.js?v=20261115-fre8k')&&(page.includes('my-carrowmont.js?v=20261115-fre8k')||page.includes('my-carrowmont.js?v=20261116-fre9')||page.includes('my-carrowmont.js?v=20261116-fre9b'))&&(page.includes('my-carrowmont-account.js?v=20261115-fre8k')||page.includes('my-carrowmont-account.js?v=20261116-fre9')||page.includes('my-carrowmont-account.js?v=20261116-fre9b'))&&(page.includes('site.js?v=20261115-fre8jv3')||page.includes('site.js?v=20261118-fre12')));
 
   const browser=readQa('tests/71-fre8k-sitewide-polish-account.spec.js');
   const commonQa=readQa('helpers/common.js');
@@ -86,7 +86,7 @@ export function runFreBatch8kSitewidePolishAccountContract(root){
     read(main+'financial-independence-number-by-spending.html').includes('financial-independence-number-by-spending.css?v=20261115-fre8k3'));
   add('8K V4 My Carrowmont switches to compact navigation before the 1024px header can widen the page',
     css.includes('@media(max-width:1180px)')&&css.includes('body[data-cm-page=\"my-carrowmont\"] .desktop-nav{display:none}')&&
-    css.includes('body[data-cm-page=\"my-carrowmont\"] .mobile-nav{display:block}')&&(page.includes('my-carrowmont.css?v=20261115-fre8k4')||page.includes('my-carrowmont.css?v=20261116-fre9')));
+    css.includes('body[data-cm-page=\"my-carrowmont\"] .mobile-nav{display:block}')&&(page.includes('my-carrowmont.css?v=20261115-fre8k4')||page.includes('my-carrowmont.css?v=20261116-fre9')||page.includes('my-carrowmont.css?v=20261118-fre12')));
   add('8K V3 responsive discovery QA counts the six visible planning cards rather than hidden expandable cards',
     browser.includes("#mycmAddPlanningGrid .mycm-add-card:visible")&&!browser.includes("#mycmAddPlanningGrid .mycm-add-card')).toHaveCount(6"));
   add('8K browser QA covers mobile tablet laptop desktop geometry warm dashboard Google OAuth and country-aware discovery',
@@ -94,6 +94,6 @@ export function runFreBatch8kSitewidePolishAccountContract(root){
 
   const pages=JSON.parse(read(main+'data/carrowmont-search-pages.json')||'{"entries":[]}');
   const index=JSON.parse(read(main+'data/carrowmont-search-index.json')||'{"entries":[]}');
-  add('8K creates no new public URL or search inventory entry',pages.entries?.length===138&&index.entries?.length===138);
+  add('8K creates no new public URL or search inventory entry',pages.entries?.length===145&&index.entries?.length===145);
   return checks;
 }

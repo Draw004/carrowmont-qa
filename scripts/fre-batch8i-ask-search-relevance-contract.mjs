@@ -26,9 +26,9 @@ export function runFreBatch8iAskSearchRelevanceContract(root){
   add('8I uses a broad reviewed topic and intent taxonomy rather than gold-only query rules',
     aliases.topics?.length>=25&&aliases.intents?.length>=9&&topicIds.has('gold')&&topicIds.has('retirement')&&topicIds.has('debt')&&topicIds.has('budgeting')&&topicIds.has('home-mortgage')&&topicIds.has('inflation')&&topicIds.has('financial-independence')&&topicIds.has('car')&&topicIds.has('credit-profile')&&!coreSource.includes("queryNormalized.includes('gold')"));
   add('8I every indexed guide/tool has precomputed semantic topic coverage for future scale',
-    index.entries?.length===138&&index.entries.filter(e=>e.type!=='carrowmont').every(e=>Array.isArray(e.semantic_topics)&&e.semantic_topics.length>0));
+    index.entries?.length===145&&index.entries.filter(e=>e.type!=='carrowmont').every(e=>Array.isArray(e.semantic_topics)&&e.semantic_topics.length>0));
   add('8I semantic index stays within the existing reviewed public URL inventory',
-    pages.entries?.length===138&&index.entries?.length===138&&new Set(pages.entries.map(e=>e.url)).size===138&&new Set(index.entries.map(e=>e.url)).size===138);
+    pages.entries?.length===145&&index.entries?.length===145&&new Set(pages.entries.map(e=>e.url)).size===145&&new Set(index.entries.map(e=>e.url)).size===145);
   add('8I builder enforces topic coverage and supports explicit topic/intent metadata for future pages',
     builder.includes('guide/tool must map to at least one reviewed search topic')&&builder.includes("for (const key of ['topics', 'intents'])")&&builder.includes('semantic_topics')&&builder.includes('semantic_intents'));
   add('8I Learn standard tells future content expansion how to join Ask/Search without ranking-code exceptions',
@@ -36,7 +36,7 @@ export function runFreBatch8iAskSearchRelevanceContract(root){
   add('8I Ask requests intent-aware routing while Search keeps the broader shared result engine',
     askJs.includes("search(query,{limit:6,mode:'ask'})")&&searchJs.includes("opts.mode === 'ask'")&&coreSource.includes('function searchForAsk('));
   add('8I refreshed assets prevent stale relevance code after deployment',
-    searchJs.includes("carrowmont-search-aliases.json?v=20261114-fre8i")&&htmlFiles.every(html=>html.includes('search-core.js?v=20261114-fre8i')&&html.includes('search.js?v=20261114-fre8i'))&&(htmlFiles[0].includes('ask-carrowmont.js?v=20261114-fre8i')||htmlFiles[0].includes('ask-carrowmont.js?v=20261116-fre9')||htmlFiles[0].includes('ask-carrowmont.js?v=20261117-fre10b')||htmlFiles[0].includes('ask-carrowmont.js?v=20261117-fre11')));
+    searchJs.includes("carrowmont-search-aliases.json?v=20261118-fre12")&&htmlFiles.every(html=>html.includes('search-core.js?v=20261118-fre12')&&html.includes('search.js?v=20261118-fre12'))&&(htmlFiles[0].includes('ask-carrowmont.js?v=20261114-fre8i')||htmlFiles[0].includes('ask-carrowmont.js?v=20261116-fre9')||htmlFiles[0].includes('ask-carrowmont.js?v=20261117-fre10b')||(htmlFiles[0].includes('ask-carrowmont.js?v=20261117-fre11')||htmlFiles[0].includes('ask-carrowmont.js?v=20261118-fre12'))));
 
   function results(q,limit=12){return core.search(index.entries,aliases,q,{region:'IN',limit});}
   function ask(q,limit=3){return core.searchForAsk(index.entries,aliases,q,{region:'IN',limit});}

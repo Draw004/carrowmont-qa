@@ -66,7 +66,7 @@ export function runFreBatch8gMyCarrowmontSimplificationContract(root){
 
   const pages=JSON.parse(read(`${main}/data/carrowmont-search-pages.json`)||'{"entries":[]}');
   const index=JSON.parse(read(`${main}/data/carrowmont-search-index.json`)||'{"entries":[]}');
-  add('8G creates no new public URL or search inventory entry',pages.entries?.length===138&&index.entries?.length===138&&pages.entries?.some(e=>e.url==='/my-carrowmont.html')&&pages.entries?.some(e=>e.url==='/ask-carrowmont.html'));
+  add('8G creates no new public URL or search inventory entry',pages.entries?.length===145&&index.entries?.length===145&&pages.entries?.some(e=>e.url==='/my-carrowmont.html')&&pages.entries?.some(e=>e.url==='/ask-carrowmont.html'));
   add('8G dashboard and Ask remain free of direct network calls',!/(?:\bfetch\s*\(|XMLHttpRequest|WebSocket)/.test(ui+askUi+askCore));
   return checks;
 }
