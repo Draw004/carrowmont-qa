@@ -49,7 +49,7 @@ test.describe('FRE12B-1 Credit Card Decisions UX consolidation', () => {
     await expect(page.locator('#planned')).toHaveValue('450');
   });
 
-  test('[AUTO] canonical country selector, unique IDs and methodology work in both modes', async ({page}) => {
+  test('[AUTO] canonical country selector, unique IDs and methodology work in both modes', async ({page}, testInfo) => {
     await gotoClean(page, PAGE);
     await expect(page.locator('#localeSummary .locale-globe svg')).toBeVisible();
     await expect(page.locator('#localeSummary .locale-chevron svg')).toBeVisible();
@@ -59,7 +59,17 @@ test.describe('FRE12B-1 Credit Card Decisions UX consolidation', () => {
       return ids.filter((id,i)=>ids.indexOf(id)!==i);
     });
     expect(duplicateIds).toEqual([]);
-    await page.locator('.top-nav a[href="#methodology"]').click();
+    // Mobile hides desktop header links by design. Exercise the visible disclosure instead.
+    const headerMethodLink = page.locator('.top-nav a[href="#methodology"]');
+    const methodSummary = page.locator('#methodology .cc-method-details > summary');
+    if (testInfo.project.name === 'mobile-chromium') {
+      await expect(headerMethodLink).toBeHidden();
+      await expect(methodSummary).toBeVisible();
+      await methodSummary.click();
+    } else {
+      await expect(headerMethodLink).toBeVisible();
+      await headerMethodLink.click();
+    }
     await expect(page.locator('#methodology details')).toHaveAttribute('open','');
     await expect(page.locator('#payoff-methodology')).toBeVisible();
     await page.locator('#tab-transfer').click();
