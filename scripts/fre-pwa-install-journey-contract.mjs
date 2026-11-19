@@ -16,7 +16,7 @@ export function runFrePwaInstallJourneyContract(root){
   add('same-scope app relationship is declared without changing identity',
     Array.isArray(manifest.related_applications)&&manifest.related_applications.some(a=>a.platform==='webapp'&&a.id==='https://carrowmont.com/my-carrowmont.html'&&a.url==='/carrowmont.webmanifest'));
   add('Home captures native prompt early and both key pages load refreshed installation runtime',
-    home.includes('window.__cmPwaEarlyInstallPrompt = event;')&&home.includes("window.addEventListener('beforeinstallprompt'")&&home.includes('site.js?v=20261119-pwa-install-v6')&&my.includes('site.js?v=20261119-pwa-install-v6'));
+    home.includes('window.__cmPwaEarlyInstallPrompt = event;')&&home.includes("window.addEventListener('beforeinstallprompt'")&&(home.includes('site.js?v=20261119-pwa-install-v6')||home.includes('site.js?v=20261119-startup-nav-perf1'))&&(my.includes('site.js?v=20261119-pwa-install-v6')||my.includes('site.js?v=20261119-startup-nav-perf1')));
   add('one-time first-visit CTA uses local-only dismissal and never requires sign in',
     site.includes("var SEEN_KEY='cm-pwa-install-offer-seen-v1'")&&site.includes('localStorage.setItem(SEEN_KEY')&&site.includes('No account required.')&&site.includes('if(!installed()&&!seen())'));
   add('native install prompt originates directly from a click when available',

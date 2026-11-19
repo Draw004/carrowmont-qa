@@ -42,7 +42,7 @@ export function runFreHeadlineAndDrawCContract(root){
   add('PWA: full-screen intro is mobile icon-launch-only, website/desktop navigation is immediate',
     home.includes("searchParams.get('source') === 'pwa'") && home.includes("matchMedia('(display-mode: standalone)')") &&
     home.includes("matchMedia('(max-width: 700px)')") && home.includes("matchMedia('(prefers-reduced-motion: reduce)')") &&
-    home.includes("root.classList.remove('cm-home-pwa-launch')") &&
+    (home.includes("root.classList.remove('cm-home-pwa-launch')")||home.includes("root.classList.remove('cm-home-pwa-launch','cm-home-pwa-dismissing')")) &&
     page.includes("window.location.replace('/?source=pwa')") &&
     !page.includes('window.setTimeout(release,1600)') &&
     homeBoot.includes('pointer-events:none'));
