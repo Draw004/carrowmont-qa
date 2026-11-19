@@ -8,6 +8,7 @@ import { runFreBorrowingHealthContract } from './fre-borrowing-health-contract.m
 import { runFreCarAffordabilityContract } from './fre-car-affordability-contract.mjs';
 import { runFreCreditCardPayoffContract } from './fre-credit-card-payoff-contract.mjs';
 import { runFreBatch12B1BalanceTransferContract } from './fre-batch12b1-balance-transfer-contract.mjs';
+import { runFreBatch12B1UxContract } from './fre-batch12b1-ux-contract.mjs';
 import { runFreSavingsGrowthContract } from './fre-savings-growth-contract.mjs';
 import { runFreAskMvpContract } from './fre-ask-mvp-contract.mjs';
 import { runFreAskMvpUiContract } from './fre-ask-mvp-ui-contract.mjs';
@@ -58,6 +59,7 @@ for (const c of runFreBorrowingHealthContract(root)) add(`FRE2B: ${c.name}`, c.o
 for (const c of runFreCarAffordabilityContract(root)) add(`FRE2C: ${c.name}`, c.ok, c.detail);
 for (const c of runFreCreditCardPayoffContract(root)) add(`FRE2D: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12B1BalanceTransferContract(root)) add(`FRE12B1: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch12B1UxContract(root)) add(`FRE12B1UX: ${c.name}`, c.ok, c.detail);
 for (const c of runFreSavingsGrowthContract(root)) add(`FRE2E: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpContract(root)) add(`FRE3A: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpUiContract(root)) add(`FRE3B: ${c.name}`, c.ok, c.detail);

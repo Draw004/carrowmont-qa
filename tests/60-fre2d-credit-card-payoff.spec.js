@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('FRE Batch 2D credit-card payoff comparison', () => {
   test('[AUTO] deterministic comparison and target solve are exposed', async ({ page }) => {
     await page.goto('/budget-cash-flow-planner/credit-card-payoff-calculator.html');
-    await expect(page.locator('h1')).toContainText('higher monthly card payment');
+    await expect(page.locator('h1')).toContainText('credit-card payoff and balance-transfer choices');
     await page.locator('#balance').fill('5000');
     await page.locator('#apr').fill('24');
     await page.locator('#minimum').fill('150');

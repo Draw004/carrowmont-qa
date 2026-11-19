@@ -24,10 +24,11 @@ export function runFreBatch12B1BalanceTransferContract(root) {
     mainTools.includes(`href="${anchor}"`) && guide.includes(`href="${anchor}"`) &&
     !sitemap.includes('balance-transfer-decision.html') && inventory.entries.length === 145 &&
     index.entries.length === 145 && mainTools.includes('credit-card-payoff-comparison'));
-  add('The comparison is an explicitly optional and expandable mobile-friendly section',
-    tool.includes('class="bt-expand"') && tool.includes('<summary>') &&
-    app.includes("location.hash === '#balance-transfer'") &&
-    read('budget-cash-flow-planner/balance-transfer-decision.css').includes('max-width:650px'));
+  add('Balance Transfer is a selected, compact decision mode with responsive results',
+    tool.includes('id="tab-transfer"') && tool.includes('role="tabpanel"') &&
+    tool.includes('id="btForm"') &&
+    read('budget-cash-flow-planner/credit-card-decision-ux.js').includes("location.hash === '#balance-transfer'") &&
+    read('budget-cash-flow-planner/credit-card-decision-ux.css').includes('max-width:650px'));
   add('No balance-transfer what-if values are sent to or auto-saved in an account',
     !/(?:localStorage|sessionStorage|fetch\s*\(|XMLHttpRequest|CarrowmontPlanSave|saveProfile|supabase)/i.test(app + coreSource));
   add('Term and fee assumptions are visible alongside output, with end-of-offer risks',
