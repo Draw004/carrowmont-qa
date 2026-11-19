@@ -1,3 +1,5 @@
+> **November 2026 continuity notice:** This README contains historical tool counts. For the current 11-repository architecture, latest snapshot, accepted UI rules and pre-Publisher standards gate, see main-site `docs/CARROWMONT_DEVELOPMENT_START_HERE.md` and `docs/CARROWMONT_STANDARDS_INDEX.md`. Run `node scripts/development-standards-gate.mjs --root <combined-source-root> [--manifest <release-manifest.json>]` before the staged browser suite.
+
 # Carrowmont Automated QA Framework v1.7
 
 This package gives Carrowmont a repeatable QA process for the six live tools plus the key main-site pages. It is designed for a non-developer workflow: run it locally with one file, or put it in a small GitHub repository and use GitHub Actions.

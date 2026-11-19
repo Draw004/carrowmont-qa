@@ -35,6 +35,7 @@ import { runFreAppWebBehaviorContract } from './fre-app-web-behavior-contract.mj
 import { runFrePwaInstallJourneyContract } from './fre-pwa-install-journey-contract.mjs';
 import { runStartupNavigationPerformanceContract } from './startup-navigation-performance-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
+import { runDevelopmentStandardsContract } from './development-standards-gate.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -84,6 +85,7 @@ for (const c of runFreAppWebBehaviorContract(root)) add(`APP-WEB: ${c.name}`, c.
 for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c.name}`, c.ok, c.detail);
 for (const c of runStartupNavigationPerformanceContract(root)) add(`PERF1: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
+for (const c of runDevelopmentStandardsContract(root)) add(`STANDARDS1: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
   const p = new URL(`../${rel}`, import.meta.url);
