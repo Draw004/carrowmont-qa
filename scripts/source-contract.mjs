@@ -32,6 +32,7 @@ import { runFreBatch12UxSearchLearnContract } from './fre-batch12-ux-search-lear
 import { runFreHeadlineAndDrawCContract } from './fre-headline-and-drawc-contract.mjs';
 import { runFreAppWebBehaviorContract } from './fre-app-web-behavior-contract.mjs';
 import { runFrePwaInstallJourneyContract } from './fre-pwa-install-journey-contract.mjs';
+import { runStartupNavigationPerformanceContract } from './startup-navigation-performance-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -79,6 +80,7 @@ for (const c of runFreBatch12UxSearchLearnContract(root)) add(`FRE12: ${c.name}`
 for (const c of runFreHeadlineAndDrawCContract(root)) add(`FRE12B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAppWebBehaviorContract(root)) add(`APP-WEB: ${c.name}`, c.ok, c.detail);
 for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c.name}`, c.ok, c.detail);
+for (const c of runStartupNavigationPerformanceContract(root)) add(`PERF1: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -4645,7 +4647,7 @@ add('LEARN3A: Tools hero is compact; mobile search is separate and does not over
   search1SiteCss.includes('.tools-directory-hero-actions{display:none}') &&
   search1SiteCss.includes('body[data-cm-page="tools-directory"] .search-discovery-section{margin-top:0') &&
   search1SiteCss.includes('.cm-search-heading h2{margin-bottom:5px;font-size:21px;line-height:1.16}') &&
-  (search1Tools.includes('/carrowmont.css?v=20261020-learn3a-fix1') || search1Tools.includes('/carrowmont.css?v=20261119-nav-stable-v6b')) &&
+  (search1Tools.includes('/carrowmont.css?v=20261020-learn3a-fix1') || (search1Tools.includes('/carrowmont.css?v=20261119-nav-stable-v6b')||search1Tools.includes('/carrowmont.css?v=20261119-startup-nav-perf1'))) &&
   !search1Tools.includes('decorative-search') &&
   readQa('tests/12-tools-hub.spec.js').includes('tools search should appear above the fold')
 );
@@ -5617,7 +5619,7 @@ add('LEARN-PRESENTATION2: shared Learn tables are visually refined and the retir
   !learnPresentationRetirement.includes('<td>No single lifespan</td><td>Returns, inflation and spending vary; sequence matters</td>')
 );
 add('LEARN-PRESENTATION2: Contact hero is compact and exposes the email action earlier without changing contact identity',
-  learnPresentationContact.includes('<body class="contact-page">') && (learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') || learnPresentationContact.includes('carrowmont.css?v=20261029-social1a') || learnPresentationContact.includes('carrowmont.css?v=20261030-social1b') || (learnPresentationContact.includes('carrowmont.css?v=20261119-app-behavior-v5') || learnPresentationContact.includes('carrowmont.css?v=20261119-nav-stable-v6b'))) &&
+  learnPresentationContact.includes('<body class="contact-page">') && (learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') || learnPresentationContact.includes('carrowmont.css?v=20261029-social1a') || learnPresentationContact.includes('carrowmont.css?v=20261030-social1b') || (learnPresentationContact.includes('carrowmont.css?v=20261119-app-behavior-v5') || (learnPresentationContact.includes('carrowmont.css?v=20261119-nav-stable-v6b')||learnPresentationContact.includes('carrowmont.css?v=20261119-startup-nav-perf1')))) &&
   learnPresentationContactCss.includes('CONTACT-PRESENTATION2') && learnPresentationContactCss.includes('body.contact-page .page-hero-inner{padding:42px 0 38px}') &&
   learnPresentationContact.includes('mailto:contact@carrowmont.com')
 );
@@ -5683,7 +5685,7 @@ add('TRAFFIC1A: SEARCH1 keeps calculator and research intent distinct',
 add('TRAFFIC1A: shared Research presentation and navigation are reusable without browser-side data fetching',
   traffic1aCss.includes('TRAFFIC1A') && traffic1aCss.includes('.research-chart') && traffic1aCss.includes('@media(max-width:520px)') &&
   read('draw004.github.io/site.js').includes('TRAFFIC1A: add Research') && read('draw004.github.io/site.js').includes('TRAFFIC1A-NAV-FIT') &&
-  (/\(min-width:1361px\) and \(max-width:1500px\)/.test(read('draw004.github.io/site.js')) || /\(min-width:981px\) and \(max-width:1560px\)/.test(read('draw004.github.io/site.js'))) && !/\bfetch\s*\(/.test(traffic1aStudy) && !/\bfetch\s*\(/.test(traffic1aHub)
+  (/\(min-width:1361px\) and \(max-width:1500px\)/.test(read('draw004.github.io/site.js')) || /\(min-width:981px\) and \(max-width:1560px\)/.test(read('draw004.github.io/site.js')) || /\(min-width:981px\) and \(max-width:1560px\)/.test(read('draw004.github.io/carrowmont.css'))) && !/\bfetch\s*\(/.test(traffic1aStudy) && !/\bfetch\s*\(/.test(traffic1aHub)
 );
 add('TRAFFIC1A: browser QA protects data downloads, values, contextual links and 1440/1280/390/360 layouts',
   traffic1aQa.includes('headline values agree with deterministic payment math') && traffic1aQa.includes('research data files parse') && traffic1aQa.includes('[1440,1280,390,360]') &&
@@ -5837,7 +5839,7 @@ add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locke
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
 );
 add('NEWSLETTER1: all Learn articles and three Research studies use an approved shared runtime cache key',
-  newsletter1LearnPages.length===97 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261105-mobile2')||html.includes('site.js?v=20261118-fre12')) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261105-mobile2'))
+  newsletter1LearnPages.length===97 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261105-mobile2')||(html.includes('site.js?v=20261118-fre12')||html.includes('site.js?v=20261119-startup-nav-perf1'))) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261105-mobile2')||html.includes('site.js?v=20261119-startup-nav-perf1'))
 );
 add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculator-data separation',
   newsletter1Privacy.includes('<h2>Newsletter subscriptions</h2>') && newsletter1Privacy.includes('uses Kit to collect and store your email address') && newsletter1Privacy.includes('confirmation step') && newsletter1Privacy.includes('unsubscribe') && newsletter1Privacy.includes('does not send calculator inputs or calculated financial results to Kit') && newsletter1Privacy.includes('https://kit.com/dpa')
@@ -5888,7 +5890,7 @@ add('HYGIENE1: desktop navigation promotes My Carrowmont beside Home, keeps Meth
 );
 const hygieneResearchPages = ['research.html','research/emergency-savings-resilience.html','research/inflation-purchasing-power-monitor.html','research/mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/${name}`));
 add('HYGIENE1: Research pages carry the shared country-currency control and locale runtime before shared site runtime',
-  hygieneResearchPages.every(html=>html.includes('class="locale-menu" id="localeMenu"') && html.includes('/locale.js?v=20261010-tools-hub1') && (html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261105-mobile2') || html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261119-app-behavior-v5') || html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261119-nav-stable-v6b')))
+  hygieneResearchPages.every(html=>html.includes('class="locale-menu" id="localeMenu"') && html.includes('/locale.js?v=20261010-tools-hub1') && (html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261105-mobile2') || html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261119-app-behavior-v5') || html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261119-nav-stable-v6b') || html.indexOf('/site.js?v=20261119-startup-nav-perf1')))
 );
 add('HYGIENE1: Learn hub and articles expose a shared topic navigator after the Learn hero with requested major planning categories',
   hygieneSite.includes("nav.dataset.cmLearnTopicNav") && hygieneSite.includes("label.textContent = 'Explore by topic'") &&
@@ -5971,15 +5973,16 @@ add('V6B Tools mobile search is compact, separate and avoids redundant chips',
   read('draw004.github.io/carrowmont.css').includes('.cm-search-suggestions{display:none}') &&
   read('draw004.github.io/tools.html').includes('Find a tool or guide') &&
   readQa('tests/12-tools-hub.spec.js').includes('mobile tools search remains separate'));
-add('V6B installed app keeps top-to-bottom Draw C with exact tagline; web overlay is less blocking',
+add('PERF1 preserves approved Draw C and releases on animation completion without a forced 780ms hold',
   read('draw004.github.io/index.html').includes('Plan today. Build tomorrow.') &&
   read('draw004.github.io/index.html').includes('d="M355 164 C306 109') &&
-  read('draw004.github.io/index.html').includes('780 - elapsed') &&
-  read('draw004.github.io/assets/pwa/carrowmont-launch.css').includes('animation:cm-home-draw-c .68s'));
-add('V6B website navigation uses reduced-motion-aware progressive page transitions and stable scrollbar widths',
+  read('draw004.github.io/index.html').includes("event.animationName==='cm-home-draw-c'") &&
+  !read('draw004.github.io/index.html').includes('780 - elapsed') &&
+  read('draw004.github.io/assets/pwa/carrowmont-launch.css').includes('animation:cm-home-draw-c .56s'));
+add('PERF1 removes full-page view transitions while preserving stable scrollbar widths',
   read('draw004.github.io/carrowmont.css').includes('html{scrollbar-gutter:stable}') &&
-  read('draw004.github.io/carrowmont.css').includes('@media (display-mode:browser) and (prefers-reduced-motion:no-preference)') &&
-  read('draw004.github.io/carrowmont.css').includes('@view-transition{navigation:auto}'));
+  !read('draw004.github.io/carrowmont.css').includes('@view-transition{navigation:auto}') &&
+  !read('draw004.github.io/carrowmont.css').includes('::view-transition-old(root)'));
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);
