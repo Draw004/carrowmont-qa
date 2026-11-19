@@ -5,12 +5,12 @@ const PAGE = '/budget-cash-flow-planner/credit-card-payoff-calculator.html';
 const MULTI = '/budget-cash-flow-planner/debt-payoff-calculator.html';
 
 test.describe('FRE12B-1 Credit Card Decisions UX consolidation', () => {
-  test('[AUTO] the first transfer link click selects and scrolls to visible inputs', async ({page}) => {
+  test('[AUTO] the first mode selection selects and scrolls to visible transfer inputs', async ({page}) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, PAGE);
     await expect(page.locator('#tab-payoff')).toHaveAttribute('aria-selected','true');
     await expect(page.locator('#balance-transfer')).toBeHidden();
-    await page.locator('.bt-intro-link a').click();
+    await page.locator('#tab-transfer').click();
     await expect(page).toHaveURL(/#balance-transfer$/);
     await expect(page.locator('#tab-transfer')).toHaveAttribute('aria-selected','true');
     await expect(page.locator('#btForm')).toBeVisible();
@@ -49,7 +49,7 @@ test.describe('FRE12B-1 Credit Card Decisions UX consolidation', () => {
     await expect(page.locator('#planned')).toHaveValue('450');
   });
 
-  test('[AUTO] canonical country selector, unique IDs and methodology work in both modes', async ({page}, testInfo) => {
+  test('[AUTO] canonical country selector, unique IDs and methodology work in both modes', async ({page}) => {
     await gotoClean(page, PAGE);
     await expect(page.locator('#localeSummary .locale-globe svg')).toBeVisible();
     await expect(page.locator('#localeSummary .locale-chevron svg')).toBeVisible();
@@ -59,17 +59,7 @@ test.describe('FRE12B-1 Credit Card Decisions UX consolidation', () => {
       return ids.filter((id,i)=>ids.indexOf(id)!==i);
     });
     expect(duplicateIds).toEqual([]);
-    // Mobile hides desktop header links by design. Exercise the visible disclosure instead.
-    const headerMethodLink = page.locator('.top-nav a[href="#methodology"]');
-    const methodSummary = page.locator('#methodology .cc-method-details > summary');
-    if (testInfo.project.name === 'mobile-chromium') {
-      await expect(headerMethodLink).toBeHidden();
-      await expect(methodSummary).toBeVisible();
-      await methodSummary.click();
-    } else {
-      await expect(headerMethodLink).toBeVisible();
-      await headerMethodLink.click();
-    }
+    await page.locator('#methodology .cc-method-details > summary').click();
     await expect(page.locator('#methodology details')).toHaveAttribute('open','');
     await expect(page.locator('#payoff-methodology')).toBeVisible();
     await page.locator('#tab-transfer').click();

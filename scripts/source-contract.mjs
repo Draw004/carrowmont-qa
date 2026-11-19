@@ -37,6 +37,7 @@ import { runFrePwaInstallJourneyContract } from './fre-pwa-install-journey-contr
 import { runStartupNavigationPerformanceContract } from './startup-navigation-performance-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 import { runDevelopmentStandardsContract } from './development-standards-gate.mjs';
+import { runGlobalHeaderContract } from './global-header-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -87,6 +88,7 @@ for (const c of runFreAppWebBehaviorContract(root)) add(`APP-WEB: ${c.name}`, c.
 for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c.name}`, c.ok, c.detail);
 for (const c of runStartupNavigationPerformanceContract(root)) add(`PERF1: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
+for (const c of runGlobalHeaderContract(root)) add(`GLOBAL-NAV: ${c.name}`, c.ok, c.detail);
 for (const c of runDevelopmentStandardsContract(root)) add(`STANDARDS1: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -1317,7 +1319,7 @@ if (smartSs2Spec) {
 const uiStandard = read('draw004.github.io/docs/CARROWMONT_SHARED_UI_STANDARD.md');
 if (uiStandard) {
   add('main site: shared UI standard documents the seven-tool CORE7 registry and no-arrow footer rule',
-    uiStandard.includes('Version:** 1.1') &&
+    uiStandard.includes('Version:** 1.2') &&
     uiStandard.includes('Budget & Cash Flow Planner') &&
     uiStandard.includes('Home Loan / Mortgage Prepayment & Early Payoff Calculator') &&
     uiStandard.includes('current seven-tool registry') &&

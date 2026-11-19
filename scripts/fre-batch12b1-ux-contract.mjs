@@ -33,7 +33,7 @@ export function runFreBatch12B1UxContract(root) {
     app.includes("location.hash === '#balance-transfer'") &&
     app.includes('panels[mode].scrollIntoView') && app.includes('history.pushState') &&
     app.includes("window.addEventListener('popstate',restoreLocation)") &&
-    tests.includes('first transfer link click selects and scrolls') && tests.includes('direct transfer link, reload, Back'));
+    tests.includes('first mode selection selects and scrolls') && tests.includes('direct transfer link, reload, Back'));
   add('Shared card numbers are synchronized without another financial or account engine',
     app.includes("['balance', 'btBalance']") && app.includes("['apr', 'btCurrentApr']") &&
     app.includes("['planned', 'btPayment']") && !/(?:localStorage|sessionStorage|fetch\s*\(|supabase|CarrowmontPlanSave)/i.test(app) &&

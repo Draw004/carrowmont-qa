@@ -41,6 +41,22 @@ export function inspectHtml(html, repo, file, { strict = false } = {}) {
       issues.push('locale_fields');
     }
   }
+  if (TOOL_REPOS.has(repo) && /<header\b[^>]*class=["'][^"']*\bsite-header\b/i.test(html)) {
+    // Global shell on every NEW or CHANGED tool page; historically local navigation
+    // is inventoried as debt, not a template for future releases.
+    if (!hasClass(html,'cm-global-header')) issues.push('legacy_tool_header');
+    else {
+      const nav = html.match(/<nav\b[^>]*class=["'][^"']*\bcm-global-nav\b[^>]*>[\s\S]*?<\/nav>/i)?.[0] || '';
+      const hrefs = [...nav.matchAll(/<a\b[^>]*\bhref=["']([^"']+)["']/g)].map(x => x[1]);
+      const expected=['/','/my-carrowmont.html','/tools.html','/ask-carrowmont.html','/learn.html','/research.html','/search.html'];
+      if (JSON.stringify(hrefs) !== JSON.stringify(expected)) issues.push('global_nav_destinations');
+      if ((nav.match(/aria-current=["']page["']/g)||[]).length !== 1 || !/<a\b[^>]*href=["']\/tools\.html["'][^>]*aria-current=["']page["']/i.test(nav)) issues.push('global_nav_active_state');
+      if (!/<nav\b[^>]*class=["'][^"']*cm-global-bottom-nav/.test(html) || !/<a\b[^>]*href=["']\/tools\.html["'][^>]*aria-current=["']page["']/i.test(html.match(/<nav\b[^>]*class=["'][^"']*cm-global-bottom-nav["'][^>]*>[\s\S]*?<\/nav>/)?.[0]||'')) issues.push('global_nav_mobile_state');
+      if (!html.includes('/assets/ui/carrowmont-global-header.css') || !html.includes('/assets/ui/carrowmont-global-header.js')) issues.push('global_nav_shared_assets');
+    }
+  }
+  if (strict && TOOL_REPOS.has(repo) && /<html\b/i.test(html) && /<main\b/i.test(html) &&
+      !/<header\b[^>]*class=["'][^"']*\bcm-global-header\b/i.test(html)) issues.push('missing_global_header');
   if (strict && /<html\b/i.test(html) && /<main\b/i.test(html)) {
     const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(m => m[1]);
     if (ids.length !== new Set(ids).size) issues.push('duplicate_ids');
@@ -69,6 +85,8 @@ export function auditStandards(root, { manifest = null } = {}) {
   const exceptions = JSON.parse(read(exceptionsFile)).exceptions;
   const accepted = new Map(exceptions.map(e => [e.repository+'/'+e.path, new Set(e.violations)]));
   const seenExceptions = new Set();
+  const headerExceptions = new Map((JSON.parse(read(exceptionsFile)).global_header_exceptions || []).map(e => [e.repository+'/'+e.path,'legacy_tool_header']));
+  const seenHeaders = new Set();
   const modifiedHtml = new Set();
   if (manifest) {
     if (manifest.schema_version !== 1 || !Array.isArray(manifest.repositories)) errors.push('Invalid publisher manifest');
@@ -98,17 +116,22 @@ export function auditStandards(root, { manifest = null } = {}) {
         const strict = modifiedHtml.has(key);
         const html = read(full);
         const issues = inspectHtml(html,repo,rel,{strict});
-        const allowed = accepted.get(key) || new Set();
+        const allowed = new Set(accepted.get(key) || []);
+        if (headerExceptions.has(key)) allowed.add(headerExceptions.get(key));
         for (const issue of issues) {
           if (allowed.has(issue) && !strict) {
             warnings.push(`${key}: known legacy issue ${issue}; must be fixed when page is changed`);
             seenExceptions.add(key+':'+issue);
+            if (issue === 'legacy_tool_header') seenHeaders.add(key);
           } else errors.push(`${key}: ${issue}${strict ? ' (modified page)' : ' (unexpected baseline drift)'}`);
         }
         if (strict) checks.push(`${key}: changed HTML audited`);
       }
     };
     visit(base);
+  }
+  for (const key of headerExceptions.keys()) {
+    if (!seenHeaders.has(key) && !modifiedHtml.has(key)) errors.push(`Stale global-header exception: ${key}`);
   }
   for (const [key, violations] of accepted) {
     for (const issue of violations) {
@@ -136,9 +159,17 @@ export function runDevelopmentStandardsContract(root) {
   results.push({name:'standards index, current status and handover exist',ok:!audit.errors.some(x=>x.includes('continuity file'))});
   results.push({name:'known legacy selector deviations are explicitly inventoried',ok:!audit.errors.length,
     detail: `${audit.warnings.length} known legacy deviations tracked; changing those pages requires correction`});
-  const good = `<html><head><title>Test</title><meta name="description" content="Test"><link rel="canonical" href="https://carrowmont.com/test.html"></head><body><header class="site-header"><a class="brand" href="/">CARROWMONT</a><nav><a href="/tools.html">All tools</a><a href="/">Home</a></nav><details class="locale-menu"><summary id="localeSummary" aria-label="Choose country and currency"><span class="locale-globe"><svg></svg></span><span id="localeCurrent">India</span><span class="locale-chevron"><svg></svg></span></summary><select id="regionSelect"></select><select id="currencySelect"></select></details></header><main id="content"><a href="#content">Jump</a></main></body></html>`;
+  const good = `<html><head><title>Test</title><meta name="description" content="Test"><link rel="canonical" href="https://carrowmont.com/test.html"></head><body><header class="site-header cm-global-header"><a class="brand" href="/">CARROWMONT</a><nav class="cm-global-nav"><a href="/">Home</a><a href="/my-carrowmont.html">My Carrowmont</a><a href="/tools.html" aria-current="page">Tools</a><a href="/ask-carrowmont.html">Ask</a><a href="/learn.html">Learn</a><a href="/research.html">Research</a><a href="/search.html">Search</a></nav><nav class="cm-global-bottom-nav"><a href="/tools.html" aria-current="page">Tools</a></nav><link href="/assets/ui/carrowmont-global-header.css"><script src="/assets/ui/carrowmont-global-header.js"></script><details class="locale-menu"><summary id="localeSummary" aria-label="Choose country and currency"><span class="locale-globe"><svg></svg></span><span id="localeCurrent">India</span><span class="locale-chevron"><svg></svg></span></summary><select id="regionSelect"></select><select id="currencySelect"></select></details></header><main id="content"><a href="#content">Jump</a></main></body></html>`;
   const wrong = good.replace('<span class="locale-globe"><svg></svg></span>','').replace('<span class="locale-chevron"><svg></svg></span>','');
   results.push({name:'deliberately broken locale icons fail strict markup QA',ok:inspectHtml(good,'goal-planner','test.html',{strict:true}).length === 0 && inspectHtml(wrong,'goal-planner','test.html',{strict:true}).includes('locale_globe') && inspectHtml(wrong,'goal-planner','test.html',{strict:true}).includes('locale_chevron')});
+  const badHeader = good.replace('cm-global-header','legacy-header');
+  const missingTool = good.replace('<a href="/tools.html" aria-current="page">Tools</a>','');
+  results.push({name:'modified tool pages with legacy headers or missing global nav fail strict gate',ok:
+    inspectHtml(badHeader,'goal-planner','test.html',{strict:true}).includes('legacy_tool_header') &&
+    inspectHtml(missingTool,'goal-planner','test.html',{strict:true}).includes('global_nav_destinations')});
+  const strippedHeader = good.replace('site-header cm-global-header','site-header legacy');
+  results.push({name:'changed tool missing canonical global header cannot pass',ok:
+    inspectHtml(strippedHeader,'goal-planner','test.html',{strict:true}).includes('missing_global_header')});
   const brokenAnchor = good.replace('href="#content"','href="#missing"');
   results.push({name:'broken internal anchor and duplicate IDs fail strict QA',ok:inspectHtml(brokenAnchor,'goal-planner','test.html',{strict:true}).includes('unresolved_in_page_anchor') && inspectHtml(good.replace('<main id="content">','<main id="content"><div id="content"></div>'),'goal-planner','test.html',{strict:true}).includes('duplicate_ids')});
   const publisher = read(path.join(root,'draw004.github.io/.github/workflows/carrowmont-batch-pr-publisher.yml'));
