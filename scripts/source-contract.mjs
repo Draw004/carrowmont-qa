@@ -31,6 +31,7 @@ import { runFreBatch11HomepageProductContract } from './fre-batch11-homepage-pro
 import { runFreBatch12UxSearchLearnContract } from './fre-batch12-ux-search-learn-contract.mjs';
 import { runFreHeadlineAndDrawCContract } from './fre-headline-and-drawc-contract.mjs';
 import { runFreAppWebBehaviorContract } from './fre-app-web-behavior-contract.mjs';
+import { runFrePwaInstallJourneyContract } from './fre-pwa-install-journey-contract.mjs';
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
@@ -77,6 +78,7 @@ for (const c of runFreBatch11HomepageProductContract(root)) add(`FRE11: ${c.name
 for (const c of runFreBatch12UxSearchLearnContract(root)) add(`FRE12: ${c.name}`, c.ok, c.detail);
 for (const c of runFreHeadlineAndDrawCContract(root)) add(`FRE12B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAppWebBehaviorContract(root)) add(`APP-WEB: ${c.name}`, c.ok, c.detail);
+for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -4594,7 +4596,7 @@ add('SEARCH1 layout refinement: compact hero and current Search assets preserve 
   search1Css.includes('.cm-search-page-hero .page-hero-inner{padding:46px 0 94px') &&
   search1Css.includes('.cm-search-page-section{position:relative;z-index:2;margin-top:-64px') &&
   search1Css.includes('.cm-search-page-section{margin-top:-48px;padding-bottom:54px}') &&
-  search1Html.includes('search.css?v=20261113-fre8f') && search1Learn.includes('search.css?v=20261113-fre8f') && search1Tools.includes('search.css?v=20261113-fre8f') &&
+  search1Html.includes('search.css?v=20261113-fre8f') && search1Learn.includes('search.css?v=20261113-fre8f') && (search1Tools.includes('search.css?v=20261113-fre8f') || search1Tools.includes('search.css?v=20261119-tools-mobile-v6b')) &&
   search1Learn.includes('search.js?v=20261118-fre12') && search1Tools.includes('search.js?v=20261118-fre12') &&
   search1Qa.includes('search action should be visible above the fold') && search1Qa.includes('[1280, 390, 360]') &&
   !/localStorage|URLSearchParams/.test(search1Js) && !/sessionStorage\.setItem/.test(search1Js) &&
@@ -4636,14 +4638,14 @@ add('LEARN3A: Tools and Search expose explicit Home links on desktop and mobile 
   /<nav class="desktop-nav"[\s\S]*?<a href="\/">Home<\/a>[\s\S]*?<\/nav>/.test(search1Html) &&
   /<div class="mobile-nav-panel">[\s\S]*?<a href="\/">Home<\/a>[\s\S]*?<\/div>/.test(search1Html)
 );
-add('LEARN3A: Tools hero is compact and embedded search is pulled upward without decorative filler',
+add('LEARN3A: Tools hero is compact; mobile search is separate and does not overlap copy',
   search1SiteCss.includes('.tools-directory-hero .page-hero-inner{max-width:1220px;padding:50px 0 62px}') &&
   search1SiteCss.includes('body[data-cm-page="tools-directory"] .search-discovery-section{position:relative;z-index:2;margin-top:-36px') &&
   search1SiteCss.includes('.tools-directory-hero .page-hero-inner{padding:18px 0 22px}') &&
   search1SiteCss.includes('.tools-directory-hero-actions{display:none}') &&
-  search1SiteCss.includes('body[data-cm-page="tools-directory"] .search-discovery-section{margin-top:-28px') &&
+  search1SiteCss.includes('body[data-cm-page="tools-directory"] .search-discovery-section{margin-top:0') &&
   search1SiteCss.includes('.cm-search-heading h2{margin-bottom:5px;font-size:21px;line-height:1.16}') &&
-  (search1Tools.includes('/carrowmont.css?v=20261020-learn3a-fix1') || search1Tools.includes('/carrowmont.css?v=20261119-app-behavior-v5')) &&
+  (search1Tools.includes('/carrowmont.css?v=20261020-learn3a-fix1') || search1Tools.includes('/carrowmont.css?v=20261119-nav-stable-v6b')) &&
   !search1Tools.includes('decorative-search') &&
   readQa('tests/12-tools-hub.spec.js').includes('tools search should appear above the fold')
 );
@@ -5615,7 +5617,7 @@ add('LEARN-PRESENTATION2: shared Learn tables are visually refined and the retir
   !learnPresentationRetirement.includes('<td>No single lifespan</td><td>Returns, inflation and spending vary; sequence matters</td>')
 );
 add('LEARN-PRESENTATION2: Contact hero is compact and exposes the email action earlier without changing contact identity',
-  learnPresentationContact.includes('<body class="contact-page">') && (learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') || learnPresentationContact.includes('carrowmont.css?v=20261029-social1a') || learnPresentationContact.includes('carrowmont.css?v=20261030-social1b') || learnPresentationContact.includes('carrowmont.css?v=20261119-app-behavior-v5')) &&
+  learnPresentationContact.includes('<body class="contact-page">') && (learnPresentationContact.includes('carrowmont.css?v=20261022-presentation2') || learnPresentationContact.includes('carrowmont.css?v=20261029-social1a') || learnPresentationContact.includes('carrowmont.css?v=20261030-social1b') || (learnPresentationContact.includes('carrowmont.css?v=20261119-app-behavior-v5') || learnPresentationContact.includes('carrowmont.css?v=20261119-nav-stable-v6b'))) &&
   learnPresentationContactCss.includes('CONTACT-PRESENTATION2') && learnPresentationContactCss.includes('body.contact-page .page-hero-inner{padding:42px 0 38px}') &&
   learnPresentationContact.includes('mailto:contact@carrowmont.com')
 );
@@ -5886,7 +5888,7 @@ add('HYGIENE1: desktop navigation promotes My Carrowmont beside Home, keeps Meth
 );
 const hygieneResearchPages = ['research.html','research/emergency-savings-resilience.html','research/inflation-purchasing-power-monitor.html','research/mortgage-affordability-monitor.html'].map(name=>read(`draw004.github.io/${name}`));
 add('HYGIENE1: Research pages carry the shared country-currency control and locale runtime before shared site runtime',
-  hygieneResearchPages.every(html=>html.includes('class="locale-menu" id="localeMenu"') && html.includes('/locale.js?v=20261010-tools-hub1') && (html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261105-mobile2') || html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261119-app-behavior-v5')))
+  hygieneResearchPages.every(html=>html.includes('class="locale-menu" id="localeMenu"') && html.includes('/locale.js?v=20261010-tools-hub1') && (html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261105-mobile2') || html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261119-app-behavior-v5') || html.indexOf('/locale.js?v=20261010-tools-hub1') < html.indexOf('/site.js?v=20261119-nav-stable-v6b')))
 );
 add('HYGIENE1: Learn hub and articles expose a shared topic navigator after the Learn hero with requested major planning categories',
   hygieneSite.includes("nav.dataset.cmLearnTopicNav") && hygieneSite.includes("label.textContent = 'Explore by topic'") &&
@@ -5958,6 +5960,26 @@ add('LEARN navigation cleanup: Explore by topic is the sole topic shortcut row o
   !hygieneLearn.includes('data-cm-search-suggestions') && !hygieneLearn.includes('Try a topic:') &&
   readQa('tests/56-hygiene1-localization-learn-navigation.spec.js').includes("getByText('Try a topic:', { exact: true })")
 );
+
+add('V6B first-visit install test preserves dismissal through reload',
+  readQa('tests/86-pwa-install-journey.spec.js').includes('Do not use gotoClean here') &&
+  readQa('tests/86-pwa-install-journey.spec.js').includes('cm-pwa-install-offer-seen-v1'));
+add('V6B My Money assumptions card no longer stretches to match neighbouring content',
+  read('draw004.github.io/assets/dashboard/my-carrowmont.css').includes('margin-top:14px;align-items:start}'));
+add('V6B Tools mobile search is compact, separate and avoids redundant chips',
+  read('draw004.github.io/carrowmont.css').includes('search-discovery-section{margin-top:0;padding-top:8px') &&
+  read('draw004.github.io/carrowmont.css').includes('.cm-search-suggestions{display:none}') &&
+  read('draw004.github.io/tools.html').includes('Find a tool or guide') &&
+  readQa('tests/12-tools-hub.spec.js').includes('mobile tools search remains separate'));
+add('V6B installed app keeps top-to-bottom Draw C with exact tagline; web overlay is less blocking',
+  read('draw004.github.io/index.html').includes('Plan today. Build tomorrow.') &&
+  read('draw004.github.io/index.html').includes('d="M355 164 C306 109') &&
+  read('draw004.github.io/index.html').includes('780 - elapsed') &&
+  read('draw004.github.io/assets/pwa/carrowmont-launch.css').includes('animation:cm-home-draw-c .68s'));
+add('V6B website navigation uses reduced-motion-aware progressive page transitions and stable scrollbar widths',
+  read('draw004.github.io/carrowmont.css').includes('html{scrollbar-gutter:stable}') &&
+  read('draw004.github.io/carrowmont.css').includes('@media (display-mode:browser) and (prefers-reduced-motion:no-preference)') &&
+  read('draw004.github.io/carrowmont.css').includes('@view-transition{navigation:auto}'));
 
 console.log('\nCarrowmont source contract check\n');
 for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` (${c.detail})` : ''}`);

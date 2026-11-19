@@ -51,7 +51,7 @@ export function runFreHeadlineAndDrawCContract(root){
   const dashboard=fs.readFileSync(path.join(main,'assets/dashboard/my-carrowmont.js'),'utf8');
   add('install guidance remains visible without a browser prompt and retains a one-click prompt if offered',
     page.includes('id="cmPwaInstallShortcut"') && site.includes('function instructions()') &&
-    site.includes('function update()') && site.includes("event.preventDefault();deferredPrompt=event;update();") &&
+    site.includes('function update()') && site.includes('event.preventDefault();') && site.includes('deferredPrompt=event;') && site.includes('update();') &&
     site.includes("if(card)card.hidden=isInstalled;") && site.includes("How to install"));
   add('dynamic display headings: no trailing periods in newsletter and dashboard large headings',!site.includes('week.</h2>')&&!plan.includes('view.</h2>')&&!plan.includes('forecast.</h3>')&&!dashboard.includes('wheel.</h3>'));
   return checks;

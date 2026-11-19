@@ -282,3 +282,26 @@ test.describe('TOOLS-HUB1 all-tools directory and homepage discovery', () => {
     await saveReferenceScreenshot(page, testInfo.project.name, 'tools-hub-directory', 'full');
   });
 });
+
+
+// Visual regression: mobile Tools hero must end before embedded Search begins.
+test('[AUTO] mobile tools search remains separate from the hero and avoids redundant topics', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await gotoClean(page, '/tools.html');
+  const geometry=await page.evaluate(() => {
+    const hero=document.querySelector('.tools-directory-hero');
+    const search=document.querySelector('.search-discovery-section');
+    const input=document.querySelector('#toolsSearchInput');
+    const topics=document.querySelector('body[data-cm-page="tools-directory"] .cm-search-suggestions');
+    if(!hero||!search||!input||!topics)return null;
+    return {heroBottom:hero.getBoundingClientRect().bottom,searchTop:search.getBoundingClientRect().top,
+      inputFont:parseFloat(getComputedStyle(input).fontSize),
+      topicsDisplay:getComputedStyle(topics).display,
+      overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+  });
+  expect(geometry).not.toBeNull();
+  expect(geometry.searchTop).toBeGreaterThanOrEqual(geometry.heroBottom-1);
+  expect(geometry.inputFont).toBeGreaterThanOrEqual(16);
+  expect(geometry.topicsDisplay).toBe('none');
+  expect(geometry.overflow).toBeLessThanOrEqual(2);
+});
