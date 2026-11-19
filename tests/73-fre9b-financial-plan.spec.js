@@ -29,3 +29,38 @@ test.describe('FRE9B Your Financial Plan View & Report',()=>{
     await expect(page.locator('#mycmBanner')).toContainText('My Carrowmont Plan Report downloaded.');
   });
 });
+
+// Regression: a sparse assumptions card must end shortly after its own content,
+// regardless of the height or wording of the neighbouring Next Moves card.
+test('[AUTO] Important Assumptions card uses its content height on desktop',async({page})=>{
+  // The retirement/goal scenario fixtures contain additional rate and inflation
+  // assumptions. Use saved facts alone to exercise the intended *one* item case.
+  await mockAccount(page,{profile:savedProfile(),scenarios:[]});
+  await page.setViewportSize({width:1440,height:900});
+  await gotoClean(page,'/my-carrowmont.html?code=qa-auth-return');
+  const panel=page.locator('#mycmFinancialPlan');
+  await expect(panel.locator('.mycm-plan-assumptions li')).toHaveCount(1);
+  const geometry=await panel.evaluate(root=>{
+    const grid=root.querySelector('.mycm-plan-support-grid');
+    const card=root.querySelector('.mycm-plan-assumptions');
+    const list=card?.querySelector('ul');
+    if(!grid||!card||!list)return null;
+    const cardRect=card.getBoundingClientRect();
+    const listRect=list.getBoundingClientRect();
+    const style=getComputedStyle(card);
+    return {
+      align:getComputedStyle(grid).alignItems,
+      cardHeight:cardRect.height,
+      bottomSpace:cardRect.bottom-listRect.bottom,
+      designedBottomSpace:parseFloat(style.paddingBottom)+parseFloat(style.borderBottomWidth)
+    };
+  });
+  expect(geometry,'Assumptions card and list must render').not.toBeNull();
+  expect(geometry.align).toBe('start');
+  expect(geometry.cardHeight).toBeGreaterThan(100);
+  // Tests the actual problem: no unused hundreds of pixels below the list.
+  // Do not compare with Next Moves: its content can legitimately be shorter.
+  expect(geometry.bottomSpace).toBeGreaterThanOrEqual(geometry.designedBottomSpace-2);
+  expect(geometry.bottomSpace).toBeLessThanOrEqual(geometry.designedBottomSpace+5);
+  await assertNoHorizontalOverflow(page,'My Carrowmont natural height 1440px');
+});
