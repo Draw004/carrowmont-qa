@@ -8,8 +8,8 @@ test.describe('FRE12B-1 Balance Transfer Decision (existing Credit Card Payoff t
   test('[AUTO] deep link opens the optional comparison without replacing existing payoff functionality', async ({ page }) => {
     const errors = monitorPageErrors(page);
     await gotoClean(page, TOOL + '#balance-transfer');
-    await expect(page.locator('h1')).toContainText('higher monthly card payment');
-    await expect(page.locator('#balance-transfer')).toHaveAttribute('open','');
+    await expect(page.locator('h1')).toContainText('credit-card payoff and balance-transfer choices');
+    await expect(page.locator('#tab-transfer')).toHaveAttribute('aria-selected', 'true');
     await expect(page.locator('#btForm')).toBeVisible();
     await expect(page.locator('#btSummary')).toContainText('transferring costs less');
     await expect(page.locator('#btSavings')).toContainText('less with transfer');
