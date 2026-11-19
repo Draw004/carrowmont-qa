@@ -19,7 +19,7 @@ export function runFreBatch12B1BalanceTransferContract(root) {
   add('The new decision is accessible from the existing, canonical credit-card payoff URL',
     tool.includes('id="balance-transfer"') && tool.includes('id="btForm"') &&
     tool.includes('balance-transfer-decision-core.js') && tool.includes('balance-transfer-decision.js') &&
-    tool.includes('debt-payoff-core.js') && tool.includes('href="#balance-transfer"'));
+    tool.includes('debt-payoff-core.js') && tool.includes('id="tab-transfer"'));
   add('Learn and Tools route directly into the comparison without introducing a duplicate guide',
     mainTools.includes(`href="${anchor}"`) && guide.includes(`href="${anchor}"`) &&
     !sitemap.includes('balance-transfer-decision.html') && inventory.entries.length === 145 &&
