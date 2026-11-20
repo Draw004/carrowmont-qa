@@ -36,7 +36,7 @@ export function runFreBatch8iAskSearchRelevanceContract(root){
   add('8I Ask requests intent-aware routing while Search keeps the broader shared result engine',
     askJs.includes("search(query,{limit:6,mode:'ask'})")&&searchJs.includes("opts.mode === 'ask'")&&coreSource.includes('function searchForAsk('));
   add('8I refreshed assets prevent stale relevance code after deployment',
-    searchJs.includes("carrowmont-search-aliases.json?v=20261118-fre12")&&htmlFiles.every(html=>html.includes('search-core.js?v=20261118-fre12')&&html.includes('search.js?v=20261118-fre12'))&&(htmlFiles[0].includes('ask-carrowmont.js?v=20261114-fre8i')||htmlFiles[0].includes('ask-carrowmont.js?v=20261116-fre9')||htmlFiles[0].includes('ask-carrowmont.js?v=20261117-fre10b')||(htmlFiles[0].includes('ask-carrowmont.js?v=20261117-fre11')||htmlFiles[0].includes('ask-carrowmont.js?v=20261118-fre12'))));
+    searchJs.includes("carrowmont-search-aliases.json?v=20261118-fre12")&&htmlFiles.every(html=>html.includes('search-core.js?v=20261118-fre12')&&(html.includes('search.js?v=20261118-fre12')||html.includes('search.js?v=20261120-searchux1')))&&(htmlFiles[0].includes('ask-carrowmont.js?v=20261114-fre8i')||htmlFiles[0].includes('ask-carrowmont.js?v=20261116-fre9')||htmlFiles[0].includes('ask-carrowmont.js?v=20261117-fre10b')||(htmlFiles[0].includes('ask-carrowmont.js?v=20261117-fre11')||(htmlFiles[0].includes('ask-carrowmont.js?v=20261118-fre12')||htmlFiles[0].includes('ask-carrowmont.js?v=20261120-searchux1')))));
 
   function results(q,limit=12){return core.search(index.entries,aliases,q,{region:'IN',limit});}
   function ask(q,limit=3){return core.searchForAsk(index.entries,aliases,q,{region:'IN',limit});}

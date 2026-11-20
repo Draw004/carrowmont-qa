@@ -55,4 +55,25 @@ test.describe('FRE12 UX, Search and Learn expansion',()=>{
     await expect(page.locator('.source-list a')).toHaveCount(3);
     await assertNoHorizontalOverflow(page);
   });
+
+  test('[AUTO] Search groups Tools before Learn for broad subjects without overriding decisive direct-guide intent',async({page})=>{
+    await gotoClean(page,'/search.html');
+    const input=page.locator('#carrowmontSearchInput');
+    await input.fill('credit');
+    await page.locator('[data-cm-search-submit]').click();
+    let groups=page.locator('[data-search-result-group]');
+    await expect(groups.first()).toHaveAttribute('data-search-result-group','tool');
+    await expect(page.locator('[data-search-result-group="tool"] .cm-search-result-group-heading')).toContainText('Tools');
+    await expect(page.locator('[data-search-result-group="tool"]')).toContainText('Open tool');
+    await expect(page.locator('[data-search-result-group="guide"] .cm-search-result-group-heading')).toContainText('Learn & Guides');
+    await expect(page.locator('[data-search-result-group="guide"]')).toContainText('Read article');
+
+    await input.fill('how to make a budget');
+    await page.locator('[data-cm-search-submit]').click();
+    groups=page.locator('[data-search-result-group]');
+    await expect(groups.first()).toHaveAttribute('data-search-result-group','guide');
+    await expect(page.locator('[data-search-result-link]').first()).toHaveAttribute('href','/how-to-make-a-budget.html');
+    await assertNoHorizontalOverflow(page);
+  });
+
 });
