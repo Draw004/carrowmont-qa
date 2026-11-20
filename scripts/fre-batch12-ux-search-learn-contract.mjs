@@ -109,5 +109,20 @@ export function runFreBatch12UxSearchLearnContract(root){
     implementation.includes('human PR review/merge')&&acceptance.includes('No calculator repository is modified by this release')&&
     acceptance.includes('REQUIRED AT PUBLISHER'));
 
+  add('FRE12 Search groups broad comparable matches Tool-first while preserving decisive direct Learn/Research ownership',
+    searchJs.includes("label: 'Tools'")&&searchJs.includes("label: 'Learn & Guides'")&&searchJs.includes('DIRECT_MATCH_LEAD = 200')&&
+    searchJs.includes('decisiveNonTool')&&searchJs.includes('ownsSpecificQuery(first, shownQuery)')&&searchJs.includes("entry.type === 'tool' ? 'Open tool →'")&&
+    searchJs.includes('cm-search-result-card-tool')&&searchJs.includes('section.dataset.searchResultGroup = group.key'));
+
+  add('FRE12 Ask fallback uses the same relevance-first grouped hierarchy as Search',
+    askJs.includes("tool:{key:'tool',label:'Tools'")&&askJs.includes("guide:{key:'guide',label:'Learn & Guides'")&&
+    askJs.includes('DIRECT_MATCH_LEAD=200')&&askJs.includes('decisiveNonTool')&&askJs.includes('ownsSpecificQuery(first,text)')&&
+    askJs.includes("entry.type==='tool'?'Open tool →'")&&askJs.includes('ask-route-result-tool')&&askJs.includes('section.dataset.askRouteGroup=group.key'));
+
+  add('FRE12 refreshed Search/Ask presentation assets are cache-busted on all shared entry pages',
+    ['search.html','tools.html','learn.html','ask-carrowmont.html'].every(name=>read(main+name).includes('search.js?v=20261120-searchux1'))&&
+    ['search.html','tools.html','learn.html'].every(name=>read(main+name).includes('search.css?v=20261120-searchux1'))&&
+    askHtml.includes('ask-carrowmont.js?v=20261120-searchux1')&&askHtml.includes('ask-carrowmont.css?v=20261120-searchux1'));
+
   return checks;
 }

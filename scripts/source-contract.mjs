@@ -4608,8 +4608,8 @@ add('SEARCH1 layout refinement: compact hero and current Search assets preserve 
   search1Css.includes('.cm-search-page-hero .page-hero-inner{padding:46px 0 94px') &&
   search1Css.includes('.cm-search-page-section{position:relative;z-index:2;margin-top:-64px') &&
   search1Css.includes('.cm-search-page-section{margin-top:-48px;padding-bottom:54px}') &&
-  search1Html.includes('search.css?v=20261113-fre8f') && search1Learn.includes('search.css?v=20261113-fre8f') && (search1Tools.includes('search.css?v=20261113-fre8f') || search1Tools.includes('search.css?v=20261119-tools-mobile-v6b')) &&
-  search1Learn.includes('search.js?v=20261118-fre12') && search1Tools.includes('search.js?v=20261118-fre12') &&
+  (search1Html.includes('search.css?v=20261113-fre8f')||search1Html.includes('search.css?v=20261120-searchux1')) && (search1Learn.includes('search.css?v=20261113-fre8f')||search1Learn.includes('search.css?v=20261120-searchux1')) && (search1Tools.includes('search.css?v=20261113-fre8f') || search1Tools.includes('search.css?v=20261119-tools-mobile-v6b') || search1Tools.includes('search.css?v=20261120-searchux1')) &&
+  (search1Learn.includes('search.js?v=20261118-fre12')||search1Learn.includes('search.js?v=20261120-searchux1')) && (search1Tools.includes('search.js?v=20261118-fre12')||search1Tools.includes('search.js?v=20261120-searchux1')) &&
   search1Qa.includes('search action should be visible above the fold') && search1Qa.includes('[1280, 390, 360]') &&
   !/localStorage|URLSearchParams/.test(search1Js) && !/sessionStorage\.setItem/.test(search1Js) &&
   search1Js.includes("ASK_SEARCH_HANDOFF_KEY = 'carrowmont_search_handoff_v1'")
