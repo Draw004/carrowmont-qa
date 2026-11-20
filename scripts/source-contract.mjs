@@ -38,6 +38,7 @@ import { runStartupNavigationPerformanceContract } from './startup-navigation-pe
 import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contract.mjs';
 import { runDevelopmentStandardsContract } from './development-standards-gate.mjs';
 import { runGlobalHeaderContract } from './global-header-contract.mjs';
+import { runCredentialExpiryGuardContract } from './credential-expiry-guard-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -89,6 +90,7 @@ for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c
 for (const c of runStartupNavigationPerformanceContract(root)) add(`PERF1: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 for (const c of runGlobalHeaderContract(root)) add(`GLOBAL-NAV: ${c.name}`, c.ok, c.detail);
+for (const c of await runCredentialExpiryGuardContract(root)) add(`CREDENTIAL-GUARD: ${c.name}`, c.ok, c.detail);
 for (const c of runDevelopmentStandardsContract(root)) add(`STANDARDS1: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
