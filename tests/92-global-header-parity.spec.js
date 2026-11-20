@@ -13,7 +13,20 @@ test.describe('Canonical global header across site and decision tools', () => {
     expect(tool).toEqual(main);
     await expect(page.locator('.cm-global-nav a[aria-current="page"]')).toHaveCount(1);
     await expect(page.locator('.cm-global-nav a[aria-current="page"]')).toHaveAttribute('href','/tools.html');
-    await expect(page.locator('.cm-global-nav a[href="/search.html"]')).toBeVisible();
+    // Compare the complete link inventory even where the responsive desktop nav is hidden.
+    // Visibility must follow the real breakpoint rather than assuming a desktop header.
+    const desktopSearch = page.locator('.cm-global-nav a[href="/search.html"]');
+    const compactSearch = page.locator('.cm-global-mobile-search[href="/search.html"]');
+    await expect(desktopSearch).toHaveCount(1);
+    await expect(compactSearch).toHaveCount(1);
+    const compactLayout = await page.evaluate(() => matchMedia('(max-width: 980px)').matches);
+    if (compactLayout) {
+      await expect(desktopSearch).toBeHidden();
+      await expect(compactSearch).toBeVisible();
+    } else {
+      await expect(desktopSearch).toBeVisible();
+      await expect(compactSearch).toBeHidden();
+    }
     await expect(page.locator('#localeSummary')).toBeVisible();
   });
   test('[AUTO] mobile tool header mirrors Home / My Money / Ask / Tools / More, one active Tools state', async ({ page }) => {
