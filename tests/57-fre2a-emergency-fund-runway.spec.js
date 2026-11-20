@@ -71,7 +71,7 @@ test.describe('FRE2A Emergency Fund & Financial Runway',()=>{
   });
 
   test('[AUTO] Tools Search sitemap and Learn journeys expose the tool without changing the nine-core homepage',async({page,request})=>{
-    await gotoClean(page,'/tools.html');await expect(page.locator('.directory-tool-card')).toHaveCount(23);const card=page.locator('[data-secondary-tool="emergency-fund-runway"]');await expect(card).toHaveCount(1);await expect(card.locator('a')).toHaveAttribute('href',PATH);
+    await gotoClean(page,'/tools.html');await expect(page.locator('.directory-tool-card')).toHaveCount(23);const card=page.locator('[data-secondary-tool="emergency-fund-runway"]');await expect(card).toHaveCount(1);await expect(card.locator(`a[href="${PATH}"]`)).toHaveCount(1);
     await gotoClean(page,'/');await expect(page.locator('[data-homepage-core-grid] [data-tool-id]')).toHaveCount(9);await expect(page.locator('[data-tool-id="emergency-fund-runway"]')).toHaveCount(0);
     for(const path of LEARN){await gotoClean(page,path);await expect(page.locator(`a[href="${PATH}"]`).first()).toBeVisible();}
     const xml=await (await request.get('/sitemap.xml')).text();expect(xml).toContain(`<loc>https://carrowmont.com${PATH}</loc>`);
