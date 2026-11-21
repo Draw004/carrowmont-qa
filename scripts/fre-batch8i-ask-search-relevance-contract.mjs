@@ -37,8 +37,8 @@ export function runFreBatch8iAskSearchRelevanceContract(root){
     askJs.includes("search(query,{limit:6,mode:'ask'})")&&searchJs.includes("opts.mode === 'ask'")&&coreSource.includes('function searchForAsk('));
   const askAssetVersions=['20261114-fre8i','20261116-fre9','20261117-fre10b','20261117-fre11','20261118-fre12','20261120-searchux1','20261121-fre12b4'];
   add('8I refreshed assets prevent stale relevance code after deployment',
-    searchJs.includes("carrowmont-search-aliases.json?v=20261118-fre12")&&
-    htmlFiles.every(html=>html.includes('search-core.js?v=20261118-fre12')&&(html.includes('search.js?v=20261118-fre12')||html.includes('search.js?v=20261120-searchux1')))&&
+    (searchJs.includes("carrowmont-search-aliases.json?v=20261118-fre12")||searchJs.includes("carrowmont-search-aliases.json?v=20261122-fre12b5"))&&
+    htmlFiles.every(html=>html.includes('search-core.js?v=20261118-fre12')&&(html.includes('search.js?v=20261118-fre12')||html.includes('search.js?v=20261120-searchux1')||html.includes('search.js?v=20261122-fre12b5')))&&
     askAssetVersions.some(version=>htmlFiles[0].includes(`ask-carrowmont.js?v=${version}`)));
 
 
