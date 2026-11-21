@@ -122,7 +122,7 @@ export function runFreBatch12UxSearchLearnContract(root){
   add('FRE12 refreshed Search/Ask presentation assets are cache-busted on all shared entry pages',
     ['search.html','tools.html','learn.html','ask-carrowmont.html'].every(name=>read(main+name).includes('search.js?v=20261120-searchux1'))&&
     ['search.html','tools.html','learn.html'].every(name=>read(main+name).includes('search.css?v=20261120-searchux1'))&&
-    askHtml.includes('ask-carrowmont.js?v=20261120-searchux1')&&askHtml.includes('ask-carrowmont.css?v=20261120-searchux1'));
+    (askHtml.includes('ask-carrowmont.js?v=20261120-searchux1')||askHtml.includes('ask-carrowmont.js?v=20261121-fre12b4'))&&askHtml.includes('ask-carrowmont.css?v=20261120-searchux1'));
 
   return checks;
 }

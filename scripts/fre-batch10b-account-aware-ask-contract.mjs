@@ -22,7 +22,7 @@ export function runFreBatch10bAccountAwareAskContract(root){
   let pages=null;try{pages=JSON.parse(pagesText);}catch{}
   const browser=readQa('tests/75-fre10b-account-aware-ask.spec.js');
 
-  add('Batch 10B introduces a dedicated read-only Account-Aware Ask adapter and loads it before the Ask UI',context.includes("VERSION='carrowmont-ask-context-v1.0'")&&html.includes('/assets/account/carrowmont-ask-context.js?v=20261117-fre10b')&&html.indexOf('/assets/account/carrowmont-ask-context.js')<html.indexOf('/assets/ask/ask-carrowmont.js'));
+  add('Batch 10B introduces a dedicated read-only Account-Aware Ask adapter and loads it before the Ask UI',context.includes("VERSION='carrowmont-ask-context-v1.0'")&&html.includes('/assets/account/carrowmont-ask-context.js?v=20261121-fre12b4')&&html.indexOf('/assets/account/carrowmont-ask-context.js')<html.indexOf('/assets/ask/ask-carrowmont.js'));
   add('Batch 10B account adapter reads existing profile/scenario APIs but contains no account write/delete API',context.includes('loadCloudProfile')&&context.includes('listScenarios')&&!context.includes('saveCloudProfile')&&!context.includes('saveScenario')&&!context.includes('deleteCloudProfile')&&!context.includes('deleteScenario'));
   add('Batch 10B explicit intent maps cover all six controlled Ask journeys',[
     'emergency-runway','cash-flow-shortfall','car-affordability','mortgage-prepay-vs-invest','debt-vs-savings','money-priorities'

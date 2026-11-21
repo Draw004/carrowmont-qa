@@ -40,7 +40,7 @@ export function runFreAskMvpContract(root) {
   const Ask=require(askFile);
   const api=Ask.create({ router:Router, budget:Budget, emergency:Emergency, car:Car, loan:Loan, borrowing:Borrowing, debtPayoff:debtWindow.CarrowmontDebtPayoffCore, compound:compoundWindow.CarrowmontCompoundCore, mortgagePrepay:mdcWindow.CarrowmontMdc1aCore, goal:Goal, priorityFramework:Priority, moneyPriorities:MoneyPriorities });
 
-  add('Ask exposes six controlled journeys after Batch 5 while preserving the original five', api.SUPPORTED.length===6 && new Set(api.SUPPORTED.map(x=>x.intent)).size===6 && ['debt-vs-savings','car-affordability','mortgage-prepay-vs-invest','emergency-runway','cash-flow-shortfall','money-priorities'].every(intent=>api.SUPPORTED.some(x=>x.intent===intent)));
+  add('Ask preserves the six established journeys in their original order while allowing later controlled journeys', api.SUPPORTED.length>=6 && new Set(api.SUPPORTED.map(x=>x.intent)).size===api.SUPPORTED.length && ['debt-vs-savings','car-affordability','mortgage-prepay-vs-invest','emergency-runway','cash-flow-shortfall','money-priorities'].every((intent,index)=>api.SUPPORTED[index]?.intent===intent));
   add('ordinary-language Money Priorities text is recognized deterministically', api.classify('What should I focus on first?').intent===api.INTENTS.MONEY_PRIORITIES);
   add('ordinary-language cash-shortfall text is recognized deterministically', api.classify('I keep running out of money before payday').intent===api.INTENTS.CASH_FLOW_SHORTFALL);
   const missing=api.resolve({ intent:api.INTENTS.CAR_AFFORDABILITY, facts:{ vehiclePrice:25000 } });
