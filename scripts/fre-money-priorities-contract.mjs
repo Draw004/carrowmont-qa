@@ -41,7 +41,7 @@ export function runFreMoneyPrioritiesContract(root) {
   add('Money Priorities makes no network or persistence calls',!/(?:localStorage|sessionStorage|indexedDB|\bfetch\s*\(|XMLHttpRequest|WebSocket)/.test(source));
 
   const ask=require(path.join(main,'assets/fre/ask-carrowmont-mvp.js'));
-  add('Ask Carrowmont exposes Money Priorities as the sixth controlled journey',ask.SUPPORTED?.length===6&&ask.SUPPORTED?.some(x=>x.intent==='money-priorities')&&ask.classify('What should I focus on first?')?.intent==='money-priorities');
+  add('Ask Carrowmont preserves Money Priorities as the established sixth controlled journey',ask.SUPPORTED?.length>=6&&ask.SUPPORTED?.[5]?.intent==='money-priorities'&&ask.classify('What should I focus on first?')?.intent==='money-priorities');
 
   const tools=fs.readFileSync(path.join(main,'tools.html'),'utf8');
   add('Batch 5 preserves the 23-tool directory',/"numberOfItems"\s*:\s*23/.test(tools)&&(tools.match(/class="directory-tool-card/g)||[]).length===23);
