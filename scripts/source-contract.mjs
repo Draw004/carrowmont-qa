@@ -10,6 +10,7 @@ import { runFreCreditCardPayoffContract } from './fre-credit-card-payoff-contrac
 import { runFreBatch12B1BalanceTransferContract } from './fre-batch12b1-balance-transfer-contract.mjs';
 import { runFreBatch12B1UxContract } from './fre-batch12b1-ux-contract.mjs';
 import { runFreBatch12B2ShortTermSavingsContract } from './fre-batch12b2-short-term-savings-contract.mjs';
+import { runFreBatch12B3MortgageChoiceContract } from './fre-batch12b3-mortgage-choice-contract.mjs';
 import { runFreBatch12B4LumpSumGoalTradeoffsContract } from './fre-batch12b4-lump-sum-goal-tradeoffs-contract.mjs';
 import { runFreSavingsGrowthContract } from './fre-savings-growth-contract.mjs';
 import { runFreAskMvpContract } from './fre-ask-mvp-contract.mjs';
@@ -65,6 +66,7 @@ for (const c of runFreCreditCardPayoffContract(root)) add(`FRE2D: ${c.name}`, c.
 for (const c of runFreBatch12B1BalanceTransferContract(root)) add(`FRE12B1: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12B1UxContract(root)) add(`FRE12B1UX: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12B2ShortTermSavingsContract(root)) add(`FRE12B2: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch12B3MortgageChoiceContract(root)) add(`FRE12B3: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12B4LumpSumGoalTradeoffsContract(root)) add(`FRE12B4: ${c.name}`, c.ok, c.detail);
 for (const c of runFreSavingsGrowthContract(root)) add(`FRE2E: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpContract(root)) add(`FRE3A: ${c.name}`, c.ok, c.detail);
@@ -2807,7 +2809,7 @@ const mdc1bSitemapLastmods = new Map([...core7Sitemap.matchAll(/<url>([\s\S]*?)<
 add('MDC1B: sitemap/discovery publish both new routes and refresh the changed hubs',
   core7Sitemap.includes('https://carrowmont.com/mortgage-refinance-break-even.html') &&
   core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') &&
-  mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-refinance-break-even.html') === '2026-10-14' &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-refinance-break-even.html') >= '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') === '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') === '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-14' &&

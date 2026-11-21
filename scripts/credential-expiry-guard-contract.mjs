@@ -130,8 +130,8 @@ export async function runCredentialExpiryGuardContract(root) {
     doc.includes('24 June 2027') && doc.includes('60 days of inactivity') &&
     doc.includes('Workflows: read/write') && doc.includes('`CARROWMONT_RELEASE_TOKEN`'));
   add('current status records the latest all-green baseline and deployed credential guard state',
-    read(statusPath).includes('2026-11-21T015030.732.zip') &&
-    read(statusPath).includes('da875604cfa0fb580a55260e93cedf0ea231a71e') &&
+    read(statusPath).includes('2026-11-21T215344.139.zip') &&
+    read(statusPath).includes('c7f65ac58c43a2be1ccb67b42ef543c73da27c6f') &&
     read(statusPath).includes('Credential Expiry Guard v1:** deployed') &&
     read(statusPath).includes('temporary PAT Workflows write permission was removed again'));
   add('standards index links authoritative expiry guard instructions',
