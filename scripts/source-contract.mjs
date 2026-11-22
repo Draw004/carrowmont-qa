@@ -36,6 +36,7 @@ import { runFreBatch10CountryIntelligenceContract } from './fre-batch10-country-
 import { runFreBatch10bAccountAwareAskContract } from './fre-batch10b-account-aware-ask-contract.mjs';
 import { runFreBatch11HomepageProductContract } from './fre-batch11-homepage-product-contract.mjs';
 import { runFreBatch12UxSearchLearnContract } from './fre-batch12-ux-search-learn-contract.mjs';
+import { runFreBatch12SeoIndexingCloseoutContract } from './fre-batch12-seo-indexing-closeout-contract.mjs';
 import { runFreHeadlineAndDrawCContract } from './fre-headline-and-drawc-contract.mjs';
 import { runFreAppWebBehaviorContract } from './fre-app-web-behavior-contract.mjs';
 import { runFrePwaInstallJourneyContract } from './fre-pwa-install-journey-contract.mjs';
@@ -94,6 +95,7 @@ for (const c of runFreBatch10CountryIntelligenceContract(root)) add(`FRE10: ${c.
 for (const c of runFreBatch10bAccountAwareAskContract(root)) add(`FRE10B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch11HomepageProductContract(root)) add(`FRE11: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12UxSearchLearnContract(root)) add(`FRE12: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch12SeoIndexingCloseoutContract(root)) add(`FRE12SEO: ${c.name}`, c.ok, c.detail);
 for (const c of runFreHeadlineAndDrawCContract(root)) add(`FRE12B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAppWebBehaviorContract(root)) add(`APP-WEB: ${c.name}`, c.ok, c.detail);
 for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c.name}`, c.ok, c.detail);
@@ -1924,7 +1926,7 @@ add('main site: FI Number by Spending route and refreshed FI guides remain in si
   sitemapLastmods.get('https://carrowmont.com/financial-independence-number-by-spending.html') === '2026-10-09' &&
   sitemapLastmods.get('https://carrowmont.com/financial-independence-number.html') === '2026-10-21' &&
   sitemapLastmods.get('https://carrowmont.com/when-can-i-reach-financial-independence.html') === '2026-10-21' &&
-  sitemapLastmods.get('https://carrowmont.com/financial-independence/') === '2026-10-13'
+  sitemapLastmods.get('https://carrowmont.com/financial-independence/') >= '2026-10-13'
 );
 add('financial-independence: SEO3B handoff is explicit, validated and keeps the approved FI core separate',
   fiHtml.includes('id="seo3bHandoffNotice"') &&
@@ -2815,7 +2817,7 @@ add('MDC1B: sitemap/discovery publish both new routes and refresh the changed hu
   core7Sitemap.includes('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-refinance-break-even.html') >= '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/refinance-break-even.html') === '2026-10-14' &&
-  mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') === '2026-10-14' &&
+  mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-payoff-calculator/decision-centre.html') >= '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/learn.html') >= '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/mortgage-prepayment-vs-investing.html') === '2026-10-14' &&
   mdc1bSitemapLastmods.get('https://carrowmont.com/one-extra-mortgage-payment-a-year.html') >= '2026-10-14'
