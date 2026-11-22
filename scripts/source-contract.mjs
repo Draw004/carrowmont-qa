@@ -13,6 +13,7 @@ import { runFreBatch12B2ShortTermSavingsContract } from './fre-batch12b2-short-t
 import { runFreBatch12B3MortgageChoiceContract } from './fre-batch12b3-mortgage-choice-contract.mjs';
 import { runFreBatch12B4LumpSumGoalTradeoffsContract } from './fre-batch12b4-lump-sum-goal-tradeoffs-contract.mjs';
 import { runFreBatch12B5EarlyRetirementScenariosContract } from './fre-batch12b5-early-retirement-scenarios-contract.mjs';
+import { runFreBatch12B6ExplainableOpportunitiesContract } from './fre-batch12b6-explainable-opportunities-contract.mjs';
 import { runFreSavingsGrowthContract } from './fre-savings-growth-contract.mjs';
 import { runFreAskMvpContract } from './fre-ask-mvp-contract.mjs';
 import { runFreAskMvpUiContract } from './fre-ask-mvp-ui-contract.mjs';
@@ -70,6 +71,7 @@ for (const c of runFreBatch12B2ShortTermSavingsContract(root)) add(`FRE12B2: ${c
 for (const c of runFreBatch12B3MortgageChoiceContract(root)) add(`FRE12B3: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12B4LumpSumGoalTradeoffsContract(root)) add(`FRE12B4: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12B5EarlyRetirementScenariosContract(root)) add(`FRE12B5: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch12B6ExplainableOpportunitiesContract(root)) add(`FRE12B6: ${c.name}`, c.ok, c.detail);
 for (const c of runFreSavingsGrowthContract(root)) add(`FRE2E: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpContract(root)) add(`FRE3A: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAskMvpUiContract(root)) add(`FRE3B: ${c.name}`, c.ok, c.detail);
