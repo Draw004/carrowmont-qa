@@ -130,9 +130,12 @@ export async function runCredentialExpiryGuardContract(root) {
     doc.includes('24 June 2027') && doc.includes('60 days of inactivity') &&
     doc.includes('Workflows: read/write') && doc.includes('`CARROWMONT_RELEASE_TOKEN`'));
   const currentStatus=read(statusPath);
-  add('current status records an authoritative all-green baseline and deployed credential guard state',
-    currentStatus.includes('Authoritative green source snapshot:** `carrowmont-source-snapshot - ') &&
-    currentStatus.includes('Snapshot SHA-256:') &&
+  add('current status records manifest-based snapshot authority and deployed credential guard state',
+    currentStatus.includes('Snapshot authority rule:') &&
+    currentStatus.includes('SNAPSHOT-MANIFEST.txt') &&
+    currentStatus.includes('intentionally does **not** pin a "current authoritative snapshot" filename/hash') &&
+    !currentStatus.includes('Authoritative green source snapshot:**') &&
+    !currentStatus.includes('**Snapshot SHA-256:**') &&
     currentStatus.includes('Credential Expiry Guard v1:** deployed') &&
     currentStatus.includes('Workflows: read/write') &&
     currentStatus.includes('normal security baseline'));
