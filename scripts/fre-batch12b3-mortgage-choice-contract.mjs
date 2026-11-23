@@ -28,7 +28,7 @@ export function runFreBatch12B3MortgageChoiceContract(root){
   add('payoff calculator deep-links into the comparison and the refinance Learn guide links back to the same anchor',payoffJs.includes('decision-centre.html#prepay-recast-refinance')&&guide.includes('/mortgage-payoff-calculator/decision-centre.html#prepay-recast-refinance'));
   add('refinance guide freshness is updated without adding a public URL',guide.includes('Updated 21 Nov 2026')&&guide.includes('property="article:modified_time"')&&guide.includes('content="2026-11-21"')&&sitemap.includes('<loc>https://carrowmont.com/mortgage-refinance-break-even.html</loc><lastmod>2026-11-21</lastmod>'));
   add('public inventory remains locked at 23 tools and 145 URLs',/"numberOfItems"\s*:\s*23/.test(tools)&&(tools.match(/class="directory-tool-card/g)||[]).length===23&&pages.entries?.length===145&&(sitemap.match(/<loc>/g)||[]).length===145&&!sitemap.includes('recast-refinance-prepayment.html'));
-  add('status documents preserve deployed 12B-3 while keeping branch cleanup deferred and Batch 13 deferred',/12B-3[^\n]+deployed/i.test(status)&&/branch cleanup[^\n]+deferred/i.test(status)&&/Batch 13[^\n]+deferred/i.test(status)&&/12B-3[^\n]+shipped/i.test(roadmap));
+  add('status documents preserve deployed 12B-3, deferred branch cleanup and the approved Batch 13A sandbox boundary',/12B-3[^\n]+deployed/i.test(status)&&/branch cleanup[^\n]+deferred/i.test(status)&&/Batch 13A[^\n]+sandbox/i.test(status)&&/Batch 13B[^\n]+not approved/i.test(status)&&/12B-3[^\n]+shipped/i.test(roadmap));
 
   try{
     const context={window:{},console,Date};context.window.window=context.window;context.window.console=console;vm.createContext(context);

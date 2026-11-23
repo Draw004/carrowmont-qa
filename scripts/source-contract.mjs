@@ -37,6 +37,7 @@ import { runFreBatch10bAccountAwareAskContract } from './fre-batch10b-account-aw
 import { runFreBatch11HomepageProductContract } from './fre-batch11-homepage-product-contract.mjs';
 import { runFreBatch12UxSearchLearnContract } from './fre-batch12-ux-search-learn-contract.mjs';
 import { runFreBatch12SeoIndexingCloseoutContract } from './fre-batch12-seo-indexing-closeout-contract.mjs';
+import { runFreBatch13AConnectedDataReadinessContract } from './fre-batch13a-connected-data-readiness-contract.mjs';
 import { runFreHeadlineAndDrawCContract } from './fre-headline-and-drawc-contract.mjs';
 import { runFreAppWebBehaviorContract } from './fre-app-web-behavior-contract.mjs';
 import { runFrePwaInstallJourneyContract } from './fre-pwa-install-journey-contract.mjs';
@@ -96,6 +97,7 @@ for (const c of runFreBatch10bAccountAwareAskContract(root)) add(`FRE10B: ${c.na
 for (const c of runFreBatch11HomepageProductContract(root)) add(`FRE11: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12UxSearchLearnContract(root)) add(`FRE12: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12SeoIndexingCloseoutContract(root)) add(`FRE12SEO: ${c.name}`, c.ok, c.detail);
+for (const c of runFreBatch13AConnectedDataReadinessContract(root)) add(`FRE13A: ${c.name}`, c.ok, c.detail);
 for (const c of runFreHeadlineAndDrawCContract(root)) add(`FRE12B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAppWebBehaviorContract(root)) add(`APP-WEB: ${c.name}`, c.ok, c.detail);
 for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c.name}`, c.ok, c.detail);
