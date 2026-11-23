@@ -129,11 +129,13 @@ export async function runCredentialExpiryGuardContract(root) {
   add('renewal guide includes new-account handover, independent backup and security scope',
     doc.includes('24 June 2027') && doc.includes('60 days of inactivity') &&
     doc.includes('Workflows: read/write') && doc.includes('`CARROWMONT_RELEASE_TOKEN`'));
-  add('current status records the latest all-green baseline and deployed credential guard state',
-    read(statusPath).includes('2026-11-23T224718.530.zip') &&
-    read(statusPath).includes('bd26963f1e054b36133083f38dd97e4edb302d5c') &&
-    read(statusPath).includes('Credential Expiry Guard v1:** deployed') &&
-    read(statusPath).includes('temporary PAT Workflows write permission was removed again'));
+  const currentStatus=read(statusPath);
+  add('current status records an authoritative all-green baseline and deployed credential guard state',
+    currentStatus.includes('Authoritative green source snapshot:** `carrowmont-source-snapshot - ') &&
+    currentStatus.includes('Snapshot SHA-256:') &&
+    currentStatus.includes('Credential Expiry Guard v1:** deployed') &&
+    currentStatus.includes('Workflows: read/write') &&
+    currentStatus.includes('normal security baseline'));
   add('standards index links authoritative expiry guard instructions',
     read('docs/CARROWMONT_STANDARDS_INDEX.md').includes('CARROWMONT_CREDENTIAL_EXPIRY_GUARD.md'));
   return checks;

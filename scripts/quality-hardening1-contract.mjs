@@ -93,8 +93,9 @@ export function runQualityHardening1Contract(root){
   add('roadmap and portable handover explicitly put Batch 13B on hold and traffic-gate Batch 14',
     status.includes('Batch 13B')&&status.includes('ON HOLD')&&status.includes('Batch 14')&&status.includes('traffic')&&
     roadmap.includes('ON HOLD')&&roadmap.includes('traffic')&&start.includes('ON HOLD')&&newChat.includes('ON HOLD'));
-  add('active improvement sequence is durable in repository documentation rather than chat memory',
-    status.includes('Quality Audit & Hardening')&&status.includes('Ask Carrowmont Expansion')&&status.includes('Learn Hub 2.0')&&
-    status.includes('Evergreen Learn Expansion')&&implementation.includes('account-independent handover'));
+  add('hardening closeout and next improvement sequence are durable in repository documentation rather than chat memory',
+    status.includes('Quality Audit & Hardening Release 1')&&status.includes('completed and deployed')&&
+    status.includes('Ask Carrowmont Expansion')&&status.includes('NEXT / ACTIVE')&&status.includes('Learn Hub 2.0')&&
+    status.includes('Evergreen Learn Expansion')&&implementation.includes('Deployment closeout')&&implementation.includes('account-independent handover'));
   return checks;
 }
