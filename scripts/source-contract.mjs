@@ -38,6 +38,7 @@ import { runFreBatch11HomepageProductContract } from './fre-batch11-homepage-pro
 import { runFreBatch12UxSearchLearnContract } from './fre-batch12-ux-search-learn-contract.mjs';
 import { runFreBatch12SeoIndexingCloseoutContract } from './fre-batch12-seo-indexing-closeout-contract.mjs';
 import { runFreBatch13AConnectedDataReadinessContract } from './fre-batch13a-connected-data-readiness-contract.mjs';
+import { runSearchAskResultsUx2Contract } from './search-ask-results-ux2-contract.mjs';
 import { runFreHeadlineAndDrawCContract } from './fre-headline-and-drawc-contract.mjs';
 import { runFreAppWebBehaviorContract } from './fre-app-web-behavior-contract.mjs';
 import { runFrePwaInstallJourneyContract } from './fre-pwa-install-journey-contract.mjs';
@@ -98,6 +99,7 @@ for (const c of runFreBatch11HomepageProductContract(root)) add(`FRE11: ${c.name
 for (const c of runFreBatch12UxSearchLearnContract(root)) add(`FRE12: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch12SeoIndexingCloseoutContract(root)) add(`FRE12SEO: ${c.name}`, c.ok, c.detail);
 for (const c of runFreBatch13AConnectedDataReadinessContract(root)) add(`FRE13A: ${c.name}`, c.ok, c.detail);
+for (const c of runSearchAskResultsUx2Contract(root)) add(`SEARCHUX2: ${c.name}`, c.ok, c.detail);
 for (const c of runFreHeadlineAndDrawCContract(root)) add(`FRE12B: ${c.name}`, c.ok, c.detail);
 for (const c of runFreAppWebBehaviorContract(root)) add(`APP-WEB: ${c.name}`, c.ok, c.detail);
 for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c.name}`, c.ok, c.detail);
@@ -4622,8 +4624,8 @@ add('SEARCH1 layout refinement: compact hero and current Search assets preserve 
   search1Css.includes('.cm-search-page-hero .page-hero-inner{padding:46px 0 94px') &&
   search1Css.includes('.cm-search-page-section{position:relative;z-index:2;margin-top:-64px') &&
   search1Css.includes('.cm-search-page-section{margin-top:-48px;padding-bottom:54px}') &&
-  (search1Html.includes('search.css?v=20261113-fre8f')||search1Html.includes('search.css?v=20261120-searchux1')) && (search1Learn.includes('search.css?v=20261113-fre8f')||search1Learn.includes('search.css?v=20261120-searchux1')) && (search1Tools.includes('search.css?v=20261113-fre8f') || search1Tools.includes('search.css?v=20261119-tools-mobile-v6b') || search1Tools.includes('search.css?v=20261120-searchux1')) &&
-  (search1Learn.includes('search.js?v=20261118-fre12')||search1Learn.includes('search.js?v=20261120-searchux1')||search1Learn.includes('search.js?v=20261122-fre12b5')) && (search1Tools.includes('search.js?v=20261118-fre12')||search1Tools.includes('search.js?v=20261120-searchux1')||search1Tools.includes('search.js?v=20261122-fre12b5')) &&
+  (search1Html.includes('search.css?v=20261113-fre8f')||search1Html.includes('search.css?v=20261120-searchux1')||search1Html.includes('search.css?v=20261123-searchux2')) && (search1Learn.includes('search.css?v=20261113-fre8f')||search1Learn.includes('search.css?v=20261120-searchux1')||search1Learn.includes('search.css?v=20261123-searchux2')) && (search1Tools.includes('search.css?v=20261113-fre8f') || search1Tools.includes('search.css?v=20261119-tools-mobile-v6b') || search1Tools.includes('search.css?v=20261120-searchux1') || search1Tools.includes('search.css?v=20261123-searchux2')) &&
+  (search1Learn.includes('search.js?v=20261118-fre12')||search1Learn.includes('search.js?v=20261120-searchux1')||search1Learn.includes('search.js?v=20261122-fre12b5')||search1Learn.includes('search.js?v=20261123-searchux2')) && (search1Tools.includes('search.js?v=20261118-fre12')||search1Tools.includes('search.js?v=20261120-searchux1')||search1Tools.includes('search.js?v=20261122-fre12b5')||search1Tools.includes('search.js?v=20261123-searchux2')) &&
   search1Qa.includes('search action should be visible above the fold') && search1Qa.includes('[1280, 390, 360]') &&
   !/localStorage|URLSearchParams/.test(search1Js) && !/sessionStorage\.setItem/.test(search1Js) &&
   search1Js.includes("ASK_SEARCH_HANDOFF_KEY = 'carrowmont_search_handoff_v1'")
