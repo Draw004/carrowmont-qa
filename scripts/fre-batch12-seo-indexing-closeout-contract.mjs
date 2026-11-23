@@ -88,10 +88,10 @@ export function runFreBatch12SeoIndexingCloseoutContract(root) {
   }
   add('Batch 12 materially changed sitemap entries carry reconciled significant-update dates', freshnessFailures.length === 0, freshnessFailures.join('; '));
 
-  add('Batch 12 remains recorded complete while Batch 13A is sandbox-only and branch cleanup remains deferred',
+  add('Batch 12 remains recorded complete while Batch 13A stays sandbox-only and live 13B remains gated',
     status.includes('Batch 12') && status.includes('SEO/indexing closeout are complete') &&
     roadmap.includes('| 12B | Wider Resolution Library & Opportunity Engine. **Completed.**') &&
-    status.includes('Batch 13A Connected Financial Data Readiness') && status.includes('Production remains disabled by default') &&
+    status.includes('Batch 13A Connected Financial Data Readiness') && status.includes('production feature flag OFF') &&
     status.includes('Batch 13B live provider pilot') && status.includes('not approved yet') &&
     status.includes('Repository branch cleanup') && status.includes('deferred'));
 
