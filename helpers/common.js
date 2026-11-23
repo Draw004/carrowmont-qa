@@ -62,6 +62,8 @@ export async function gotoClean(page, targetPath) {
       const pendingSavedPlan = localStorage.getItem(pendingSavedPlanKey);
       const opportunitySnoozeKey = 'carrowmont_mycm_opportunity_snoozes_v1';
       const opportunitySnoozes = localStorage.getItem(opportunitySnoozeKey);
+      const connectedSandboxSessionKey = 'carrowmont_connected_data_sandbox_session_v1';
+      const connectedSandboxSession = sessionStorage.getItem(connectedSandboxSessionKey);
       const openSavedPlanKey = 'carrowmont_open_saved_plan_v1';
       const openSavedPlan = sessionStorage.getItem(openSavedPlanKey);
       const supabaseAuthEntries = [];
@@ -81,6 +83,7 @@ export async function gotoClean(page, targetPath) {
       if (pendingCloudProfile) localStorage.setItem(pendingCloudProfileKey, pendingCloudProfile);
       if (pendingSavedPlan) localStorage.setItem(pendingSavedPlanKey, pendingSavedPlan);
       if (opportunitySnoozes) localStorage.setItem(opportunitySnoozeKey, opportunitySnoozes);
+      if (connectedSandboxSession) sessionStorage.setItem(connectedSandboxSessionKey, connectedSandboxSession);
       if (openSavedPlan) sessionStorage.setItem(openSavedPlanKey, openSavedPlan);
       for (const [key, value] of supabaseAuthEntries) if (value) localStorage.setItem(key, value);
     } catch (_) {}
