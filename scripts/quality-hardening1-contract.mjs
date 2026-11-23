@@ -81,6 +81,7 @@ export function runQualityHardening1Contract(root){
   const start=read(main+'docs/CARROWMONT_DEVELOPMENT_START_HERE.md');
   const newChat=read(main+'docs/CARROWMONT_NEW_CHAT_START_HERE.txt');
   const implementation=read(main+'docs/CARROWMONT_QUALITY_HARDENING1_IMPLEMENTATION.md');
+  const handbook=read(main+'docs/CARROWMONT_MASTER_CONTINUITY_HANDBOOK.md');
   const broken=brokenInternalTargets(root);
 
   add('site-wide static internal destination audit has no broken local href/src targets',broken.length===0,broken.join('; '));
@@ -96,6 +97,14 @@ export function runQualityHardening1Contract(root){
   add('hardening closeout and next improvement sequence are durable in repository documentation rather than chat memory',
     status.includes('Quality Audit & Hardening Release 1')&&status.includes('completed and deployed')&&
     status.includes('Ask Carrowmont Expansion')&&status.includes('NEXT / ACTIVE')&&status.includes('Learn Hub 2.0')&&
-    status.includes('Evergreen Learn Expansion')&&implementation.includes('Deployment closeout')&&implementation.includes('account-independent handover'));
+    status.includes('Evergreen Learn Expansion')&&implementation.includes('Deployment closeout')&&implementation.includes('account-independent handover')&&
+    implementation.includes('**Release state:** **complete and deployed.**'));
+  add('snapshot authority is manifest-based and cannot enter a self-referential current-filename loop',
+    status.includes('Snapshot authority rule:')&&status.includes('SNAPSHOT-MANIFEST.txt')&&
+    handbook.includes('Current code authority:')&&handbook.includes('intentionally does not pin a current snapshot filename/hash')&&
+    start.includes('Status/handbook files must not be used as a substitute for the manifest')&&
+    newChat.includes('do not expect the status/handbook documents to mirror the newest snapshot filename/hash')&&
+    !status.includes('Authoritative green source snapshot:**')&&!status.includes('**Snapshot SHA-256:**')&&
+    !handbook.includes('Authoritative baseline snapshot:**')&&!handbook.includes('**Snapshot SHA-256:**'));
   return checks;
 }
