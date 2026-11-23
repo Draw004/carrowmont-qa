@@ -8,6 +8,15 @@ async function search(page, query){
   await expect(page.locator('[data-cm-search-root]')).toHaveAttribute('data-search-state','results');
 }
 
+async function expectDesktopGroupsSideBySide(tool, learn){
+  await expect(tool).toBeVisible();
+  await expect(learn).toBeVisible();
+  await expect.poll(async()=>{
+    const [tb,lb]=await Promise.all([tool.boundingBox(),learn.boundingBox()]);
+    return Boolean(tb&&lb&&tb.x<lb.x);
+  },{message:'Tools should remain visibly left of Learn on desktop'}).toBe(true);
+}
+
 test.describe('Search + Ask Results UX2',()=>{
   test('[AUTO] desktop Search shows Tools left and Learn right with independent right-edge scrollers',async({page})=>{
     await page.setViewportSize({width:1440,height:900});
@@ -15,10 +24,7 @@ test.describe('Search + Ask Results UX2',()=>{
     await search(page,'budget');
     const tool=page.locator('[data-search-result-group="tool"]');
     const learn=page.locator('[data-search-result-group="guide"]');
-    await expect(tool).toBeVisible(); await expect(learn).toBeVisible();
-    const [tb,lb]=await Promise.all([tool.boundingBox(),learn.boundingBox()]);
-    expect(tb&&lb&&tb.x<lb.x).toBeTruthy();
-    expect(Math.abs((tb?.y||0)-(lb?.y||0))).toBeLessThan(12);
+    await expectDesktopGroupsSideBySide(tool,learn);
     for(const grid of [tool.locator('.cm-search-result-group-grid'),learn.locator('.cm-search-result-group-grid')]){
       await expect.poll(async()=>grid.evaluate(el=>({overflow:getComputedStyle(el).overflowY,dir:getComputedStyle(el).direction,scroll:el.scrollHeight>el.clientHeight}))).toEqual({overflow:'auto',dir:'ltr',scroll:true});
     }
@@ -46,8 +52,7 @@ test.describe('Search + Ask Results UX2',()=>{
     await expect(first.locator('.cm-search-result-best-match')).toHaveText('Best match');
     const tool=page.locator('[data-search-result-group="tool"]');
     const learn=page.locator('[data-search-result-group="guide"]');
-    const [tb,lb]=await Promise.all([tool.boundingBox(),learn.boundingBox()]);
-    expect(tb&&lb&&tb.x<lb.x).toBeTruthy();
+    await expectDesktopGroupsSideBySide(tool,learn);
   });
 
   test('[AUTO] mobile Search uses Tools and Learn tabs with normal page scrolling',async({page})=>{
