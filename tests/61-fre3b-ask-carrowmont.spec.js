@@ -10,7 +10,78 @@ async function setValue(page,name,value){
   await input.fill(String(value));
 }
 
+async function completeJourney(page,intent,values){
+  await page.locator(`[data-ask-intent="${intent}"]`).click();
+  for(let step=0;step<8;step+=1){
+    if(await page.locator('#askResultStage').isVisible())return;
+    const inputs=page.locator('#askQuestionFields input');
+    const count=await inputs.count();
+    expect(count).toBeGreaterThan(0);
+    expect(count).toBeLessThanOrEqual(3);
+    for(let i=0;i<count;i+=1){
+      const name=await inputs.nth(i).getAttribute('name');
+      expect(Object.prototype.hasOwnProperty.call(values,name)).toBe(true);
+      await inputs.nth(i).fill(String(values[name]));
+    }
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+  }
+  throw new Error(`Ask journey ${intent} did not resolve within 8 steps`);
+}
+
 test.describe('FRE3B Ask Carrowmont public MVP',()=>{
+
+  test('[AUTO] Ask Wave 1 groups thirteen unique guided decisions without overwhelming the start screen',async({page})=>{
+    await gotoClean(page,PATH);
+    await expect(page.locator('.ask-decision-group')).toHaveCount(4);
+    await expect(page.locator('[data-ask-intent]')).toHaveCount(13);
+    await expect(page.locator('.ask-decision-group h3')).toHaveText(['Everyday stability','Debt decisions','Big goals','Trade-offs']);
+    const intents=await page.locator('[data-ask-intent]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-ask-intent')));
+    expect(new Set(intents).size).toBe(13);
+  });
+
+  test('[AUTO] Ask Wave 1 resolves all six new journeys through their existing deterministic engines',async({page})=>{
+    const cases=[
+      ['borrowing-health',{grossMonthlyIncome:8000,takeHomeMonthlyIncome:6000,essentialNonDebtExpenses:2500,existingMonthlyDebtPayments:800,proposedNewDebtPayment:500,incomeDropPct:10},'Debt to income borrowing health'],
+      ['home-affordability',{takeHomeMonthlyIncome:7000,essentialMonthlyExpenses:2500,existingMonthlyDebtPayments:500,protectedMonthlySavings:700,freeMonthlyBuffer:700,homeDeposit:50000,homeLoanRatePct:6.5,homeLoanTermYears:25,monthlyOwnershipCosts:500},'Home affordability'],
+      ['debt-payoff',{debtBalance:10000,debtAprPct:18,debtMinimumPayment:300,extraDebtPayment:200},'Debt payoff'],
+      ['credit-card-payoff',{cardBalance:5000,cardAprPct:24,cardMinimumPayment:150,cardPlannedPayment:300,cardTargetMonths:18},'Credit card payoff comparison'],
+      ['retirement-readiness',{retirementCurrentAge:35,retirementTargetAge:60,retirementPlanningAge:90,retirementCurrentSavings:80000,retirementMonthlyContribution:800,retirementMonthlyExpense:4000,retirementSpendingPct:80,retirementInflationPct:3,retirementPreReturnPct:6,retirementPostReturnPct:4,retirementBufferPct:10},'Retirement'],
+      ['goal-funding',{goalTargetAmount:50000,goalYearsAway:5,goalCurrentSavings:10000,goalMonthlyContribution:500,goalReturnPct:6,goalInflationPct:3},'Goal planner']
+    ];
+    for(const [intent,values,engineLabel] of cases){
+      await gotoClean(page,PATH);
+      await completeJourney(page,intent,values);
+      await expect(page.locator('#askResultStage')).toBeVisible();
+      await expect(page.locator('#askRecommendationHeadline')).not.toBeEmpty();
+      await expect(page.locator('#askEngineTrace')).toContainText(engineLabel);
+      await expect(page.locator('#askDetailLinkWrap a')).toBeVisible();
+    }
+  });
+
+  test('[AUTO] Ask Wave 1 blocks nonsensical goal and retirement inputs before running an engine',async({page})=>{
+    await gotoClean(page,PATH);
+    await page.locator('[data-ask-intent="goal-funding"]').click();
+    await expect(page.locator('#ask-hint-goalTargetAmount')).toContainText('goal cost in today’s money');
+    await expect(page.locator('#ask-hint-goalTargetAmount')).not.toContainText('Use 0');
+    await setValue(page,'goalTargetAmount',0);
+    await setValue(page,'goalYearsAway',5);
+    await setValue(page,'goalCurrentSavings',0);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askQuestionMessage')).toContainText('goal amount greater than 0');
+    await expect(page.locator('input[name="goalTargetAmount"]')).toHaveAttribute('aria-invalid','true');
+    await expect(page.locator('#askResultStage')).toBeHidden();
+
+    await gotoClean(page,PATH);
+    await page.locator('[data-ask-intent="retirement-readiness"]').click();
+    await setValue(page,'retirementCurrentAge',45);
+    await setValue(page,'retirementTargetAge',40);
+    await setValue(page,'retirementPlanningAge',90);
+    await page.locator('#askQuestionsForm button[type="submit"]').click();
+    await expect(page.locator('#askQuestionMessage')).toContainText('Target retirement age must be greater than current age');
+    await expect(page.locator('input[name="retirementTargetAge"]')).toHaveAttribute('aria-invalid','true');
+    await expect(page.locator('#askResultStage')).toBeHidden();
+  });
+
   test('[AUTO] emergency-fund journey resolves through the deterministic engine and explains the trace',async({page})=>{
     const errors=monitorPageErrors(page);
     await gotoClean(page,PATH);

@@ -48,6 +48,7 @@ import { runDevelopmentStandardsContract } from './development-standards-gate.mj
 import { runGlobalHeaderContract } from './global-header-contract.mjs';
 import { runCredentialExpiryGuardContract } from './credential-expiry-guard-contract.mjs';
 import { runQualityHardening1Contract } from './quality-hardening1-contract.mjs';
+import { runAskExpansionWave1Contract } from './ask-expansion-wave1-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -109,6 +110,7 @@ for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}
 for (const c of runGlobalHeaderContract(root)) add(`GLOBAL-NAV: ${c.name}`, c.ok, c.detail);
 for (const c of await runCredentialExpiryGuardContract(root)) add(`CREDENTIAL-GUARD: ${c.name}`, c.ok, c.detail);
 for (const c of runQualityHardening1Contract(root)) add(`HARDEN1: ${c.name}`, c.ok, c.detail);
+for (const c of runAskExpansionWave1Contract(root)) add(`ASKWAVE1: ${c.name}`, c.ok, c.detail);
 for (const c of runDevelopmentStandardsContract(root)) add(`STANDARDS1: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {

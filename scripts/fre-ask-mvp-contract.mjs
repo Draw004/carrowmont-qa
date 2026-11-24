@@ -33,14 +33,17 @@ export function runFreAskMvpContract(root) {
   const loanWindow=loadBrowserCore(path.join(root,'loan-calculator/core.js'));
   const Loan=loanWindow.CarrowmontLoanCore;
   const Borrowing=require(path.join(main,'debt-to-income-borrowing-health-core.js'));
+  const HomeAffordability=require(path.join(main,'home-affordability-calculator-core.js'));
+  const Retirement=require(path.join(root,'retirement-calculator/core.js'));
   const debtWindow=loadBrowserCore(path.join(root,'budget-cash-flow-planner/debt-payoff-core.js'));
+  const creditCardWindow=loadBrowserCore(path.join(root,'budget-cash-flow-planner/credit-card-payoff-core.js'), { CarrowmontDebtPayoffCore:debtWindow.CarrowmontDebtPayoffCore });
   const compoundWindow=loadBrowserCore(path.join(root,'compound-interest-calculator/core.js'));
   const mortgageWindow=loadBrowserCore(path.join(root,'mortgage-payoff-calculator/core.js'));
   const mdcWindow=loadBrowserCore(path.join(root,'mortgage-payoff-calculator/prepayment-vs-investing-core.js'), { CarrowmontMortgageCore:mortgageWindow.CarrowmontMortgageCore });
   const Ask=require(askFile);
-  const api=Ask.create({ router:Router, budget:Budget, emergency:Emergency, car:Car, loan:Loan, borrowing:Borrowing, debtPayoff:debtWindow.CarrowmontDebtPayoffCore, compound:compoundWindow.CarrowmontCompoundCore, mortgagePrepay:mdcWindow.CarrowmontMdc1aCore, goal:Goal, priorityFramework:Priority, moneyPriorities:MoneyPriorities });
+  const api=Ask.create({ router:Router, budget:Budget, emergency:Emergency, car:Car, loan:Loan, borrowing:Borrowing, debtPayoff:debtWindow.CarrowmontDebtPayoffCore, compound:compoundWindow.CarrowmontCompoundCore, mortgagePrepay:mdcWindow.CarrowmontMdc1aCore, goal:Goal, priorityFramework:Priority, moneyPriorities:MoneyPriorities, homeAffordability:HomeAffordability, creditCard:creditCardWindow.CarrowmontCreditCardPayoffCore, retirement:Retirement });
 
-  add('Ask preserves the six established journeys in their original order while allowing later controlled journeys', api.SUPPORTED.length>=6 && new Set(api.SUPPORTED.map(x=>x.intent)).size===api.SUPPORTED.length && ['debt-vs-savings','car-affordability','mortgage-prepay-vs-invest','emergency-runway','cash-flow-shortfall','money-priorities'].every((intent,index)=>api.SUPPORTED[index]?.intent===intent));
+  add('Ask Wave 1 preserves the seven established journeys and expands to thirteen unique controlled journeys', api.SUPPORTED.length===13 && new Set(api.SUPPORTED.map(x=>x.intent)).size===13 && ['debt-vs-savings','car-affordability','mortgage-prepay-vs-invest','emergency-runway','cash-flow-shortfall','money-priorities','lump-sum-goal-tradeoffs'].every((intent,index)=>api.SUPPORTED[index]?.intent===intent) && ['borrowing-health','home-affordability','debt-payoff','credit-card-payoff','retirement-readiness','goal-funding'].every(intent=>api.SUPPORTED.some(x=>x.intent===intent)));
   add('ordinary-language Money Priorities text is recognized deterministically', api.classify('What should I focus on first?').intent===api.INTENTS.MONEY_PRIORITIES);
   add('ordinary-language cash-shortfall text is recognized deterministically', api.classify('I keep running out of money before payday').intent===api.INTENTS.CASH_FLOW_SHORTFALL);
   const missing=api.resolve({ intent:api.INTENTS.CAR_AFFORDABILITY, facts:{ vehiclePrice:25000 } });
@@ -73,6 +76,29 @@ export function runFreAskMvpContract(root) {
   add('car journey gives an affordability resolution rather than only calculator output', Boolean(car.recommendation?.headline && car.confidence?.level==='MEDIUM_HIGH'));
   add('debt-versus-savings journey favors high-cost debt when buffer exists and debt APR exceeds modeled return', debt.recommendation?.headline.includes('debt') && debt.recommendation?.headline.includes('stronger'));
   add('mortgage journey states which modeled path is stronger or tied', /stronger modeled path|approximately tied/.test(mortgage.recommendation?.headline||''));
+
+  const borrowing=api.resolve({ intent:api.INTENTS.BORROWING_HEALTH, currency:'USD', facts:{ grossMonthlyIncome:8000, takeHomeMonthlyIncome:6000, essentialNonDebtExpenses:2500, existingMonthlyDebtPayments:800, proposedNewDebtPayment:500, incomeDropPct:10 } });
+  add('Ask Wave 1 borrowing-health journey uses the existing borrowing core and shows current proposed and stressed debt load', borrowing.status==='RESOLVED' && borrowing.trace?.[0]?.engineId==='debt-to-income-borrowing-health' && borrowing.importantNumbers.currentGrossDtiPct===10 && borrowing.importantNumbers.proposedGrossDtiPct>borrowing.importantNumbers.currentGrossDtiPct && borrowing.importantNumbers.stressedGrossDtiPct>borrowing.importantNumbers.proposedGrossDtiPct);
+
+  const home=api.resolve({ intent:api.INTENTS.HOME_AFFORDABILITY, currency:'USD', facts:{ takeHomeMonthlyIncome:7000, essentialMonthlyExpenses:2500, existingMonthlyDebtPayments:500, protectedMonthlySavings:700, freeMonthlyBuffer:700, homeDeposit:50000, homeLoanRatePct:6.5, homeLoanTermYears:25, monthlyOwnershipCosts:500 } });
+  add('Ask Wave 1 home-affordability journey preserves the chosen cash buffer and adds a higher-rate sensitivity without claiming lender approval', home.status==='RESOLVED' && home.trace?.[0]?.engineId==='home-affordability' && home.importantNumbers.monthlyLeftover===700 && home.importantNumbers.higherRateHomePrice<home.importantNumbers.affordableHomePrice && /planning ceiling/.test(home.recommendation?.headline||''));
+
+  const payoff=api.resolve({ intent:api.INTENTS.DEBT_PAYOFF, currency:'USD', facts:{ debtBalance:10000, debtAprPct:18, debtMinimumPayment:300, extraDebtPayment:200 } });
+  add('Ask Wave 1 debt-payoff journey compares required payment with the same debt plus extra cash', payoff.status==='RESOLVED' && payoff.trace?.[0]?.engineId==='debt-payoff' && payoff.importantNumbers.monthsSaved>0 && payoff.importantNumbers.modeledInterestSaved>0);
+
+  const card=api.resolve({ intent:api.INTENTS.CREDIT_CARD_PAYOFF, currency:'USD', facts:{ cardBalance:5000, cardAprPct:24, cardMinimumPayment:150, cardPlannedPayment:300, cardTargetMonths:18 } });
+  add('Ask Wave 1 credit-card journey compares minimum planned and target payment paths through the existing card core', card.status==='RESOLVED' && card.trace?.[0]?.engineId==='credit-card-payoff-comparison' && card.importantNumbers.plannedMonthlyPayment===300 && card.importantNumbers.monthsSaved>0 && card.importantNumbers.targetMonthlyPayment>0);
+
+  const retirement=api.resolve({ intent:api.INTENTS.RETIREMENT_READINESS, currency:'USD', facts:{ retirementCurrentAge:35, retirementTargetAge:60, retirementPlanningAge:90, retirementCurrentSavings:80000, retirementMonthlyContribution:800, retirementMonthlyExpense:4000, retirementSpendingPct:80, retirementInflationPct:3, retirementPreReturnPct:6, retirementPostReturnPct:4, retirementBufferPct:10 } });
+  add('Ask Wave 1 retirement-readiness journey uses the Retirement Planner core with explicit lifestyle inflation return and safety-buffer assumptions', retirement.status==='RESOLVED' && retirement.trace?.[0]?.engineId==='retirement' && Number.isFinite(retirement.importantNumbers.retirementFundingPct) && retirement.assumptions?.some(x=>x.id==='retirementInflationPct') && retirement.assumptions?.some(x=>x.id==='retirementBufferPct'));
+
+  const goalFunding=api.resolve({ intent:api.INTENTS.GOAL_FUNDING, currency:'USD', facts:{ goalTargetAmount:50000, goalYearsAway:5, goalCurrentSavings:10000, goalMonthlyContribution:500, goalReturnPct:6, goalInflationPct:3 } });
+  add('Ask Wave 1 goal-funding journey uses the Goal Planner core and keeps future cost separate from projected savings', goalFunding.status==='RESOLVED' && goalFunding.trace?.[0]?.engineId==='goal-planner' && goalFunding.importantNumbers.futureGoalCost>goalFunding.importantNumbers.goalAmountToday && Number.isFinite(goalFunding.importantNumbers.modeledMonthlyContributionRequired));
+
+  for (const result of [borrowing,home,payoff,card,retirement,goalFunding]) {
+    add(`Ask Wave 1 resolved ${result.intent} returns the standard explanation contract`, Boolean(result.situation && result.diagnosis && result.importantNumbers && result.alternatives && result.nextSteps && result.assumptions && result.trace));
+    add(`Ask Wave 1 resolved ${result.intent} returns an answer-first resolution contract`, Boolean(result.recommendation?.headline && result.recommendation?.action && result.recommendation?.rationale && result.confidence?.level && result.confidence?.basis && result.whatCouldChangeAnswer?.length));
+  }
 
   const source=fs.readFileSync(askFile,'utf8');
   add('Ask MVP core makes no network or persistence calls', !/\b(fetch|XMLHttpRequest|localStorage|sessionStorage|indexedDB)\b/.test(source));
