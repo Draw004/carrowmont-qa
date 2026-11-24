@@ -49,18 +49,20 @@ test.describe('GSEO2A sitewide search visibility foundation', () => {
     }
   });
 
-  test('[AUTO] Learn hub exposes the new Loans and Debt cluster and remains mobile-safe', async ({ page }) => {
+  test('[AUTO] Learn hub exposes the Loans and Debt cluster through enhanced discovery and remains mobile-safe', async ({ page }) => {
     for (const width of [1280, 390, 360]) {
       await page.setViewportSize({ width, height: 900 });
-      await gotoClean(page, '/learn.html');
+      await gotoClean(page, `/learn.html?qaViewport=${width}`);
+      await expect(page.locator('body')).toHaveClass(/learn-hub2-ready/);
       await page.evaluate(() => { window.location.hash = 'loans-and-debt'; });
       await expect(page).toHaveURL(/#loans-and-debt$/);
-      const loans = page.locator('[data-category="loans"]');
-      await expect(loans).toHaveCount(1);
-      await expect(loans.getByRole('heading', { name: 'Loans & Debt' })).toBeVisible();
-      await expect(loans.locator('a[href="/loan-calculator/"]')).toBeVisible();
-      await expect(loans.locator('a[href="/how-is-loan-emi-calculated.html"]')).toBeVisible();
-      await expect(loans.locator('a[href="/loan-interest-rate-vs-term.html"]')).toBeVisible();
+      await expect(page.locator('[data-learn-topic="loans"]')).toHaveAttribute('aria-pressed','true');
+      await expect(page.locator('#learn2ResultsTitle')).toContainText(/Credit|Loans|Debt/i);
+      await expect(page.locator('#learn2RelatedTool a')).toHaveAttribute('href','/loan-calculator/');
+      const source = page.locator('.planning-categories [data-category="loans"]');
+      await expect(source).toHaveCount(1);
+      await expect(source.locator('a[href="/how-is-loan-emi-calculated.html"]')).toHaveCount(1);
+      await expect(source.locator('a[href="/loan-interest-rate-vs-term.html"]')).toHaveCount(1);
       await assertNoHorizontalOverflow(page, `GSEO2A Learn hub ${width}px`);
     }
   });

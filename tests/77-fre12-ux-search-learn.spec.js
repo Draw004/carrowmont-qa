@@ -45,10 +45,10 @@ test.describe('FRE12 UX, Search and Learn expansion',()=>{
     await expect(page.locator('#askPredictive')).toContainText(/retirement/i);
   });
 
-  test('[AUTO] seven FRE12 Learn guides are live in the hub and substantive pages render without overflow',async({page})=>{
+  test('[AUTO] seven FRE12 Learn guides remain in the source library and substantive pages render without overflow',async({page})=>{
     const guides=['mutual-funds-explained.html','pay-off-debt-or-invest.html','balance-transfer-credit-card.html','where-to-keep-short-term-savings.html','what-to-do-with-a-lump-sum.html','early-retirement-planning.html','how-much-save-for-retirement-each-month.html'];
     await gotoClean(page,'/learn.html');
-    for(const name of guides) await expect(page.locator(`a[href="/${name}"]`).first()).toBeVisible();
+    for(const name of guides) await expect(page.locator(`.planning-categories a[href="/${name}"]`)).toHaveCount(1);
     await page.setViewportSize({width:390,height:844});
     await gotoClean(page,'/mutual-funds-explained.html');
     await expect(page.locator('.guide-answer')).toContainText('30-second answer');

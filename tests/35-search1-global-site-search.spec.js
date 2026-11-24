@@ -107,19 +107,24 @@ test.describe('SEARCH1 global site search', () => {
     expect(serializedRequests).not.toContain(encodeURIComponent(secretQuery).toLowerCase());
   });
 
-  test('[AUTO] Learn and Tools keep their browse structure while offering the same search', async ({ page }) => {
-    for (const [path, inputId, preservedSelector] of [
-      ['/learn.html', '#learnSearchInput', '.planning-categories .category-box'],
-      ['/tools.html', '#toolsSearchInput', '.directory-tool-card']
-    ]) {
-      await gotoClean(page, path);
-      await expect(page.locator(inputId)).toBeVisible();
-      await expect(page.locator(preservedSelector).first()).toBeVisible();
-      await page.locator(inputId).fill('retirement');
-      await page.locator(inputId).press('Enter');
-      await expect(page.locator('[data-search-result-link]').first()).toBeVisible();
-      await expect(page.locator('[data-cm-search-status]')).toContainText(/results? found/i);
-    }
+  test('[AUTO] Learn keeps guide-only discovery while Tools retains full-site Search and both preserve crawlable browse structure', async ({ page }) => {
+    await gotoClean(page, '/learn.html');
+    await expect(page.locator('body')).toHaveClass(/learn-hub2-ready/);
+    await expect(page.locator('#learn2SearchInput')).toBeVisible();
+    await expect(page.locator('.planning-categories .category-box').first()).toHaveCount(1);
+    await page.locator('#learn2SearchInput').fill('retirement');
+    await page.locator('#learn2SearchInput').press('Enter');
+    await expect(page.locator('#learn2Results [data-learn-result]').first()).toBeVisible();
+    await expect(page.locator('#learn2Status')).toContainText(/Showing .* guides/i);
+    await expect(page.locator('#learn2Results .cm-search-result-card-tool')).toHaveCount(0);
+
+    await gotoClean(page, '/tools.html');
+    await expect(page.locator('#toolsSearchInput')).toBeVisible();
+    await expect(page.locator('.directory-tool-card').first()).toBeVisible();
+    await page.locator('#toolsSearchInput').fill('retirement');
+    await page.locator('#toolsSearchInput').press('Enter');
+    await expect(page.locator('[data-search-result-link]').first()).toBeVisible();
+    await expect(page.locator('[data-cm-search-status]')).toContainText(/results? found/i);
   });
 
   test('[AUTO] main-site navigation exposes one clear search entry and Escape clears a query', async ({ page }) => {
@@ -150,7 +155,7 @@ test.describe('SEARCH1 global site search', () => {
       for (const path of [SEARCH, '/learn.html', '/tools.html']) {
         await gotoClean(page, path);
         await assertNoHorizontalOverflow(page, `${width}px ${path}`);
-        const searchInput = page.locator('[data-cm-search-input]').first();
+        const searchInput = path === '/learn.html' ? page.locator('#learn2SearchInput') : page.locator('[data-cm-search-input]').first();
         await expect(searchInput).toBeVisible();
         if (path === SEARCH) {
           const box = await searchInput.boundingBox();
