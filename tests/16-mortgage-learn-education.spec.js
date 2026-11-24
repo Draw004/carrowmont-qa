@@ -65,11 +65,15 @@ test.describe('Mortgage Learn & Education Integration V1',()=>{
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://carrowmont.com/one-extra-mortgage-payment-a-year.html');
   });
 
-  test('[AUTO] Learn hub exposes the five-guide Home Loans & Mortgages cluster and mobile stays overflow-safe',async({page})=>{
-    await gotoClean(page,'/learn.html');
-    const cluster=page.locator('#home-loans');
-    await expect(cluster).toBeVisible();
-    for(const path of GUIDES) await expect(cluster.locator(`a[href="${path}"]`)).toBeVisible();
+  test('[AUTO] Learn hub exposes the five-guide Home Loans & Mortgages cluster through enhanced topic discovery and mobile stays overflow-safe',async({page})=>{
+    await gotoClean(page,'/learn.html#home-loans');
+    await expect(page.locator('body')).toHaveClass(/learn-hub2-ready/);
+    await expect(page.locator('[data-learn-topic="home"]')).toHaveAttribute('aria-pressed','true');
+    await expect(page.locator('#learn2RelatedTool a')).toHaveAttribute('href','/mortgage-payoff-calculator/decision-centre.html');
+    for(const path of GUIDES){
+      await expect(page.locator(`.planning-categories [data-category="home"] a[href="${path}"]`)).toHaveCount(1);
+      await expect(page.locator(`#learn2Results a[href="${path}"]`)).toBeVisible();
+    }
     for(const width of [390,360]){
       await page.setViewportSize({width,height:900});
       await gotoClean(page,GUIDES[0]);

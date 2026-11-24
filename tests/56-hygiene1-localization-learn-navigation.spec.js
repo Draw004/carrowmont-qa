@@ -48,6 +48,7 @@ test.describe('HYGIENE1 localization and Learn navigation closeout', () => {
 
   test('Learn hub and articles expose the same major-topic banner', async ({ page }) => {
     await gotoClean(page, '/learn.html');
+    await expect(page.locator('body')).toHaveClass(/learn-hub2-ready/);
     const nav = page.locator('[data-cm-learn-topic-nav]');
     await expect(nav).toBeVisible();
     for (const label of ['Retirement','Assets & Investing','Credit, Loans & Debt','Budget & Cash Flow','Financial Goals','Inflation','Macro & Markets']) {
@@ -60,13 +61,14 @@ test.describe('HYGIENE1 localization and Learn navigation closeout', () => {
     const hubPlacement = await page.evaluate(() => {
       const hero = document.querySelector('main .learn-page-hero');
       const topics = document.querySelector('[data-cm-learn-topic-nav]');
-      const search = document.querySelector('.search-discovery-section');
-      return { afterHero: hero?.nextElementSibling === topics, beforeSearch: topics?.nextElementSibling === search };
+      const discovery = document.querySelector('.learn2-discovery-section');
+      return { afterHero: hero?.nextElementSibling === topics, beforeDiscovery: topics?.nextElementSibling === discovery };
     });
-    expect(hubPlacement).toEqual({ afterHero: true, beforeSearch: true });
+    expect(hubPlacement).toEqual({ afterHero: true, beforeDiscovery: true });
     await nav.getByText('Retirement', { exact: true }).click();
     await expect(page).toHaveURL(/#topic-retirement$/);
-    await expect(page.locator('#topic-retirement')).toBeVisible();
+    await expect(page.locator('[data-learn-topic="retirement"]')).toHaveAttribute('aria-pressed','true');
+    await expect(page.locator('#learn2ResultsTitle')).toContainText('Retirement');
 
     await gotoClean(page, '/asset-allocation-explained.html');
     const articleNav = page.locator('[data-cm-learn-topic-nav]');

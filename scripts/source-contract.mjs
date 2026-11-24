@@ -49,6 +49,7 @@ import { runGlobalHeaderContract } from './global-header-contract.mjs';
 import { runCredentialExpiryGuardContract } from './credential-expiry-guard-contract.mjs';
 import { runQualityHardening1Contract } from './quality-hardening1-contract.mjs';
 import { runAskExpansionWave1Contract } from './ask-expansion-wave1-contract.mjs';
+import { runLearnHub2Contract } from './learn-hub2-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -111,6 +112,7 @@ for (const c of runGlobalHeaderContract(root)) add(`GLOBAL-NAV: ${c.name}`, c.ok
 for (const c of await runCredentialExpiryGuardContract(root)) add(`CREDENTIAL-GUARD: ${c.name}`, c.ok, c.detail);
 for (const c of runQualityHardening1Contract(root)) add(`HARDEN1: ${c.name}`, c.ok, c.detail);
 for (const c of runAskExpansionWave1Contract(root)) add(`ASKWAVE1: ${c.name}`, c.ok, c.detail);
+for (const c of runLearnHub2Contract(root)) add(`LEARNHUB2: ${c.name}`, c.ok, c.detail);
 for (const c of runDevelopmentStandardsContract(root)) add(`STANDARDS1: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -1114,8 +1116,8 @@ const newLearnPages = [
   'budgeting-by-pay-frequency.html','sequence-of-returns-risk.html','4-percent-rule-retirement.html','longevity-risk-retirement.html',
   'coast-fire-explained.html','sip-during-market-fall.html'
 ];
-add('main site: Learn expansion adds Budget & Cash Flow pillar and popular-question discovery',
-  learnHub.includes('data-category="budget"') && learnHub.includes('data-category="home"') && learnHub.includes('POPULAR PLANNING QUESTIONS') && learnHub.includes('learn-expansion.js?v=20261011-mortgage1')
+add('main site: Learn expansion keeps Budget & Cash Flow, Home and editorial starting-point discovery',
+  learnHub.includes('data-category="budget"') && learnHub.includes('data-category="home"') && (learnHub.includes('COMMON PLANNING QUESTIONS') || learnHub.includes('POPULAR PLANNING QUESTIONS')) && learnHub.includes('learn-expansion.js?v=20261011-mortgage1')
 );
 add('main site: all 14 new Learn pages exist and are linked from Learn hub',
   newLearnPages.every(file => fs.existsSync(path.join(root,'draw004.github.io',file)) && learnHub.includes('href="/'+file+'"'))
@@ -4032,8 +4034,10 @@ add('GSEO2A regression: Publisher browser expectations are migrated for 23 tools
   gseo2aToolsHubQa.includes("match[1] >= '2026-10-19'") &&
   !gseo2aToolsHubQa.includes('itemListElement).toHaveLength(17)') &&
   (gseo2aSearchQa.match(/\.first\(\)\)\.toBeVisible\(\);/g)||[]).length >= 2 &&
-  !gseo2aSearchQa.includes("gotoClean(page, '/learn.html#loans-and-debt')") &&
+  gseo2aSearchQa.includes('gotoClean(page, `/learn.html?qaViewport=${width}`)') &&
   gseo2aSearchQa.includes("window.location.hash = 'loans-and-debt'") &&
+  gseo2aSearchQa.includes('[data-learn-topic=\"loans\"]') &&
+  gseo2aSearchQa.includes("#learn2RelatedTool a") &&
   read('draw004.github.io/sequence-of-returns-risk.html').includes('<div class="guide-note"><strong>Model a retirement withdrawal path:</strong>') &&
   read('draw004.github.io/sequence-of-returns-risk.html').includes('.gseo2a-wrap-link{color:var(--teal-dark);font-weight:900;white-space:normal;overflow-wrap:anywhere;word-break:normal}') &&
   read('draw004.github.io/sequence-of-returns-risk.html').includes('class="gseo2a-wrap-link" href="/retirement-calculator/withdrawal-calculator.html"') &&
@@ -4418,7 +4422,7 @@ add('SEARCH1: search words remain private; only the sanctioned one-time Ask hand
 add('SEARCH1: header, Learn and Tools expose one consistent search path without replacing crawlable browse links',
   search1SiteJs.includes("href = '/search.html'") && search1SiteJs.includes('data-cm-search-link') &&
   search1SiteCss.includes('.desktop-nav .site-search-link') &&
-  search1Learn.includes('id="learnSearchInput"') && search1Learn.includes('class="planning-categories"') &&
+  (search1Learn.includes('id="learn2SearchInput"') || search1Learn.includes('id="learnSearchInput"')) && search1Learn.includes('class="planning-categories"') && search1Learn.includes('href="/search.html"') &&
   search1Tools.includes('id="toolsSearchInput"') && search1Tools.includes('id="core-planning-tools"') &&
   search1Learn.includes('search-core.js?v=20261118-fre12') && search1Tools.includes('search-core.js?v=20261118-fre12') &&
   search1Css.includes('@media(max-width:760px)') && search1Css.includes('grid-template-columns:1fr')
@@ -4426,7 +4430,8 @@ add('SEARCH1: header, Learn and Tools expose one consistent search path without 
 add('SEARCH1: central QA protects index, aliases, privacy, navigation, embedded discovery and 1280/390/360 layouts',
   search1Qa.includes('deterministic aliases find tools and guides') &&
   search1Qa.includes('never enter URL, browser storage, cookies or network requests') &&
-  search1Qa.includes('Learn and Tools keep their browse structure') &&
+  search1Qa.includes('Learn keeps guide-only discovery while Tools retains full-site Search') &&
+  search1Qa.includes('#learn2SearchInput') && search1Qa.includes('#learn2Results [data-learn-result]') &&
   search1Qa.includes('[1280, 390, 360]') &&
   search1QaConfig.includes("key: 'search', path: '/search.html'")
 );

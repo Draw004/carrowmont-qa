@@ -11,15 +11,16 @@ test.describe('FRE8F UX simplification routing and performance cleanup',()=>{
     await expect(hero).toHaveAttribute('loading','eager');
   });
 
-  test('[AUTO] submitted Learn search brings results into a short laptop viewport',async({page})=>{
+  test('[AUTO] submitted Learn search brings guide-only results into a short laptop viewport',async({page})=>{
     await page.setViewportSize({width:1366,height:640});
     await gotoClean(page,'/learn.html');
-    const input=page.locator('#learnSearchInput');
+    await expect(page.locator('body')).toHaveClass(/learn-hub2-ready/);
+    const input=page.locator('#learn2SearchInput');
     await input.fill('how to start investing');
-    await page.locator('[data-cm-search-submit]').click();
-    const heading=page.locator('[data-cm-search-results-heading]');
+    await page.locator('#learn2SearchForm .learn2-search-button').click();
+    const heading=page.locator('#learn2ResultsTitle');
     await expect(heading).toContainText('Results for');
-    await expect(page.locator('[data-search-result-link]').first()).toContainText('Investing for Beginners');
+    await expect(page.locator('#learn2Results [data-learn-result]').first()).toContainText(/start investing|investing as a beginner/i);
     await expect.poll(async()=>{const box=await heading.boundingBox();return box?box.y:9999;}).toBeLessThan(180);
   });
 
