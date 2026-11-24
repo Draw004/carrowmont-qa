@@ -96,7 +96,7 @@ export function runQualityHardening1Contract(root){
     roadmap.includes('ON HOLD')&&roadmap.includes('traffic')&&start.includes('ON HOLD')&&newChat.includes('ON HOLD'));
   add('hardening closeout and next improvement sequence are durable in repository documentation rather than chat memory',
     status.includes('Quality Audit & Hardening Release 1')&&status.includes('completed and deployed')&&
-    status.includes('Ask Carrowmont Expansion')&&status.includes('NEXT / ACTIVE')&&status.includes('Learn Hub 2.0')&&
+    status.includes('Ask Carrowmont Expansion')&&(status.includes('NEXT / ACTIVE')||status.includes('ACTIVE RELEASE'))&&status.includes('Learn Hub 2.0')&&
     status.includes('Evergreen Learn Expansion')&&implementation.includes('Deployment closeout')&&implementation.includes('account-independent handover')&&
     implementation.includes('**Release state:** **complete and deployed.**'));
   add('snapshot authority is manifest-based and cannot enter a self-referential current-filename loop',
