@@ -30,13 +30,13 @@ async function completeJourney(page,intent,values){
 
 test.describe('FRE3B Ask Carrowmont public MVP',()=>{
 
-  test('[AUTO] Ask Wave 1 groups thirteen unique guided decisions without overwhelming the start screen',async({page})=>{
+  test('[AUTO] Ask Wave 2 keeps Wave 1 decisions and groups seventeen unique guided journeys without overwhelming the start screen',async({page})=>{
     await gotoClean(page,PATH);
-    await expect(page.locator('.ask-decision-group')).toHaveCount(4);
-    await expect(page.locator('[data-ask-intent]')).toHaveCount(13);
-    await expect(page.locator('.ask-decision-group h3')).toHaveText(['Everyday stability','Debt decisions','Big goals','Trade-offs']);
+    await expect(page.locator('.ask-decision-group')).toHaveCount(5);
+    await expect(page.locator('[data-ask-intent]')).toHaveCount(17);
+    await expect(page.locator('.ask-decision-group h3')).toHaveText(['Everyday stability','Debt decisions','Big goals','Growth & retirement','Trade-offs']);
     const intents=await page.locator('[data-ask-intent]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-ask-intent')));
-    expect(new Set(intents).size).toBe(13);
+    expect(new Set(intents).size).toBe(17);
   });
 
   test('[AUTO] Ask Wave 1 resolves all six new journeys through their existing deterministic engines',async({page})=>{
@@ -54,7 +54,7 @@ test.describe('FRE3B Ask Carrowmont public MVP',()=>{
       await expect(page.locator('#askResultStage')).toBeVisible();
       await expect(page.locator('#askRecommendationHeadline')).not.toBeEmpty();
       await expect(page.locator('#askEngineTrace')).toContainText(engineLabel);
-      await expect(page.locator('#askDetailLinkWrap a')).toBeVisible();
+      await expect(page.locator('#askDetailLinkWrap [data-ask-detail-link="1"]')).toBeVisible();
     }
   });
 

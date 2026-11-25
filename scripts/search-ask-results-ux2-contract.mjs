@@ -35,9 +35,9 @@ export function runSearchAskResultsUx2Contract(root){
     askJs.includes("a.dataset.askRouteResultLink=''")&&askJs.includes("action.dataset.askRouteAction=''")&&
     askJs.includes("best.textContent='Best match'")&&askCss.includes('.ask-route-best-match'));
   add('Shared Search and Ask assets are cache-busted on every interactive entry page',
-    ['search.html','tools.html','learn.html','ask-carrowmont.html'].every(name=>read(main+name).includes('search.js?v=20261123-searchux2'))&&
+    ['search.html','tools.html','learn.html','ask-carrowmont.html'].every(name=>(read(main+name).includes('search.js?v=20261123-searchux2')||read(main+name).includes('search.js?v=20261125-askwave2')))&&
     ['search.html','tools.html','learn.html'].every(name=>read(main+name).includes('search.css?v=20261123-searchux2'))&&
-    (read(main+'ask-carrowmont.html').includes('ask-carrowmont.js?v=20261123-searchux2')||read(main+'ask-carrowmont.html').includes('ask-carrowmont.js?v=20261124-askwave1'))&&(read(main+'ask-carrowmont.html').includes('ask-carrowmont.css?v=20261123-searchux2')||read(main+'ask-carrowmont.html').includes('ask-carrowmont.css?v=20261124-askwave1')));
+    (read(main+'ask-carrowmont.html').includes('ask-carrowmont.js?v=20261123-searchux2')||read(main+'ask-carrowmont.html').includes('ask-carrowmont.js?v=20261124-askwave1')||read(main+'ask-carrowmont.html').includes('ask-carrowmont.js?v=20261125-askwave2'))&&(read(main+'ask-carrowmont.html').includes('ask-carrowmont.css?v=20261123-searchux2')||read(main+'ask-carrowmont.html').includes('ask-carrowmont.css?v=20261124-askwave1')));
   add('Continuity and roadmap lock UX2 before any Batch 13B pilot',
     status.includes('Search + Ask Results UX2')&&status.includes('scrollbar on the right edge')&&
     roadmap.includes('Search + Ask Results UX2')&&roadmap.includes('Before 13B')&&uxDoc.includes('right edge of that pane'));

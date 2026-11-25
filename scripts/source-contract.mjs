@@ -52,6 +52,7 @@ import { runAskExpansionWave1Contract } from './ask-expansion-wave1-contract.mjs
 import { runLearnHub2Contract } from './learn-hub2-contract.mjs';
 import { runEvergreenLearnWave1Contract } from './evergreen-learn-wave1-contract.mjs';
 import { runAutomationFallbackHardening2Contract } from './automation-fallback-hardening2-contract.mjs';
+import { runAskIntentAlignmentWave2Contract } from './ask-intent-alignment-wave2-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -117,6 +118,7 @@ for (const c of runAskExpansionWave1Contract(root)) add(`ASKWAVE1: ${c.name}`, c
 for (const c of runLearnHub2Contract(root)) add(`LEARNHUB2: ${c.name}`, c.ok, c.detail);
 for (const c of runEvergreenLearnWave1Contract(root)) add(`EVERGREEN1: ${c.name}`, c.ok, c.detail);
 for (const c of runAutomationFallbackHardening2Contract(root)) add(`FALLBACK2: ${c.name}`, c.ok, c.detail);
+for (const c of runAskIntentAlignmentWave2Contract(root)) add(`ASKWAVE2: ${c.name}`, c.ok, c.detail);
 for (const c of runDevelopmentStandardsContract(root)) add(`STANDARDS1: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -4356,7 +4358,7 @@ add('SEARCH1: noindex utility page has one stable canonical and no query-bearing
   !/search\.html\?q=|URLSearchParams|location\.search|location\.hash/.test(search1Html + search1Js)
 );
 add('SEARCH1: reviewed index and alias library are valid, deterministic and below the 250 KB V1 target',
-  search1Index?.schema_version === 1 && search1Pages?.schema_version === 1 && search1Aliases?.schema_version === 1 &&
+  search1Index?.schema_version === 1 && search1Pages?.schema_version === 1 && [1,2].includes(search1Aliases?.schema_version) &&
   search1Entries.length === SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && new Set(search1EntryPaths).size === search1Entries.length &&
   search1Entries.every(entry => entry && /^\//.test(entry.url) && entry.title && entry.description && ['tool','guide','carrowmont'].includes(entry.type) && entry.category && Number.isInteger(entry.priority)) &&
   Buffer.byteLength(read('draw004.github.io/data/carrowmont-search-index.json'), 'utf8') < 250 * 1024 &&
@@ -4389,7 +4391,7 @@ try {
 } catch {}
 const search1Result = (query, region='OTHER') => search1CoreApi?.search?.(search1Entries, search1Aliases, query, { region, limit:12 }) || [];
 add('SEARCH1: deterministic matching protects SIP, EMI, remortgage, SWP, home-loan and empty-state behavior',
-  search1CoreApi?.version === '1.2.0' &&
+  ['1.2.0','1.3.0'].includes(search1CoreApi?.version) &&
   search1Result('sip','IN')[0]?.url === '/sip-calculator/' &&
   search1Result('emi','IN')[0]?.url === '/loan-calculator/' &&
   search1Result('remortgage','GB')[0]?.url === '/mortgage-payoff-calculator/refinance-break-even.html' &&
@@ -4428,7 +4430,7 @@ add('SEARCH1: header, Learn and Tools expose one consistent search path without 
   search1SiteCss.includes('.desktop-nav .site-search-link') &&
   (search1Learn.includes('id="learn2SearchInput"') || search1Learn.includes('id="learnSearchInput"')) && search1Learn.includes('class="planning-categories"') && search1Learn.includes('href="/search.html"') &&
   search1Tools.includes('id="toolsSearchInput"') && search1Tools.includes('id="core-planning-tools"') &&
-  search1Learn.includes('search-core.js?v=20261118-fre12') && search1Tools.includes('search-core.js?v=20261118-fre12') &&
+  (search1Learn.includes('search-core.js?v=20261118-fre12')||search1Learn.includes('search-core.js?v=20261125-askwave2')) && (search1Tools.includes('search-core.js?v=20261118-fre12')||search1Tools.includes('search-core.js?v=20261125-askwave2')) &&
   search1Css.includes('@media(max-width:760px)') && search1Css.includes('grid-template-columns:1fr')
 );
 add('SEARCH1: central QA protects index, aliases, privacy, navigation, embedded discovery and 1280/390/360 layouts',
@@ -4638,7 +4640,7 @@ add('SEARCH1 layout refinement: compact hero and current Search assets preserve 
   search1Css.includes('.cm-search-page-section{position:relative;z-index:2;margin-top:-64px') &&
   search1Css.includes('.cm-search-page-section{margin-top:-48px;padding-bottom:54px}') &&
   (search1Html.includes('search.css?v=20261113-fre8f')||search1Html.includes('search.css?v=20261120-searchux1')||search1Html.includes('search.css?v=20261123-searchux2')) && (search1Learn.includes('search.css?v=20261113-fre8f')||search1Learn.includes('search.css?v=20261120-searchux1')||search1Learn.includes('search.css?v=20261123-searchux2')) && (search1Tools.includes('search.css?v=20261113-fre8f') || search1Tools.includes('search.css?v=20261119-tools-mobile-v6b') || search1Tools.includes('search.css?v=20261120-searchux1') || search1Tools.includes('search.css?v=20261123-searchux2')) &&
-  (search1Learn.includes('search.js?v=20261118-fre12')||search1Learn.includes('search.js?v=20261120-searchux1')||search1Learn.includes('search.js?v=20261122-fre12b5')||search1Learn.includes('search.js?v=20261123-searchux2')) && (search1Tools.includes('search.js?v=20261118-fre12')||search1Tools.includes('search.js?v=20261120-searchux1')||search1Tools.includes('search.js?v=20261122-fre12b5')||search1Tools.includes('search.js?v=20261123-searchux2')) &&
+  (search1Learn.includes('search.js?v=20261118-fre12')||search1Learn.includes('search.js?v=20261120-searchux1')||search1Learn.includes('search.js?v=20261122-fre12b5')||search1Learn.includes('search.js?v=20261123-searchux2')||search1Learn.includes('search.js?v=20261125-askwave2')) && (search1Tools.includes('search.js?v=20261118-fre12')||search1Tools.includes('search.js?v=20261120-searchux1')||search1Tools.includes('search.js?v=20261122-fre12b5')||search1Tools.includes('search.js?v=20261123-searchux2')||search1Tools.includes('search.js?v=20261125-askwave2')) &&
   search1Qa.includes('search action should be visible above the fold') && search1Qa.includes('[1280, 390, 360]') &&
   !/localStorage|URLSearchParams/.test(search1Js) && !/sessionStorage\.setItem/.test(search1Js) &&
   search1Js.includes("ASK_SEARCH_HANDOFF_KEY = 'carrowmont_search_handoff_v1'")
@@ -5207,7 +5209,7 @@ add(`LEARN3D-1: sitemap and SEARCH1 preserve ${SEARCH1_REVIEWED_PUBLIC_PAGE_COUN
   search1Result('retirement monthly income','CA')[0]?.url==='/retirement-monthly-income-needed.html' &&
   search1Result('retirement expense checklist','GB')[0]?.url==='/retirement-expenses.html' &&
   search1Result('retirement inflation','AU')[0]?.url==='/inflation-and-retirement-planning.html' &&
-  search1Result('how long will my retirement money last','OTHER')[0]?.url==='/how-long-will-retirement-savings-last.html' &&
+  search1Result('how long will my retirement money last','OTHER')[0]?.url==='/retirement-calculator/withdrawal-calculator.html' &&
   search1Result('retirement 4 percent rule','US')[0]?.url==='/4-percent-rule-retirement.html' &&
   search1Result('retirement sequence risk','US')[0]?.url==='/sequence-of-returns-risk.html' &&
   search1Result('retirement longevity risk','GB')[0]?.url==='/longevity-risk-retirement.html' &&

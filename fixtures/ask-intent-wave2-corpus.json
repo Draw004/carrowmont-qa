@@ -1,0 +1,1027 @@
+{
+  "version": 1,
+  "reviewed_at": "2026-11-25",
+  "purpose": "Ask/Search shared intent ownership and explain-vs-guided regression corpus. Natural wording includes India/international terminology, poor grammar and everyday phrasing.",
+  "fixtures": [
+    {
+      "query": "calculate how long will my retirement fund would last",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "how long will my retirement savings last",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "when will my retirement corpus run out",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "how many years can my pension pot last",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "what monthly withdrawal can my retirement savings support",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "how much can i withdraw every month after retirement",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "safe withdrawal from my retirement corpus",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "swp for my retirement corpus",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "retirement drawdown calculator for 1 crore",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "can 50 lakh support 40000 monthly in retirement",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
+      "query": "what is a systematic withdrawal plan",
+      "owner": "retirement-withdrawal",
+      "action": "explain"
+    },
+    {
+      "query": "how does retirement drawdown work",
+      "owner": "retirement-withdrawal",
+      "action": "explain"
+    },
+    {
+      "query": "should i prepay my mortgage or invest",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "home loan prepayment vs sip",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "overpay mortgage or put money in mutual funds",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "part pay home loan or invest extra cash",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "foreclose housing loan or keep investing",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "extra mortgage payment versus investing",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "should i make early home loan payments or invest",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "mortgage overpayment vs investment",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "prepay home loan or do sip",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "invest bonus or use it for mortgage prepayment",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "guided"
+    },
+    {
+      "query": "what is mortgage prepayment vs investing",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "explain"
+    },
+    {
+      "query": "explain home loan prepayment versus investment",
+      "owner": "mortgage-prepay-vs-invest",
+      "action": "explain"
+    },
+    {
+      "query": "how long to pay off my credit card",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "what happens if i only pay the credit card minimum",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "how much should i pay monthly to clear my card",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "credit card payoff in 12 months",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "how fast can i clear my card balance",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "card debt minimum payment vs planned payment",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "how much interest will this credit card cost me",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "repay credit card faster",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "months to clear card debt",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "calculate credit card payoff",
+      "owner": "credit-card-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "how does credit card interest work",
+      "owner": "credit-card-payoff",
+      "action": "explain"
+    },
+    {
+      "query": "what is credit card apr",
+      "owner": "credit-card-payoff",
+      "action": "explain"
+    },
+    {
+      "query": "how long will my emergency savings last",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "is my emergency fund enough",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "how many months can my emergency fund cover",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "if i lose my job how long can i survive on savings",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "how much emergency cash do i need",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "salary stops how long will savings cover expenses",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "job loss emergency fund runway",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "can my rainy day fund cover six months",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "emergency savings months of expenses",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "do i have enough cash buffer for no income",
+      "owner": "emergency-runway",
+      "action": "guided"
+    },
+    {
+      "query": "what is an emergency fund",
+      "owner": "emergency-runway",
+      "action": "explain"
+    },
+    {
+      "query": "why do i need emergency savings",
+      "owner": "emergency-runway",
+      "action": "explain"
+    },
+    {
+      "query": "how much home can i afford",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "what house price can i afford",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "can i afford this property",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "how much mortgage can my budget support",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "what home loan size fits my income",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "house affordability with my salary",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "property price i can afford with deposit",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "home affordability calculator",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "can we afford a 1 crore house",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "how expensive a home can i buy",
+      "owner": "home-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "what does home affordability mean",
+      "owner": "home-affordability",
+      "action": "explain"
+    },
+    {
+      "query": "explain mortgage affordability",
+      "owner": "home-affordability",
+      "action": "explain"
+    },
+    {
+      "query": "can i afford this car",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "what car price can i afford",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "car affordability with my salary",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "can i finance this vehicle",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "how much car can my budget support",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "afford a 15 lakh car",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "vehicle price i can afford",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "can i buy this car without hurting my budget",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "auto affordability calculator",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "is this car too expensive for me",
+      "owner": "car-affordability",
+      "action": "guided"
+    },
+    {
+      "query": "what does car affordability mean",
+      "owner": "car-affordability",
+      "action": "explain"
+    },
+    {
+      "query": "explain vehicle affordability",
+      "owner": "car-affordability",
+      "action": "explain"
+    },
+    {
+      "query": "can i take on another emi",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "can i afford another loan payment",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "what is my dti",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "calculate my debt to income ratio",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "can i handle one more emi",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "i already have loans can i borrow more",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "will another monthly payment fit",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "check my borrowing health",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "existing emis plus new loan payment",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "can my income support more debt",
+      "owner": "borrowing-health",
+      "action": "guided"
+    },
+    {
+      "query": "what is dti",
+      "owner": "borrowing-health",
+      "action": "explain"
+    },
+    {
+      "query": "what does debt to income mean",
+      "owner": "borrowing-health",
+      "action": "explain"
+    },
+    {
+      "query": "should i pay off debt or invest",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "debt versus investing what should i do",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "pay loan faster or invest extra money",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "invest or clear debt first",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "should i save or pay down debt",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "credit card debt or investing first",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "loan repayment vs investment",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "extra money to debt or mutual fund",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "should i pay debt before investing",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "debt or sip which first",
+      "owner": "debt-vs-savings",
+      "action": "guided"
+    },
+    {
+      "query": "what does pay debt vs invest mean",
+      "owner": "debt-vs-savings",
+      "action": "explain"
+    },
+    {
+      "query": "explain debt versus investing tradeoff",
+      "owner": "debt-vs-savings",
+      "action": "explain"
+    },
+    {
+      "query": "how fast can i pay off this debt",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "how long to clear my loan",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "pay debt off faster with extra payment",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "when will my debt be paid off",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "how many months to repay this loan",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "debt payoff with 5000 extra monthly",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "finish my loan sooner",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "calculate debt payoff",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "how much interest can extra debt payments save",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "repay debt early",
+      "owner": "debt-payoff",
+      "action": "guided"
+    },
+    {
+      "query": "what is debt payoff planning",
+      "owner": "debt-payoff",
+      "action": "explain"
+    },
+    {
+      "query": "how does debt payoff work",
+      "owner": "debt-payoff",
+      "action": "explain"
+    },
+    {
+      "query": "how much will this loan cost me",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "calculate my emi",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "what is the monthly payment on this loan",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "total interest on a 5 year loan",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "loan repayment cost for 10 lakh",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "how much emi for 20 lakh loan",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "monthly instalment for this loan",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "calculate loan interest and repayment",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "what will i repay in total on this loan",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "loan payment for 60 months",
+      "owner": "loan-cost",
+      "action": "guided"
+    },
+    {
+      "query": "what is emi",
+      "owner": "loan-cost",
+      "action": "explain"
+    },
+    {
+      "query": "what does annual loan interest rate mean",
+      "owner": "loan-cost",
+      "action": "explain"
+    },
+    {
+      "query": "what will 50 lakh be worth after 20 years inflation",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "future cost after inflation",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "how much will 100000 cost in 10 years with inflation",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "calculate inflation impact on my savings",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "what happens to purchasing power in 15 years",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "future value of today money with inflation",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "how much will school fees cost after inflation",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "inflation calculator for 25 years",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "value of money after 6 percent inflation",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "what will this expense cost in the future",
+      "owner": "inflation-impact",
+      "action": "guided"
+    },
+    {
+      "query": "what is inflation",
+      "owner": "inflation-impact",
+      "action": "explain"
+    },
+    {
+      "query": "how does inflation reduce purchasing power",
+      "owner": "inflation-impact",
+      "action": "explain"
+    },
+    {
+      "query": "how much will 10000 sip grow in 10 years",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "monthly investment growth calculator",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "what will my sip become in 15 years",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "invest 5000 every month for 20 years",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "recurring investment projection",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "how much can monthly investing grow",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "regular investment for 10 years",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "sip maturity value",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "systematic investment plan growth",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "project monthly investment returns",
+      "owner": "recurring-investment",
+      "action": "guided"
+    },
+    {
+      "query": "what is sip",
+      "owner": "recurring-investment",
+      "action": "explain"
+    },
+    {
+      "query": "how does a systematic investment plan work",
+      "owner": "recurring-investment",
+      "action": "explain"
+    },
+    {
+      "query": "am i on track for this goal",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "how much should i save for my wedding goal",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "monthly saving needed for college goal",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "can i reach my house deposit target",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "how much to invest for a 50 lakh goal",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "fund a vacation goal in 3 years",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "goal funding calculator",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "save monthly for education target",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "will my current savings reach this target",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "how much for down payment goal",
+      "owner": "goal-funding",
+      "action": "guided"
+    },
+    {
+      "query": "what is goal based saving",
+      "owner": "goal-funding",
+      "action": "explain"
+    },
+    {
+      "query": "how does goal funding work",
+      "owner": "goal-funding",
+      "action": "explain"
+    },
+    {
+      "query": "am i on track for retirement",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "how much should i save for retirement",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "how much money do i need to retire",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "can i retire at 60",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "retirement corpus required",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "will i have enough by retirement",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "monthly retirement saving needed",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "check my retirement readiness",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "how much retirement money do i need by age 65",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "am i saving enough for retirement",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
+      "query": "what is retirement planning",
+      "owner": "retirement-readiness",
+      "action": "explain"
+    },
+    {
+      "query": "what does retirement readiness mean",
+      "owner": "retirement-readiness",
+      "action": "explain"
+    },
+    {
+      "query": "my salary finishes before month end",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "money runs out before payday",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "i am short of cash before my next paycheck",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "my expenses are more than my income",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "how can i make my salary last until month end",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "living paycheck to paycheck",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "running out of money every month",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "cash short before payday",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "paycheque does not last the month",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "why do i have no money left before salary day",
+      "owner": "cash-flow-shortfall",
+      "action": "guided"
+    },
+    {
+      "query": "what is a cash flow shortfall",
+      "owner": "cash-flow-shortfall",
+      "action": "explain"
+    },
+    {
+      "query": "why does monthly cash flow matter",
+      "owner": "cash-flow-shortfall",
+      "action": "explain"
+    },
+    {
+      "query": "what should i focus on first with my money",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "what is my next financial move",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "where should i put my money first",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "help me prioritize my finances",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "what should i do first financially",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "which money goal should come first",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "how should i prioritize saving debt and investing",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "i have many money goals where do i start",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "financial priorities for my monthly surplus",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "what should i tackle first",
+      "owner": "money-priorities",
+      "action": "guided"
+    },
+    {
+      "query": "what are financial priorities",
+      "owner": "money-priorities",
+      "action": "explain"
+    },
+    {
+      "query": "explain how to prioritize money goals",
+      "owner": "money-priorities",
+      "action": "explain"
+    },
+    {
+      "query": "how should i use a lump sum",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "what should i do with my bonus",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "where should i put an inheritance",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "how to split a windfall",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "i got extra cash what should i do",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "use bonus for debt emergency goal or invest",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "allocate a 5 lakh lump sum",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "what to do with one time money",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "how should i use unexpected cash",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "split lump sum across goals",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "guided"
+    },
+    {
+      "query": "what is lump sum allocation",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "explain"
+    },
+    {
+      "query": "explain how to use a financial windfall",
+      "owner": "lump-sum-goal-tradeoffs",
+      "action": "explain"
+    }
+  ]
+}
