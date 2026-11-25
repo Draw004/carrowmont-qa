@@ -27,7 +27,7 @@ export function runStartupNavigationPerformanceContract(root){
     return links.join('|')===order.join('|')&&html.includes('data-cm-static-mobile-header')&&html.includes('data-mobile1-header-search')&&html.includes('site.js?v=20261119-startup-nav-perf1');
   }));
   const articles=fs.readdirSync(main).filter(name=>name.endsWith('.html')&&read(name).includes('data-cm-learn-article'));
-  add('all 97 Learn articles retain their content and have pre-rendered final desktop nav',articles.length===97&&articles.every(name=>{
+  add('all 103 Learn articles retain their content and have pre-rendered final desktop nav',articles.length===103&&articles.every(name=>{
     const html=read(name);
     const nav=html.match(/<nav class="desktop-nav"[^>]*>([\s\S]*?)<\/nav>/);
     const order=(nav?.[1].match(/href="[^"]+"/g)||[]).map(a=>a.slice(6,-1));

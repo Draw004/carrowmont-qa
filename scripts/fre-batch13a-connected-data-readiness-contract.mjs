@@ -58,7 +58,7 @@ export function runFreBatch13AConnectedDataReadinessContract(root){
   const pages=JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')||'{"entries":[]}');
   const index=JSON.parse(read('draw004.github.io/data/carrowmont-search-index.json')||'{"entries":[]}');
   const sitemap=read('draw004.github.io/sitemap.xml');
-  add('13A preserves public search/sitemap inventory and creates no connected-data URL',pages.entries?.length===145&&index.entries?.length===145&&(sitemap.match(/<loc>/g)||[]).length===145&&!sitemap.includes('connected-data')&&!pages.entries?.some(entry=>/connected-data/.test(entry.url||'')));
+  add('13A preserves public search/sitemap inventory and creates no connected-data URL',pages.entries?.length===151&&index.entries?.length===151&&(sitemap.match(/<loc>/g)||[]).length===151&&!sitemap.includes('connected-data')&&!pages.entries?.some(entry=>/connected-data/.test(entry.url||'')));
   const common=readQa('helpers/common.js');
   add('13A clean-navigation QA preserves sandbox session state across reloads',common.includes("const connectedSandboxSessionKey = 'carrowmont_connected_data_sandbox_session_v1'")&&common.includes('if (connectedSandboxSession) sessionStorage.setItem(connectedSandboxSessionKey, connectedSandboxSession)'));
   const browser=readQa('tests/98-fre13a-connected-data-readiness.spec.js');

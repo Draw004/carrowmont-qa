@@ -50,6 +50,8 @@ import { runCredentialExpiryGuardContract } from './credential-expiry-guard-cont
 import { runQualityHardening1Contract } from './quality-hardening1-contract.mjs';
 import { runAskExpansionWave1Contract } from './ask-expansion-wave1-contract.mjs';
 import { runLearnHub2Contract } from './learn-hub2-contract.mjs';
+import { runEvergreenLearnWave1Contract } from './evergreen-learn-wave1-contract.mjs';
+import { runAutomationFallbackHardening2Contract } from './automation-fallback-hardening2-contract.mjs';
 
 const root = process.env.SOURCE_ROOT ? path.resolve(process.env.SOURCE_ROOT) : null;
 if (!root) {
@@ -113,6 +115,8 @@ for (const c of await runCredentialExpiryGuardContract(root)) add(`CREDENTIAL-GU
 for (const c of runQualityHardening1Contract(root)) add(`HARDEN1: ${c.name}`, c.ok, c.detail);
 for (const c of runAskExpansionWave1Contract(root)) add(`ASKWAVE1: ${c.name}`, c.ok, c.detail);
 for (const c of runLearnHub2Contract(root)) add(`LEARNHUB2: ${c.name}`, c.ok, c.detail);
+for (const c of runEvergreenLearnWave1Contract(root)) add(`EVERGREEN1: ${c.name}`, c.ok, c.detail);
+for (const c of runAutomationFallbackHardening2Contract(root)) add(`FALLBACK2: ${c.name}`, c.ok, c.detail);
 for (const c of runDevelopmentStandardsContract(root)) add(`STANDARDS1: ${c.name}`, c.ok, c.detail);
 
 const readQa = rel => {
@@ -4342,7 +4346,7 @@ try { search1Index = JSON.parse(read('draw004.github.io/data/carrowmont-search-i
 try { search1Pages = JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json')); } catch {}
 try { search1Aliases = JSON.parse(read('draw004.github.io/data/carrowmont-search-aliases.json')); } catch {}
 const search1Entries = Array.isArray(search1Index?.entries) ? search1Index.entries : [];
-const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 145;
+const SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT = 151;
 const search1SitemapPaths = [...search1Sitemap.matchAll(/<loc>https:\/\/carrowmont\.com([^<]*)<\/loc>/g)].map(match => match[1] || '/');
 const search1EntryPaths = search1Entries.map(entry => entry?.url);
 add('SEARCH1: noindex utility page has one stable canonical and no query-bearing search URL',
@@ -4687,7 +4691,7 @@ add('LEARN3A: Tools hero is compact; mobile search is separate and does not over
   readQa('tests/12-tools-hub.spec.js').includes('tools search should appear above the fold')
 );
 add('LEARN3A: every current Learn title and H1-H6 heading follows colon capitalization',
-  learn3GuideEntries.length === 97 && learn3HeadingColonFailures.length === 0,
+  learn3GuideEntries.length === 103 && learn3HeadingColonFailures.length === 0,
   learn3HeadingColonFailures.slice(0,3).join(' | ')
 );
 add('LEARN3A: shared standards retain the colon-capitalization rule and its non-content exceptions',
@@ -5577,7 +5581,7 @@ const learnCloseoutImpl=read('draw004.github.io/docs/CARROWMONT_LEARN_FINAL_CONS
 const learnCloseoutMacroNames=['what-happens-when-bond-yields-rise.html','why-do-stocks-fall-when-bond-yields-rise.html','what-happens-to-gold-when-interest-rates-rise.html','how-oil-prices-affect-inflation.html','what-happens-when-fed-cuts-interest-rates.html','what-happens-when-dollar-strengthens.html','what-happens-to-gold-when-dollar-rises.html','real-yields-explained.html','why-us-debt-interest-costs-matter.html','treasury-bills-vs-notes-vs-bonds.html','what-makes-a-global-reserve-currency.html','why-central-banks-buy-gold.html','de-dollarisation-explained.html','gold-vs-government-bonds-reserve-assets.html'];
 const learnCloseoutGuidePages=learn3GuideEntries.map(entry=>read(`draw004.github.io${entry.url}`));
 add('LEARN-CLOSEOUT1: all current Learn guides use one 30-second-answer label',
-  learn3GuideEntries.length===97 && learnCloseoutGuidePages.every(html=>html.includes('<div class="guide-answer') && html.includes('<strong>30-second answer</strong>') && !html.includes('<strong>Direct answer</strong>'))
+  learn3GuideEntries.length===103 && learnCloseoutGuidePages.every(html=>html.includes('<div class="guide-answer') && html.includes('<strong>30-second answer</strong>') && !html.includes('<strong>Direct answer</strong>'))
 );
 add('LEARN-CLOSEOUT1: shared step cards override the legacy two-column grid and preserve strong-label emphasis',
   learnCloseoutCss.includes('LEARN-CLOSEOUT1') && learnCloseoutCss.includes('.guide-steps li{') && learnCloseoutCss.includes('display:block;') && learnCloseoutCss.includes('grid-template-columns:none;') && learnCloseoutCss.includes('.guide-steps li>strong:first-child')
@@ -5642,7 +5646,7 @@ add('LEARN-PRESENTATION2: 30-second answers use normal body weight with at most 
   learnPresentationAnswerEmphasisFailures.slice(0,3).join(' | ')
 );
 add('LEARN-PRESENTATION2: owner colon-capitalization rule covers all Carrowmont-authored Learn prose while source titles stay exempt',
-  learn3GuideEntries.length===97 && learnPresentationColonFailures.length===0 && learn3Standard.includes('ordinary explanatory prose') && learn3UiStandard.includes('ordinary explanatory prose'),
+  learn3GuideEntries.length===103 && learnPresentationColonFailures.length===0 && learn3Standard.includes('ordinary explanatory prose') && learn3UiStandard.includes('ordinary explanatory prose'),
   learnPresentationColonFailures.slice(0,3).join(' | ')
 );
 add('LEARN-PRESENTATION2: checklist/question cards use one compact rhythm without stacked grid/item spacing',
@@ -5874,7 +5878,7 @@ add('NEWSLETTER1: approved Kit form identity and lazy-loading boundary are locke
   newsletter1Site.includes("var KIT_UID = '6ba4a35ab0'") && newsletter1Site.includes("var KIT_SRC = 'https://carrowmont.kit.com/6ba4a35ab0/index.js'") && newsletter1Site.includes('IntersectionObserver') && newsletter1Site.includes("data-cm-kit-newsletter")
 );
 add('NEWSLETTER1: all Learn articles and three Research studies use an approved shared runtime cache key',
-  newsletter1LearnPages.length===97 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261105-mobile2')||(html.includes('site.js?v=20261118-fre12')||html.includes('site.js?v=20261119-startup-nav-perf1'))) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261105-mobile2')||html.includes('site.js?v=20261119-startup-nav-perf1'))
+  newsletter1LearnPages.length===103 && newsletter1LearnPages.every(html=>html.includes('site.js?v=20261105-mobile2')||(html.includes('site.js?v=20261118-fre12')||html.includes('site.js?v=20261119-startup-nav-perf1'))) && newsletter1ResearchPages.every(html=>html.includes('site.js?v=20261105-mobile2')||html.includes('site.js?v=20261119-startup-nav-perf1'))
 );
 add('NEWSLETTER1: privacy documents Kit, confirmation, unsubscribe and calculator-data separation',
   newsletter1Privacy.includes('<h2>Newsletter subscriptions</h2>') && newsletter1Privacy.includes('uses Kit to collect and store your email address') && newsletter1Privacy.includes('confirmation step') && newsletter1Privacy.includes('unsubscribe') && newsletter1Privacy.includes('does not send calculator inputs or calculated financial results to Kit') && newsletter1Privacy.includes('https://kit.com/dpa')

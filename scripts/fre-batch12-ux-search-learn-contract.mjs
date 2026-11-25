@@ -94,8 +94,8 @@ export function runFreBatch12UxSearchLearnContract(root){
     !pages.entries.some(e=>/prioritiz.*financial.*goal/i.test(e.url)));
 
   add('FRE12 Learn expansion has exactly one reviewed sitemap/search entry per public URL',
-    pages.entries.length===145&&index.entries.length===145&&(sitemap.match(/<loc>/g)||[]).length===145&&
-    new Set(pages.entries.map(e=>e.url)).size===145&&new Set(index.entries.map(e=>e.url)).size===145);
+    pages.entries.length===151&&index.entries.length===151&&(sitemap.match(/<loc>/g)||[]).length===151&&
+    new Set(pages.entries.map(e=>e.url)).size===151&&new Set(index.entries.map(e=>e.url)).size===151);
 
   add('FRE12 Learn governance permanently requires understanding-first teaching and a content-collision review before new URLs',
     learnStandard.includes('**Version:** 2.3')&&learnStandard.includes('### Understanding-first editorial rule')&&

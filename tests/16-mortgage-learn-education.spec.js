@@ -72,6 +72,9 @@ test.describe('Mortgage Learn & Education Integration V1',()=>{
     await expect(page.locator('#learn2RelatedTool a')).toHaveAttribute('href','/mortgage-payoff-calculator/decision-centre.html');
     for(const path of GUIDES){
       await expect(page.locator(`.planning-categories [data-category="home"] a[href="${path}"]`)).toHaveCount(1);
+    }
+    if(await page.locator('#learn2More').isVisible()) await page.locator('#learn2More').click();
+    for(const path of GUIDES){
       await expect(page.locator(`#learn2Results a[href="${path}"]`)).toBeVisible();
     }
     for(const width of [390,360]){

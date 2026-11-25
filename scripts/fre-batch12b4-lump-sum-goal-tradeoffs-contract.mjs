@@ -90,7 +90,7 @@ export function runFreBatch12B4LumpSumGoalTradeoffsContract(root) {
   const tools=read('draw004.github.io/tools.html');
   const sitemap=read('draw004.github.io/sitemap.xml');
   const pages=JSON.parse(read('draw004.github.io/data/carrowmont-search-pages.json'));
-  add('release adds no public tool or URL and keeps the reviewed 23-tool 145-page inventory',/"numberOfItems"\s*:\s*23/.test(tools)&&(tools.match(/class="directory-tool-card/g)||[]).length===23&&pages.entries?.length===145&&(sitemap.match(/<loc>/g)||[]).length===145&&!sitemap.includes('lump-sum-goal-tradeoffs.html'));
+  add('release adds no public tool or URL and keeps the reviewed 23-tool 151-page inventory',/"numberOfItems"\s*:\s*23/.test(tools)&&(tools.match(/class="directory-tool-card/g)||[]).length===23&&pages.entries?.length===151&&(sitemap.match(/<loc>/g)||[]).length===151&&!sitemap.includes('lump-sum-goal-tradeoffs.html'));
   add('changed Learn guide sitemap date is reconciled without changing its canonical URL',sitemap.includes('<loc>https://carrowmont.com/what-to-do-with-a-lump-sum.html</loc><lastmod>2026-11-21</lastmod>')&&guide.includes('<link rel="canonical" href="https://carrowmont.com/what-to-do-with-a-lump-sum.html"'));
   return checks;
 }

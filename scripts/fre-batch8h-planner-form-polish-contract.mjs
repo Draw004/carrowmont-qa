@@ -59,6 +59,6 @@ export function runFreBatch8hPlannerFormPolishContract(root){
     retirementPlanner.includes('rel="canonical" href="https://carrowmont.com/retirement-calculator/planner.html"'));
 
   add('8H creates no new public URL or search inventory entry',
-    searchPages.entries?.length===145&&searchIndex.entries?.length===145);
+    searchPages.entries?.length===151&&searchIndex.entries?.length===151);
   return checks;
 }

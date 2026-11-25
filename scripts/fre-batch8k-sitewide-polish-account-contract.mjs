@@ -94,6 +94,6 @@ export function runFreBatch8kSitewidePolishAccountContract(root){
 
   const pages=JSON.parse(read(main+'data/carrowmont-search-pages.json')||'{"entries":[]}');
   const index=JSON.parse(read(main+'data/carrowmont-search-index.json')||'{"entries":[]}');
-  add('8K creates no new public URL or search inventory entry',pages.entries?.length===145&&index.entries?.length===145);
+  add('8K creates no new public URL or search inventory entry',pages.entries?.length===151&&index.entries?.length===151);
   return checks;
 }
