@@ -107,8 +107,9 @@ export function runFreEmergencyRunwayContract(sourceRoot) {
   add(checks, 'Sitemap and reviewed search inventory include the new canonical tool', sitemap.includes('<loc>https://carrowmont.com/emergency-fund-runway-calculator.html</loc>') && searchPages.entries?.some(item => item.url === '/emergency-fund-runway-calculator.html'));
   const calcSearch = SearchCore.search(searchIndex.entries, searchAliases, 'emergency fund calculator', { region:'US', limit:12 });
   const runwaySearch = SearchCore.search(searchIndex.entries, searchAliases, 'financial runway calculator', { region:'IN', limit:12 });
-  const guideSearch = SearchCore.search(searchIndex.entries, searchAliases, 'how much emergency fund', { region:'CA', limit:12 });
-  add(checks, 'Search intent sends calculator queries to FRE2A while preserving informational emergency-fund ownership', calcSearch[0]?.url === '/emergency-fund-runway-calculator.html' && runwaySearch[0]?.url === '/emergency-fund-runway-calculator.html' && guideSearch[0]?.url === '/emergency-fund-how-much.html');
+  const sizingSearch = SearchCore.search(searchIndex.entries, searchAliases, 'how much emergency fund', { region:'CA', limit:12 });
+  const explainSearch = SearchCore.search(searchIndex.entries, searchAliases, 'what is an emergency fund', { region:'CA', limit:12 });
+  add(checks, 'Search intent sends explicit calculator/runway queries to FRE2A while generic emergency-fund sizing wording stays educational', calcSearch[0]?.url === '/emergency-fund-runway-calculator.html' && runwaySearch[0]?.url === '/emergency-fund-runway-calculator.html' && sizingSearch[0]?.url === '/emergency-fund-how-much.html' && explainSearch[0]?.url === '/emergency-fund-how-much.html');
   add(checks, 'Five relevant Learn pages provide contextual inbound discovery links', learnPages.every(file => fs.readFileSync(path.join(sourceRoot,'draw004.github.io',file),'utf8').includes('href="/emergency-fund-runway-calculator.html"')));
   add(checks, 'New Learn runway CTAs use the established mobile-wrapping related-guide contract', learnPages.every(file => /<p class="guide-note seo-related-guides"><strong>Calculate your runway:<\/strong>\s*<a class="text-link" href="\/emergency-fund-runway-calculator\.html">/.test(fs.readFileSync(path.join(sourceRoot,'draw004.github.io',file),'utf8'))));
 

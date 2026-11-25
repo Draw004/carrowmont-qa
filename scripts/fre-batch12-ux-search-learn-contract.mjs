@@ -40,7 +40,7 @@ export function runFreBatch12UxSearchLearnContract(root){
   const correct=q=>core?.correctQuery?.(index.entries,aliases,q,{region:'IN'})?.query||'';
   const suggest=q=>core?.suggest?.(index.entries,aliases,q,{region:'IN',limit:6})||[];
   add('FRE12 Search corrects common finance typos and predicts useful partial queries locally',
-    core?.version==='1.2.0'&&correct('retirment')==='retirement'&&correct('mutal fund')==='mutual fund'&&correct('mortage')==='mortgage'&&
+    ['1.2.0','1.3.0'].includes(core?.version)&&correct('retirment')==='retirement'&&correct('mutal fund')==='mutual fund'&&correct('mortage')==='mortgage'&&
     suggest('re').some(x=>/retirement/i.test(x.text||x.title||''))&&searchJs.includes('MIN_SUGGEST_LENGTH = 2'));
   add('FRE12 credit-card payoff intent selects the payoff calculator while balance-transfer questions select the new guide',
     !pages.entries.find(e=>e.url==='/balance-transfer-credit-card.html')?.intents?.includes('payoff')&&
@@ -120,9 +120,9 @@ export function runFreBatch12UxSearchLearnContract(root){
     askJs.includes("entry.type==='tool'?'Open tool →'")&&askJs.includes('ask-route-result-tool')&&askJs.includes('section.dataset.askRouteGroup=group.key'));
 
   add('FRE12 refreshed Search/Ask presentation assets are cache-busted on all shared entry pages',
-    ['search.html','tools.html','learn.html','ask-carrowmont.html'].every(name=>(read(main+name).includes('search.js?v=20261120-searchux1')||read(main+name).includes('search.js?v=20261122-fre12b5')||read(main+name).includes('search.js?v=20261123-searchux2')))&&
+    ['search.html','tools.html','learn.html','ask-carrowmont.html'].every(name=>(read(main+name).includes('search.js?v=20261120-searchux1')||read(main+name).includes('search.js?v=20261122-fre12b5')||(read(main+name).includes('search.js?v=20261123-searchux2')||read(main+name).includes('search.js?v=20261125-askwave2'))))&&
     ['search.html','tools.html','learn.html'].every(name=>read(main+name).includes('search.css?v=20261120-searchux1')||read(main+name).includes('search.css?v=20261123-searchux2'))&&
-    (askHtml.includes('ask-carrowmont.js?v=20261120-searchux1')||askHtml.includes('ask-carrowmont.js?v=20261121-fre12b4')||askHtml.includes('ask-carrowmont.js?v=20261123-searchux2')||askHtml.includes('ask-carrowmont.js?v=20261124-askwave1'))&&(askHtml.includes('ask-carrowmont.css?v=20261120-searchux1')||askHtml.includes('ask-carrowmont.css?v=20261123-searchux2')||askHtml.includes('ask-carrowmont.css?v=20261124-askwave1')));
+    (askHtml.includes('ask-carrowmont.js?v=20261120-searchux1')||askHtml.includes('ask-carrowmont.js?v=20261121-fre12b4')||askHtml.includes('ask-carrowmont.js?v=20261123-searchux2')||askHtml.includes('ask-carrowmont.js?v=20261124-askwave1')||askHtml.includes('ask-carrowmont.js?v=20261125-askwave2'))&&(askHtml.includes('ask-carrowmont.css?v=20261120-searchux1')||askHtml.includes('ask-carrowmont.css?v=20261123-searchux2')||askHtml.includes('ask-carrowmont.css?v=20261124-askwave1')));
 
   return checks;
 }
