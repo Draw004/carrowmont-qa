@@ -44,7 +44,7 @@ export function runFreBatch8jMyCarrowmontVisualAppContract(root){
     css.includes('@media(max-width:660px)')&&css.includes('.mycm-visual-grid{grid-template-columns:1fr}')&&css.includes('.mycm-add-grid-primary,.mycm-add-grid-more{grid-template-columns:1fr}'));
   add('8J retains the 8G saved-plan explanation and all three focused update actions',
     page.includes('<details class="mycm-plan-model">')&&['current-details','saved-plan','what-if','progress-history'].every(key=>page.includes(`data-mycm-plan-concept="${key}"`))&&dash.includes("action('Update monthly money','monthly',true)")&&dash.includes("action('Update savings','emergency',true)")&&dash.includes("action('Update debt','debt',true)"));
-  add('8J creates no new public URL or search inventory entry',pages.entries?.length===145&&index.entries?.length===145);
+  add('8J creates no new public URL or search inventory entry',pages.entries?.length===151&&index.entries?.length===151);
   const browserQa=readQa('tests/70-fre8j-my-carrowmont-visual-app.spec.js');
   add('8J browser QA protects money wheel target progress neutral debt discovery filtering and install-event visibility',
     browserQa.includes('32,650')&&browserQa.includes('79%')&&browserQa.includes('27.9%')&&browserQa.includes('mycm-add-grid-primary')&&browserQa.includes('beforeinstallprompt'));

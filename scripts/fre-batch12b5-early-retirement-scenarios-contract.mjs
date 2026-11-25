@@ -43,7 +43,7 @@ export function runFreBatch12B5EarlyRetirementScenariosContract(root){
   const fi=pages.entries.find(e=>e.url==='/financial-independence/');
   add('search discovery includes real-language early-retirement questions and one-more-year intent',fi?.aliases?.includes('can i retire at 50')&&fi?.aliases?.includes('when can i retire early')&&fi?.aliases?.includes('one more year retirement')&&fi?.aliases?.includes('part time income retirement'));
   const tools=read('draw004.github.io/tools.html'),sitemap=read('draw004.github.io/sitemap.xml');
-  add('release preserves the reviewed 23-tool and 145-URL public inventory',/"numberOfItems"\s*:\s*23/.test(tools)&&(tools.match(/class="directory-tool-card/g)||[]).length===23&&pages.entries.length===145&&(sitemap.match(/<loc>/g)||[]).length===145&&!sitemap.includes('early-retirement-scenarios.html'));
+  add('release preserves the reviewed 23-tool and 151-URL public inventory',/"numberOfItems"\s*:\s*23/.test(tools)&&(tools.match(/class="directory-tool-card/g)||[]).length===23&&pages.entries.length===151&&(sitemap.match(/<loc>/g)||[]).length===151&&!sitemap.includes('early-retirement-scenarios.html'));
   add('early-retirement guide sitemap date is reconciled',sitemap.includes('<loc>https://carrowmont.com/early-retirement-planning.html</loc><lastmod>2026-11-22</lastmod>'));
   return checks;
 }

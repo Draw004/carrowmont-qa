@@ -21,8 +21,8 @@ export function runLearnHub2Contract(root){
     html.includes('class="learn2-discovery-section"') && html.includes('id="learn2SearchInput"') && html.includes('Search Learn') && html.includes('Search all Carrowmont →') && !html.includes('data-cm-search-root'));
   add('Learn Hub 2.0 exposes six situation-first entry points without presenting them as personalized advice',
     (html.match(/data-learn-situation=/g)||[]).length===6 && html.includes('Get my money organised') && html.includes('Reduce debt and borrowing pressure') && html.includes('Plan for a home') && html.includes('Start or improve investing') && html.includes('Prepare for retirement or FI') && html.includes('Understand markets and inflation') && html.includes('not a required financial order or personalized advice'));
-  add('Learn Hub 2.0 keeps the complete static source library as progressive-enhancement and SEO/no-JS fallback',
-    new Set(topicUrls).size===102 && categories.length===11 && html.includes('Interactive Learn discovery needs JavaScript. The full topic library remains available below.') && css.includes('body.learn-hub2-ready .learn-hub-section .planning-categories{display:none}'));
+  add('Learn Hub 2.0 keeps the expanded complete static source library as progressive-enhancement and SEO/no-JS fallback',
+    new Set(topicUrls).size===108 && categories.length===11 && html.includes('Interactive Learn discovery needs JavaScript. The full topic library remains available below.') && css.includes('body.learn-hub2-ready .learn-hub-section .planning-categories{display:none}'));
   add('Learn Hub 2.0 builds topic counts and related-tool routes from the existing source library rather than a duplicated hand-maintained inventory',
     js.includes("qa('.planning-categories .category-box')") && js.includes("qa('.category-topic',category.box)") && js.includes("q('.category-tool-link',box)") && js.includes('category.count') && js.includes('Related calculator: '));
   add('Learn Hub 2.0 offers All/Start/Explain/Compare/Plan learning-style filters with semantic-intent reuse and cautious title fallback',

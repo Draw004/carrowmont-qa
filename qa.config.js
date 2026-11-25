@@ -1,5 +1,5 @@
 export const standardDownloadMessage = 'Report has been downloaded.';
-export const search1ExpectedPublicPages = 145;
+export const search1ExpectedPublicPages = 151;
 
 export const tools = [
   {

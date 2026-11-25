@@ -86,9 +86,9 @@ export function runQualityHardening1Contract(root){
 
   add('site-wide static internal destination audit has no broken local href/src targets',broken.length===0,broken.join('; '));
   add('US debt updater has primary Monday run plus independently timed Tuesday fallback and remains manual-dispatchable',
-    us.includes('cron: "23 6 * * 1"')&&us.includes('cron: "47 8 * * 2"')&&us.includes('workflow_dispatch:')&&us.includes('automation/us-debt-reference-'));
+    us.includes('cron: "23 6 * * 1"')&&us.includes('cron: "47 8 * * 2"')&&us.includes('workflow_dispatch:')&&us.includes('automation/us-debt-reference-')&&us.includes('id: weekly_guard')&&us.includes('mergedAt'));
   add('Gold macro updater has primary Monday run plus independently timed Tuesday fallback without changing protected-PR behavior',
-    gold.includes('cron: "25 14 * * 1"')&&gold.includes('cron: "43 15 * * 2"')&&gold.includes('workflow_dispatch:')&&gold.includes('automation/gold-macro-reference-'));
+    gold.includes('cron: "25 14 * * 1"')&&gold.includes('cron: "43 15 * * 2"')&&gold.includes('workflow_dispatch:')&&gold.includes('automation/gold-macro-reference-')&&gold.includes('id: weekly_guard')&&gold.includes('mergedAt'));
   add('Country reference updater keeps weekday checks and adds Saturday catch-up for a dropped Friday schedule',
     country.includes('cron: "35 22 * * 1-5"')&&country.includes('cron: "53 7 * * 6"')&&country.includes('workflow_dispatch:')&&country.includes('automation/country-financial-reference-'));
   add('roadmap and portable handover explicitly put Batch 13B on hold and traffic-gate Batch 14',
@@ -96,8 +96,8 @@ export function runQualityHardening1Contract(root){
     roadmap.includes('ON HOLD')&&roadmap.includes('traffic')&&start.includes('ON HOLD')&&newChat.includes('ON HOLD'));
   add('hardening closeout and next improvement sequence are durable in repository documentation rather than chat memory',
     status.includes('Quality Audit & Hardening Release 1')&&status.includes('completed and deployed')&&
-    status.includes('Ask Carrowmont Expansion Wave 1')&&status.includes('Learn Hub 2.0')&&status.includes('active controlled review release')&&
-    status.includes('Evergreen Learn Expansion')&&implementation.includes('Deployment closeout')&&implementation.includes('account-independent handover')&&
+    status.includes('Ask Carrowmont Expansion Wave 1')&&status.includes('Learn Hub 2.0')&&status.includes('completed and deployed')&&
+    status.includes('Evergreen Learn Expansion Wave 1')&&status.includes('active controlled review release')&&implementation.includes('Deployment closeout')&&implementation.includes('account-independent handover')&&
     implementation.includes('**Release state:** **complete and deployed.**'));
   add('snapshot authority is manifest-based and cannot enter a self-referential current-filename loop',
     status.includes('Snapshot authority rule:')&&status.includes('SNAPSHOT-MANIFEST.txt')&&

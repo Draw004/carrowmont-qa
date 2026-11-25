@@ -56,12 +56,12 @@ export function runFreAskMvpUiContract(root){
   const index=JSON.parse(read(main+'data/carrowmont-search-index.json'));
   const aliases=JSON.parse(read(main+'data/carrowmont-search-aliases.json'));
   const SearchCore=require(path.join(root,main+'search-core.js'));
-  add('sitemap and reviewed search inventory expose Ask Carrowmont as public page 138',sitemap.includes('<loc>https://carrowmont.com/ask-carrowmont.html</loc>') && pages.entries?.length===145 && index.entries?.length===145 && pages.entries?.some(e=>e.url==='/ask-carrowmont.html'));
+  add('sitemap and reviewed search inventory expose Ask Carrowmont as public page 138',sitemap.includes('<loc>https://carrowmont.com/ask-carrowmont.html</loc>') && pages.entries?.length===151 && index.entries?.length===151 && pages.entries?.some(e=>e.url==='/ask-carrowmont.html'));
   const askSearch=SearchCore.search(index.entries,aliases,'ask carrowmont',{region:'US',limit:12});
   add('site search gives Ask Carrowmont clear navigational ownership',askSearch[0]?.url==='/ask-carrowmont.html');
 
   const qaConfig=fs.readFileSync(path.join(qaRoot,'qa.config.js'),'utf8');
-  add('central QA inventory advances to 138 and includes Ask Carrowmont',/search1ExpectedPublicPages\s*=\s*145/.test(qaConfig) && /ask-carrowmont-page/.test(qaConfig));
+  add('central QA inventory advances to 138 and includes Ask Carrowmont',/search1ExpectedPublicPages\s*=\s*151/.test(qaConfig) && /ask-carrowmont-page/.test(qaConfig));
   const browserSpec=fs.readFileSync(path.join(qaRoot,'tests/61-fre3b-ask-carrowmont.spec.js'),'utf8');
   add('browser QA protects guided resolution privacy correction recovery discoverability and responsive layouts',/emergency-fund journey resolves/.test(browserSpec) && /financial inputs are not persisted/.test(browserSpec) && /lets users go back, correct answers/.test(browserSpec) && /focuses the exact invalid field/.test(browserSpec) && /smart focus and result review/.test(browserSpec) && /Ask is discoverable from shared navigation/.test(browserSpec) && /\[1280,768,412,390,360\]/.test(browserSpec));
 

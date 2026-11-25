@@ -19,8 +19,8 @@ export function runFreBatch12SeoIndexingCloseoutContract(root) {
   let searchEntries = [];
   try { searchEntries = JSON.parse(searchPagesRaw).entries || []; } catch {}
   const locs = [...sitemap.matchAll(/<loc>(https:\/\/carrowmont\.com[^<]*)<\/loc>/g)].map(m => m[1]);
-  add('sitemap and Search inventory remain 145 unique public URLs',
-    locs.length === 145 && new Set(locs).size === 145 && searchEntries.length === 145 && new Set(searchEntries.map(x=>x.url)).size === 145,
+  add('sitemap and Search inventory remain 151 unique public URLs',
+    locs.length === 151 && new Set(locs).size === 151 && searchEntries.length === 151 && new Set(searchEntries.map(x=>x.url)).size === 151,
     `sitemap=${locs.length}/${new Set(locs).size}; search=${searchEntries.length}/${new Set(searchEntries.map(x=>x.url)).size}`);
 
   add('internal Search remains noindex,follow and excluded from sitemap/Search inventory',
@@ -67,11 +67,11 @@ export function runFreBatch12SeoIndexingCloseoutContract(root) {
     const canonical = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1] || html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i)?.[1] || '';
     if (!canonical || canonical.replace(/\/$/,'') !== url.replace(/\/$/,'')) sitemapPageIssues.push(`${url}: canonical=${canonical || 'missing'}`);
   }
-  add('all 145 sitemap URLs map to indexable source pages with matching canonicals', sitemapPageIssues.length === 0, sitemapPageIssues.slice(0,8).join('; '));
+  add('all 151 sitemap URLs map to indexable source pages with matching canonicals', sitemapPageIssues.length === 0, sitemapPageIssues.slice(0,8).join('; '));
 
   const expectedLastmod = new Map([
     ['https://carrowmont.com/','2026-11-18'],
-    ['https://carrowmont.com/learn.html','2026-11-20'],
+    ['https://carrowmont.com/learn.html','2026-11-25'],
     ['https://carrowmont.com/tools.html','2026-11-21'],
     ['https://carrowmont.com/ask-carrowmont.html','2026-11-22'],
     ['https://carrowmont.com/my-carrowmont.html','2026-11-22'],

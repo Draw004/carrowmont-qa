@@ -23,9 +23,9 @@ export function runFreBatch12B2ShortTermSavingsContract(root) {
     page.includes('short-term-savings-comparison.js') &&
     page.includes('short-term-savings-comparison.css') &&
     !sitemap.includes('short-term-savings-comparison.html'));
-  add('Public directory and Search inventory remain locked at 23 tools and 145 indexed URLs',
+  add('Public directory and Search inventory remain locked at 23 tools and 151 indexed URLs',
     (tools.match(/class="directory-tool-card/g) || []).length === 23 &&
-    inventory.entries.length === 145 && index.entries.length === 145);
+    inventory.entries.length === 151 && index.entries.length === 151);
   add('Tools and Learn route directly to the focused comparison anchor',
     tools.includes(`href="${anchor}"`) && guide.includes(`href="${anchor}"`) &&
     page.includes('href="#short-term-savings-comparison"'));

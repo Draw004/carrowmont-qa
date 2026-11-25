@@ -22,8 +22,8 @@ export function runFreBatch12B1BalanceTransferContract(root) {
     tool.includes('debt-payoff-core.js') && tool.includes('id="tab-transfer"'));
   add('Learn and Tools route directly into the comparison without introducing a duplicate guide',
     mainTools.includes(`href="${anchor}"`) && guide.includes(`href="${anchor}"`) &&
-    !sitemap.includes('balance-transfer-decision.html') && inventory.entries.length === 145 &&
-    index.entries.length === 145 && mainTools.includes('credit-card-payoff-comparison'));
+    !sitemap.includes('balance-transfer-decision.html') && inventory.entries.length === 151 &&
+    index.entries.length === 151 && mainTools.includes('credit-card-payoff-comparison'));
   add('Balance Transfer is a selected, compact decision mode with responsive results',
     tool.includes('id="tab-transfer"') && tool.includes('role="tabpanel"') &&
     tool.includes('id="btForm"') &&

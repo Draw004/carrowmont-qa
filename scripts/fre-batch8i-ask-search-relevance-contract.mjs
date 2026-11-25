@@ -26,9 +26,9 @@ export function runFreBatch8iAskSearchRelevanceContract(root){
   add('8I uses a broad reviewed topic and intent taxonomy rather than gold-only query rules',
     aliases.topics?.length>=25&&aliases.intents?.length>=9&&topicIds.has('gold')&&topicIds.has('retirement')&&topicIds.has('debt')&&topicIds.has('budgeting')&&topicIds.has('home-mortgage')&&topicIds.has('inflation')&&topicIds.has('financial-independence')&&topicIds.has('car')&&topicIds.has('credit-profile')&&!coreSource.includes("queryNormalized.includes('gold')"));
   add('8I every indexed guide/tool has precomputed semantic topic coverage for future scale',
-    index.entries?.length===145&&index.entries.filter(e=>e.type!=='carrowmont').every(e=>Array.isArray(e.semantic_topics)&&e.semantic_topics.length>0));
+    index.entries?.length===151&&index.entries.filter(e=>e.type!=='carrowmont').every(e=>Array.isArray(e.semantic_topics)&&e.semantic_topics.length>0));
   add('8I semantic index stays within the existing reviewed public URL inventory',
-    pages.entries?.length===145&&index.entries?.length===145&&new Set(pages.entries.map(e=>e.url)).size===145&&new Set(index.entries.map(e=>e.url)).size===145);
+    pages.entries?.length===151&&index.entries?.length===151&&new Set(pages.entries.map(e=>e.url)).size===151&&new Set(index.entries.map(e=>e.url)).size===151);
   add('8I builder enforces topic coverage and supports explicit topic/intent metadata for future pages',
     builder.includes('guide/tool must map to at least one reviewed search topic')&&builder.includes("for (const key of ['topics', 'intents'])")&&builder.includes('semantic_topics')&&builder.includes('semantic_intents'));
   add('8I Learn standard tells future content expansion how to join Ask/Search without ranking-code exceptions',
