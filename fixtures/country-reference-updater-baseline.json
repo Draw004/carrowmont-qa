@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "version": "2026-11-17",
+  "reviewedAt": "2026-11-17",
+  "scope": "Verified official monetary-policy reference points for selected Carrowmont markets. Country profiles may share a monetary-policy jurisdiction (for example France and Italy use the ECB/Euro Area reference). These references never replace user-entered calculator assumptions or lender/product-specific rates.",
+  "markets": {
+    "IN": {
+      "country": "India",
+      "centralBank": "Reserve Bank of India",
+      "policyRate": {
+        "label": "Policy repo rate",
+        "display": "5.50%",
+        "valuePct": 5.5,
+        "asOf": "2026-11-16",
+        "sourceTitle": "Reserve Bank of India - Current Rates",
+        "sourceUrl": "https://www.rbi.org.in/"
+      },
+      "inflationReference": {
+        "label": "CPI inflation target",
+        "display": "4% target; 2%-6% tolerance band",
+        "targetPct": 4,
+        "rangeMinPct": 2,
+        "rangeMaxPct": 6,
+        "effectiveFrom": "2026-04-01",
+        "effectiveTo": "2031-03-31",
+        "sourceTitle": "Reserve Bank of India - Second review of the flexible inflation targeting framework",
+        "sourceUrl": "https://www.rbi.org.in/scripts/AnnualReportPublications.aspx?Id=1463"
+      },
+      "monetaryPolicyJurisdiction": "IN"
+    },
+    "US": {
+      "country": "United States",
+      "centralBank": "Federal Reserve",
+      "policyRate": {
+        "label": "Federal funds target range",
+        "display": "3.75%-4.00%",
+        "rangeMinPct": 3.75,
+        "rangeMaxPct": 4,
+        "asOf": "2026-10-29",
+        "sourceTitle": "Federal Reserve - Economy at a Glance: Policy Rate",
+        "sourceUrl": "https://www.federalreserve.gov/economy-at-a-glance-policy-rate.htm"
+      },
+      "inflationReference": {
+        "label": "Longer-run PCE inflation goal",
+        "display": "2%",
+        "targetPct": 2,
+        "effectiveFrom": "2026-01-27",
+        "sourceTitle": "Federal Reserve - Statement on Longer-Run Goals and Monetary Policy Strategy",
+        "sourceUrl": "https://www.federalreserve.gov/monetarypolicy/files/FOMC_LongerRunGoals.pdf"
+      },
+      "monetaryPolicyJurisdiction": "US"
+    },
+    "GB": {
+      "country": "United Kingdom",
+      "centralBank": "Bank of England",
+      "policyRate": {
+        "label": "Bank Rate",
+        "display": "4.00%",
+        "valuePct": 4,
+        "asOf": "2026-11-05",
+        "sourceTitle": "Bank of England - Latest Bank Rate decision",
+        "sourceUrl": "https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate"
+      },
+      "inflationReference": {
+        "label": "CPI inflation target",
+        "display": "2%",
+        "targetPct": 2,
+        "sourceTitle": "Bank of England - Inflation target and Bank Rate",
+        "sourceUrl": "https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate"
+      },
+      "monetaryPolicyJurisdiction": "GB"
+    },
+    "CA": {
+      "country": "Canada",
+      "centralBank": "Bank of Canada",
+      "policyRate": {
+        "label": "Target for the overnight rate",
+        "display": "2.50%",
+        "valuePct": 2.5,
+        "asOf": "2026-10-28",
+        "sourceTitle": "Bank of Canada - Policy interest rate",
+        "sourceUrl": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/"
+      },
+      "inflationReference": {
+        "label": "CPI inflation-control target",
+        "display": "2% target; 1%-3% control range",
+        "targetPct": 2,
+        "rangeMinPct": 1,
+        "rangeMaxPct": 3,
+        "sourceTitle": "Bank of Canada - Inflation",
+        "sourceUrl": "https://www.bankofcanada.ca/core-functions/monetary-policy/inflation/"
+      },
+      "monetaryPolicyJurisdiction": "CA"
+    },
+    "AU": {
+      "country": "Australia",
+      "centralBank": "Reserve Bank of Australia",
+      "policyRate": {
+        "label": "Cash rate target",
+        "display": "4.85%",
+        "valuePct": 4.85,
+        "asOf": "2026-11-04",
+        "sourceTitle": "Reserve Bank of Australia - Cash Rate Target Overview",
+        "sourceUrl": "https://www.rba.gov.au/cash-rate-target-overview.html"
+      },
+      "inflationReference": {
+        "label": "CPI inflation target",
+        "display": "2%-3%",
+        "rangeMinPct": 2,
+        "rangeMaxPct": 3,
+        "sourceTitle": "Reserve Bank of Australia - Australia's Inflation Target",
+        "sourceUrl": "https://www.rba.gov.au/education/resources/explainers/australias-inflation-target.html"
+      },
+      "monetaryPolicyJurisdiction": "AU"
+    },
+    "JP": {
+      "country": "Japan",
+      "centralBank": "Bank of Japan",
+      "monetaryPolicyJurisdiction": "JP",
+      "policyRate": {
+        "label": "Uncollateralized overnight call rate guideline (around)",
+        "display": "1.25%",
+        "valuePct": 1.25,
+        "asOf": "2026-09-24",
+        "sourceTitle": "Bank of Japan - Market Operations and policy guideline",
+        "sourceUrl": "https://www.boj.or.jp/en/"
+      },
+      "inflationReference": {
+        "label": "CPI price stability target",
+        "display": "2%",
+        "targetPct": 2,
+        "sourceTitle": "Bank of Japan - Price Stability Target of 2 Percent",
+        "sourceUrl": "https://www.boj.or.jp/en/mopo/outline/target.htm"
+      }
+    },
+    "KR": {
+      "country": "South Korea",
+      "centralBank": "Bank of Korea",
+      "monetaryPolicyJurisdiction": "KR",
+      "policyRate": {
+        "label": "Bank of Korea Base Rate",
+        "display": "3.00%",
+        "valuePct": 3.0,
+        "asOf": "2026-08-27",
+        "sourceTitle": "Bank of Korea - Base Rate history",
+        "sourceUrl": "https://www.bok.or.kr/portal/singl/baseRate/list.do?menuNo=200656"
+      },
+      "inflationReference": {
+        "label": "CPI inflation target",
+        "display": "2%",
+        "targetPct": 2,
+        "sourceTitle": "Bank of Korea - Inflation Targeting",
+        "sourceUrl": "https://www.bok.or.kr/eng/main/contents.do?menuNo=400015"
+      }
+    },
+    "FR": {
+      "country": "France",
+      "centralBank": "European Central Bank (Eurosystem)",
+      "monetaryPolicyJurisdiction": "EA",
+      "policyRate": {
+        "label": "ECB deposit facility rate",
+        "display": "2.50%",
+        "valuePct": 2.5,
+        "asOf": "2026-09-16",
+        "sourceTitle": "European Central Bank - Key ECB interest rates",
+        "sourceUrl": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html"
+      },
+      "inflationReference": {
+        "label": "HICP inflation target",
+        "display": "2% over the medium term",
+        "targetPct": 2,
+        "sourceTitle": "European Central Bank - Two per cent inflation target",
+        "sourceUrl": "https://www.ecb.europa.eu/mopo/strategy/pricestab/html/index.en.html"
+      }
+    },
+    "IT": {
+      "country": "Italy",
+      "centralBank": "European Central Bank (Eurosystem)",
+      "monetaryPolicyJurisdiction": "EA",
+      "policyRate": {
+        "label": "ECB deposit facility rate",
+        "display": "2.50%",
+        "valuePct": 2.5,
+        "asOf": "2026-09-16",
+        "sourceTitle": "European Central Bank - Key ECB interest rates",
+        "sourceUrl": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html"
+      },
+      "inflationReference": {
+        "label": "HICP inflation target",
+        "display": "2% over the medium term",
+        "targetPct": 2,
+        "sourceTitle": "European Central Bank - Two per cent inflation target",
+        "sourceUrl": "https://www.ecb.europa.eu/mopo/strategy/pricestab/html/index.en.html"
+      }
+    }
+  }
+}
