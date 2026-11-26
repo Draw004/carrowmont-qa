@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 const root=process.env.SOURCE_ROOT;
 if(!root)throw new Error('SOURCE_ROOT is required.');
@@ -25,7 +25,11 @@ assert.deepEqual(mod.parseBok('<div>변경일자 기준금리 2026 08월 27일 3
 assert.deepEqual(mod.parseEcb('<div>Date (with effect from) Deposit facility Main refinancing operations Marginal lending facility 2026 16 Sep. 2.50 2.65 - 2.90 2026 17 Jun. 2.25 2.40 - 2.65</div>'),{kind:'single',valuePct:2.5,asOf:'2026-09-16'});
 assert.throws(()=>mod.parseBoj('<div>Interest Rate Applied to the Complementary Deposit Facility 1.00% since September 24, 2026</div><div>The Bank will encourage the uncollateralized overnight call rate to remain at around 1.25 percent.</div>'),/does not match/);
 
-const ref=JSON.parse(fs.readFileSync(path.join(root,'draw004.github.io/data/country-financial-reference.json'),'utf8'));
+// Updater behavior is tested against a deliberately fixed, reviewed 17 Nov 2026
+// baseline. Production rates advance over time and must not alter unit results.
+const fixturePath=path.join(path.dirname(fileURLToPath(import.meta.url)),'../fixtures/country-reference-updater-baseline.json');
+const ref=JSON.parse(fs.readFileSync(fixturePath,'utf8'));
+const liveRef=JSON.parse(fs.readFileSync(path.join(root,'draw004.github.io/data/country-financial-reference.json'),'utf8'));
 assert.deepEqual(mod.SUPPORTED_MARKETS,['IN','US','GB','CA','AU','JP','KR','FR','IT']);
 assert.deepEqual(mod.SOURCES.EA.markets,['FR','IT']);
 const observations={
@@ -56,7 +60,7 @@ assert.equal(applied.next.markets.IT.policyRate.display,'2.75%');
 assert.equal(applied.next.markets.FR.policyRate.asOf,applied.next.markets.IT.policyRate.asOf);
 
 const runtime=fs.readFileSync(path.join(root,'draw004.github.io/assets/trust/carrowmont-trust.js'),'utf8');
-assert.deepEqual(mod.extractEmbeddedReference(runtime),ref);
+assert.deepEqual(mod.extractEmbeddedReference(runtime),liveRef);
 const replaced=mod.replaceEmbeddedReference(runtime,applied.next);
 assert.deepEqual(mod.extractEmbeddedReference(replaced),applied.next);
 

@@ -30,7 +30,7 @@ export function runFreBatch10CountryIntelligenceContract(root){
     'retirement-calculator/planner.html','inflation-calculator/index.html','goal-planner/index.html','financial-independence/index.html','budget-cash-flow-planner/index.html'
   ];
   const urls=[];for(const code of expected){const m=markets[code];if(m?.policyRate?.sourceUrl)urls.push(m.policyRate.sourceUrl);if(m?.inflationReference?.sourceUrl)urls.push(m.inflationReference.sourceUrl);}
-  add('Batch 10 verified reference model is valid JSON with nine supported country profiles',Boolean(data)&&expected.every(code=>markets[code])&&data.reviewedAt==='2026-11-17');
+  add('Batch 10 verified reference model is valid JSON with nine supported country profiles',Boolean(data)&&expected.every(code=>markets[code])&&/^\d{4}-\d{2}-\d{2}$/.test(data.reviewedAt||'')&&data.reviewedAt>='2026-11-17');
   add('Batch 10 each supported market has a policy reference, inflation reference and official source links',expected.every(code=>markets[code]?.policyRate?.display&&markets[code]?.inflationReference?.display&&markets[code]?.policyRate?.sourceUrl&&markets[code]?.inflationReference?.sourceUrl));
   add('Batch 10 source domains are restricted to verified official central-bank authorities',urls.length===18&&urls.every(url=>sourceDomains.some(domain=>{try{return new URL(url).hostname.endsWith(domain);}catch{return false;}})),urls.join(', '));
   add('Batch 10 policy-rate entries carry an as-of date and the reference set carries a review date',expected.every(code=>/^2026-\d{2}-\d{2}$/.test(markets[code]?.policyRate?.asOf||''))&&/^2026-\d{2}-\d{2}$/.test(data?.reviewedAt||''));

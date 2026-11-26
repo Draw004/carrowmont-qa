@@ -18,17 +18,30 @@ async function selectLocale(page, regionCode, currencyCode){
   await page.waitForTimeout(120);
 }
 
+// Policy rates change through the reviewed official-reference updater. Compare the
+// browser against the canonical published reference, not a frozen rate fixture.
+// Keep country names and inflation frameworks explicit to protect coverage.
 const supported=[
-  ['IN','INR','India','5.50%','4% target; 2%-6% tolerance band'],
-  ['US','USD','United States','3.75%-4.00%','2%'],
-  ['GB','GBP','United Kingdom','4.00%','2%'],
-  ['CA','CAD','Canada','2.50%','2% target; 1%-3% control range'],
-  ['AU','AUD','Australia','4.85%','2%-3%'],
-  ['JP','JPY','Japan','1.25%','2%'],
-  ['KR','KRW','South Korea','3.00%','2%'],
-  ['FR','EUR','France','2.50%','2% over the medium term'],
-  ['IT','EUR','Italy','2.50%','2% over the medium term']
+  ['IN','INR','India','4% target; 2%-6% tolerance band'],
+  ['US','USD','United States','2%'],
+  ['GB','GBP','United Kingdom','2%'],
+  ['CA','CAD','Canada','2% target; 1%-3% control range'],
+  ['AU','AUD','Australia','2%-3%'],
+  ['JP','JPY','Japan','2%'],
+  ['KR','KRW','South Korea','2%'],
+  ['FR','EUR','France','2% over the medium term'],
+  ['IT','EUR','Italy','2% over the medium term']
 ];
+
+async function getPublishedReferences(page) {
+  const url = new URL('/data/country-financial-reference.json', page.url()).toString();
+  const response = await page.request.get(url);
+  expect(response.ok(), `The published official references must load: ${url}`).toBe(true);
+  const data = await response.json();
+  expect(data.schemaVersion).toBe(1);
+  expect(data.markets).toBeTruthy();
+  return data.markets;
+}
 
 test.describe('FRE10 Country-Aware Financial Intelligence',()=>{
   test('[AUTO] nine supported country profiles show sourced official context and locale switches do not overwrite the calculator rate',async({page})=>{
@@ -36,12 +49,17 @@ test.describe('FRE10 Country-Aware Financial Intelligence',()=>{
     await page.setViewportSize({width:1280,height:900});
     await gotoClean(page,'/home-affordability-calculator.html');
     const rate=page.locator('#annualRate');await setInput(page,'#annualRate',7.25);await expect(rate).toHaveValue('7.25');
-    for(const [region,currency,country,policy,inflation] of supported){
+    const references=await getPublishedReferences(page);
+    for(const [region,currency,country,inflation] of supported){
+      const official=references[region];
+      expect(official?.country, `${region} must have the reviewed country identity`).toBe(country);
+      expect(official?.policyRate?.display, `${region} must have a reviewed policy-rate display`).toMatch(/\d/);
+      expect(official?.policyRate?.sourceUrl, `${region} must link to an official source`).toMatch(/^https:\/\//);
       await selectLocale(page,region,currency);
       const card=page.locator('#cmCountryContext');await expect(card).toBeVisible();
       await expect(card).toHaveAttribute('data-cm-country-region',region);
       await expect(card).toContainText(`Official reference points for ${country}`);
-      await expect(card).toContainText(policy);
+      await expect(card).toContainText(official.policyRate.display);
       await expect(card).toContainText(inflation);
       await expect(card).toContainText('does not automatically replace an entered interest rate');
       await expect(rate).toHaveValue('7.25');
@@ -63,8 +81,9 @@ test.describe('FRE10 Country-Aware Financial Intelligence',()=>{
     const card=page.locator('#cmCountryContext');await expect(card).toBeVisible();
     await expect(card).toContainText("not today's inflation and not a forecast");
     await expect(input).toHaveValue('5');
+    const references=await getPublishedReferences(page);
     const api=await page.evaluate(async()=>{const item=await window.CarrowmontCountryIntelligence.getReference('US');return {country:item.country,policy:item.policyRate.display};});
-    expect(api).toEqual({country:'United States',policy:'3.75%-4.00%'});
+    expect(api).toEqual({country:references.US.country,policy:references.US.policyRate.display});
   });
 
   test('[AUTO] official source links and mobile Country Context geometry remain usable',async({page})=>{
