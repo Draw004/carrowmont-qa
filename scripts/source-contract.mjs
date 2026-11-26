@@ -5676,6 +5676,31 @@ add('LEARN-PRESENTATION2: browser QA and implementation record protect typograph
 
 
 
+// RESEARCH-FRESHNESS1 + SEO1: official observations are dated; historical calculations stay immutable.
+const freshnessMortgage = read('draw004.github.io/research/mortgage-affordability-monitor.html');
+const freshnessInflation = read('draw004.github.io/research/inflation-purchasing-power-monitor.html');
+const freshnessMortgageJson = JSON.parse(read('draw004.github.io/data/research/mortgage-affordability-monitor.json'));
+const freshnessInflationJson = JSON.parse(read('draw004.github.io/data/research/inflation-purchasing-power-monitor.json'));
+add('RESEARCH-FRESHNESS1: dated official release notes do not misrepresent archived charts as current',
+  freshnessMortgage.includes('id="research-freshness"') && freshnessInflation.includes('id="research-freshness"') &&
+  freshnessMortgage.includes('7.21% (25 November 2026)') && freshnessMortgage.includes('$391,300 (released 25 November 2026)') &&
+  freshnessInflation.includes('0.4% for the month, seasonally adjusted') && freshnessInflation.includes('10 December 2026') &&
+  [freshnessMortgage,freshnessInflation].every(x=>x.includes('They have <strong>not</strong> been recalculated') && x.includes('data-research-review-due=') && x.includes('2026-11-26')) &&
+  freshnessMortgageJson.official_source_status.dataset_is_archived_snapshot===true &&
+  freshnessMortgageJson.official_source_status.latest_official_mortgage_rate.rate_30yr_pct===7.21 &&
+  freshnessInflationJson.official_source_status.dataset_is_archived_snapshot===true &&
+  freshnessInflationJson.official_source_status.latest_official_cpi.month_on_month_seasonally_adjusted_pct===0.4 &&
+  read('draw004.github.io/assets/research/research-freshness.js').includes('today>=due')
+);
+add('SEO1: sitemap URLs are short, unique and human-readable without renaming indexed paths',
+  Array.isArray(search1Entries) && search1Entries.length===151 &&
+  [...sitemapLastmods.keys()].length===151 &&
+  [...sitemapLastmods.keys()].every(u=>u.startsWith('https://carrowmont.com/') && new URL(u).pathname.length<=120 && !new URL(u).search && !/[A-Z\s]/.test(new URL(u).pathname)) &&
+  new Set([...sitemapLastmods.keys()]).size===151 &&
+  [...sitemapLastmods.keys()].every(u=>search1Entries.some(e=>`https://carrowmont.com${e.url==='/'?'/':e.url}`===u)) &&
+  readQa('tests/103-research-freshness-seo.spec.js').includes('prevent accidental URL growth')
+);
+
 // TRAFFIC1A Research foundation + U.S. Mortgage Affordability Monitor - Snapshot 110.
 const traffic1aHub=read('draw004.github.io/research.html');
 const traffic1aStudy=read('draw004.github.io/research/mortgage-affordability-monitor.html');
@@ -5691,7 +5716,7 @@ const traffic1aPngs=['mortgage-affordability-monitor-payment-pressure.png','mort
 add('TRAFFIC1A: Research hub and Mortgage Affordability Monitor have distinct stable indexable identities',
   gseo2aCanonical(traffic1aHub)==='https://carrowmont.com/research.html' && gseo2aCanonical(traffic1aStudy)==='https://carrowmont.com/research/mortgage-affordability-monitor.html' &&
   gseo2aMetaContent(traffic1aHub,'robots').toLowerCase()==='index,follow' && gseo2aMetaContent(traffic1aStudy,'robots').toLowerCase()==='index,follow' &&
-  sitemapLastmods.get('https://carrowmont.com/research.html')==='2026-10-26' && sitemapLastmods.get('https://carrowmont.com/research/mortgage-affordability-monitor.html')==='2026-10-23' &&
+  sitemapLastmods.get('https://carrowmont.com/research.html')==='2026-10-26' && sitemapLastmods.get('https://carrowmont.com/research/mortgage-affordability-monitor.html')==='2026-11-26' &&
   search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Entries.filter(e=>e.url==='/research.html').length===1 && search1Entries.filter(e=>e.url==='/research/mortgage-affordability-monitor.html').length===1
 );
 add('TRAFFIC1A: published research data is static, parseable, finite and matches the locked U.S. reference scenario',
@@ -5803,7 +5828,7 @@ const traffic1cSearchFixtures=read('draw004.github.io/scripts/search1-fixtures.m
 const traffic1cPngs=['inflation-purchasing-power-major-groups.png','inflation-purchasing-power-erosion.png','inflation-purchasing-power-pressure-points.png'];
 add('TRAFFIC1C: inflation monitor has a stable indexable Research identity and is live from the Research hub',
   gseo2aCanonical(traffic1cStudy)==='https://carrowmont.com/research/inflation-purchasing-power-monitor.html' && gseo2aMetaContent(traffic1cStudy,'robots').toLowerCase()==='index,follow' &&
-  traffic1cHub.includes('/research/inflation-purchasing-power-monitor.html') && sitemapLastmods.get('https://carrowmont.com/research/inflation-purchasing-power-monitor.html')==='2026-10-26' && sitemapLastmods.get('https://carrowmont.com/research.html')==='2026-10-26' &&
+  traffic1cHub.includes('/research/inflation-purchasing-power-monitor.html') && sitemapLastmods.get('https://carrowmont.com/research/inflation-purchasing-power-monitor.html')==='2026-11-26' && sitemapLastmods.get('https://carrowmont.com/research.html')==='2026-10-26' &&
   search1Entries.length===SEARCH1_REVIEWED_PUBLIC_PAGE_COUNT && search1Entries.filter(e=>e.url==='/research/inflation-purchasing-power-monitor.html').length===1
 );
 add('TRAFFIC1C: official CPI metrics and major-group evidence match the locked September 2026 BLS release',
