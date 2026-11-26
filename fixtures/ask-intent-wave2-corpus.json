@@ -4,6 +4,29 @@
   "purpose": "Ask/Search shared intent ownership and explain-vs-guided regression corpus. Natural wording includes India/international terminology, poor grammar and everyday phrasing.",
   "fixtures": [
     {
+      "query": "i have 1 cr how long it would last",
+      "owner": "retirement-withdrawal",
+      "action": "guided",
+      "region": "IN"
+    },
+    {
+      "query": "i have 1.5 crore how long will it last",
+      "owner": "retirement-withdrawal",
+      "action": "guided",
+      "region": "IN"
+    },
+    {
+      "query": "how long would 50 lakh last",
+      "owner": "retirement-withdrawal",
+      "action": "guided",
+      "region": "IN"
+    },
+    {
+      "query": "how much I need to accumulate to retire",
+      "owner": "retirement-readiness",
+      "action": "guided"
+    },
+    {
       "query": "calculate how long will my retirement fund would last",
       "owner": "retirement-withdrawal",
       "action": "guided"
