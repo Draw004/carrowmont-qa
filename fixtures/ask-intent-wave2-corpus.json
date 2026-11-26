@@ -9,6 +9,11 @@
       "action": "guided"
     },
     {
+      "query": "how long would my retirement corpus last",
+      "owner": "retirement-withdrawal",
+      "action": "guided"
+    },
+    {
       "query": "how long will my retirement savings last",
       "owner": "retirement-withdrawal",
       "action": "guided"

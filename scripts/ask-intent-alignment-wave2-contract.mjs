@@ -26,7 +26,7 @@ export function runAskIntentAlignmentWave2Contract(root){
   const owners=Array.isArray(aliases.owners)?aliases.owners:[];
   const fixtures=Array.isArray(corpus.fixtures)?corpus.fixtures:[];
   add('Wave 2 shared ownership schema defines exactly seventeen reviewed intent owners', aliases.schema_version===2 && owners.length===17 && new Set(owners.map(x=>x.id)).size===17);
-  add('Wave 2 reviewed corpus contains at least two hundred natural-language fixtures', fixtures.length>=200 && fixtures.length===204 && fixtures.every(x=>x.query&&x.owner&&['guided','explain'].includes(x.action)));
+  add('Wave 2 reviewed corpus contains at least two hundred natural-language fixtures', fixtures.length>=205 && fixtures.every(x=>x.query&&x.owner&&['guided','explain'].includes(x.action)));
   add('Every reviewed owner defines Ask ownership plus guided and explanation Search destinations', owners.every(x=>x.id&&x.ask_intent&&x.search_guided_url&&x.search_explain_url&&Array.isArray(x.patterns)&&x.patterns.length));
 
   let core=null;
@@ -44,8 +44,8 @@ export function runAskIntentAlignmentWave2Contract(root){
       if(results[0]?.url===expectedUrl) searchPass+=1;
     }
   }
-  add('Shared ownership resolver matches all 204 reviewed Ask/Search fixtures', ownershipPass===fixtures.length,`${ownershipPass}/${fixtures.length}`);
-  add('Search top destination matches the reviewed shared owner on all 204 fixtures', searchPass===fixtures.length,`${searchPass}/${fixtures.length}`);
+  add('Shared ownership resolver matches all reviewed Ask/Search fixtures', ownershipPass===fixtures.length,`${ownershipPass}/${fixtures.length}`);
+  add('Search top destination matches the reviewed shared owner on all reviewed fixtures', searchPass===fixtures.length,`${searchPass}/${fixtures.length}`);
 
   const expectedIntents=['debt-vs-savings','car-affordability','mortgage-prepay-vs-invest','emergency-runway','cash-flow-shortfall','money-priorities','lump-sum-goal-tradeoffs','borrowing-health','home-affordability','debt-payoff','credit-card-payoff','retirement-readiness','retirement-withdrawal','goal-funding','loan-cost','inflation-impact','recurring-investment'];
   add('Ask public start screen exposes seventeen unique guided journeys', expectedIntents.every(intent=>(html.match(new RegExp(`data-ask-intent="${intent}"`,'g'))||[]).length===1) && (html.match(/data-ask-intent=/g)||[]).length===17);
@@ -70,6 +70,7 @@ export function runAskIntentAlignmentWave2Contract(root){
   add('SearchCore exposes shared action-mode and ownership APIs', searchCoreSource.includes('resolveActionMode') && searchCoreSource.includes('resolveOwnership') && searchCoreSource.includes("version: '1.3.0'"));
   add('Public Search API exposes ownership to Ask while keeping Search local', searchApi.includes('ownership: function (query, options)') && searchApi.includes('CarrowmontSearchCore.resolveOwnership') && !/fetch\([^)]*query/i.test(searchApi));
   add('Fallback intent router prioritizes specific retirement-withdrawal and mortgage comparison intents', router.includes('RETIREMENT_WITHDRAWAL') && router.indexOf('RETIREMENT_WITHDRAWAL')<router.lastIndexOf('RETIREMENT_READINESS') && router.indexOf('MORTGAGE_PREPAY_VS_INVEST')<router.lastIndexOf('DEBT_VS_SAVINGS'));
+  add('Wave 2 Ask/Search runtime assets use a deployment cache-buster including the fallback intent router', html.includes('/assets/fre/intent-router.js?v=20261125-askwave2&amp;live=20261126-cachefix2') && html.includes('/search-core.js?v=20261125-askwave2&amp;live=20261126-cachefix2') && html.includes('/search.js?v=20261125-askwave2&amp;live=20261126-cachefix2') && html.includes('/assets/ask/ask-carrowmont.js?v=20261125-askwave2&amp;live=20261126-cachefix2') && searchApi.includes('v=20261125-askwave2&live=20261126-cachefix2'));
 
   add('Wave 2 browser QA verifies real click routing, journey execution, final CTA destinations and handoffs', Boolean(browser) && ['calculate how long will my retirement fund would last','Find an explanation','carrowmont_retirement_withdrawal_handoff_v1','debt-payoff-calculator.html','sip-calculator','Loan / EMI','SIP (Systematic Investment Plan)','SWP (Systematic Withdrawal Plan)'].every(x=>browser.includes(x)));
   add('Wave 2 portable audit and implementation handover documents exist', Boolean(audit&&impl) && audit.includes('End-to-End') && impl.includes('Carrowmont Ask Intent Alignment') && impl.includes('204') && impl.includes('17'));

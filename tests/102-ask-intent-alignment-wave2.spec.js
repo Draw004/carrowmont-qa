@@ -53,6 +53,19 @@ test.describe('Ask Intent Alignment & Coverage Wave 2',()=>{
     await expect(page.locator('#askQuestionsTitle')).not.toHaveText('Retirement readiness');
   });
 
+  test('[AUTO] exact retirement corpus wording stays on Drawdown after predictive suggestion selection',async({page})=>{
+    await gotoClean(page,ASK);
+    await page.locator('#askQuestion').fill('how long would my retirement corpus last');
+    const firstSuggestion=page.locator('#askPredictive .ask-predictive-option').first();
+    await expect(firstSuggestion).toContainText(/SWP|Withdrawal|Drawdown/i);
+    await firstSuggestion.click();
+    await expect(page.locator('#askQuestion')).toHaveValue(/SWP|Withdrawal|Drawdown/i);
+    await expect(page.locator('#askStartBtn')).toContainText('Work through this');
+    await page.locator('#askStartBtn').click();
+    await expect(page.locator('#askQuestionsTitle')).toHaveText(/Retirement withdrawal(?: \/ SWP \(Systematic Withdrawal Plan\))? and drawdown/i);
+    await expect(page.locator('#askQuestionsTitle')).not.toHaveText(/Retirement readiness/i);
+  });
+
   test('[AUTO] explanation wording opens education rather than a calculator questionnaire',async({page})=>{
     await gotoClean(page,ASK);
     await page.locator('#askQuestion').fill('How does credit card interest work?');
