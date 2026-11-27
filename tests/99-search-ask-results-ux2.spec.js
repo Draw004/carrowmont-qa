@@ -40,6 +40,8 @@ test.describe('Search + Ask Results UX2',()=>{
     await expect(card).toHaveAttribute('href',href||'');
     await expect(card.locator('[data-search-result-action]')).toContainText('Open tool');
     await card.focus(); await expect(card).toBeFocused();
+    await page.waitForTimeout(300); // Pending typeahead must not replace the focused Search card.
+    await expect(card).toBeFocused();
     await Promise.all([page.waitForURL(url=>url.pathname===(href||'')),card.locator('[data-search-result-action]').click()]);
   });
 
