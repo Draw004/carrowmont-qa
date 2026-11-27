@@ -47,6 +47,7 @@ import { runUsDebtReferenceSignContract } from './us-debt-reference-sign-contrac
 import { runDevelopmentStandardsContract } from './development-standards-gate.mjs';
 import { runGlobalHeaderContract } from './global-header-contract.mjs';
 import { runCredentialExpiryGuardContract } from './credential-expiry-guard-contract.mjs';
+import { runPublicSourceHygieneContract } from './public-source-hygiene-contract.mjs';
 import { runQualityHardening1Contract } from './quality-hardening1-contract.mjs';
 import { runAskExpansionWave1Contract } from './ask-expansion-wave1-contract.mjs';
 import { runLearnHub2Contract } from './learn-hub2-contract.mjs';
@@ -112,6 +113,7 @@ for (const c of runFrePwaInstallJourneyContract(root)) add(`INSTALL-JOURNEY: ${c
 for (const c of runStartupNavigationPerformanceContract(root)) add(`PERF1: ${c.name}`, c.ok, c.detail);
 for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}`, c.ok, c.detail);
 for (const c of runGlobalHeaderContract(root)) add(`GLOBAL-NAV: ${c.name}`, c.ok, c.detail);
+for (const c of runPublicSourceHygieneContract(root)) add(`SECOPS1: ${c.name}`, c.ok, c.detail);
 for (const c of await runCredentialExpiryGuardContract(root)) add(`CREDENTIAL-GUARD: ${c.name}`, c.ok, c.detail);
 for (const c of runQualityHardening1Contract(root)) add(`HARDEN1: ${c.name}`, c.ok, c.detail);
 for (const c of runAskExpansionWave1Contract(root)) add(`ASKWAVE1: ${c.name}`, c.ok, c.detail);
