@@ -1,0 +1,887 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-11-27",
+  "repository": "draw004.github.io",
+  "repository_visibility_at_review": "public",
+  "privacy_caution": "Listed files remain readable in the public GitHub repository; an inventory does not restrict access. No privileged credential is included in this catalog. Git history, live network, Supabase RLS and deployed permissions are not audited.",
+  "classification_method": "Filename/path triage for human review; NOT an automated confidential/public clearance.",
+  "file_count": 219,
+  "documents": [
+    {
+      "path": "docs/CARROWMONT_APP_WEBSITE_BEHAVIOR_STANDARD.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_ARCHITECTURE.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_ASK_EXPANSION_WAVE1_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_ASK_EXPANSION_WAVE1_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_ASK_INTENT_ALIGNMENT_WAVE2_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_ASK_INTENT_ALIGNMENT_WAVE2_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_ASK_INTENT_E2E_AUDIT_2026-11-25.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_AUTOMATION_FALLBACK_HARDENING2.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_BATCH12_SEO_INDEXING_CLOSEOUT.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_BING_SEO2_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_BING_SEO_AUDIT_2026-10-08.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_CAR_AFFORDABILITY_HANDOFF_LOCALIZED_STARTERS_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_CAR_AFFORDABILITY_HANDOFF_LOCALIZED_STARTERS_FIX.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_CORE7_HOME_LOAN_MORTGAGE_PAYOFF_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_CORE8_COMPOUND_INTEREST_CALCULATOR_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_CORE9_LOAN_EMI_CALCULATOR_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_CREDENTIAL_EXPIRY_GUARD.md",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_CURRENT_PROJECT_STATUS.md",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_DEBT1_DEBT_PAYOFF_CALCULATOR_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_DEBT1_DEBT_PAYOFF_CALCULATOR_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_DEVELOPMENT_START_HERE.md",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_EVERGREEN_LEARN_CONTENT_GAP_AUDIT_2026-11-25.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_EVERGREEN_LEARN_WAVE1_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_EVERGREEN_LEARN_WAVE1_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE12B1_BALANCE_TRANSFER_DECISION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE12B1_UX_ACCEPTANCE.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE12B2_SHORT_TERM_SAVINGS_COMPARISON.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE12B3_MORTGAGE_RECAST_REFINANCE_PREPAYMENT.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE12B4_LUMP_SUM_GOAL_TRADEOFFS.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE12B5_EARLY_RETIREMENT_SCENARIOS.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE12B6_EXPLAINABLE_OPPORTUNITIES.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH0A_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH0_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH0_ARCHITECTURE_LOCK_ENGINE_INVENTORY.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH10B_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH10B_ACCOUNT_AWARE_ASK.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH10_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH10_COUNTRY_AWARE_FINANCIAL_INTELLIGENCE.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH11_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH11_HOMEPAGE_PRODUCT_TRANSFORMATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH12_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH12_UX_SEARCH_LEARN_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH13A_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH13A_CONNECTED_DATA_READINESS.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH1A_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH1A_CORE_CONTRACTS.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH1B_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH1B_PRIMARY_CORE_EXTRACTION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2A_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2A_EMERGENCY_FUND_RUNWAY.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2B_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2B_DEBT_TO_INCOME_BORROWING_HEALTH.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2C_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2C_CAR_AFFORDABILITY_AUTO_DECISION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2D_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2D_CREDIT_CARD_PAYOFF_COMPARISON.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2E_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH2E_SAVINGS_GROWTH_INTEGRATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH3A_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH3A_ASK_CARROWMONT_MVP_CORE.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH3B_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH3B_ASK_CARROWMONT_PUBLIC_MVP.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH3C_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH3C_ASK_CARROWMONT_DISCOVERABILITY_UI.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH3D_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH3D_ASK_MVP_RESOLUTION_COMPLETION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH4_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH4_GUIDED_GUI.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH5_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH5_MONEY_PRIORITIES.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH6_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH6_MY_CARROWMONT_DASHBOARD.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH7A_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH7A_OPTIONAL_LOGIN_FOUNDATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH7B_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH7B_LIVE_OPTIONAL_LOGIN_ACTIVATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH7_SUPABASE_SCHEMA.sql",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH7_SUPABASE_SETUP.md",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8A_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8A_ACCOUNT_CONTINUITY_FOUNDATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8B_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8B_SELECTIVE_SAVE_TO_MY_CARROWMONT.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8C_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8C_PLANS_PROGRESS_TRACKING.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8D_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8D_PLAN_BASELINE_ON_TRACK_INTELLIGENCE.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8E_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8E_PRODUCT_STORY_MOBILE_FOUNDATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8F_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8F_UX_ROUTING_PERFORMANCE_CLEANUP.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH8_CONTINUITY_AMENDMENT.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH9B_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH9B_YOUR_FINANCIAL_PLAN_VIEW_REPORT.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH9_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_BATCH9_TRUST_EXPLAINABILITY_PLAN_TRANSPARENCY.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V1.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V10.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V11.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V12.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V13.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V14.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V15.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V16.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V17.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V18.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V19.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V2.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V20.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V3.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V4.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V5.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V6.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V7.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V8.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_ENGINE_REGISTRY_V9.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_FRE_MASTER_ROADMAP_STATUS.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GITHUB_AUTOMATION_HANDOVER.md",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_GLOBAL2_COUNTRY_COVERAGE_EXPANSION_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GLOBAL_HEADER_AUDIT.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GOOGLE_SIGNIN_SETUP.md",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_GSEO1A_GLOBAL_SEARCH_BASELINE_QUERY_OWNERSHIP_SNAPSHOT49.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GSEO1B1_SEARCH_INTENT_AND_GOLD_RESULTS_UX_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GSEO1B2_CORE_TOOL_SEARCH_INTENT_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GSEO1C_TRUST_STRUCTURED_DATA_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GSEO1D_INTERNAL_TOPIC_AUTHORITY_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GSEO1E_LEARN_SEARCH_INTENT_REFINEMENT_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GSEO2A_SEARCH_VISIBILITY_PRIVACY_FOUNDATION_SPEC_FINAL_REV1.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_GSEO2A_SITEWIDE_SEARCH_VISIBILITY_PRIVACY_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_HOME1_HOME_AFFORDABILITY_BORROWING_POWER_CALCULATOR_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_HOME1_HOME_AFFORDABILITY_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_HOMEPAGE_TOOL_DEMAND_MATRIX.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_INDEXNOW_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN2A1_EVERGREEN_MONEY_INVESTING_FOUNDATIONS_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN2A2_CREDIT_BORROWING_SEARCH_LAYOUT_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN2A_GLOBAL_EVERGREEN_FINANCE_CONTENT_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3A_UI_HOUSE_STYLE_AND_LIBRARY_AUDIT_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3B1_BUDGET_SYSTEMS_PAY_CYCLES_CASH_FLOW_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3B2_FINANCIAL_RESILIENCE_SAVINGS_DEBT_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3B_EVERYDAY_MONEY_BUDGETING_DEBT_CREDIT_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3C1_RECURRING_INVESTING_COMPOUNDING_TARGET_TIMING_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3C2_PORTFOLIO_DECISIONS_INVESTMENT_PLANNING_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3C_INVESTING_FOUNDATIONS_ASSET_DECISIONS_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3D1_RETIREMENT_READINESS_INCOME_WITHDRAWAL_RISK_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3D2_FINANCIAL_INDEPENDENCE_INFLATION_FOUNDATIONS_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3D_RETIREMENT_FI_INFLATION_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3E1_MORTGAGE_OVERPAYMENT_PAYOFF_TIMING_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3E2_PROPERTY_INVESTMENT_FOUNDATIONS_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3E_HOME_MORTGAGE_PROPERTY_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3F1_RATES_DEBT_RESERVE_CURRENCY_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3F2_CENTRAL_BANK_GOLD_RESERVE_DIVERSIFICATION_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3F_MACRO_GOLD_MARKET_MECHANICS_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN3_LIBRARY_QUALITY_AUDIT_SNAPSHOT91.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN_FINAL_CONSISTENCY_CLOSEOUT_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN_HUB2_ACCEPTANCE_LEDGER.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN_HUB2_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN_LOCALE1_GLOBAL_LEARN_CONTENT_LOCALIZATION_SPEC_FINAL_REV1.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN_LOCALE1_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_LEARN_PRESENTATION_POLISH_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_MASTER_CONTINUITY_HANDBOOK.md",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_MDC1A_PREPAYMENT_VS_INVESTING_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_MDC1A_PREPAYMENT_VS_INVESTING_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_MDC1B_REFINANCE_BREAK_EVEN_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_MDC1B_REFINANCE_BREAK_EVEN_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_MDC1C_RATE_RISE_PAYMENT_STRESS_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_MDC1C_RATE_RISE_PAYMENT_STRESS_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_MOBILE1_APP_LIKE_WEB_UX_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_MORTGAGE_LEARN_EDUCATION_V1_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_NEWSLETTER1_MONEY_IN_REAL_LIFE_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_NEW_CHAT_START_HERE.txt",
+      "triage": "operational_setup_review"
+    },
+    {
+      "path": "docs/CARROWMONT_OPTIONAL_LOGIN_MONETIZATION_AI_ARCHITECTURE.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_PAY_FREQUENCY_STANDARD.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_QUALITY_HARDENING1_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_RENT1_RENT_VS_BUY_CALCULATOR_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_RENT1_RENT_VS_BUY_CALCULATOR_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_REPORT_STANDARD_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_RETIRE1_RETIREMENT_WITHDRAWAL_DRAWDOWN_SWP_CALCULATOR_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEARCH1_GLOBAL_SITE_SEARCH_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEARCH1_GLOBAL_SITE_SEARCH_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEARCH_ASK_RESULTS_UX2.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3A_4_PERCENT_RULE_STRESS_TEST_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3A_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3B_FI_NUMBER_BY_SPENDING_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3B_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3C_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3C_US_DEBT_INTEREST_COST_CALCULATOR_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3D_GOLD_MACRO_STRESS_EXPLORER_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3D_GOLD_MACRO_STRESS_EXPLORER_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3D_SILVER_SUPPLY_DEMAND_MACRO_STRESS_EXPLORER_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3D_SILVER_SUPPLY_DEMAND_MACRO_STRESS_EXPLORER_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3_AUTHORITY_TRAFFIC_GROWTH_PLAN.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3_MCR1_BATCH2_BOND_EQUITIES_GOLD_SEARCH_CLUSTER_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3_MCR1_BATCH2_BOND_EQUITIES_GOLD_SEARCH_CLUSTER_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3_MCR1_MARKET_CHAIN_REACTION_EXPLORER_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SEO3_MCR1_MARKET_CHAIN_REACTION_EXPLORER_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SHARED_UI_STANDARD.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SIP_PAY_FREQUENCY_IMPLEMENTATION_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SMART_SUGGESTIONS_SS2_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SMART_SUGGESTIONS_V1_SPEC.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SOCIAL1A_SOCIAL_ICON_VISUAL_POLISH_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SOCIAL1B_PLATFORM_BRAND_COLOUR_POLISH_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SOCIAL1C_MOBILE_MORE_BRAND_COLOUR_FIX_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_SOCIAL1_OFFICIAL_CHANNELS_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_STANDARDS_GATE_ACCEPTANCE.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_STANDARDS_INDEX.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TOOLS_HUB1_ALL_TOOLS_DIRECTORY_DISCOVERABILITY_SPEC_FINAL_REV1.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TOOLS_HUB1_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TRAFFIC1A_MORTGAGE_AFFORDABILITY_OUTREACH_LAUNCH_PACK.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TRAFFIC1A_RESEARCH_FOUNDATION_MORTGAGE_AFFORDABILITY_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TRAFFIC1B_EMERGENCY_SAVINGS_RESILIENCE_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TRAFFIC1B_EMERGENCY_SAVINGS_RESILIENCE_OUTREACH_LAUNCH_PACK.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TRAFFIC1C_INFLATION_PURCHASING_POWER_IMPLEMENTATION.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TRAFFIC1C_INFLATION_PURCHASING_POWER_OUTREACH_LAUNCH_PACK.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TRAFFIC1_RESEARCH_DIGITAL_PR_DISTRIBUTION_FOUNDATION_SPEC_FINAL.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_TRUST_STANDARD.md",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/CARROWMONT_UI_LEGACY_EXCEPTIONS.json",
+      "triage": "historic_spec_implementation_or_acceptance"
+    },
+    {
+      "path": "docs/research/emergency-savings-resilience-methodology.md",
+      "triage": "source_methodology_or_research"
+    },
+    {
+      "path": "docs/research/inflation-purchasing-power-monitor-methodology.md",
+      "triage": "source_methodology_or_research"
+    },
+    {
+      "path": "docs/research/mortgage-affordability-monitor-methodology.md",
+      "triage": "source_methodology_or_research"
+    },
+    {
+      "path": "ops/credential-expiry-registry.json",
+      "triage": "public_credential_metadata_review"
+    }
+  ]
+}
