@@ -49,6 +49,7 @@ import { runGlobalHeaderContract } from './global-header-contract.mjs';
 import { runCredentialExpiryGuardContract } from './credential-expiry-guard-contract.mjs';
 import { runPublicSourceHygieneContract } from './public-source-hygiene-contract.mjs';
 import { runSecops2OperationalDocsContract } from './secops2-operational-docs-contract.mjs';
+import { runSecops3AccountIsolationContract } from './secops3-account-isolation-contract.mjs';
 import { runQualityHardening1Contract } from './quality-hardening1-contract.mjs';
 import { runAskExpansionWave1Contract } from './ask-expansion-wave1-contract.mjs';
 import { runLearnHub2Contract } from './learn-hub2-contract.mjs';
@@ -116,6 +117,7 @@ for (const c of runUsDebtReferenceSignContract(root)) add(`SEO3C-SIGN: ${c.name}
 for (const c of runGlobalHeaderContract(root)) add(`GLOBAL-NAV: ${c.name}`, c.ok, c.detail);
 for (const c of runPublicSourceHygieneContract(root)) add(`SECOPS1: ${c.name}`, c.ok, c.detail);
 for (const c of runSecops2OperationalDocsContract(root)) add(`SECOPS2: ${c.name}`, c.ok, c.detail);
+for (const c of runSecops3AccountIsolationContract(root)) add(`SECOPS3: ${c.name}`, c.ok, c.detail);
 for (const c of await runCredentialExpiryGuardContract(root)) add(`CREDENTIAL-GUARD: ${c.name}`, c.ok, c.detail);
 for (const c of runQualityHardening1Contract(root)) add(`HARDEN1: ${c.name}`, c.ok, c.detail);
 for (const c of runAskExpansionWave1Contract(root)) add(`ASKWAVE1: ${c.name}`, c.ok, c.detail);
